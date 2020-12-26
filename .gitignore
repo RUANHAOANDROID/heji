@@ -1,0 +1,6 @@
+
+client/app/build/
+client/app/schemas/
+client/local.properties
+client/.idea/
+client/.gradle/

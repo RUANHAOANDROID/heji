@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+        
+    <Appenders>
+                
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--       以指定的格式输出               -->
+            <PatternLayout
+                    pattern="%style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable"/>
+                    
+        </Console>
+         
+        <!--        输出到文件        -->
+        <RollingFile name="RollingFile"
+                     fileName="./logs/hj.log"
+                     filePattern="./logs/$${date:yyyy-MM}/logger-%d{yyyy-MM-dd}-%i.log">
+                        
+            <PatternLayout>
+                                
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+                            
+            </PatternLayout>
+                        
+            <Policies>
+                                <!-- rollover on startup, daily and when the file reaches
+                    10 MegaBytes -->
+                                
+                <OnStartupTriggeringPolicy/>
+                                
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+                                
+                <TimeBasedTriggeringPolicy/>
+                            
+            </Policies>
+                    
+        </RollingFile>
+            
+    </Appenders>
+     
+        
+    <Loggers>
+                <!-- LOG everything at INFO level -->
+                
+        <Root level="info">
+                        
+            <AppenderRef ref="Console"/>
+                        
+            <AppenderRef ref="RollingFile"/>
+                    
+        </Root>
+         
+                <!-- LOG "com.baeldung*" at TRACE level -->
+                
+        <Logger name="com.baeldung" level="trace"></Logger>
+            
+    </Loggers>
+
+</Configuration>

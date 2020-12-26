@@ -1,0 +1,73 @@
+<resources>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">设置</string>
+    <string name="action_background">换背景</string>
+
+    <string name="menu_home">记账</string>
+    <string name="menu_report">统计报表</string>
+    <string name="menu_setting">设置</string>
+
+    <string name="management">管理</string>
+    <string name="setting">设置</string>
+    <string name="delete">删除</string>
+    <string name="customize">自定义</string>
+    <string name="save">保存</string>
+
+
+    <string name="date">日期</string>
+    <string name="ever">有史以来</string>
+    <string name="year">年</string>
+    <string name="monthly">月</string>
+    <string name="day">日</string>
+    <string name="monday">周一</string>
+    <string name="tuesday">周二</string>
+    <string name="thursday">周三</string>
+    <string name="wednesday">周四</string>
+    <string name="friday">周五</string>
+    <string name="saturday">周六</string>
+    <string name="sunday">周日</string>
+
+
+    <string name="type_income">收入</string>
+    <string name="type_expenditure">支出</string>
+
+    <string name="monthly_income">月收入</string>
+    <string name="monthly_expenditure">月支出</string>
+    <string name="annual_income">年收入</string>
+    <string name="annual_expenditure">年支出</string>
+
+    <string name="report_statistics">报表统计</string>
+
+    <string name="collect">汇总</string>
+    <string name="hop_kee">合记</string>
+    <string name="fuel">燃料</string>
+    <string name="repair">修理</string>
+    <string name="water">加水</string>
+    <string name="tolls">过路费</string>
+    <string name="today">今天</string>
+
+    <string name="image">图片</string>
+    <string name="bill">票据</string>
+    <string name="receipt">小票</string>
+
+    <string name="penalty">罚款</string>
+    <string name="insurance">保险费</string>
+
+    <string name="back">返回</string>
+
+    <string name="sure">确定</string>
+    <string name="preview">预览</string>
+    <string name="original">Media.Original</string>
+    <string name="camera">Media.Camera</string>
+    <string name="album">相册</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="category_manager">类别管理</string>
+    <string name="etc_list_query">ETC账单查询</string>
+    <string name="income">支出/收入</string>
+    <string name="input">导入</string>
+    <string name="export">导出</string>
+    <string name="export_format">导出格式</string>
+
+</resources>

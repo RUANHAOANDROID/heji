@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.rh.heji.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_nav_home_to_nav_etc"
+            app:destination="@id/nav_input_etc" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_gallery"
+            app:destination="@id/nav_gallery" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_category_manager"
+            app:destination="@id/nav_category_manager" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_setting"
+            app:destination="@id/nav_setting" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_gallery"
+        android:name="com.rh.heji.ui.report.ReportFragment"
+        android:label="@string/menu_report"
+        tools:layout="@layout/fragment_gallery" />
+
+    <fragment
+        android:id="@+id/nav_setting"
+        android:name="com.rh.heji.ui.setting.SettingFragment"
+        android:label="@string/menu_setting"
+        tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/nav_income"
+        android:name="com.rh.heji.ui.add.AddBillFragment"
+        android:label="@string/income"
+        tools:layout="@layout/income_fragment" />
+    <fragment
+        android:id="@+id/nav_category_manager"
+        android:name="com.rh.heji.ui.category.CategoryManagerFragment"
+        android:label="@string/category_manager"
+        tools:layout="@layout/fragment_category_manager">
+        <argument
+            android:name="ieType"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_input_etc"
+        android:name="com.rh.heji.ui.input.etc.ETCFragment"
+        android:label="@string/etc_list_query"
+        tools:layout="@layout/fragment_etc" />
+    <fragment
+        android:id="@+id/nav_export"
+        android:name="com.rh.heji.ui.export.ExportFragment"
+        android:label="@string/export"
+        tools:layout="@layout/export_fragment">
+    </fragment>
+</navigation>

@@ -4,3 +4,4 @@ client/app/schemas/
 client/local.properties
 client/.idea/
 client/.gradle/
+server/src/main/resources/application.properties

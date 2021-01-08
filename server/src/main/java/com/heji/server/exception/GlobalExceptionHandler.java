@@ -3,17 +3,16 @@ package com.heji.server.exception;
 import com.heji.server.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindException;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
+/**
+ * 该拦截器会优先于ErrorAttributes,上线情况下再开启该拦截器
+ */
 //@ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -22,9 +21,9 @@ public class GlobalExceptionHandler {
     public String handle(Exception e) {
         if (e instanceof GlobalException) {
             GlobalException ge = (GlobalException) e;
-            return Result.error(((GlobalException) e).getCode(), e.getMessage());
+            return Result.error(((GlobalException) e).getCode(), e.getMessage(),"error");
         }
-        return Result.error(500, e.getMessage());
+        return Result.error(500, e.getMessage(),"error");
     }
 
 

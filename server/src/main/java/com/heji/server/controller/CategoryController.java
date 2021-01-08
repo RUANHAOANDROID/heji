@@ -1,7 +1,7 @@
-package com.heji.server.data.controller;
+package com.heji.server.controller;
 
-import com.heji.server.data.Category;
-import com.heji.server.data.repository.CategoryDao;
+import com.heji.server.data.mysql.Category;
+import com.heji.server.data.mysql.repository.CategoryDao;
 import com.heji.server.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;

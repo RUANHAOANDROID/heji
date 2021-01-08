@@ -1,12 +1,10 @@
-package com.heji.server.data.repository;
+package com.heji.server.data.mysql.repository;
 
-import com.heji.server.data.Bill;
-import org.springframework.data.annotation.Transient;
+import com.heji.server.data.mysql.Bill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.List;
 
 public interface BillDao extends JpaRepository<Bill, Integer> {

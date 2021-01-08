@@ -20,10 +20,12 @@ public enum Response {
         this.code = code;
         this.msg = msg;
     }
+
     Response(String msg) {
         this.code = -1;
         this.msg = msg;
     }
+
     public Integer code() {
         return code;
     }

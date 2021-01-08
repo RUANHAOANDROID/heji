@@ -4,16 +4,18 @@ import com.google.gson.Gson;
 import com.sun.istack.NotNull;
 import lombok.extern.slf4j.Slf4j;
 
+
 @Slf4j
 public class Result<T> {
 
     /**
      * 成功
-     * @param msg 消息提示
+     *
+     * @param msg  消息提示
      * @param data 数据
      * @return
      */
-    public static String success(String msg,Object data) {
+    public static String success(String msg, Object data) {
         Result result = new Result();
         result.setCode(Response.SUCCESS.code());
         result.setMsg(msg);
@@ -23,6 +25,7 @@ public class Result<T> {
 
     /**
      * 成功
+     *
      * @param data 数据
      * @return
      */
@@ -37,27 +40,41 @@ public class Result<T> {
     /**
      * 失败
      **/
+    public static String error(String msg) {
+        Result result = new Result();
+        result.setCode(Response.UNKNOWN_ERROR.code());
+        result.setMsg(msg);
+        String errorStr = result.toJson();
+        return errorStr;
+    }
+
+    /**
+     * 失败
+     **/
     public static String error(Integer code, String msg) {
         Result result = new Result();
         result.setCode(code);
         result.setMsg(msg);
         return result.toJson();
     }
+
     /**
      * 失败
      **/
-    public static String error(String msg) {
+    public static String error(Integer code, String msg, Object data) {
         Result result = new Result();
-        result.setCode(Response.UNKNOWN_ERROR.code());
+        result.setCode(code);
         result.setMsg(msg);
-        String errorStr= result.toJson();
-        return errorStr;
+        result.setData(data);
+        return result.toJson();
     }
+
 
     /**
      * 失败
      *
-     * @return*/
+     * @return
+     */
     public static String error(Response response) {
         Result result = new Result();
         result.setCode(response.code());

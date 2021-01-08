@@ -6,7 +6,9 @@ import com.heji.server.data.mongo.repository.MBillRepository;
 import com.heji.server.exception.NotFindBillException;
 import com.heji.server.module.BillModule;
 import com.heji.server.service.BillService;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -31,6 +33,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.newA
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
+@Slf4j
 @Service("BillService")
 public class BillServiceImpl extends AbstractBaseMongoTemplate implements BillService {
     private static final String BILL = "bill";
@@ -46,13 +49,16 @@ public class BillServiceImpl extends AbstractBaseMongoTemplate implements BillSe
     public String addBill(BillModule billModule) {
         MBill bill = new MBill(billModule);
         bill.setImages(new String[]{"123", "456", "789"});
-        MBill saveBill = getMongoTemplate().save(bill);
+        MBill saveBill = getMongoTemplate().save(bill, BILL);
         return saveBill.get_id().toString();
     }
 
     @Override
     public void removeBill(String billId) {
-
+        Criteria cr = Criteria.where("_id").is(billId);
+        Query query = Query.query(cr);
+        DeleteResult updateResult = getMongoTemplate().remove(query, BILL);
+        log.info("删除成功 delete count ={}, _id={}", updateResult.getDeletedCount(), billId);
     }
 
     @Override
@@ -73,7 +79,7 @@ public class BillServiceImpl extends AbstractBaseMongoTemplate implements BillSe
         Update update = new Update().set("images", images);
         // 执行更新，如果没有找到匹配查询的文档，则创建并插入一个新文档
         UpdateResult updateResult = getMongoTemplate().upsert(query, update, MBill.class, BILL);
-        return updateResult.getUpsertedId().toString();
+        return _id;
     }
 
     @Override
@@ -96,6 +102,13 @@ public class BillServiceImpl extends AbstractBaseMongoTemplate implements BillSe
         if (Objects.isNull(bill))
             throw new NotFindBillException("账单不存在");
         return bill;
+    }
+
+    @Override
+    public boolean exists(String _id) {
+        Criteria cr = Criteria.where("_id").is(_id);
+        Query query = new Query(cr);
+        return getMongoTemplate().exists(query, BILL);
     }
 
     @Override

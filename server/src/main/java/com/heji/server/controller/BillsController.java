@@ -9,6 +9,7 @@ import com.heji.server.file.StorageService;
 import com.heji.server.module.BillModule;
 import com.heji.server.result.Result;
 import com.heji.server.service.BillService;
+import com.heji.server.service.ImageService;
 import com.heji.server.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -33,22 +34,26 @@ public class BillsController {
     //本地存储
     final StorageService storageService;
 
-    public BillsController(BillService billService, StorageService storageService) {
+    //账单照片存储
+    final ImageService imageService;
+
+    public BillsController(BillService billService, StorageService storageService, ImageService imageService) {
         this.billService = billService;
         this.storageService = storageService;
+        this.imageService = imageService;
     }
 
     @ResponseBody
-    @PostMapping(value = {"/addBill"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = {"/add"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String addBill(@RequestBody BillModule bill) {
-        billService.addBill(bill);
-        return Result.success("OK");
+        String billID = billService.addBill(bill);
+        return Result.success(billID);
     }
 
     @ResponseBody
-    @GetMapping(value = {"/getBills"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getBills(String billID) {
-        MBill bills =billService.getBillInfo(billID);
+    @GetMapping(value = {"/info"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getBills(String billId) {
+        MBill bills = billService.getBillInfo(billId);
         return Result.success(bills);
     }
 
@@ -56,7 +61,16 @@ public class BillsController {
     @ResponseBody
     @GetMapping(value = {"delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteById(String billId) {
-        return Result.success("OJBK");
+        imageService.removeBillImages(billId);
+        billService.removeBill(billId);
+        return Result.success("删除成功");
+    }
+
+    @ResponseBody
+    @GetMapping(value = {"update"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String updateBill(MBill bill) {
+        billService.updateBill(bill);
+        return Result.success(bill.get_id());
     }
 
     @PostMapping("/export")

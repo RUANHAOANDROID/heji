@@ -3,11 +3,13 @@ package com.heji.server.service.impl;
 import com.heji.server.data.mongo.AbstractBaseMongoTemplate;
 import com.heji.server.data.mongo.MBillImage;
 import com.heji.server.service.ImageService;
+import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,7 @@ public class ImageServiceImpl extends AbstractBaseMongoTemplate implements Image
 
     @Override
     public String saveImage(MBillImage image) {
-        String _id = getMongoTemplate().save(image,BILL_IMAGE).getImgId().toString();
+        String _id = getMongoTemplate().save(image, BILL_IMAGE).get_id().toString();
         return _id;
     }
 
@@ -26,9 +28,17 @@ public class ImageServiceImpl extends AbstractBaseMongoTemplate implements Image
     public MBillImage getImage(String imgId) {
         GridFsTemplate gridFsTemplate = getGridFsTemplate();
         Criteria cr = Criteria.where("_id").is(imgId);
-        org.springframework.data.mongodb.core.query.Query query = org.springframework.data.mongodb.core.query.Query.query(cr);
-        MBillImage MBillImage = getMongoTemplate().findOne(query, MBillImage.class);
+        Query query = Query.query(cr);
+        MBillImage MBillImage = getMongoTemplate().findOne(query, MBillImage.class, BILL_IMAGE);
         return MBillImage;
+    }
+
+    @Override
+    public boolean removeBillImages(String billId) {
+        Criteria cr = Criteria.where("bill_id").is(billId);
+        Query query = Query.query(cr);
+        DeleteResult deleteResult = getMongoTemplate().remove(query, BILL_IMAGE);
+        return deleteResult.getDeletedCount() > 0;
     }
 
     @Override

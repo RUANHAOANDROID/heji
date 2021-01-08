@@ -7,6 +7,8 @@ public interface ImageService {
 
     MBillImage getImage(String imgId);
 
+    boolean removeBillImages(String billId);
+
     void removeImages(String... imgId);
 
     void removeImage(String imgId);

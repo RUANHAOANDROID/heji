@@ -1,4 +1,4 @@
-package com.heji.server.data;
+package com.heji.server.data.mysql;
 
 import com.heji.server.data.converts.PathConverter;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;

@@ -1,8 +1,6 @@
-package com.heji.server.data.repository;
+package com.heji.server.data.mysql.repository;
 
-import com.heji.server.data.Category;
-import org.hibernate.annotations.SQLInsert;
-import org.hibernate.annotations.SQLUpdate;
+import com.heji.server.data.mysql.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

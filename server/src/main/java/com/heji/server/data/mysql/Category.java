@@ -1,4 +1,4 @@
-package com.heji.server.data;
+package com.heji.server.data.mysql;
 
 import javax.persistence.*;
 

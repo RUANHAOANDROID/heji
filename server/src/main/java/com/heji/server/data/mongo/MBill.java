@@ -10,6 +10,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import javax.persistence.Column;
@@ -40,10 +41,10 @@ public class MBill {
 
     private long time;//选择的时间
 
-    @Column(name = "create_time")
+    @Field(name = "create_time")
     private long createTime;
 
-    @Column(name = "update_time")
+    @Field(name = "update_time")
     private long updateTime;
 
     public MBill() {

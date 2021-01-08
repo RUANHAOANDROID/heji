@@ -18,6 +18,8 @@ public interface BillService {
 
     MBill getBillInfo(String billId);
 
+    boolean exists(String _id);
+
     void sumBills();
 
     String sumBills(String year, String month);

@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.io.Serializable;
@@ -20,8 +21,9 @@ import java.io.Serializable;
 public class MBillImage implements Serializable {
     private static final long serialVersionUID = 1L;
     @MongoId
-    private ObjectId imgId;
+    private ObjectId _id;
     // 所属账单ID
+    @Field("bill_id")
     private String billId;
     // 上传文件名(*.*)
     private String filename;
@@ -30,6 +32,7 @@ public class MBillImage implements Serializable {
     // 原文件MD5
     private String md5;
     // 上传时间
+    @Field("upload_time")
     private Long uploadTime;
     // 文件后缀名
     private String ext;

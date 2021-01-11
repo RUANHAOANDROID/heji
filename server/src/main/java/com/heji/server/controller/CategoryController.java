@@ -1,56 +1,57 @@
 package com.heji.server.controller;
 
+import com.heji.server.data.mongo.MCategory;
 import com.heji.server.data.mysql.Category;
-import com.heji.server.data.mysql.repository.CategoryDao;
+import com.heji.server.exception.DeleteException;
+import com.heji.server.exception.NotFindBillException;
+import com.heji.server.exception.NotFindException;
 import com.heji.server.result.Result;
+import com.heji.server.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 //@Controller // This means that this class is a Controller
 @RestController//json controller
 @RequestMapping(path = "/category") // This means URL's start with /demo (after Application path)
 public class CategoryController {
-    final CategoryDao categoryDao;
 
-    public CategoryController(CategoryDao categoryDao) {
-        this.categoryDao = categoryDao;
+    final CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
+
+
+    @ResponseBody
+    @PostMapping(value = {"/add"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String add(@RequestBody MCategory category) {
+        String _id = categoryService.save(category);
+        return Result.success(_id);
     }
 
     @ResponseBody
-    @PostMapping(value = {"/addCategories"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String add(@RequestBody Category category) {
-        boolean exists = categoryDao.existsDistinctByName(category.getName());
-        if (exists) {
-            //categoryDao.updateCategory(category.getType(), category.getLevel(), category.getName());
-            categoryDao.delete(category);
+    @GetMapping(value = {"/getByBookId"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getCategorys(@RequestParam(defaultValue = "0") String book_id) {
+        List<MCategory> mCategories = categoryService.findByBookId(book_id);
+        if (Objects.isNull(mCategories) || mCategories.size() <= 0)
+            throw new NotFindException("类别不存在");
+        return Result.success(mCategories);
+    }
+
+    @ResponseBody
+    @GetMapping(value = {"/delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String deleteCategory(@RequestParam() String _id) {
+        boolean isOk = categoryService.delete(_id);
+        if (!isOk) {
+            throw new DeleteException("删除失败");
         }
-        categoryDao.save(category);
-
-        return Result.success(category.getName());
-    }
-
-    @ResponseBody
-    @GetMapping(value = {"/getCategories"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getCategorys(@RequestParam(defaultValue = "0") int type, @RequestParam(defaultValue = "0") int level) {
-        List<Category> categories;
-        if (type == 0 && level == 0) {
-            categories = categoryDao.findAll();
-        } else {
-            categories = categoryDao.findAllByTypeAndLevel(type, level);
-        }
-
-        return Result.success(categories);
-    }
-
-    @ResponseBody
-    @GetMapping(value = {"/deleteCategory"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String deleteCategory(@RequestParam() String categoryName) {
-        categoryDao.deleteCategoryByName(categoryName);
-        return Result.success(categoryName);
+        return Result.success("删除成功");
     }
 
 }

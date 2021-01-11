@@ -8,19 +8,22 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import static com.heji.server.data.mongo.MBook.COLLATION_NAME;
+import static com.heji.server.data.mongo.MCategory.COLLECTION_NAME;
 
-/**
- * 账本
- */
 @Data
-@Accessors(chain = true)
 @ToString
-@Document(collation = COLLATION_NAME)
-public class MBook {
-    public static final String COLLATION_NAME = "book";
+@Accessors(chain = true)
+@Document(collection = COLLECTION_NAME)
+public class MCategory {
+    public static final String COLLECTION_NAME = "category";
     @MongoId
     ObjectId _id;
-    @Field("book_name")
-    String bookName;
+
+    //book_id对应 账本ID
+    @Field("book_id")
+    String bookId;
+
+    Integer type;
+    String name;
+    Integer level;
 }

@@ -28,13 +28,13 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/image")
 @Slf4j
-public class MImageController {
+public class ImageController {
 
     final ImageService imageService;
     final BillService billService;
 
     @Autowired
-    public MImageController(ImageService imageService, BillService billService) {
+    public ImageController(ImageService imageService, BillService billService) {
         this.imageService = imageService;
         this.billService = billService;
     }

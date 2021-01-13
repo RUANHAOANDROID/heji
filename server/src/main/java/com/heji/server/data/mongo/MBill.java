@@ -23,13 +23,13 @@ import static com.heji.server.data.mongo.MBill.COLLATION_NAME;
 @Data//get set
 @ToString//tostring
 @Accessors(chain = true)//能让我们方便使用链式方法创建实体对象。
-@Document(collation = COLLATION_NAME)
+@Document(COLLATION_NAME)
 public class MBill {
     public static final String COLLATION_NAME = "bill";
     @Id
     private String _id;
     //账本ID
-    private String bid;
+    private String bookId;
 
     private Double money;
 
@@ -56,7 +56,8 @@ public class MBill {
     }
 
     public MBill(BillModule billModule) {
-        bid = billModule.getBid();
+        _id = billModule.get_id();
+        bookId = billModule.getBookId();
         money = billModule.getMoney();
         category = billModule.getCategory();
         type = billModule.getType();

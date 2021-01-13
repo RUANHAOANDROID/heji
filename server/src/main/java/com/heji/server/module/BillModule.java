@@ -12,7 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @ToString
 @Accessors(chain = true)
 public class BillModule {
-    private String bid;
+    private String _id;
+    private String bookId;
     private Double money;
     private String category;
     private Integer type;
@@ -28,7 +29,8 @@ public class BillModule {
     }
 
     public BillModule(MBill bill) {
-        this.bid = bill.getBid();
+        this._id = bill.get_id();
+        this.bookId = bill.getBookId();
         this.money = bill.getMoney();
         this.category = bill.getCategory();
         this.type = bill.getType();

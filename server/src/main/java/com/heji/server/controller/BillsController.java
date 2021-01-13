@@ -60,10 +60,12 @@ public class BillsController {
 
     @ResponseBody
     @GetMapping(value = {"delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String deleteById(String billId) {
-        imageService.removeBillImages(billId);
-        billService.removeBill(billId);
-        return Result.success("删除成功");
+    public String deleteById(String _id) {
+        imageService.removeBillImages(_id);
+        boolean isDeleted = billService.removeBill(_id);
+        if (!isDeleted)
+            return Result.error("账单不存在 _id:"+_id);
+        return Result.success(_id);
     }
 
     @ResponseBody

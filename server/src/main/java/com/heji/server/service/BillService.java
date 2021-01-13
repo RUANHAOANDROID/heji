@@ -8,7 +8,7 @@ import java.util.List;
 public interface BillService {
     String addBill(BillModule billModule);
 
-    void removeBill(String billId);
+    boolean removeBill(String _id);
 
     MBill updateBill(MBill bill);
 

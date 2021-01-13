@@ -3,7 +3,6 @@ package com.heji.server.service.impl;
 import com.heji.server.data.mongo.AbstractBaseMongoTemplate;
 import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.repository.MBillRepository;
-import com.heji.server.exception.NotFindBillException;
 import com.heji.server.module.BillModule;
 import com.heji.server.service.BillService;
 import com.mongodb.client.result.DeleteResult;
@@ -14,24 +13,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.AggregationUpdate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Slf4j
 @Service("BillService")
@@ -48,17 +40,17 @@ public class BillServiceImpl extends AbstractBaseMongoTemplate implements BillSe
     @Override
     public String addBill(BillModule billModule) {
         MBill bill = new MBill(billModule);
-        bill.setImages(new String[]{"123", "456", "789"});
         MBill saveBill = getMongoTemplate().save(bill, BILL);
         return saveBill.get_id().toString();
     }
 
     @Override
-    public void removeBill(String billId) {
-        Criteria cr = Criteria.where("_id").is(billId);
+    public boolean removeBill(String _id) {
+        Criteria cr = Criteria.where("_id").is(_id);
         Query query = Query.query(cr);
         DeleteResult updateResult = getMongoTemplate().remove(query, BILL);
-        log.info("删除成功 delete count ={}, _id={}", updateResult.getDeletedCount(), billId);
+        log.info("删除成功 delete count ={}, _id={}", updateResult.getDeletedCount(), _id);
+        return updateResult.getDeletedCount() > 0;
     }
 
     @Override
@@ -94,14 +86,16 @@ public class BillServiceImpl extends AbstractBaseMongoTemplate implements BillSe
 
     @Override
     public MBill getBillInfo(String billId) {
-        Map<String, Object> retMap = null;
-        GridFsTemplate gridFsTemplate = getGridFsTemplate();
         Criteria cr = Criteria.where("_id").is(billId);
         Query query = Query.query(cr);
         MBill bill = getMongoTemplate().findOne(query, MBill.class, BILL);
-        if (Objects.isNull(bill))
-            throw new NotFindBillException("账单不存在");
         return bill;
+//        MBill mBill = new MBill();
+//        mBill.set_id(billId);
+//        Optional<MBill> bill = mBillRepository.findOne(Example.of(mBill));
+//        if (bill.isPresent())
+//            return bill.get();
+//        return null;
     }
 
     @Override

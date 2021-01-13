@@ -1,8 +1,8 @@
 package com.heji.server.controller;
 
 import com.heji.server.data.mongo.MBill;
-import com.heji.server.data.mysql.Bill;
 import com.heji.server.data.mongo.MBillImage;
+import com.heji.server.data.mysql.Bill;
 import com.heji.server.exception.NotFindBillException;
 import com.heji.server.exception.NullFileException;
 import com.heji.server.module.BillModule;
@@ -11,19 +11,15 @@ import com.heji.server.service.BillService;
 import com.heji.server.service.ImageService;
 import com.heji.server.utils.MD5Util;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sun.security.provider.MD5;
 
-import java.awt.*;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/image")
@@ -56,10 +52,10 @@ public class ImageController {
 
 
     @PostMapping("/uploadImage")
-    public String uploadImage(@RequestParam("image") MultipartFile imageFile, @RequestParam(name = "billId", defaultValue = "0") String billID) throws IOException, NoSuchAlgorithmException {
-        if (Objects.isNull(billID) && billID.equals(""))
+    public String uploadImage(@RequestParam("file") MultipartFile imageFile, @RequestParam(name = "billId", defaultValue = "0") String billId) throws IOException, NoSuchAlgorithmException {
+        if (Objects.isNull(billId) && billId.equals(""))
             return Result.error("账单不存在");
-        MBill bill = billService.getBillInfo(billID);
+        MBill bill = billService.getBillInfo(billId);
         if (Objects.isNull(bill))
             throw new NotFindBillException("账单不存在");
         String md5 = MD5Util.getMD5(imageFile.getInputStream());
@@ -68,7 +64,7 @@ public class ImageController {
         image.setExt(".jpg");
         image.setData(imageFile.getBytes());
         image.setLength(imageFile.getSize());
-        image.setBillId(billID);
+        image.setBillId(billId);
         image.setMd5(md5);
         String imgId = imageService.saveImage(image);
         String[] imageArray = bill.getImages();
@@ -88,7 +84,7 @@ public class ImageController {
 
 
     @PostMapping("/uploadImages")
-    public String uploadFiles(@RequestParam("images") List<MultipartFile> images, @RequestParam("billId") String billId) throws IOException, NoSuchAlgorithmException {
+    public String uploadFiles(@RequestParam("files") List<MultipartFile> images, @RequestParam("billId") String billId) throws IOException, NoSuchAlgorithmException {
 
         Objects.requireNonNull(images);
         if (images.size() <= 0)

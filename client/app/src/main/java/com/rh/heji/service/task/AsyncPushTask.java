@@ -66,8 +66,9 @@ public class AsyncPushTask implements Runnable {
                     if (null != response && response.isSuccessful()) {
                         if (response.code() == 200) {
                             BaseResponse entity = response.body();
+                            bill.setId(String.valueOf(entity.getDate()));
                             bill.setSynced(Bill.STATUS_SYNCED);
-                            AppDatabase.getInstance().billDao().update(bill);
+                            int updateCount =AppDatabase.getInstance().billDao().update(bill);
                             LogUtils.d(entity.toString());
                             if (bill.getImgCount() > 0) {
                                 uploadImage(bill);

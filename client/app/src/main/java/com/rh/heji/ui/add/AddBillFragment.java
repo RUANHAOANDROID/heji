@@ -28,6 +28,7 @@ import com.rh.heji.BaseFragment;
 import com.rh.heji.BuildConfig;
 import com.rh.heji.R;
 import com.rh.heji.data.BillType;
+import com.rh.heji.data.db.mongo.ObjectId;
 import com.rh.heji.databinding.IncomeFragmentBinding;
 import com.rh.heji.ui.add.adapter.TicketEntity;
 import com.rh.heji.ui.category.CategoryTabFragment;
@@ -242,7 +243,7 @@ public class AddBillFragment extends BaseFragment {
             ToastUtils.showShort("未填写金额");
             return;
         }
-        incomeViewModel.save(BILL_UUID, money,billType).observe(getViewLifecycleOwner(), str -> {
+        incomeViewModel.save(new ObjectId().toString(), money,billType).observe(getViewLifecycleOwner(), str -> {
             //BillEntity entity = new BillEntity(bill);
 //            HeJiServer billService = (HeJiServer) ServiceCreator.getInstance().createService(HeJiServer.class);
 //                billService.saveBill(entity).enqueue(new BaseCallback<BaseResponse>() {

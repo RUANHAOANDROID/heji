@@ -32,7 +32,7 @@ public interface HeJiServer {
     Call<BaseResponse> saveBills(@Body List<BillEntity> entity);
 
     @GET("bill/delete")
-    Call<BaseResponse> deleteBill(@Query("id") String uid);
+    Call<BaseResponse> deleteBill(@Query("_id") String uid);
 
     @POST("bill/getBills")
     Call<BaseResponse<List<BillEntity>>> getBills(@Query("startTime") String startTime,
@@ -40,9 +40,9 @@ public interface HeJiServer {
                                                   @Query("type") int type);
 
     @POST("bill/export")
-    Call<ResponseBody> exportBills(@Query("year") String year,@Query("month") String month);
+    Call<ResponseBody> exportBills(@Query("year") String year, @Query("month") String month);
 
-    @POST("category/addCategories")
+    @POST("category/add")
     Call<BaseResponse> addCategory(@Body List<CategoryEntity> categories);
 
     @POST("category/addCategories")
@@ -57,12 +57,12 @@ public interface HeJiServer {
 
     /**
      * @param part
-     * @param billID 账单ID
+     * @param billId 账单ID
      * @return
      */
     @Multipart
-    @POST("file/uploadFile")
-    Call<BaseResponse<String>> uploadImg(@Part() MultipartBody.Part part, @Query("billID") String billID);
+    @POST("image/uploadImage")
+    Call<BaseResponse<String>> uploadImg(@Part() MultipartBody.Part part, @Query("billId") String billId);
 
     /**
      * 多个文件上传

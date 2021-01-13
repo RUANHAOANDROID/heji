@@ -12,6 +12,7 @@ import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.BillType;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Category;
+import com.rh.heji.data.db.mongo.ObjectId;
 import com.rh.heji.utlis.http.basic.OkHttpConfig;
 
 import org.jetbrains.annotations.NotNull;
@@ -85,7 +86,7 @@ public class ETCViewModel extends ViewModel {
             List<ETCListInfoEntity.Info> data = etcListInfo.data;
             data.forEach(info -> {
                 Bill bill = new Bill();
-                bill.setId(UUID.randomUUID().toString());
+                bill.setId(new ObjectId().toString());
                 bill.setMoney(new BigDecimal(info.etcPrice).divide(new BigDecimal(100)));
                 bill.setRemark(info.exEnStationName);
                 bill.setBillTime(TimeUtils.string2Millis(info.exchargetime, "yyyy-MM-dd HH:mm:ss"));
@@ -256,7 +257,7 @@ public class ETCViewModel extends ViewModel {
         long billTime = TimeUtils.string2Millis(info.exTime, "yyyy-MM-dd HH:mm:ss");
 
         Bill bill = new Bill();
-        bill.setId(UUID.randomUUID().toString());
+        bill.setId(new ObjectId().toString());
         bill.setMoney(new BigDecimal(money).divide(new BigDecimal(100)));
         bill.setRemark(remark);
         bill.setBillTime(billTime);

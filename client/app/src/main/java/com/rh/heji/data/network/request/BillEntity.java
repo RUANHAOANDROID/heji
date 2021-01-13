@@ -15,8 +15,8 @@ import java.util.function.Function;
  */
 public class BillEntity {
 
-    private String uid;
-
+    private String _id;
+    private String bookId;
     private String money;
 
     private String category;
@@ -36,7 +36,7 @@ public class BillEntity {
     private long updateTime;
 
     public BillEntity(Bill bill) {
-        this.uid = bill.getId();
+        this._id = bill.getId();
         this.money = bill.getMoney().toString();
         this.category = bill.getCategory();
         this.type = bill.getType();
@@ -50,7 +50,7 @@ public class BillEntity {
 
     public Bill toBill() {
         Bill bill = new Bill();
-        bill.setId(uid);
+        bill.setId(_id);
         bill.setMoney(new BigDecimal(money));
         bill.setType(type);
         bill.setRemark(remark);
@@ -70,11 +70,11 @@ public class BillEntity {
     }
 
     public String getId() {
-        return uid;
+        return _id;
     }
 
     public void setId(String uid) {
-        this.uid = uid;
+        this._id = uid;
     }
 
     public String getMoney() {
@@ -148,4 +148,5 @@ public class BillEntity {
     public void setImages(List<String> images) {
         this.images = images;
     }
+
 }

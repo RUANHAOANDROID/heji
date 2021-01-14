@@ -41,6 +41,7 @@ import com.lxj.xpopup.enums.PopupType;
 import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener;
 import com.matisse.utils.BitmapUtils;
 import com.rh.heji.App;
+import com.rh.heji.AppCache;
 import com.rh.heji.BuildConfig;
 import com.rh.heji.R;
 import com.rh.heji.data.AppDatabase;
@@ -95,7 +96,7 @@ public class BillInfoPop extends BottomPopupView {
         initTicketImg();
         //服务器返回的是图片的ID、需要加上前缀
         List<Image> imagePaths = images.stream().map(image -> {
-            String path = BuildConfig.HTTP_URL + "/file/image/" + image.getOnlinePath();
+            String path = BuildConfig.HTTP_URL + "/image/" + image.getOnlinePath();
             image.setOnlinePath(path);
             return image;
         }).collect(Collectors.toList());

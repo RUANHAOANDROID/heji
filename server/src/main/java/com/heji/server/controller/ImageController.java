@@ -2,14 +2,13 @@ package com.heji.server.controller;
 
 import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.MBillImage;
-import com.heji.server.data.mysql.Bill;
 import com.heji.server.exception.NotFindBillException;
 import com.heji.server.exception.NullFileException;
-import com.heji.server.module.BillModule;
 import com.heji.server.result.Result;
 import com.heji.server.service.BillService;
 import com.heji.server.service.ImageService;
 import com.heji.server.utils.MD5Util;
+import com.heji.server.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,15 +51,20 @@ public class ImageController {
 
 
     @PostMapping("/uploadImage")
-    public String uploadImage(@RequestParam("file") MultipartFile imageFile, @RequestParam(name = "billId", defaultValue = "0") String billId) throws IOException, NoSuchAlgorithmException {
+    public String uploadImage(@RequestParam("file") MultipartFile imageFile,
+                              @RequestParam(name = "billId", defaultValue = "0") String billId,
+                              @RequestParam(name = "time", defaultValue = "0") long time) throws IOException, NoSuchAlgorithmException {
         if (Objects.isNull(billId) && billId.equals(""))
             return Result.error("账单不存在");
+        if (time==0)
+            time =TimeUtils.getNowMills();
         MBill bill = billService.getBillInfo(billId);
         if (Objects.isNull(bill))
             throw new NotFindBillException("账单不存在");
         String md5 = MD5Util.getMD5(imageFile.getInputStream());
         MBillImage image = new MBillImage();
-        image.setFilename(imageFile.getOriginalFilename());
+        String fileName =TimeUtils.millis2String(time)+imageFile.getOriginalFilename();
+        image.setFilename(fileName);
         image.setExt(".jpg");
         image.setData(imageFile.getBytes());
         image.setLength(imageFile.getSize());
@@ -101,7 +105,7 @@ public class ImageController {
             ObjectId objectId = new ObjectId();
             String newFileName = objectId.toString() + extName;
             //重命名
-            MBillImage image = new MBillImage().set_id(objectId)
+            MBillImage image = new MBillImage().set_id(objectId.toString())
                     .setFilename(newFileName)
                     .setExt(extName)
                     .setData(imageFile.getBytes())
@@ -115,21 +119,4 @@ public class ImageController {
         billService.upInstImages(billId, imageIds.toArray(new String[imageIds.size()]));
         return Result.success(imageIds);
     }
-
-    /**
-     * 图片信息入库(bill表)
-     *
-     * @return
-     */
-    private void saveTicketInfo(Bill bill, String fileId) {
-        log.debug("save {}", bill.toString());
-        List<String> images = bill.getImages();
-        if (null == images) {
-            images = new LinkedList<>();
-        }
-        images.add(fileId);
-        bill.setImages(images);
-        billService.addBill(new BillModule());
-    }
-
 }

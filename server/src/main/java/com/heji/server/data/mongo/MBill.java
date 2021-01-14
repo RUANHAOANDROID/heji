@@ -5,9 +5,11 @@ import com.heji.server.module.BillModule;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.bson.BsonDateTime;
 import org.bson.BsonNumber;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -45,6 +47,7 @@ public class MBill {
 
     private long time;//选择的时间
 
+    @CreatedDate
     @Field(name = "create_time")
     private long createTime;
 
@@ -63,7 +66,7 @@ public class MBill {
         type = billModule.getType();
         dealer = billModule.getDealer();
         remark = billModule.getRemark();
-        time = billModule.getTime();
+        time = billModule.getTime() ;
         createTime = billModule.getCreateTime();
         updateTime = billModule.getUpdateTime();
     }

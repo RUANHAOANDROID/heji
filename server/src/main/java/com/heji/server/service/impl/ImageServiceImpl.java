@@ -2,6 +2,7 @@ package com.heji.server.service.impl;
 
 import com.heji.server.data.mongo.AbstractBaseMongoTemplate;
 import com.heji.server.data.mongo.MBillImage;
+import com.heji.server.data.mongo.repository.MImageRepository;
 import com.heji.server.service.ImageService;
 import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
@@ -15,12 +16,15 @@ import org.springframework.stereotype.Service;
 
 @Service("ImageService")
 public class ImageServiceImpl extends AbstractBaseMongoTemplate implements ImageService {
-    final static String BILL_IMAGE = "bill_image";
+    final MImageRepository mImageRepository;
 
+    public ImageServiceImpl(MImageRepository mImageRepository) {
+        this.mImageRepository = mImageRepository;
+    }
 
     @Override
     public String saveImage(MBillImage image) {
-        String _id = getMongoTemplate().save(image, BILL_IMAGE).get_id().toString();
+        String _id = getMongoTemplate().save(image, MBillImage.COLLATION_NAME).get_id().toString();
         return _id;
     }
 
@@ -29,15 +33,16 @@ public class ImageServiceImpl extends AbstractBaseMongoTemplate implements Image
         GridFsTemplate gridFsTemplate = getGridFsTemplate();
         Criteria cr = Criteria.where("_id").is(imgId);
         Query query = Query.query(cr);
-        MBillImage MBillImage = getMongoTemplate().findOne(query, MBillImage.class, BILL_IMAGE);
-        return MBillImage;
+        MBillImage mBillImage = getMongoTemplate().findOne(query, MBillImage.class, MBillImage.COLLATION_NAME);
+        //return mImageRepository.findById(imgId).get();
+        return mBillImage;
     }
 
     @Override
     public boolean removeBillImages(String billId) {
         Criteria cr = Criteria.where("bill_id").is(billId);
         Query query = Query.query(cr);
-        DeleteResult deleteResult = getMongoTemplate().remove(query, BILL_IMAGE);
+        DeleteResult deleteResult = getMongoTemplate().remove(query, MBillImage.COLLATION_NAME);
         return deleteResult.getDeletedCount() > 0;
     }
 
@@ -54,9 +59,9 @@ public class ImageServiceImpl extends AbstractBaseMongoTemplate implements Image
     @Override
     protected void init() {
         MongoTemplate mongoTemplate = getMongoTemplate();
-        if (!mongoTemplate.collectionExists(BILL_IMAGE)) {
-            mongoTemplate.createCollection(BILL_IMAGE);
-            IndexOperations indexOpe = mongoTemplate.indexOps(BILL_IMAGE);
+        if (!mongoTemplate.collectionExists(MBillImage.COLLATION_NAME)) {
+            mongoTemplate.createCollection(MBillImage.COLLATION_NAME);
+            IndexOperations indexOpe = mongoTemplate.indexOps(MBillImage.COLLATION_NAME);
             indexOpe.ensureIndex(new CompoundIndexDefinition(new Document("_id", "hashed")));
         }
     }

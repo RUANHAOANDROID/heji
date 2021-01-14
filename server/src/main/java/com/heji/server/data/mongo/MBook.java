@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -16,11 +17,11 @@ import static com.heji.server.data.mongo.MBook.COLLATION_NAME;
 @Data
 @Accessors(chain = true)
 @ToString
-@Document(collation = COLLATION_NAME)
+@Document(COLLATION_NAME)
 public class MBook {
     public static final String COLLATION_NAME = "book";
-    @MongoId
-    ObjectId _id;
+    @Id
+    String _id;
     @Field("book_name")
     String bookName;
 }

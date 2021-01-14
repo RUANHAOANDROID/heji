@@ -52,7 +52,7 @@ public class AsyncCategoryTask implements Runnable {
 
     private void deleteCategory(Category category) {
         try {
-            Response<BaseResponse> response = heJiServer.deleteCategory(category.getCategory()).execute();
+            Response<BaseResponse> response = heJiServer.deleteCategoryByName(category.getCategory()).execute();
             if (null != response && response.isSuccessful()) {
                 if (response.code() == 200) {
                     String str = String.valueOf(response.body());
@@ -90,7 +90,7 @@ public class AsyncCategoryTask implements Runnable {
             categoryEntities.add(new CategoryEntity(category));
         });
         try {
-            Response<BaseResponse> response = heJiServer.addCategory(categoryEntities).execute();
+            Response<BaseResponse> response = heJiServer.addCategories(categoryEntities).execute();
             if (null != response && response.isSuccessful()) {
                 if (response.code() == 200) {
                     String str = String.valueOf(response.body());

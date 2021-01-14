@@ -101,11 +101,11 @@ public class AsyncPushTask implements Runnable {
                         img = fileList.get(0);
                     }
                 }
-
+                String fileName =img.getName();
                 RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), img);
-                MultipartBody.Part part = MultipartBody.Part.createFormData("file", bill.getId(), requestBody);
+                MultipartBody.Part part = MultipartBody.Part.createFormData("file", fileName, requestBody);
                 long time = img.lastModified();
-                Response<BaseResponse<String>> ticketResponse = heJiServer.uploadImg(part, bill.getId()).execute();
+                Response<BaseResponse<String>> ticketResponse = heJiServer.uploadImg(part, bill.getId(),time).execute();
                 if (null != ticketResponse && ticketResponse.isSuccessful()) {
                     if (ticketResponse.code() == 200) {
                         String ticketsUUID = ticketResponse.body().data;

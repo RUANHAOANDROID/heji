@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service("CategoryService")
 public class CategoryServiceImpl extends AbstractBaseMongoTemplate implements CategoryService {
@@ -26,7 +28,13 @@ public class CategoryServiceImpl extends AbstractBaseMongoTemplate implements Ca
     @Override
     public String save(MCategory category) {
         MCategory mCategory = mCategoryRepository.save(category);
-        return mCategory.get_id().toString();
+        return mCategory.get_id();
+    }
+
+    @Override
+    public List<String> saveAll(List<MCategory> categories) {
+        List<MCategory> categories1 = mCategoryRepository.saveAll(categories);
+        return categories1.stream().map(category -> category.get_id()).collect(Collectors.toList());
     }
 
     @Override
@@ -50,6 +58,11 @@ public class CategoryServiceImpl extends AbstractBaseMongoTemplate implements Ca
     public boolean delete(String _id) {
         mCategoryRepository.deleteById(_id);
         return true;
+    }
+
+    @Override
+    public boolean deleteByName(String name) {
+        return mCategoryRepository.deleteByName(name)>0;
     }
 
     @Override

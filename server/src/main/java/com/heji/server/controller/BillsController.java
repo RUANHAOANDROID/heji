@@ -3,7 +3,6 @@ package com.heji.server.controller;
 import com.alibaba.excel.EasyExcel;
 import com.heji.server.data.bean.QianjiExcelBean;
 import com.heji.server.data.mongo.MBill;
-import com.heji.server.data.mysql.Bill;
 import com.heji.server.exception.NotFindBillException;
 import com.heji.server.file.StorageService;
 import com.heji.server.module.BillModule;
@@ -16,7 +15,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -45,18 +43,27 @@ public class BillsController {
 
     @ResponseBody
     @PostMapping(value = {"/add"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String addBill(@RequestBody BillModule bill) {
-        String billID = billService.addBill(bill);
+    public String addBill(@RequestBody BillModule billModule) {
+        MBill mBill =new MBill(billModule);
+        String billID = billService.addBill(mBill);
         return Result.success(billID);
     }
 
     @ResponseBody
     @GetMapping(value = {"/info"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getBills(String billId) {
+    public String getBillInfo(String billId) {
         MBill bills = billService.getBillInfo(billId);
         return Result.success(bills);
     }
 
+
+    @ResponseBody
+    @PostMapping(value = {"/getBills"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getBills(@RequestParam long startTime, @RequestParam long endTime) {
+        //TODO 根据时间段查账单
+        List<MBill> bills = billService.getBills(startTime, startTime);
+        return Result.success(bills);
+    }
 
     @ResponseBody
     @GetMapping(value = {"delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -64,7 +71,7 @@ public class BillsController {
         imageService.removeBillImages(_id);
         boolean isDeleted = billService.removeBill(_id);
         if (!isDeleted)
-            return Result.error("账单不存在 _id:"+_id);
+            return Result.error("账单不存在 _id:" + _id);
         return Result.success(_id);
     }
 
@@ -77,8 +84,8 @@ public class BillsController {
 
     @PostMapping("/export")
     @ResponseBody
-    public ResponseEntity<Resource> exportBills(@RequestParam(defaultValue = "0") String year, @RequestParam(defaultValue = "0") String month) {
-        List<MBill> bills = billService.getBills(year, month);
+    public ResponseEntity<Resource> exportBills(@RequestParam(defaultValue = "0") long startDateTime, @RequestParam(defaultValue = "0") long endDateTime) {
+        List<MBill> bills = billService.getBills(startDateTime, endDateTime);
         if (Objects.isNull(bills) && bills.size() <= 0)
             throw new NotFindBillException("No bill");
         List<QianjiExcelBean> excelData = bill2QianJiExcel(bills);
@@ -102,6 +109,7 @@ public class BillsController {
                 .map(bill -> {
                     QianjiExcelBean excel = new QianjiExcelBean();
                     excel.setTime(TimeUtils.millis2String(bill.getTime(), "yyyy/MM/dd HH:mm:ss"));
+                    //excel.setTime(bill.getTime().toString());
                     excel.setMoney(String.valueOf(bill.getMoney()));
                     excel.setRemark(bill.getRemark());
                     excel.setType(bill.getType() == 1 ? "收入" : "支出");

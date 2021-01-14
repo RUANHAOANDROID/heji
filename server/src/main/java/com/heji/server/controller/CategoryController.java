@@ -1,14 +1,11 @@
 package com.heji.server.controller;
 
 import com.heji.server.data.mongo.MCategory;
-import com.heji.server.data.mysql.Category;
 import com.heji.server.exception.DeleteException;
-import com.heji.server.exception.NotFindBillException;
 import com.heji.server.exception.NotFindException;
 import com.heji.server.result.Result;
 import com.heji.server.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +33,13 @@ public class CategoryController {
     }
 
     @ResponseBody
+    @PostMapping(value = {"/addCategories"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String addCategories(@RequestBody List<MCategory> category) {
+        List<String> _ids = categoryService.saveAll(category);
+        return Result.success(_ids);
+    }
+
+    @ResponseBody
     @GetMapping(value = {"/getByBookId"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getCategorys(@RequestParam(defaultValue = "0") String book_id) {
         List<MCategory> mCategories = categoryService.findByBookId(book_id);
@@ -53,5 +57,13 @@ public class CategoryController {
         }
         return Result.success("删除成功");
     }
-
+    @ResponseBody
+    @GetMapping(value = {"/deleteByName"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String deleteByName(@RequestParam("categoryName") String name) {
+        boolean isOk = categoryService.deleteByName(name);
+        if (!isOk) {
+            throw new DeleteException("删除失败");
+        }
+        return Result.success("删除成功");
+    }
 }

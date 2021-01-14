@@ -48,7 +48,7 @@ public class AsyncPullTask implements Runnable {
         Calendar calendar = Calendar.getInstance();
         String startTime = MyTimeUtils.getFirstDayOfMonth(2020, 8);
         String endTime = MyTimeUtils.getFirstDayOfMonth(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH));
-        Response<BaseResponse<List<BillEntity>>> response = heJiServer.getBills("0", "0", 0).execute();
+        Response<BaseResponse<List<BillEntity>>> response = heJiServer.getBills("0", "0").execute();
         if (null != response && response.isSuccessful()) {
             if (response.code() == 200) {
                 List<BillEntity> data = response.body().data;

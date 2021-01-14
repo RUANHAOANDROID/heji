@@ -36,20 +36,22 @@ public interface HeJiServer {
 
     @POST("bill/getBills")
     Call<BaseResponse<List<BillEntity>>> getBills(@Query("startTime") String startTime,
-                                                  @Query("endTime") String uid,
-                                                  @Query("type") int type);
+                                                  @Query("endTime") String uid);
 
     @POST("bill/export")
     Call<ResponseBody> exportBills(@Query("year") String year, @Query("month") String month);
 
-    @POST("category/add")
-    Call<BaseResponse> addCategory(@Body List<CategoryEntity> categories);
-
     @POST("category/addCategories")
+    Call<BaseResponse> addCategories(@Body List<CategoryEntity> categories);
+
+    @POST("category/add")
     Call<BaseResponse> addCategory(@Body CategoryEntity categories);
 
-    @GET("category/deleteCategory")
-    Call<BaseResponse> deleteCategory(@Query("categoryName") String categoryName);
+    @GET("category/delete")
+    Call<BaseResponse> deleteCategoryById(@Query("_id") String _id);
+
+    @GET("category/deleteByName")
+    Call<BaseResponse> deleteCategoryByName(@Query("categoryName") String categoryName);
 
 
     @GET("category/getCategories")
@@ -62,7 +64,7 @@ public interface HeJiServer {
      */
     @Multipart
     @POST("image/uploadImage")
-    Call<BaseResponse<String>> uploadImg(@Part() MultipartBody.Part part, @Query("billId") String billId);
+    Call<BaseResponse<String>> uploadImg(@Part() MultipartBody.Part part, @Query("billId") String billId, @Query("time") long time);
 
     /**
      * 多个文件上传
@@ -77,5 +79,9 @@ public interface HeJiServer {
     @Streaming
     @GET("file/downloadFile/{fileName}")
     Call<ResponseBody> downloadFile(@Path("fileName") String fileName);
+
+    @Streaming
+    @GET("image/{imageId}")
+    Call<ResponseBody> getImage(@Path("imageId") String _id);
 
 }

@@ -19,12 +19,12 @@ import static com.heji.server.data.mongo.MBillImage.COLLATION_NAME;
 @Data
 @Accessors(chain = true)
 @ToString
-@Document(collation = COLLATION_NAME)
+@Document(COLLATION_NAME)
 public class MBillImage implements Serializable {
     public static final String COLLATION_NAME = "bill_image";
     private static final long serialVersionUID = 1L;
-    @MongoId
-    private ObjectId _id;
+    @Id
+    private String _id;
     // 所属账单ID
     @Field("bill_id")
     private String billId;

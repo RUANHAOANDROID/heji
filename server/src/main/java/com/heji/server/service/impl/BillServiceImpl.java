@@ -5,6 +5,8 @@ import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.repository.MBillRepository;
 import com.heji.server.module.BillModule;
 import com.heji.server.service.BillService;
+import com.heji.server.utils.TimeUtils;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +21,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
@@ -38,8 +42,7 @@ public class BillServiceImpl extends AbstractBaseMongoTemplate implements BillSe
     }
 
     @Override
-    public String addBill(BillModule billModule) {
-        MBill bill = new MBill(billModule);
+    public String addBill(MBill bill) {
         MBill saveBill = getMongoTemplate().save(bill, BILL);
         return saveBill.get_id().toString();
     }
@@ -75,11 +78,13 @@ public class BillServiceImpl extends AbstractBaseMongoTemplate implements BillSe
     }
 
     @Override
-    public List<MBill> getBills(String year, String month) {
+    public List<MBill> getBills(long startDate, long endDate) {
+        if (startDate == 0 || endDate == 0)
+            return mBillRepository.findAll();
         // 创建条件对象
-        Criteria criteria = Criteria.where("year").is(year);
+        Criteria criteria = Criteria.where("time").gte(startDate).lte(endDate);
         // 创建查询对象，然后将条件对象添加到其中，然后根据指定字段进行排序
-        Query query = new Query(criteria).with(Sort.by(month));
+        Query query = new Query(criteria).with(Sort.by("time"));
         List<MBill> documentList = getMongoTemplate().find(query, MBill.class, BILL);
         return documentList;
     }

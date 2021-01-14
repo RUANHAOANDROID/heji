@@ -6,7 +6,7 @@ import com.heji.server.module.BillModule;
 import java.util.List;
 
 public interface BillService {
-    String addBill(BillModule billModule);
+    String addBill(MBill bill);
 
     boolean removeBill(String _id);
 
@@ -14,7 +14,7 @@ public interface BillService {
 
     String upInstImages(String _id, String[] images);
 
-    List<MBill> getBills(String year, String month);
+    List<MBill> getBills(long startDate, long endDate);
 
     MBill getBillInfo(String billId);
 

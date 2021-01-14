@@ -8,6 +8,9 @@ public interface CategoryService {
     //保存分类标签
     String save(MCategory category);
 
+    //保存列表
+    List<String> saveAll(List<MCategory> categories);
+
     //查找单个分类
     MCategory find(String _id);
 
@@ -16,4 +19,6 @@ public interface CategoryService {
     String update(MCategory category);
 
     boolean delete(String _id);
+
+    boolean deleteByName(String name);
 }

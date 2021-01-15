@@ -37,6 +37,7 @@ public class AddBillViewModel extends ViewModel {
     private BillType billType = BillType.EXPENDITURE;
     private Bill bill = new Bill();
     private String time;//时间
+    private Stack keyBoardStack ;
 
     MutableLiveData<Bill> saveLiveData;
 
@@ -133,4 +134,11 @@ public class AddBillViewModel extends ViewModel {
         this.time = time;
     }
 
+    public Stack getKeyBoardStack() {
+        return keyBoardStack;
+    }
+
+    public void setKeyBoardStack(Stack keyBoardStack) {
+        this.keyBoardStack = keyBoardStack;
+    }
 }

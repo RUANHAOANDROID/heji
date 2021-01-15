@@ -339,4 +339,12 @@ public class KeyBoardView extends ConstraintLayout {
         }
     }
 
+    public Stack<String> getStack() {
+        return stack;
+    }
+
+    public void setStack(Stack<String> stack) {
+        this.stack = stack;
+        request();
+    }
 }

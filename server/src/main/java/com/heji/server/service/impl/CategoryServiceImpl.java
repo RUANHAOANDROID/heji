@@ -48,6 +48,10 @@ public class CategoryServiceImpl extends AbstractBaseMongoTemplate implements Ca
     public List<MCategory> findByBookId(String book_id) {
         return null;
     }
+    @Override
+    public List<MCategory> findAll() {
+        return mCategoryRepository.findAll();
+    }
 
     @Override
     public String update(MCategory category) {

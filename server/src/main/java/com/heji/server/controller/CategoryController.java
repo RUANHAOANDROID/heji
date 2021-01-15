@@ -49,6 +49,15 @@ public class CategoryController {
     }
 
     @ResponseBody
+    @GetMapping(value = {"/getAllCategory"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getAllCategory(@RequestParam(defaultValue = "0") String book_id) {
+        List<MCategory> mCategories = categoryService.findByBookId(book_id);
+        if (Objects.isNull(mCategories) || mCategories.size() <= 0)
+            throw new NotFindException("类别不存在");
+        return Result.success(mCategories);
+    }
+
+    @ResponseBody
     @GetMapping(value = {"/delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteCategory(@RequestParam() String _id) {
         boolean isOk = categoryService.delete(_id);

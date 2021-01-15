@@ -14,6 +14,8 @@ public interface CategoryService {
     //查找单个分类
     MCategory find(String _id);
 
+    List<MCategory> findAll();
+
     List<MCategory> findByBookId(String book_id);
 
     String update(MCategory category);

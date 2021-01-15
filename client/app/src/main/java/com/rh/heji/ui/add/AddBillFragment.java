@@ -39,6 +39,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Stack;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
@@ -47,7 +48,6 @@ import static android.app.Activity.RESULT_OK;
  * 支出 收入
  */
 public class AddBillFragment extends BaseFragment {
-    private final String BILL_UUID = UUID.randomUUID().toString();
     private AddBillViewModel incomeViewModel;
     private CategoryViewModule categoryViewModule;
     IncomeFragmentBinding binding;
@@ -231,6 +231,7 @@ public class AddBillFragment extends BaseFragment {
 
             }
         });
+
     }
 
     private void changeMoneyTextColor(BillType billType) {
@@ -324,6 +325,22 @@ public class AddBillFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Stack stack=incomeViewModel.getKeyBoardStack();
+        if (null!=stack&&!stack.isEmpty()){
+            binding.keyboard.setStack(stack);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (binding!=null&&incomeViewModel!=null){
+            incomeViewModel.setKeyBoardStack(binding.keyboard.getStack());
+        }
+    }
 
     private void setImages(List<String> selected) {
         List<TicketEntity> photos = new ArrayList<>();

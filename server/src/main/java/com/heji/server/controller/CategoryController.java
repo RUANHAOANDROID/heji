@@ -41,7 +41,7 @@ public class CategoryController {
 
     @ResponseBody
     @GetMapping(value = {"/getByBookId"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getCategorys(@RequestParam(defaultValue = "0") String book_id) {
+    public String getCategories(@RequestParam(defaultValue = "0") String book_id) {
         List<MCategory> mCategories = categoryService.findByBookId(book_id);
         if (Objects.isNull(mCategories) || mCategories.size() <= 0)
             throw new NotFindException("类别不存在");

@@ -3,6 +3,20 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "androidx.navigation.safeargs"
 android {
+    signingConfigs {
+        debug {
+            storeFile file('..//heji.keystore')
+            storePassword 'password'
+            keyPassword 'password'
+            keyAlias 'heji'
+        }
+        release {
+            storeFile file('..//heji.keystore')
+            storePassword 'password'
+            keyAlias 'heji'
+            keyPassword 'password'
+        }
+    }
     compileSdkVersion project.compileSdkVersion
     buildToolsVersion project.buildToolsVersion
     defaultConfig {

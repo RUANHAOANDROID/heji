@@ -15,12 +15,12 @@ import static com.rh.heji.data.db.Bill.STATUS_NOT_SYNC;
  * Author: 锅得铁
  * #收入/支出 类型标签
  */
-@Entity(tableName = "bill_category",primaryKeys = {"category","level","type"})
+@Entity(tableName = "bill_category", primaryKeys = {"category", "level", "type"})
 public class Category {
     public static final int STATUS_SYNCED = 1;//已同步的
     public static final int STATUS_DELETE = -1;//本地删除的
     public static final int STATUS_NOT_SYNC = 0;//未同步的
-    
+
     @NonNull
     @ColumnInfo(name = "category")
     String category;
@@ -32,6 +32,12 @@ public class Category {
     @ColumnInfo(name = "type")
     int type;
     /**
+     * 在账本下排序
+     */
+    @ColumnInfo(name = "index")
+    int index;
+
+    /**
      * 是否在记账页面显示
      */
     @Ignore
@@ -41,7 +47,7 @@ public class Category {
     @Ignore
     public boolean selected = false;
 
-    @ColumnInfo(name = "sync_status",defaultValue = "0")
+    @ColumnInfo(name = "sync_status", defaultValue = "0")
     int synced = STATUS_NOT_SYNC;
 
     public Category() {

@@ -69,5 +69,8 @@
     <string name="input">导入</string>
     <string name="export">导出</string>
     <string name="export_format">导出格式</string>
+    <string name="user_name">用户名</string>
+    <string name="book">帐簿</string>
+    <string name="user_id">用户ID</string>
 
 </resources>

@@ -1,6 +1,6 @@
 package com.heji.server.service.impl;
 
-import com.heji.server.data.mongo.AbstractBaseMongoTemplate;
+import com.heji.server.data.mongo.BaseMongoTemplate;
 import com.heji.server.data.mongo.MBillImage;
 import com.heji.server.data.mongo.repository.MImageRepository;
 import com.heji.server.service.ImageService;
@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 
 @Service("ImageService")
-public class ImageServiceImpl extends AbstractBaseMongoTemplate implements ImageService {
+public class ImageServiceImpl extends BaseMongoTemplate implements ImageService {
     final MImageRepository mImageRepository;
 
     public ImageServiceImpl(MImageRepository mImageRepository) {
@@ -24,7 +24,7 @@ public class ImageServiceImpl extends AbstractBaseMongoTemplate implements Image
 
     @Override
     public String saveImage(MBillImage image) {
-        String _id = getMongoTemplate().save(image, MBillImage.COLLATION_NAME).get_id().toString();
+        String _id = getMongoTemplate().save(image, MBillImage.COLLECTION_NAME).get_id().toString();
         return _id;
     }
 
@@ -33,7 +33,7 @@ public class ImageServiceImpl extends AbstractBaseMongoTemplate implements Image
         GridFsTemplate gridFsTemplate = getGridFsTemplate();
         Criteria cr = Criteria.where("_id").is(imgId);
         Query query = Query.query(cr);
-        MBillImage mBillImage = getMongoTemplate().findOne(query, MBillImage.class, MBillImage.COLLATION_NAME);
+        MBillImage mBillImage = getMongoTemplate().findOne(query, MBillImage.class, MBillImage.COLLECTION_NAME);
         //return mImageRepository.findById(imgId).get();
         return mBillImage;
     }
@@ -42,7 +42,7 @@ public class ImageServiceImpl extends AbstractBaseMongoTemplate implements Image
     public boolean removeBillImages(String billId) {
         Criteria cr = Criteria.where("bill_id").is(billId);
         Query query = Query.query(cr);
-        DeleteResult deleteResult = getMongoTemplate().remove(query, MBillImage.COLLATION_NAME);
+        DeleteResult deleteResult = getMongoTemplate().remove(query, MBillImage.COLLECTION_NAME);
         return deleteResult.getDeletedCount() > 0;
     }
 
@@ -59,9 +59,9 @@ public class ImageServiceImpl extends AbstractBaseMongoTemplate implements Image
     @Override
     protected void init() {
         MongoTemplate mongoTemplate = getMongoTemplate();
-        if (!mongoTemplate.collectionExists(MBillImage.COLLATION_NAME)) {
-            mongoTemplate.createCollection(MBillImage.COLLATION_NAME);
-            IndexOperations indexOpe = mongoTemplate.indexOps(MBillImage.COLLATION_NAME);
+        if (!mongoTemplate.collectionExists(MBillImage.COLLECTION_NAME)) {
+            mongoTemplate.createCollection(MBillImage.COLLECTION_NAME);
+            IndexOperations indexOpe = mongoTemplate.indexOps(MBillImage.COLLECTION_NAME);
             indexOpe.ensureIndex(new CompoundIndexDefinition(new Document("_id", "hashed")));
         }
     }

@@ -27,4 +27,5 @@ public class MCategory {
     Integer type;
     String name;
     Integer level;
+    Integer index;//常用位置排序
 }

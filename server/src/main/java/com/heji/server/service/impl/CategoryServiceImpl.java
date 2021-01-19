@@ -1,11 +1,10 @@
 package com.heji.server.service.impl;
 
-import com.heji.server.data.mongo.AbstractBaseMongoTemplate;
+import com.heji.server.data.mongo.BaseMongoTemplate;
 import com.heji.server.data.mongo.MCategory;
 import com.heji.server.data.mongo.repository.MCategoryRepository;
 import com.heji.server.service.CategoryService;
 import org.bson.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
@@ -13,11 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service("CategoryService")
-public class CategoryServiceImpl extends AbstractBaseMongoTemplate implements CategoryService {
+public class CategoryServiceImpl extends BaseMongoTemplate implements CategoryService {
     public static final String CATEGORY = "category";
     final MCategoryRepository mCategoryRepository;
 

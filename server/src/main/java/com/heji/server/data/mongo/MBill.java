@@ -19,15 +19,15 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import java.util.List;
 
-import static com.heji.server.data.mongo.MBill.COLLATION_NAME;
+import static com.heji.server.data.mongo.MBill.COLLECTION_NAME;
 
 //@Transient 普通字段注解
 @Data//get set
 @ToString//tostring
 @Accessors(chain = true)//能让我们方便使用链式方法创建实体对象。
-@Document(COLLATION_NAME)
+@Document(COLLECTION_NAME)
 public class MBill {
-    public static final String COLLATION_NAME = "bill";
+    public static final String COLLECTION_NAME = "bill";
     @Id
     private String _id;
     //账本ID

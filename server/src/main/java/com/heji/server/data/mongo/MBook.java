@@ -24,4 +24,8 @@ public class MBook {
     String _id;
     @Field("book_name")
     String bookName;
+
+    String createUser;
+
+    byte[] cover;
 }

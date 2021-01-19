@@ -1,12 +1,9 @@
 package com.heji.server.service.impl;
 
-import com.heji.server.data.mongo.AbstractBaseMongoTemplate;
+import com.heji.server.data.mongo.BaseMongoTemplate;
 import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.repository.MBillRepository;
-import com.heji.server.module.BillModule;
 import com.heji.server.service.BillService;
-import com.heji.server.utils.TimeUtils;
-import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import lombok.extern.slf4j.Slf4j;
@@ -21,17 +18,15 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 
 @Slf4j
 @Service("BillService")
-public class BillServiceImpl extends AbstractBaseMongoTemplate implements BillService {
+public class BillServiceImpl extends BaseMongoTemplate implements BillService {
     private static final String BILL = "bill";
     private static final String BILL_IMAGE = "bill_image";
     final

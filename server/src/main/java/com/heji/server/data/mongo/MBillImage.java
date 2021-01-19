@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.io.Serializable;
 
-import static com.heji.server.data.mongo.MBillImage.COLLATION_NAME;
+import static com.heji.server.data.mongo.MBillImage.COLLECTION_NAME;
 
 /**
  * 账单票据文件
@@ -19,9 +19,9 @@ import static com.heji.server.data.mongo.MBillImage.COLLATION_NAME;
 @Data
 @Accessors(chain = true)
 @ToString
-@Document(COLLATION_NAME)
+@Document(COLLECTION_NAME)
 public class MBillImage implements Serializable {
-    public static final String COLLATION_NAME = "bill_image";
+    public static final String COLLECTION_NAME = "bill_image";
     private static final long serialVersionUID = 1L;
     @Id
     private String _id;

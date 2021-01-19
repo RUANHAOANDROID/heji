@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
-public abstract class AbstractBaseMongoTemplate implements ApplicationContextAware {
+public abstract class BaseMongoTemplate implements ApplicationContextAware {
     private MongoTemplate mongoTemplate;
     private GridFsTemplate gridFsTemplate;
 

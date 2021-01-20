@@ -7,7 +7,9 @@ public interface UserService {
 
     void update(MUser mUser);
 
-    void login(MUser mUser);
+    String login(MUser mUser);
 
     void logout(MUser mUser);
+
+    MUser findByName(String username);
 }

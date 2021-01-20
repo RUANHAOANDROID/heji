@@ -1,4 +1,4 @@
-package com.heji.server.data.mongo;
+package com.heji.server.module;
 
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
@@ -7,15 +7,10 @@ import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-import static com.heji.server.data.mongo.MUser.COLLECTION_NAME;
-
 @Data
 @ToString
 @Accessors(chain = true)
-@Document(COLLECTION_NAME)
-public class MUser {
-    public static final String COLLECTION_NAME = "user";
+public class UserInfo {
     @Id
     String _id;
     String name;
@@ -24,5 +19,4 @@ public class MUser {
     String role;//角色权限
     @Ignore
     String code;//邀请码
-
 }

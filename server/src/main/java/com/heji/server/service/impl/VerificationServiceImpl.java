@@ -27,8 +27,8 @@ public class VerificationServiceImpl extends BaseMongoTemplate implements Verifi
     protected void init() {
         MongoTemplate mongoTemplate = getMongoTemplate();
         if (!mongoTemplate.collectionExists(MVerification.COLLECTION_NAME)) {
-            mongoTemplate.createCollection(MUser.COLLATION_NAME);
-            IndexOperations indexOpe = mongoTemplate.indexOps(MUser.COLLATION_NAME);
+            mongoTemplate.createCollection(MVerification.COLLECTION_NAME);
+            IndexOperations indexOpe = mongoTemplate.indexOps(MVerification.COLLECTION_NAME);
             indexOpe.ensureIndex(new CompoundIndexDefinition(new Document("_id", "hashed")));
         }
     }
@@ -36,8 +36,11 @@ public class VerificationServiceImpl extends BaseMongoTemplate implements Verifi
     @Override
     public String createCode() {
         Random random = new Random();
-        String code = String.valueOf(random.nextInt(4));
-        return verifyRepository.save(new MVerification().setCode(code)).getCode();
+        String code = "";
+        for (int i = 0; i < 4 ; i++) {
+            code+=random.nextInt(9);
+        }
+        return verifyRepository.save(new MVerification().setCode("123456")).getCode();
     }
 
 

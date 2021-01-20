@@ -26,9 +26,10 @@ public class WebConfigurer implements WebMvcConfigurer {
 //        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
 //    }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
-    }
+//    @Bean
+//    public BCryptPasswordEncoder passwordEncoder() {
+//        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+//        return bCryptPasswordEncoder;
+//    }
+
 }

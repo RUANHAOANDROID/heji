@@ -20,7 +20,11 @@ public class MyErrorAttributes extends DefaultErrorAttributes {
 
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
-        Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, options);
+       ErrorAttributeOptions myOptions = ErrorAttributeOptions.of(ErrorAttributeOptions.Include.BINDING_ERRORS,
+                ErrorAttributeOptions.Include.EXCEPTION,
+                ErrorAttributeOptions.Include.STACK_TRACE,
+                ErrorAttributeOptions.Include.MESSAGE);
+        Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, myOptions);
         Map<String, Object> myErrorAttributes = new LinkedHashMap<>();
         if (errorAttributes.containsKey("status")) {
             myErrorAttributes.put("code", errorAttributes.get("status"));
@@ -41,5 +45,9 @@ public class MyErrorAttributes extends DefaultErrorAttributes {
         return myErrorAttributes;
     }
 
-
+    @Override
+    public Map<String, Object> getErrorAttributes(WebRequest webRequest, boolean includeStackTrace) {
+        Map<String, Object>  map =super.getErrorAttributes(webRequest, includeStackTrace);
+        return map;
+    }
 }

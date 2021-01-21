@@ -20,20 +20,25 @@ public class MyErrorAttributes extends DefaultErrorAttributes {
 
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
-       ErrorAttributeOptions myOptions = ErrorAttributeOptions.of(ErrorAttributeOptions.Include.BINDING_ERRORS,
+        //全部信息
+       ErrorAttributeOptions myOptions = ErrorAttributeOptions.of(
+                ErrorAttributeOptions.Include.BINDING_ERRORS,
                 ErrorAttributeOptions.Include.EXCEPTION,
                 ErrorAttributeOptions.Include.STACK_TRACE,
                 ErrorAttributeOptions.Include.MESSAGE);
         Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, myOptions);
+        //自己更改后的信息
         Map<String, Object> myErrorAttributes = new LinkedHashMap<>();
         if (errorAttributes.containsKey("status")) {
             myErrorAttributes.put("code", errorAttributes.get("status"));
         }
         if (errorAttributes.containsKey("error")) {
             myErrorAttributes.put("msg", errorAttributes.get("error"));
+            log.error("error:{}",errorAttributes.get("error"));
         }
         if (errorAttributes.containsKey("message")) {
             myErrorAttributes.put("data", errorAttributes.get("message"));
+            log.error("message:{}",errorAttributes.get("message"));
         }
 //        if (errorAttributes.containsKey("path")){
 //            myErrorAttributes.put("status",errorAttributes.get("path"));
@@ -41,7 +46,8 @@ public class MyErrorAttributes extends DefaultErrorAttributes {
 //        if (errorAttributes.containsKey("timestamp")){
 //            myErrorAttributes.put("timestamp",errorAttributes.get("timestamp"));
 //        }
-        log.error("ErrorAttributes",errorAttributes);
+
+
         return myErrorAttributes;
     }
 

@@ -10,6 +10,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -37,8 +39,8 @@ public class VerificationServiceImpl extends BaseMongoTemplate implements Verifi
     public String createCode() {
         Random random = new Random();
         String code = "";
-        for (int i = 0; i < 4 ; i++) {
-            code+=random.nextInt(9);
+        for (int i = 0; i < 4; i++) {
+            code += random.nextInt(9);
         }
         return verifyRepository.save(new MVerification().setCode("123456")).getCode();
     }
@@ -46,11 +48,13 @@ public class VerificationServiceImpl extends BaseMongoTemplate implements Verifi
 
     @Override
     public boolean existsCode(String code) {
-        return verifyRepository.exists(Example.of(new MVerification().setCode(code)));
+        Query query = new Query(Criteria.where("code").is(code));
+        return getMongoTemplate().exists(query, MVerification.class, MVerification.COLLECTION_NAME);
     }
 
     @Override
     public void deleteCode(String code) {
-        verifyRepository.delete(new MVerification().setCode(code));
+        Query query = new Query(Criteria.where("code").is(code));
+        getMongoTemplate().remove(query, MVerification.class, MVerification.COLLECTION_NAME);
     }
 }

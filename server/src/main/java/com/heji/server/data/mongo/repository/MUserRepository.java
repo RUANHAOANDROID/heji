@@ -8,4 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 public interface MUserRepository extends MongoRepository<MUser, String> {
     @Query
     MUser findMUserByName(String name);
+    @Query
+    MUser findMUserByTel(String tel);
+
 }

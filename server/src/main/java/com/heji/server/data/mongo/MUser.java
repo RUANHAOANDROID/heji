@@ -8,6 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
+import java.util.List;
+
 import static com.heji.server.data.mongo.MUser.COLLECTION_NAME;
 
 @Data
@@ -21,7 +23,7 @@ public class MUser {
     String name;
     String password;
     String tel;
-    String role;//角色权限
+    List<String> roles;//角色权限
     @Ignore
     String code;//邀请码
 

@@ -1,7 +1,7 @@
 package com.heji.server.service.impl;
 
+import com.heji.server.JwtTokenProvider;
 import com.heji.server.data.mongo.BaseMongoTemplate;
-import com.heji.server.data.mongo.MBillImage;
 import com.heji.server.data.mongo.MUser;
 import com.heji.server.data.mongo.repository.MUserRepository;
 import com.heji.server.exception.NotFindException;
@@ -13,15 +13,13 @@ import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.security.Principal;
-import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 
 @Service("UserService")
 public class UserServiceImpl extends BaseMongoTemplate implements UserService {
@@ -29,11 +27,18 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
     final VerificationService mVerificationService;
     final MUserRepository mUserRepository;
     final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public UserServiceImpl(VerificationService verificationService, MUserRepository mUserRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    final AuthenticationManager authenticationManager;
+    final JwtTokenProvider tokenProvider;
+    public UserServiceImpl(VerificationService verificationService,
+                           MUserRepository mUserRepository,
+                           BCryptPasswordEncoder bCryptPasswordEncoder,
+                           AuthenticationManager authenticationManager,
+                           JwtTokenProvider jwtTokenProvider) {
         this.mVerificationService = verificationService;
         this.mUserRepository = mUserRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.tokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -52,10 +57,9 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
         boolean exists = mVerificationService.existsCode(code);//存在
         if (exists) {
             String password = bCryptPasswordEncoder.encode(mUser.getPassword());//加密
-
             mUser.setPassword(password);//存入
             MUser newUser = mUserRepository.save(mUser);
-            mVerificationService.deleteCode(code);
+            //mVerificationService.deleteCode(code);
         } else {
             throw new NotFindException(" verification not find");
         }
@@ -70,27 +74,27 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
 
     @Override
     public String login(MUser mUser) {
-        MUser user1 = mUserRepository.findById(mUser.get_id()).get();
+        MUser user1 = mUserRepository.findMUserByTel(mUser.getTel());
         user1.getName().equals(mUser.getName());
         user1.getPassword().equals(mUser.getPassword());
         boolean isOk = bCryptPasswordEncoder.matches(mUser.getPassword(), user1.getPassword());
-        Properties props = new Properties();
-        props.put("_id", mUser.get_id());
-        props.put("name", mUser.getName());
-        props.put("tel", mUser.getTel());
-        String auth = getCurrentUsername();
-        return auth;
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        user1.getTel(),//电话号码
+                        mUser.getPassword()//没加密的
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = tokenProvider.generateToken(authentication);
+        return jwt;
     }
 
-    private String getCurrentUsername() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        }
-        if (principal instanceof Principal) {
-            return ((Principal) principal).getName();
-        }
-        return String.valueOf(principal);
+    @Override
+    public String getUserId(String token) {
+        return String.valueOf(tokenProvider.getUserIdFromJWT(token));
     }
 
     @Override
@@ -103,5 +107,10 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
         Criteria criteria = Criteria.where("name").is(username);
         Query query = new Query(criteria);
         return getMongoTemplate().findOne(query, MUser.class);
+    }
+
+    @Override
+    public MUser findByTel(String tel) {
+        return mUserRepository.findMUserByTel(tel);
     }
 }

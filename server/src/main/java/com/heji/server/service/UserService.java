@@ -9,7 +9,11 @@ public interface UserService {
 
     String login(MUser mUser);
 
+    String getUserId(String token);
+
     void logout(MUser mUser);
 
     MUser findByName(String username);
+
+    MUser findByTel(String tel);
 }

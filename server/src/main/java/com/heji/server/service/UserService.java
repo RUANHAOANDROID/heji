@@ -11,7 +11,7 @@ public interface UserService {
 
     String getUserId(String token);
 
-    void logout(MUser mUser);
+    void logout(String mUser);
 
     MUser findByName(String username);
 

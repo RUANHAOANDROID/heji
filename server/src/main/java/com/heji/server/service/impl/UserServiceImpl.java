@@ -98,7 +98,8 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
     }
 
     @Override
-    public void logout(MUser mUser) {
+    public void logout(String mUser) {
+        SecurityContextHolder.getContext().getAuthentication();
 
     }
 

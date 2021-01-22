@@ -34,9 +34,9 @@ public class UserController {
                 .setPassword(userInfo.getPassword())
                 .setTel(userInfo.getTel())
                 .setCode(userInfo.getCode());
-        String tel = String.valueOf(userService.findByTel(userInfo.getTel()).getTel());
-        if (!StringUtils.isEmpty(tel)) {
-            throw new UserException("电话号码：" + tel + "已存在");
+        MUser user1 =userService.findByTel(userInfo.getTel());
+        if (!StringUtils.isEmpty(user1.getTel())) {
+            throw new UserException("电话号码：" + user1.getTel() + "已存在");
         }
         userService.register(mUser);
         return Result.success(userInfo);
@@ -62,12 +62,9 @@ public class UserController {
 
     @ResponseBody
     @PostMapping(value = {"/logout"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String logout(@RequestBody UserInfo userInfo) {
-        MUser mUser = new MUser()
-                .setName(userInfo.getTel())
-                .setPassword(userInfo.getPassword())
-                .setCode(userInfo.getCode());
-        userService.register(mUser);
+    public String logout(@RequestParam String token) {
+
+        userService.logout(token);
         return Result.success("注册成功");
     }
 

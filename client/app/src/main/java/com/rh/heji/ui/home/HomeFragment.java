@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,7 +71,9 @@ public class HomeFragment extends BaseFragment {
         getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_save, false);
         getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_settings, false);
         setYearMonthVisible(true);
-
+        if (true){//TODO
+            Navigation.findNavController(view).navigate(R.id.nav_login);
+        }
     }
 
     @Override

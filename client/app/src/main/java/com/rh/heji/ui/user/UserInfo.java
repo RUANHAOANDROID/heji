@@ -8,5 +8,6 @@ package com.rh.heji.ui.user;
 public class UserInfo {
     private String name;
     private String tel;
+    private String password;
     private String authenticate;
 }

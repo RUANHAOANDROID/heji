@@ -60,7 +60,7 @@ public class OkHttpConfig {
             Request request = chain.request().newBuilder()
                     //.header("Content-Type", "application/json")
                     //.addHeader("DATE_TIME",time)
-                    //.addHeader("Authorization", token.getAuth_cookie())//该字段已经不能存在
+                    .addHeader("Authorization", "JWT")//该字段已经不能存在
 //                    .addHeader("usertype", token.getUserType() + "")
 //                    .addHeader("username", token.getUserName()+"")
 //                    .addHeader("ticket", token.getTicket()+"")

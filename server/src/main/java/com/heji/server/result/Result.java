@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
-public class Result<T> {
+public class Result<T>{
 
     /**
      * 成功

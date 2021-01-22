@@ -2,6 +2,7 @@ package com.rh.heji.data.network;
 
 import com.rh.heji.data.network.request.BillEntity;
 import com.rh.heji.data.network.request.CategoryEntity;
+import com.rh.heji.ui.user.UserInfo;
 
 import java.util.List;
 
@@ -24,6 +25,8 @@ import retrofit2.http.Streaming;
  */
 
 public interface HeJiServer {
+    @POST("user/register")
+    Call<BaseResponse> register(@Body Object user);
 
     @POST("bill/add")
     Call<BaseResponse> saveBill(@Body BillEntity entity);

@@ -3,13 +3,15 @@ package com.rh.heji.ui.user.login
 import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import com.rh.heji.BaseFragment
 import com.rh.heji.R
+import com.rh.heji.databinding.LoginFragmentBinding
 
 class LoginFragment : BaseFragment() {
 
     private lateinit var viewModel: LoginViewModel
-
+    lateinit var binding: LoginFragmentBinding;
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -17,7 +19,15 @@ class LoginFragment : BaseFragment() {
     }
 
     override fun initView(view: View?) {
-        TODO("Not yet implemented")
+
+
+        view?.let { v ->
+            binding = LoginFragmentBinding.bind(v);
+            binding.tvRegister.setOnClickListener {
+                Navigation.findNavController(v).navigate(R.id.nav_register)
+            }
+        }
+
     }
 
     override fun layoutId(): Int {

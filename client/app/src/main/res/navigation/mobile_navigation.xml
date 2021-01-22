@@ -61,4 +61,14 @@
         android:label="@string/export"
         tools:layout="@layout/export_fragment">
     </fragment>
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="com.rh.heji.ui.user.register.RegisterFragment"
+        android:label="register_fragment"
+        tools:layout="@layout/register_fragment" />
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.rh.heji.ui.user.login.LoginFragment"
+        android:label="login_fragment"
+        tools:layout="@layout/login_fragment" />
 </navigation>

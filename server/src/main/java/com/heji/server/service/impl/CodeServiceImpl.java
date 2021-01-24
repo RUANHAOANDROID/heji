@@ -1,12 +1,10 @@
 package com.heji.server.service.impl;
 
 import com.heji.server.data.mongo.BaseMongoTemplate;
-import com.heji.server.data.mongo.MUser;
 import com.heji.server.data.mongo.MVerification;
 import com.heji.server.data.mongo.repository.MVerificationRepository;
-import com.heji.server.service.VerificationService;
+import com.heji.server.service.CodeService;
 import org.bson.Document;
-import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
@@ -17,11 +15,11 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Service("VerificationService")
-public class VerificationServiceImpl extends BaseMongoTemplate implements VerificationService {
+public class CodeServiceImpl extends BaseMongoTemplate implements CodeService {
 
     final MVerificationRepository verifyRepository;
 
-    public VerificationServiceImpl(MVerificationRepository verifyRepository) {
+    public CodeServiceImpl(MVerificationRepository verifyRepository) {
         this.verifyRepository = verifyRepository;
     }
 

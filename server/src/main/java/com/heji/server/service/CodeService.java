@@ -1,6 +1,6 @@
 package com.heji.server.service;
 
-public interface VerificationService {
+public interface CodeService {
     //管理员创建一个随机码
     String createCode();
 

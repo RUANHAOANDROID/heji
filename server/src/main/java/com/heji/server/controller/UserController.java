@@ -34,24 +34,19 @@ public class UserController {
                 .setPassword(userInfo.getPassword())
                 .setTel(userInfo.getTel())
                 .setCode(userInfo.getCode());
-        MUser user1 =userService.findByTel(userInfo.getTel());
-        if (!StringUtils.isEmpty(user1.getTel())) {
-            throw new UserException("电话号码：" + user1.getTel() + "已存在");
-        }
+//        MUser user1 =userService.findByTel(userInfo.getTel());
+//        if (!StringUtils.isEmpty(user1.getTel())) {
+//            throw new UserException("电话号码：" + user1.getTel() + "已存在");
+//        }
         userService.register(mUser);
         return Result.success(userInfo);
     }
 
     @ResponseBody
     @PostMapping(value = {"/login"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String login(@RequestBody UserInfo userInfo) {
-        MUser mUser = new MUser()
-                .setName(userInfo.getTel())
-                .setPassword(userInfo.getPassword())
-                .setTel(userInfo.getTel())
-                .setCode(userInfo.getCode());
-        String auth = userService.login(mUser);
-        return Result.success(auth);
+    public String login(@RequestHeader String  username,@RequestHeader String password) {
+        String auth = userService.login(username,password);
+        return Result.success("登陆成功",auth);
     }
     @ResponseBody
     @PostMapping(value = {"/getUserId"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

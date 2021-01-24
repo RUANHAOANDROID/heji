@@ -1,43 +1,54 @@
 package com.heji.server.service.impl;
 
-import com.heji.server.JwtTokenProvider;
+import com.heji.server.data.mongo.Authority;
 import com.heji.server.data.mongo.BaseMongoTemplate;
 import com.heji.server.data.mongo.MUser;
 import com.heji.server.data.mongo.repository.MUserRepository;
 import com.heji.server.exception.NotFindException;
+import com.heji.server.security.TokenProvider;
 import com.heji.server.service.UserService;
-import com.heji.server.service.VerificationService;
+import com.heji.server.service.CodeService;
+import com.heji.server.utils.SecurityUtils;
+import org.apache.catalina.security.SecurityUtil;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Service("UserService")
 public class UserServiceImpl extends BaseMongoTemplate implements UserService {
 
-    final VerificationService mVerificationService;
+    final CodeService mVerificationService;
     final MUserRepository mUserRepository;
     final BCryptPasswordEncoder bCryptPasswordEncoder;
-    final AuthenticationManager authenticationManager;
-    final JwtTokenProvider tokenProvider;
-    public UserServiceImpl(VerificationService verificationService,
+
+    final AuthenticationManagerBuilder authenticationManagerBuilder;
+    final TokenProvider tokenProvider;
+
+    public UserServiceImpl(CodeService verificationService,
                            MUserRepository mUserRepository,
                            BCryptPasswordEncoder bCryptPasswordEncoder,
-                           AuthenticationManager authenticationManager,
-                           JwtTokenProvider jwtTokenProvider) {
+                           AuthenticationManagerBuilder authenticationManagerBuilder,
+                           TokenProvider jwtTokenProvider) {
         this.mVerificationService = verificationService;
         this.mUserRepository = mUserRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.authenticationManager = authenticationManager;
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.tokenProvider = jwtTokenProvider;
     }
 
@@ -54,10 +65,20 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
     @Override
     public void register(MUser mUser) {
         String code = mUser.getCode();//邀请码
-        boolean exists = mVerificationService.existsCode(code);//存在
+        boolean exists = mVerificationService.existsCode(code);//邀请码存在
         if (exists) {
+            MUser mUser0 = findByName(mUser.getName());
+            if (null != mUser0) {
+                throw new RuntimeException(" 用户已存在");
+            }
             String password = bCryptPasswordEncoder.encode(mUser.getPassword());//加密
             mUser.setPassword(password);//存入
+
+            List<Authority> authorities = new ArrayList<>();
+            authorities.add(new Authority().setAuthority(Authority.USER));
+            authorities.add(new Authority().setAuthority(Authority.ADMIN));
+            mUser.setAuthority(authorities);
+
             MUser newUser = mUserRepository.save(mUser);
             //mVerificationService.deleteCode(code);
         } else {
@@ -73,34 +94,28 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
     }
 
     @Override
-    public String login(MUser mUser) {
-        MUser user1 = mUserRepository.findMUserByTel(mUser.getTel());
-        user1.getName().equals(mUser.getName());
-        user1.getPassword().equals(mUser.getPassword());
-        boolean isOk = bCryptPasswordEncoder.matches(mUser.getPassword(), user1.getPassword());
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user1.getTel(),//电话号码
-                        mUser.getPassword()//没加密的
-                )
+    public String login(String username, String password) {
+        MUser user0 = mUserRepository.findMUserByTel(username);
+        boolean success = bCryptPasswordEncoder.matches(password, user0.getPassword());
+        UsernamePasswordAuthenticationToken authentication2 = new UsernamePasswordAuthenticationToken(
+                username,//电话号码
+                password,//没加密的
+                user0.getAuthority()
         );
-
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authentication2);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwt = tokenProvider.generateToken(authentication);
+        String jwt = tokenProvider.createToken(authentication,user0.getAuthority(), true);
         return jwt;
     }
 
     @Override
     public String getUserId(String token) {
-        return String.valueOf(tokenProvider.getUserIdFromJWT(token));
+        return String.valueOf(tokenProvider.getAuthentication(token));
     }
 
     @Override
     public void logout(String mUser) {
-        SecurityContextHolder.getContext().getAuthentication();
-
+        SecurityContextHolder.clearContext();
     }
 
     @Override

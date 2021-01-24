@@ -7,7 +7,7 @@ public interface UserService {
 
     void update(MUser mUser);
 
-    String login(MUser mUser);
+    String login(String username,String password );
 
     String getUserId(String token);
 

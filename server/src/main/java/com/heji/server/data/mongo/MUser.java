@@ -23,7 +23,8 @@ public class MUser {
     String name;
     String password;
     String tel;
-    List<String> roles;//角色权限
+    String email;
+    List<Authority> authority;//角色权限
     @Ignore
     String code;//邀请码
 

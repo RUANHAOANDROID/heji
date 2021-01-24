@@ -1,24 +1,24 @@
 package com.heji.server.controller;
 
 import com.heji.server.result.Result;
-import com.heji.server.service.VerificationService;
+import com.heji.server.service.CodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/verification")
+@RequestMapping(path = "/code")
 @Slf4j
-public class VerificationController {
+public class CodeController {
     final
-    VerificationService verificationService;
+    CodeService verificationService;
 
-    public VerificationController(VerificationService userService) {
+    public CodeController(CodeService userService) {
         this.verificationService = userService;
     }
 
     @ResponseBody
-    @PostMapping(value = {"/getCode"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = {"/getRandom"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getCode() {
         String code =verificationService.createCode();
         return Result.success(code);

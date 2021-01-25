@@ -21,6 +21,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -104,13 +106,14 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
         );
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authentication2);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.createToken(authentication,user0.getAuthority(), true);
-        return jwt;
+        String jwt = tokenProvider.createToken(authentication, user0.getAuthority(), true);
+        return "Bearer " + jwt;
     }
 
     @Override
     public String getUserId(String token) {
-        return String.valueOf(tokenProvider.getAuthentication(token));
+        User user = (User) tokenProvider.getAuthentication(token).getPrincipal();
+        return user.getUsername();
     }
 
     @Override

@@ -13,12 +13,12 @@ public class CorsConfig {
    public CorsFilter corsFilter() {
       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
       CorsConfiguration config = new CorsConfiguration();
-      config.setAllowCredentials(true);
-      config.addAllowedOrigin("*"); // e.g. http://domain1.com
-      config.addAllowedHeader("*");
-      config.addAllowedMethod("*");
+      config.setAllowCredentials(true);//允许跨越发送cookie
+      config.addAllowedOrigin("*"); //允许所有域名进行跨域调用
+      config.addAllowedHeader("*");//放行全部原始头信息
+      config.addAllowedMethod("*");//允许所有请求方法跨域调用
 
-      source.registerCorsConfiguration("/user/**", config);
+      source.registerCorsConfiguration("/**", config);
       return new CorsFilter(source);
    }
 

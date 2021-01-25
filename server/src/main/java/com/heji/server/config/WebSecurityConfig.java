@@ -90,14 +90,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/authenticate").permitAll()
-                .antMatchers("/user/**").permitAll()
-                .antMatchers("/user/login").permitAll()
-                // .antMatchers("/api/activate").permitAll()
-                // .antMatchers("/api/account/reset-password/init").permitAll()
-                // .antMatchers("/api/account/reset-password/finish").permitAll()
-
-                .antMatchers("/api/person").hasAuthority("ROLE_USER")
-                .antMatchers("/api/hiddenmessage").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/user/**").permitAll()//开放用户权限
+                .antMatchers("/bill/update","bill/add","/bill/delete").hasAuthority("ROLE_USER")//账单用户开放增删改接口
+                .antMatchers("/bill/info","bill/getBills","/bill/export").hasAuthority("ROLE_READ")//浏览用户可查看导出
+                .antMatchers("/category/**").hasAuthority("ROLE_USER")//对用户开放分类接口
+                .antMatchers("/image/**").hasAuthority("ROLE_USER")//对用户开放票据图片接口
 
                 .anyRequest().authenticated()
 

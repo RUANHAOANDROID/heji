@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 
+import com.rh.heji.AppCache;
 import com.rh.heji.BuildConfig;
 
 import java.io.IOException;
@@ -39,10 +40,10 @@ public class OkHttpConfig {
             logging.redactHeader("Authorization");
             logging.redactHeader("Cookie");
         }
-        //HttpHeaderInterceptor headerInterceptor = new HttpHeaderInterceptor();
+        HttpHeaderInterceptor headerInterceptor = new HttpHeaderInterceptor();
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                //.addInterceptor(headerInterceptor)
+                .addInterceptor(headerInterceptor)
                 .addInterceptor(logging)
                 .connectTimeout(connectTimeout, TimeUnit.MILLISECONDS)
                 .writeTimeout(writeTimeout, TimeUnit.MILLISECONDS)
@@ -60,7 +61,7 @@ public class OkHttpConfig {
             Request request = chain.request().newBuilder()
                     //.header("Content-Type", "application/json")
                     //.addHeader("DATE_TIME",time)
-                    .addHeader("Authorization", "JWT")//该字段已经不能存在
+                    .addHeader("Authorization", AppCache.getInstance().getToken())//该字段已经不能存在
 //                    .addHeader("usertype", token.getUserType() + "")
 //                    .addHeader("username", token.getUserName()+"")
 //                    .addHeader("ticket", token.getTicket()+"")

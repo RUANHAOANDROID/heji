@@ -1,4 +1,4 @@
-package com.rh.heji.ui.input.etc;
+package com.rh.heji.ui.setting.input.etc;
 
 import android.content.Context;
 import android.os.Build;
@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import com.blankj.utilcode.util.LogUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.impl.LoadingPopupView;
-import com.lxj.xpopup.interfaces.OnConfirmListener;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.rh.heji.BaseFragment;
 import com.rh.heji.R;

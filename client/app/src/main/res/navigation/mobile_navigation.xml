@@ -52,12 +52,12 @@
     </fragment>
     <fragment
         android:id="@+id/nav_input_etc"
-        android:name="com.rh.heji.ui.input.etc.ETCFragment"
+        android:name="com.rh.heji.ui.setting.input.etc.ETCFragment"
         android:label="@string/etc_list_query"
         tools:layout="@layout/fragment_etc" />
     <fragment
         android:id="@+id/nav_export"
-        android:name="com.rh.heji.ui.export.ExportFragment"
+        android:name="com.rh.heji.ui.setting.export.ExportFragment"
         android:label="@string/export"
         tools:layout="@layout/export_fragment">
     </fragment>

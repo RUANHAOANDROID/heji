@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import com.rh.heji.AppCache
 import com.rh.heji.BaseFragment
 import com.rh.heji.R
 import com.rh.heji.databinding.LoginFragmentBinding
@@ -25,6 +26,9 @@ class LoginFragment : BaseFragment() {
             binding = LoginFragmentBinding.bind(v);
             binding.tvRegister.setOnClickListener {
                 Navigation.findNavController(v).navigate(R.id.nav_register)
+            }
+            binding.btnLogin.setOnClickListener {
+                viewModel.login(binding.editUser.text.toString(), binding.editPassword.text.toString())
             }
         }
 

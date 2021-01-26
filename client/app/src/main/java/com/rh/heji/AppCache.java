@@ -4,16 +4,29 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
+import android.util.Base64;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.blankj.utilcode.util.EncodeUtils;
+import com.blankj.utilcode.util.FileUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.rh.heji.data.network.HeJiServer;
 import com.rh.heji.utlis.http.basic.ServiceCreator;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.security.Security;
 
 /**
  * Date: 2020/11/18
@@ -49,6 +62,7 @@ public final class AppCache {
 
     /**
      * 把文件公开。添加到扫描中
+     *
      * @param currentPhotoPath
      */
     public void galleryAddPic(String currentPhotoPath) {
@@ -57,5 +71,48 @@ public final class AppCache {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         context.sendBroadcast(mediaScanIntent);
+    }
+
+    public String getToken() {
+        File tokenFile = new File(context.getFilesDir(), "TokenFile");
+        String token = "";
+        if (tokenFile.exists()) {
+            try {
+                FileInputStream inputStream = new FileInputStream(tokenFile);
+                InputStreamReader inputStreamReader =
+                        new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                StringBuilder stringBuilder = new StringBuilder();
+                try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                    String line = reader.readLine();
+                    while (line != null) {
+                        stringBuilder.append(line);
+                        line = reader.readLine();
+                    }
+                } catch (IOException e) {
+                    // Error occurred when opening raw file for reading.
+                    e.printStackTrace();
+                } finally {
+                    token = stringBuilder.toString();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return new String(EncodeUtils.base64Decode(token));
+    }
+
+    public void saveToken(String token) {
+        //token = EncodeUtils.base64Encode(token);
+        String fileName = "TokenFile";
+        File file = new File(context.getFilesDir().getAbsolutePath());
+        File tokenFile = new File(file, fileName);
+        FileUtils.createFileByDeleteOldFile(tokenFile);
+        try (FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
+            fos.write(EncodeUtils.base64Encode(token));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

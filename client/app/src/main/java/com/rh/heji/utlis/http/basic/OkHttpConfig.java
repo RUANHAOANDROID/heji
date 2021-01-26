@@ -57,11 +57,14 @@ public class OkHttpConfig {
     static class HttpHeaderInterceptor implements Interceptor {
         @Override
         public Response intercept(Chain chain) throws IOException {
-
+            String bearerToken =AppCache.getInstance().getToken();
+            if (TextUtils.isEmpty(bearerToken)){
+                
+            }
             Request request = chain.request().newBuilder()
                     //.header("Content-Type", "application/json")
                     //.addHeader("DATE_TIME",time)
-                    .addHeader("Authorization", AppCache.getInstance().getToken())//该字段已经不能存在
+                    .addHeader("Authorization", bearerToken)
 //                    .addHeader("usertype", token.getUserType() + "")
 //                    .addHeader("username", token.getUserName()+"")
 //                    .addHeader("ticket", token.getTicket()+"")

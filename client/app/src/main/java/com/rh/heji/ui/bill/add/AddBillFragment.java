@@ -1,4 +1,4 @@
-package com.rh.heji.ui.add;
+package com.rh.heji.ui.bill.add;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -24,13 +24,13 @@ import com.blankj.utilcode.util.UriUtils;
 import com.lxj.xpopup.XPopup;
 import com.matisse.Matisse;
 import com.matisse.entity.ConstValue;
-import com.rh.heji.BaseFragment;
+import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.BuildConfig;
 import com.rh.heji.R;
 import com.rh.heji.data.BillType;
 import com.rh.heji.data.db.mongo.ObjectId;
 import com.rh.heji.databinding.IncomeFragmentBinding;
-import com.rh.heji.ui.add.adapter.TicketEntity;
+import com.rh.heji.ui.bill.add.adapter.TicketEntity;
 import com.rh.heji.ui.category.CategoryTabFragment;
 import com.rh.heji.ui.category.CategoryViewModule;
 import com.rh.heji.widget.KeyBoardView;
@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Stack;
-import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 

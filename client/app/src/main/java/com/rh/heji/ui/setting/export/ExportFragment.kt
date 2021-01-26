@@ -12,7 +12,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.impl.LoadingPopupView
 import com.lxj.xpopup.interfaces.OnSelectListener
-import com.rh.heji.BaseFragment
+import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
 import com.rh.heji.databinding.ExportFragmentBinding
 

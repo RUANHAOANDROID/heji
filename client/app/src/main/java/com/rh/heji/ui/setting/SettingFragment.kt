@@ -3,10 +3,9 @@ package com.rh.heji.ui.setting
 import android.content.Context
 import android.view.View
 import androidx.navigation.Navigation
-import com.rh.heji.BaseFragment
+import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentSettingBinding
-import kotlinx.android.synthetic.main.fragment_setting.*
 
 class SettingFragment : BaseFragment() {
     lateinit var settingViewModel: SettingViewModel

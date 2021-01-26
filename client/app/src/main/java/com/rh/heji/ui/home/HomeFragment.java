@@ -19,13 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.BusUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.lxj.xpopup.XPopup;
-import com.rh.heji.BaseFragment;
+import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.R;
 import com.rh.heji.data.BillType;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.databinding.FragmentHomeBinding;
-import com.rh.heji.ui.home.adapter.BillInfoAdapter;
-import com.rh.heji.ui.home.pop.BillInfoPop;
+import com.rh.heji.ui.bill.adapter.BillInfoAdapter;
+import com.rh.heji.ui.bill.Iteminfo.BillInfoPop;
 
 import java.math.BigDecimal;
 import java.util.UUID;

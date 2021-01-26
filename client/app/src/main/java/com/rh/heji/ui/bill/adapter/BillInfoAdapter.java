@@ -1,4 +1,4 @@
-package com.rh.heji.ui.home.adapter;
+package com.rh.heji.ui.bill.adapter;
 
 import android.view.View;
 

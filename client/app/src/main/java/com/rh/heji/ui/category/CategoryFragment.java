@@ -7,25 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.rh.heji.BaseFragment;
+import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.R;
 import com.rh.heji.data.BillType;
 import com.rh.heji.data.db.Category;
 import com.rh.heji.databinding.FragmentCategoryContentBinding;
-import com.rh.heji.ui.add.AddBillFragment;
+import com.rh.heji.ui.bill.add.AddBillFragment;
 import com.rh.heji.ui.category.adapter.CategoryAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 

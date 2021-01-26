@@ -1,4 +1,4 @@
-package com.rh.heji.ui.home.pop;
+package com.rh.heji.ui.bill;
 
 import android.content.Context;
 import android.view.View;
@@ -28,7 +28,7 @@ import static com.google.android.material.tabs.TabLayout.MODE_AUTO;
  * Author: 锅得铁
  * #
  */
-public class YearPop extends CenterPopupView implements View.OnClickListener {
+public class YearSelectPop extends CenterPopupView implements View.OnClickListener {
 
     private OnTabSelected onTabSelected;
     final List<Integer> years;
@@ -36,7 +36,7 @@ public class YearPop extends CenterPopupView implements View.OnClickListener {
     private PopYearMonthBinding binding;
     private int selectYear;
 
-    public YearPop(@NonNull Context context,int thisYear, int thisMonth, OnTabSelected onTabSelected) {
+    public YearSelectPop(@NonNull Context context, int thisYear, int thisMonth, OnTabSelected onTabSelected) {
         super(context);
         this.onTabSelected = onTabSelected;
         years = new ArrayList<>();

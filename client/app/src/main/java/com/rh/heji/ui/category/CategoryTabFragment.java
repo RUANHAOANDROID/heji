@@ -10,11 +10,11 @@ import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.google.android.material.tabs.TabLayout;
-import com.rh.heji.BaseFragment;
+import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.R;
 import com.rh.heji.data.BillType;
 import com.rh.heji.databinding.FragmentCategoryTabBinding;
-import com.rh.heji.ui.add.AddBillFragment;
+import com.rh.heji.ui.bill.add.AddBillFragment;
 import com.rh.heji.ui.base.FragmentViewPagerAdapter;
 
 import java.util.Arrays;

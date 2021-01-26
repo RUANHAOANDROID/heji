@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.rh.heji.BaseFragment;
+import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.R;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.BillType;

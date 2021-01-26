@@ -1,6 +1,5 @@
-package com.rh.heji.ui.add;
+package com.rh.heji.ui.bill.add;
 
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
@@ -12,13 +11,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ToastUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.lxj.xpopup.core.BottomPopupView;
 import com.matisse.entity.ConstValue;
 import com.rh.heji.MainActivity;
 import com.rh.heji.R;
-import com.rh.heji.ui.add.adapter.TicketPhotoAdapter;
+import com.rh.heji.ui.bill.add.adapter.TicketPhotoAdapter;
 import com.unistrong.mapoffline.utils.matisse.MatisseUtils;
 
 import java.util.ArrayList;

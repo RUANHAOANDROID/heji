@@ -1,4 +1,4 @@
-package com.rh.heji;
+package com.rh.heji.ui.base;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+
+import com.rh.heji.MainActivity;
 
 /**
  * Date: 2020/8/28

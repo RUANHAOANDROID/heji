@@ -1,47 +1,25 @@
-package com.rh.heji.ui.home.pop;
+package com.rh.heji.ui.bill.Iteminfo;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SizeUtils;
 import com.blankj.utilcode.util.TimeUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.BitmapThumbnailImageViewTarget;
-import com.bumptech.glide.request.target.CustomViewTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BottomPopupView;
-import com.lxj.xpopup.core.ImageViewerPopupView;
-import com.lxj.xpopup.enums.PopupType;
-import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener;
-import com.matisse.utils.BitmapUtils;
 import com.rh.heji.App;
-import com.rh.heji.AppCache;
 import com.rh.heji.BuildConfig;
 import com.rh.heji.R;
 import com.rh.heji.data.AppDatabase;
@@ -49,19 +27,14 @@ import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Image;
 import com.rh.heji.databinding.ItemImgBinding;
 import com.rh.heji.databinding.PopBilliInfoBinding;
-import com.rh.heji.ui.home.ImageLoader;
-import com.rh.heji.ui.home.TicketImageViewerPopup;
+import com.rh.heji.ui.bill.img.ImageLoader;
 import com.rh.heji.utlis.GlideApp;
-import com.rh.heji.utlis.GlideUtils;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**

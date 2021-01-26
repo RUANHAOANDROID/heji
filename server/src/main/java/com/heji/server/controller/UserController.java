@@ -44,7 +44,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping(value = {"/login"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String login(@RequestHeader String  username,@RequestHeader String password) {
+    public String login(@RequestParam String  username,@RequestParam String password) {
         String auth = userService.login(username,password);
         return Result.success("登陆成功",auth);
     }

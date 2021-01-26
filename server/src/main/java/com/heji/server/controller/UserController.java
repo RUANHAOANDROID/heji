@@ -49,7 +49,7 @@ public class UserController {
         return Result.success("登陆成功",auth);
     }
     @ResponseBody
-    @PostMapping(value = {"/getUserId"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = {"/auth"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getUserId(@RequestParam String token) {
         String userID =userService.getUserId(token);
         return Result.success(userID);

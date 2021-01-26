@@ -89,12 +89,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/authenticate").permitAll()
-                .antMatchers("/user/**").permitAll()//开放用户权限
+                .antMatchers("/user/**").permitAll()//开放用户所有权限
                 .antMatchers("/bill/update","bill/add","/bill/delete").hasAuthority("ROLE_USER")//账单用户开放增删改接口
                 .antMatchers("/bill/info","bill/getBills","/bill/export").hasAnyAuthority("ROLE_USER","ROLE_READ")//浏览用户可查看导出
                 .antMatchers("/category/**").hasAuthority("ROLE_USER")//对用户开放分类接口
-                .antMatchers("/image/**").hasAuthority("ROLE_USER")//对用户开放票据图片接口
+                .antMatchers("/image/{imageId:.+}").permitAll()//对用户开放票据图片接口
+                .antMatchers("/image/uploadImage","/image/uploadImages").hasAnyAuthority(authorities)//用户开放图片接口,查看则完全开放
 
                 .anyRequest().authenticated()
 
@@ -105,4 +105,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JWTConfigurer securityConfigurerAdapter() {
         return new JWTConfigurer(tokenProvider);
     }
+    private final  static String[] authorities ={"ROUTE_USER","ROLE_ADMIN"};
 }

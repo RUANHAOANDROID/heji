@@ -21,6 +21,9 @@ interface HeJiServer {
     @POST("user/login")
     fun login(@Query("username") username: String, @Query("password") password: String): Call<BaseResponse<String>>
 
+    @POST("user/auth")
+    fun auth(@Query("token") token: String): Call<BaseResponse<String>>
+
     @POST("bill/add")
     fun saveBill(@Body entity: BillEntity): Call<BaseResponse<String>>
 
@@ -68,11 +71,11 @@ interface HeJiServer {
      * @return
      */
     @Multipart
-    @POST("file/uploadFiles")
+    @POST("image/uploadFiles")
     fun uploadImgs(@Part parts: List<MultipartBody.Part?>?): Call<BaseResponse<List<String?>?>?>?
 
     @Streaming
-    @GET("file/downloadFile/{fileName}")
+    @GET("image/downloadFile/{fileName}")
     fun downloadFile(@Path("fileName") fileName: String?): Call<ResponseBody>
 
     @Streaming

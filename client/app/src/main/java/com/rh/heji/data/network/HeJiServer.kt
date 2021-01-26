@@ -22,35 +22,35 @@ interface HeJiServer {
     fun login(@Query("username") username: String, @Query("password") password: String): Call<BaseResponse<String>>
 
     @POST("bill/add")
-    fun saveBill(@Body entity: BillEntity?): Call<BaseResponse<*>?>?
+    fun saveBill(@Body entity: BillEntity): Call<BaseResponse<String>>
 
     @POST("bill/addBills")
-    fun saveBills(@Body entity: List<BillEntity?>?): Call<BaseResponse<*>?>?
+    fun saveBills(@Body entity: List<BillEntity>): Call<BaseResponse<String>>
 
     @GET("bill/delete")
-    fun deleteBill(@Query("_id") uid: String?): Call<BaseResponse<*>?>?
+    fun deleteBill(@Query("_id") uid: String): Call<BaseResponse<String>>
 
     @POST("bill/getBills")
     fun getBills(@Query("startTime") startTime: String?,
-                 @Query("endTime") uid: String?): Call<BaseResponse<List<BillEntity?>?>?>?
+                 @Query("endTime") uid: String?): Call<BaseResponse<List<BillEntity>>>
 
     @POST("bill/export")
     fun exportBills(@Query("year") year: String?, @Query("month") month: String?): Call<ResponseBody>
 
     @POST("category/addCategories")
-    fun addCategories(@Body categories: List<CategoryEntity?>?): Call<BaseResponse<*>?>?
+    fun addCategories(@Body categories: List<CategoryEntity>): Call<BaseResponse<String>>
 
     @POST("category/add")
-    fun addCategory(@Body categories: CategoryEntity?): Call<BaseResponse<*>?>?
+    fun addCategory(@Body categories: CategoryEntity): Call<BaseResponse<String>>
 
     @GET("category/delete")
-    fun deleteCategoryById(@Query("_id") _id: String?): Call<BaseResponse<*>?>?
+    fun deleteCategoryById(@Query("_id") _id: String?): Call<BaseResponse<String>>
 
     @GET("category/deleteByName")
     fun deleteCategoryByName(@Query("categoryName") categoryName: String?): Call<BaseResponse<*>?>?
 
-    @GET("category/getCategories")
-    fun getCategories(@Query("type") type: Int, @Query("level") level: Int): Call<BaseResponse<List<CategoryEntity?>?>?>?
+    @GET("category/getByBookId")//获取基础的类别
+    fun getCategories(@Query("book_id") book_id:String): Call<BaseResponse<List<CategoryEntity>>>
 
     /**
      * @param part
@@ -73,9 +73,9 @@ interface HeJiServer {
 
     @Streaming
     @GET("file/downloadFile/{fileName}")
-    fun downloadFile(@Path("fileName") fileName: String?): Call<ResponseBody?>?
+    fun downloadFile(@Path("fileName") fileName: String?): Call<ResponseBody>
 
     @Streaming
     @GET("image/{imageId}")
-    fun getImage(@Path("imageId") _id: String?): Call<ResponseBody?>?
+    fun getImage(@Path("imageId") _id: String?): Call<ResponseBody>
 }

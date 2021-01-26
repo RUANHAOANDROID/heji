@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.rh.heji.ui.home.HomeFragment"
+        android:name="com.rh.heji.ui.home.BillsHomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home">
+        tools:layout="@layout/fragment_bills_home">
         <action
             android:id="@+id/action_nav_home_to_nav_etc"
             app:destination="@id/nav_input_etc" />
@@ -17,11 +17,11 @@
             android:id="@+id/action_nav_home_to_nav_gallery"
             app:destination="@id/nav_gallery" />
         <action
-            android:id="@+id/action_nav_home_to_nav_category_manager"
-            app:destination="@id/nav_category_manager" />
-        <action
             android:id="@+id/action_nav_home_to_nav_setting"
             app:destination="@id/nav_setting" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_income"
+            app:destination="@id/nav_income" />
     </fragment>
 
     <fragment
@@ -34,12 +34,20 @@
         android:id="@+id/nav_setting"
         android:name="com.rh.heji.ui.setting.SettingFragment"
         android:label="@string/menu_setting"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting" >
+        <action
+            android:id="@+id/action_nav_setting_to_nav_export"
+            app:destination="@id/nav_export" />
+    </fragment>
     <fragment
         android:id="@+id/nav_income"
         android:name="com.rh.heji.ui.bill.add.AddBillFragment"
         android:label="@string/income"
-        tools:layout="@layout/income_fragment" />
+        tools:layout="@layout/income_fragment" >
+        <action
+            android:id="@+id/action_nav_income_to_nav_category_manager"
+            app:destination="@id/nav_category_manager" />
+    </fragment>
     <fragment
         android:id="@+id/nav_category_manager"
         android:name="com.rh.heji.ui.category.CategoryManagerFragment"

@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.BusUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.lxj.xpopup.XPopup;
+import com.rh.heji.databinding.FragmentBillsHomeBinding;
 import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.R;
 import com.rh.heji.data.BillType;
 import com.rh.heji.data.db.Bill;
-import com.rh.heji.databinding.FragmentHomeBinding;
 import com.rh.heji.ui.bill.adapter.BillInfoAdapter;
 import com.rh.heji.ui.bill.Iteminfo.BillInfoPop;
 
@@ -32,9 +32,9 @@ import java.util.UUID;
 
 import static com.rh.heji.Constants.BACKGROUND_ALPHA;
 
-public class HomeFragment extends BaseFragment {
-    FragmentHomeBinding binding;
-    private HomeViewModel homeViewModel;
+public class BillsHomeFragment extends BaseFragment {
+    FragmentBillsHomeBinding binding;
+    private BillsHomeViewModel homeViewModel;
     BillInfoAdapter adapter;
     private String homeUUID;
 
@@ -47,8 +47,8 @@ public class HomeFragment extends BaseFragment {
     }
 
     public void initView(View view) {
-        homeViewModel = getActivityViewModel(HomeViewModel.class);
-        binding = FragmentHomeBinding.bind(view);
+        homeViewModel = getActivityViewModel(BillsHomeViewModel.class);
+        binding = FragmentBillsHomeBinding.bind(view);
         initBillsAdapter();
     }
 
@@ -61,7 +61,7 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     protected int layoutId() {
-        return R.layout.fragment_home;
+        return R.layout.fragment_bills_home;
     }
 
     @Override
@@ -71,9 +71,6 @@ public class HomeFragment extends BaseFragment {
         getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_save, false);
         getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_settings, false);
         setYearMonthVisible(true);
-        if (true){//TODO
-            Navigation.findNavController(view).navigate(R.id.nav_login);
-        }
     }
 
     @Override

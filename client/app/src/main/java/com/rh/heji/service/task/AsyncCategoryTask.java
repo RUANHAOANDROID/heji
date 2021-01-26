@@ -66,7 +66,7 @@ public class AsyncCategoryTask implements Runnable {
 
     private void pushCategory(Category category) {
         try {
-            Response<BaseResponse<?>> response = heJiServer.addCategory(new CategoryEntity(category)).execute();
+            Response<BaseResponse<String>> response = heJiServer.addCategory(new CategoryEntity(category)).execute();
             if (null != response && response.isSuccessful()) {
                 if (response.code() == 200) {
                     String str = String.valueOf(response.body());
@@ -90,7 +90,7 @@ public class AsyncCategoryTask implements Runnable {
             categoryEntities.add(new CategoryEntity(category));
         });
         try {
-            Response<BaseResponse<?>> response = heJiServer.addCategories(categoryEntities).execute();
+            Response<BaseResponse<String>> response = heJiServer.addCategories(categoryEntities).execute();
             if (null != response && response.isSuccessful()) {
                 if (response.code() == 200) {
                     String str = String.valueOf(response.body());

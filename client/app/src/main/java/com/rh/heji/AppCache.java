@@ -115,4 +115,8 @@ public final class AppCache {
             e.printStackTrace();
         }
     }
+
+    public boolean isLogin() {
+        return !TextUtils.isEmpty(getToken());
+    }
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,13 +28,14 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.lxj.xpopup.XPopup;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 import com.rh.heji.service.DataSyncService;
-import com.rh.heji.ui.home.HomeFragment;
+import com.rh.heji.ui.home.BillsHomeFragment;
 import com.rh.heji.ui.bill.YearSelectPop;
 
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +64,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         initDrawerLayout();
         initFab();
-        startSyncDataService();
+        String token =AppCache.getInstance().getToken();
+        if (TextUtils.isEmpty(token)){
+               navController.navigate(R.id.nav_login);
+        }else{
+            ToastUtils.showLong(token);
+            startSyncDataService();
+        }
     }
 
     /**
@@ -127,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void startSyncDataService() {
+    public void startSyncDataService() {
         Intent intent = new Intent(this, DataSyncService.class);
         intent.setAction(DataSyncService.ACTION_START_FOREGROUND_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -287,8 +295,8 @@ public class MainActivity extends AppCompatActivity {
                         tvYearMonth.setText(year + "年" + month + "月");
                         List<Fragment> fragments = getFragments();
                         fragments.forEach(fragment -> {
-                            if (fragment instanceof HomeFragment) {
-                                HomeFragment homeFragment = (HomeFragment) fragment;
+                            if (fragment instanceof BillsHomeFragment) {
+                                BillsHomeFragment homeFragment = (BillsHomeFragment) fragment;
                                 homeFragment.notifyData(year, month);
                             }
                         });

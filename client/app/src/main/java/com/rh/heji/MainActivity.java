@@ -27,22 +27,19 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.TimeUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BasePopupView;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 import com.rh.heji.service.DataSyncService;
 import com.rh.heji.ui.home.HomeFragment;
-import com.rh.heji.ui.home.pop.YearPop;
+import com.rh.heji.ui.bill.YearSelectPop;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -286,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
                     .hasShadowBg(true)
                     .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
                     //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                    .asCustom(new YearPop(v.getContext(), thisYear, thisMonth, (year, month) -> {
+                    .asCustom(new YearSelectPop(v.getContext(), thisYear, thisMonth, (year, month) -> {
                         tvYearMonth.setText(year + "年" + month + "月");
                         List<Fragment> fragments = getFragments();
                         fragments.forEach(fragment -> {

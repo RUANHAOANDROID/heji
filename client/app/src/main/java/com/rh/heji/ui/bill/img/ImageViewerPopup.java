@@ -1,24 +1,22 @@
-package com.rh.heji.ui.home;
+package com.rh.heji.ui.bill.img;
 
 import android.content.Context;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 
 import com.lxj.xpopup.core.ImageViewerPopupView;
 import com.rh.heji.R;
-import com.rh.heji.databinding.CustomImageViewerPopupBinding;
 
 /**
  * Date: 2020/9/20
  * Author: 锅得铁
  * #
  */
-public class TicketImageViewerPopup extends ImageViewerPopupView {
+public class ImageViewerPopup extends ImageViewerPopupView {
     private boolean allowDelete = false;
     //CustomImageViewerPopupBinding binding;
 
-    public TicketImageViewerPopup(@NonNull Context context) {
+    public ImageViewerPopup(@NonNull Context context) {
         super(context);
     }
 
@@ -39,7 +37,7 @@ public class TicketImageViewerPopup extends ImageViewerPopupView {
         return allowDelete;
     }
 
-    public TicketImageViewerPopup setAllowDelete(boolean allowDelete) {
+    public ImageViewerPopup setAllowDelete(boolean allowDelete) {
         this.allowDelete = allowDelete;
         return this;
     }

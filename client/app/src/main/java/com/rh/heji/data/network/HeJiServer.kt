@@ -4,6 +4,7 @@ import com.rh.heji.data.network.request.BillEntity
 import com.rh.heji.data.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterViewModel
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -34,7 +35,7 @@ interface HeJiServer {
                  @Query("endTime") uid: String?): Call<BaseResponse<List<BillEntity?>?>?>?
 
     @POST("bill/export")
-    fun exportBills(@Query("year") year: String?, @Query("month") month: String?): Call<ResponseBody?>?
+    fun exportBills(@Query("year") year: String?, @Query("month") month: String?): Call<ResponseBody>
 
     @POST("category/addCategories")
     fun addCategories(@Body categories: List<CategoryEntity?>?): Call<BaseResponse<*>?>?

@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.rh.heji.ui.add.Calculation;
+import com.rh.heji.ui.bill.add.Calculation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

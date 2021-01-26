@@ -4,8 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import com.rh.heji.AppCache
-import com.rh.heji.BaseFragment
+import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
 import com.rh.heji.databinding.LoginFragmentBinding
 

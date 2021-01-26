@@ -1,4 +1,4 @@
-package com.rh.heji.ui.add;
+package com.rh.heji.ui.bill.add;
 
 import android.text.TextUtils;
 
@@ -12,21 +12,14 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.BillType;
 import com.rh.heji.data.db.Bill;
-import com.rh.heji.data.db.Category;
 import com.rh.heji.data.db.Dealer;
 import com.rh.heji.data.db.Image;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static java.math.BigDecimal.ZERO;
 
 /**
  * 账单添加页ViewModel 不要在其他页面应用该ViewModel

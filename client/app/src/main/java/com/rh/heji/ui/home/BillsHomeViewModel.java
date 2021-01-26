@@ -33,7 +33,7 @@ import io.reactivex.functions.Predicate;
 import io.reactivex.internal.schedulers.IoScheduler;
 import io.reactivex.schedulers.Schedulers;
 
-public class HomeViewModel extends ViewModel {
+public class BillsHomeViewModel extends ViewModel {
     private final BillDao billDao;
     int year;
     int month;
@@ -41,7 +41,7 @@ public class HomeViewModel extends ViewModel {
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public HomeViewModel() {
+    public BillsHomeViewModel() {
         mBillLiveData = new MediatorLiveData();
         billDao = AppDatabase.getInstance().billDao();
     }

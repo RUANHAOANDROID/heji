@@ -26,11 +26,10 @@ class ExportFragment : BaseFragment() {
         const val CREATE_FILE_CVS = 2
     }
 
-    private lateinit var viewModel: ExportViewModel
+    private val viewModel by lazy {ViewModelProvider(this).get(ExportViewModel::class.java) }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        viewModel = ViewModelProvider(this).get(ExportViewModel::class.java)
     }
 
     override fun initView(view: View?) {

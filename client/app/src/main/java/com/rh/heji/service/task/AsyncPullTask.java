@@ -97,7 +97,7 @@ public class AsyncPullTask implements Runnable {
 
 
     private void getCategory() throws IOException {
-        Response<BaseResponse<List<CategoryEntity>>> response = heJiServer.getCategories(0, 0).execute();
+        Response<BaseResponse<List<CategoryEntity>>> response = heJiServer.getCategories("0").execute();
         if (null != response && response.isSuccessful()) {
             if (response.code() == 200) {
                 List<CategoryEntity> categories = response.body().data;

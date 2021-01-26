@@ -57,7 +57,7 @@ public class AsyncPushTask implements Runnable {
             List<Bill> bills = AppDatabase.getInstance().billDao().findBillByIdAndSyncStatus(uid, Bill.STATUS_NOT_SYNC);
             if (bills.size() > 0)
                 bills.forEach(bill -> {
-                    Response<BaseResponse<?>> response = null;
+                    Response<BaseResponse<String>> response = null;
                     try {
                         response = heJiServer.saveBill(new BillEntity(bill)).execute();
                     } catch (IOException e) {

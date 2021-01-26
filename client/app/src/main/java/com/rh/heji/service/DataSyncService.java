@@ -23,6 +23,7 @@ import androidx.work.impl.utils.taskexecutor.TaskExecutor;
 
 import com.blankj.utilcode.util.BusUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.rh.heji.AppCache;
 import com.rh.heji.MainActivity;
 import com.rh.heji.R;
 import com.rh.heji.data.AppDatabase;
@@ -144,6 +145,7 @@ public class DataSyncService extends Service {
 
     @SuppressLint("RestrictedApi")
     private void syncBills() {
+        if (!AppCache.getInstance().isLogin()) return;
         /**
          * 先拉取数据本地没有则存入
          */
@@ -272,8 +274,9 @@ public class DataSyncService extends Service {
         }
 
     }
-    @BusUtils.Bus(tag = "TAG",sticky = false,threadMode = BusUtils.ThreadMode.MAIN)
-    public  void Bus(Object object){
-        LogUtils.d("BUS",object);
+
+    @BusUtils.Bus(tag = "TAG", sticky = false, threadMode = BusUtils.ThreadMode.MAIN)
+    public void Bus(Object object) {
+        LogUtils.d("BUS", object);
     }
 }

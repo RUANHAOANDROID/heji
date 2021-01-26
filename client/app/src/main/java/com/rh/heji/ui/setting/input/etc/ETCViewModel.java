@@ -1,4 +1,4 @@
-package com.rh.heji.ui.input.etc;
+package com.rh.heji.ui.setting.input.etc;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Callback;

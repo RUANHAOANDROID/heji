@@ -1,4 +1,4 @@
-package com.rh.heji.ui.export
+package com.rh.heji.ui.setting.export
 
 import android.content.Context
 import android.content.Intent
@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import android.provider.DocumentsContract
 import android.view.View
 import androidx.lifecycle.Observer
-import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
@@ -16,7 +15,6 @@ import com.lxj.xpopup.interfaces.OnSelectListener
 import com.rh.heji.BaseFragment
 import com.rh.heji.R
 import com.rh.heji.databinding.ExportFragmentBinding
-import java.util.logging.Handler
 
 class ExportFragment : BaseFragment() {
     lateinit var binding: ExportFragmentBinding

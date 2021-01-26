@@ -61,7 +61,7 @@ public class AsyncDeleteTask implements Runnable {
     private void deleteAsyncBills(List<String> ids) throws IOException {
         ids.forEach(id -> {
             try {
-                Response<BaseResponse> response = heJiServer.deleteBill(id).execute();
+                Response<BaseResponse<?>> response = heJiServer.deleteBill(id).execute();
                 if (null != response && response.isSuccessful()) {
                     if (response.code() == 200) {
                         if(response.body().code==0||response.body().msg.contains("不存在")){

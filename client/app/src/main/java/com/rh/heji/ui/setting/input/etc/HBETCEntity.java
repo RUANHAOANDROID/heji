@@ -1,4 +1,4 @@
-package com.rh.heji.ui.input.etc;
+package com.rh.heji.ui.setting.input.etc;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,7 +1,5 @@
-package com.rh.heji.ui.export
+package com.rh.heji.ui.setting.export
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Environment
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -10,9 +8,6 @@ import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.App
 import com.rh.heji.AppCache
 import kotlinx.coroutines.Dispatchers
-import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.BillType
-import com.rh.heji.data.db.BillWithImage
 import kotlinx.coroutines.launch
 import okio.buffer
 import okio.sink

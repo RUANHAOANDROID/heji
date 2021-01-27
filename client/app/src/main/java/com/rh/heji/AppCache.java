@@ -5,17 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Base64;
-
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.blankj.utilcode.util.EncodeUtils;
 import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.rh.heji.data.network.HeJiServer;
+import com.rh.heji.network.HeJiServer;
 import com.rh.heji.utlis.http.basic.ServiceCreator;
 
 import java.io.BufferedReader;
@@ -26,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.security.Security;
 
 /**
  * Date: 2020/11/18

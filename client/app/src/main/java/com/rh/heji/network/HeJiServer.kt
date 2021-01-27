@@ -1,10 +1,9 @@
-package com.rh.heji.data.network
+package com.rh.heji.network
 
-import com.rh.heji.data.network.request.BillEntity
-import com.rh.heji.data.network.request.CategoryEntity
+import com.rh.heji.network.request.BillEntity
+import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterViewModel
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*

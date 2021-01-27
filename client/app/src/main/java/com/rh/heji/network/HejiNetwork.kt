@@ -1,4 +1,4 @@
-package com.rh.heji.data.network
+package com.rh.heji.network
 
 import com.rh.heji.AppCache
 import retrofit2.Call
@@ -21,8 +21,12 @@ class HejiNetwork {
 
                 override fun onResponse(call: Call<T>, response: Response<T>) {
                     val body = response.body()
-                    if (body != null) continuation.resume(body)
-                    else continuation.resumeWithException(RuntimeException("response body is null"))
+                    val errorBody = response.errorBody()
+                    when {
+                        body != null -> continuation.resume(body)
+                        errorBody != null -> continuation.resumeWithException(RuntimeException(errorBody.string()))
+                        else -> continuation.resumeWithException(RuntimeException("response body is null"))
+                    }
                 }
             })
         }

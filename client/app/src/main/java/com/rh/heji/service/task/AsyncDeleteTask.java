@@ -4,8 +4,8 @@ import com.rh.heji.AppCache;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.ImageDao;
-import com.rh.heji.data.network.BaseResponse;
-import com.rh.heji.data.network.HeJiServer;
+import com.rh.heji.network.BaseResponse;
+import com.rh.heji.network.HeJiServer;
 
 import java.io.IOException;
 import java.util.List;

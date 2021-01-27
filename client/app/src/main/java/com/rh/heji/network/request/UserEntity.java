@@ -1,4 +1,4 @@
-package com.rh.heji.data.network.request;
+package com.rh.heji.network.request;
 
 import com.rh.heji.data.db.Dealer;
 

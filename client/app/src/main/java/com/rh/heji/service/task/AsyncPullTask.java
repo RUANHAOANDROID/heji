@@ -8,16 +8,15 @@ import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Category;
 import com.rh.heji.data.db.Image;
-import com.rh.heji.data.network.BaseResponse;
-import com.rh.heji.data.network.HeJiServer;
-import com.rh.heji.data.network.request.BillEntity;
-import com.rh.heji.data.network.request.CategoryEntity;
+import com.rh.heji.network.BaseResponse;
+import com.rh.heji.network.HeJiServer;
+import com.rh.heji.network.request.BillEntity;
+import com.rh.heji.network.request.CategoryEntity;
 import com.rh.heji.utlis.MyTimeUtils;
 
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import retrofit2.Response;

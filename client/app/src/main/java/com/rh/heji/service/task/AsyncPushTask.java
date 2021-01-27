@@ -1,6 +1,5 @@
 package com.rh.heji.service.task;
 
-import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.rh.heji.App;
 import com.rh.heji.AppCache;
@@ -8,9 +7,9 @@ import com.rh.heji.Constants;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Image;
-import com.rh.heji.data.network.BaseResponse;
-import com.rh.heji.data.network.HeJiServer;
-import com.rh.heji.data.network.request.BillEntity;
+import com.rh.heji.network.BaseResponse;
+import com.rh.heji.network.HeJiServer;
+import com.rh.heji.network.request.BillEntity;
 import com.rh.heji.utlis.http.basic.ServiceCreator;
 
 import java.io.File;
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;

@@ -34,9 +34,12 @@ import com.google.android.material.navigation.NavigationView;
 import com.lxj.xpopup.XPopup;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
+import com.rh.heji.databinding.ActivityMainBinding;
+import com.rh.heji.databinding.NavHeaderMainBinding;
 import com.rh.heji.service.DataSyncService;
 import com.rh.heji.ui.home.BillsHomeFragment;
 import com.rh.heji.ui.bill.YearSelectPop;
+import com.rh.heji.ui.user.JWTParse;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,28 +49,32 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private NavController navController;
-    private FloatingActionButton fab;
+    private NavController navController;//导航控制
+    private FloatingActionButton fab;//加号按钮
     private Toolbar toolbar;
-    private DrawerLayout drawer;
+    private DrawerLayout drawerLayout;
     private MainViewModel mainViewModel;
+    private NavHeaderMainBinding navHeaderMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        setContentView(R.layout.activity_main);
         checkPermissions((allGranted, grantedList, deniedList) -> {
             Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show();
         });
-        toolbar = findViewById(R.id.toolbar);
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        setContentView(R.layout.activity_main);
+        toolbar =findViewById(R.id.toolbar);
+        fab =findViewById(R.id.fab);
         setSupportActionBar(toolbar);
         initDrawerLayout();
         initFab();
-        String token =AppCache.getInstance().getToken();
-        if (TextUtils.isEmpty(token)){
-               navController.navigate(R.id.nav_login);
-        }else{
+        String token = AppCache.getInstance().getToken();
+        if (TextUtils.isEmpty(token)) {
+            navController.navigate(R.id.nav_login);
+        } else {
+            JWTParse.User user = JWTParse.INSTANCE.getUser(token);
+            setDrawerLayout(user);
             ToastUtils.showLong(token);
             startSyncDataService();
         }
@@ -77,13 +84,13 @@ public class MainActivity extends AppCompatActivity {
      * 侧滑菜单相关
      */
     private void initDrawerLayout() {
-        drawer = findViewById(R.id.drawer_layout);
+        drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_setting)
-                .setDrawerLayout(drawer)
+                .setDrawerLayout(drawerLayout)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -91,6 +98,19 @@ public class MainActivity extends AppCompatActivity {
 
         NavController.OnDestinationChangedListener listener = destinationChangedListener();
         navController.addOnDestinationChangedListener(listener);
+        View navHeaderView = navigationView.getHeaderView(0);
+        navHeaderMainBinding = NavHeaderMainBinding.bind(navHeaderView);
+        navHeaderView.setOnClickListener(v -> {
+            ToastUtils.showLong("");
+            getNavController().navigate(R.id.nav_user_info);
+        });
+//        Menu navMenu = navigationView.getMenu();
+
+    }
+
+    private void setDrawerLayout(JWTParse.User user) {
+        navHeaderMainBinding.tvTitle.setText(user.getUsername());
+        navHeaderMainBinding.tvNice.setText(user.getAuth().toString());
     }
 
     /**
@@ -169,12 +189,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkPermissions(RequestCallback requestCallback) {
         PermissionX.init(this).permissions(
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.ACCESS_WIFI_STATE,
-                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.ACCESS_NETWORK_STATE,
                 Manifest.permission.INTERNET
         ).explainReasonBeforeRequest()
                 .onExplainRequestReason((scope, deniedList) -> {
@@ -217,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public DrawerLayout getDrawer() {
-        return drawer;
+        return drawerLayout;
     }
 
     @Override

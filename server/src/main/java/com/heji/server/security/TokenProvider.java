@@ -82,6 +82,7 @@ public class TokenProvider implements InitializingBean {
                 .serializeToJsonWith(new GsonSerializer<>())
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities2)
+                .claim("tel",authentication.getName())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();

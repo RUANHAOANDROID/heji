@@ -8,8 +8,6 @@ import com.heji.server.exception.NotFindException;
 import com.heji.server.security.TokenProvider;
 import com.heji.server.service.UserService;
 import com.heji.server.service.CodeService;
-import com.heji.server.utils.SecurityUtils;
-import org.apache.catalina.security.SecurityUtil;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
@@ -19,16 +17,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -111,9 +105,9 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
     }
 
     @Override
-    public String getUserId(String token) {
+    public User getUserId(String token) {
         User user = (User) tokenProvider.getAuthentication(token).getPrincipal();
-        return user.getUsername();
+        return user;
     }
 
     @Override

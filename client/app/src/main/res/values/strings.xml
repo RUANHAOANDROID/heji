@@ -72,5 +72,7 @@
     <string name="user_name">用户名</string>
     <string name="book">帐簿</string>
     <string name="user_id">用户ID</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

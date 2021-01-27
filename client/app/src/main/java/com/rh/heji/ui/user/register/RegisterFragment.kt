@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.view.View
 import androidx.lifecycle.Observer
+import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
 import com.rh.heji.databinding.RegisterFragmentBinding
@@ -23,6 +24,10 @@ class RegisterFragment : BaseFragment() {
         binding.btnRegister.setOnClickListener {
             val password1 = binding.editPassword.text.toString();
             val password2 = binding.editPassword2.text.toString();
+            if (password1 != password2){
+                ToastUtils.showLong("两次输入的密码不一致")
+                return@setOnClickListener
+            }
             val code =binding.editInviteCode.text.toString();
             val tel =binding.editUser.text.toString();
             viewModel.register(tel,code,password1).observe(viewLifecycleOwner, Observer {

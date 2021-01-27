@@ -1,6 +1,7 @@
 package com.heji.server.service;
 
 import com.heji.server.data.mongo.MUser;
+import org.springframework.security.core.userdetails.User;
 
 public interface UserService {
     void register(MUser mUser);
@@ -9,7 +10,7 @@ public interface UserService {
 
     String login(String username,String password );
 
-    String getUserId(String token);
+    User getUserId(String token);
 
     void logout(String mUser);
 

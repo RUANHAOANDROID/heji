@@ -9,6 +9,7 @@ import com.heji.server.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,8 +52,8 @@ public class UserController {
     @ResponseBody
     @PostMapping(value = {"/auth"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getUserId(@RequestParam String token) {
-        String userID =userService.getUserId(token);
-        return Result.success(userID);
+        User user =userService.getUserId(token);
+        return Result.success(user);
     }
 
     @ResponseBody
@@ -60,7 +61,7 @@ public class UserController {
     public String logout(@RequestParam String token) {
 
         userService.logout(token);
-        return Result.success("注册成功");
+        return Result.success("退出成功");
     }
 
 }

@@ -16,10 +16,11 @@ import javax.persistence.Enumerated;
 @ToString
 @Accessors(chain = true)
 public class Authority implements GrantedAuthority {
-    public static final  String USER ="ROLE_USER";
-    public static final  String ADMIN ="ROLE_ADMIN";
+    public static final String USER = "ROLE_USER";
+    public static final String ADMIN = "ROLE_ADMIN";
     //public static final String COLLECTION_NAME = "authority";
     String authority;
+    String book_id;
 
     @Override
     public String getAuthority() {

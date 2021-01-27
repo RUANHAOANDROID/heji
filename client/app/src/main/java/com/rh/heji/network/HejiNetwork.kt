@@ -10,7 +10,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class HejiNetwork {
     private val hejiServer = AppCache.getInstance().heJiServer;
-    suspend fun login(username: String, password: String) = hejiServer.login(username, password)?.await();
+    suspend fun login(username: String, password: String) = hejiServer.login(username, password).await()
 
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine { continuation ->

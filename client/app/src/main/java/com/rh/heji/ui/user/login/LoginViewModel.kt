@@ -1,31 +1,26 @@
 package com.rh.heji.ui.user.login
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppCache
 import com.rh.heji.network.HejiNetwork
-import kotlinx.coroutines.launch
+import com.rh.heji.ui.base.BaseViewModel
 
-class LoginViewModel : ViewModel() {
-    fun login(username: String, password: String) {
+class LoginViewModel : BaseViewModel() {
+    private val loginLiveData: MediatorLiveData<String> = MediatorLiveData()
+    fun login(username: String, password: String): LiveData<String> {
         launch({
             var requestBody = HejiNetwork.getInstance().login(username, password)
-            var token = requestBody.data;
+            var token = requestBody.data
+            loginLiveData.value = token
             AppCache.getInstance().saveToken(token)
             ToastUtils.showLong(requestBody.data)
         }, {
             ToastUtils.showLong("登陆错误:${it.message}")
         })
-
-    }
-
-    private fun launch(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) = viewModelScope.launch {
-        try {
-            block()
-        } catch (e: Throwable) {
-            error(e)
-        }
+        launch({},{})
+        return loginLiveData
     }
 
 }

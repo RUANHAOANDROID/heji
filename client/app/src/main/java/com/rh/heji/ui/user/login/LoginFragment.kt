@@ -2,11 +2,13 @@ package com.rh.heji.ui.user.login
 
 import android.content.Context
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import com.rh.heji.ui.base.BaseFragment
+import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.R
 import com.rh.heji.databinding.LoginFragmentBinding
+import com.rh.heji.ui.base.BaseFragment
 
 class LoginFragment : BaseFragment() {
 
@@ -27,7 +29,15 @@ class LoginFragment : BaseFragment() {
                 Navigation.findNavController(v).navigate(R.id.nav_register)
             }
             binding.btnLogin.setOnClickListener {
-                viewModel.login(binding.editUser.text.toString(), binding.editPassword.text.toString())
+                val username = binding.editUser.text.toString()
+                val password = binding.editPassword.text.toString()
+                viewModel.login(username, password)
+                        .observe(this.viewLifecycleOwner, Observer { token ->
+                            //Navigation.findNavController(view).navigate)
+                            Navigation.findNavController(view).popBackStack(R.id.nav_home,true)
+                            mainActivity.startSyncDataService()
+                            LogUtils.e(token)
+                        })
             }
         }
 

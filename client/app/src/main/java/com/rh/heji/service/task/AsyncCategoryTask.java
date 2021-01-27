@@ -1,27 +1,16 @@
 package com.rh.heji.service.task;
 
-import android.text.TextUtils;
-
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-
-import com.blankj.utilcode.util.LogUtils;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Category;
-import com.rh.heji.data.network.BaseResponse;
-import com.rh.heji.data.network.HeJiServer;
-import com.rh.heji.data.network.request.CategoryEntity;
-import com.rh.heji.service.DataSyncService;
+import com.rh.heji.network.BaseResponse;
+import com.rh.heji.network.HeJiServer;
+import com.rh.heji.network.request.CategoryEntity;
 import com.rh.heji.utlis.http.basic.ServiceCreator;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import retrofit2.Call;
 import retrofit2.Response;
 
 /**

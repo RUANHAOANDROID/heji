@@ -1,7 +1,7 @@
 package com.rh.heji.service.task;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.rh.heji.data.network.ETCServer;
+import com.rh.heji.network.ETCServer;
 import com.rh.heji.utlis.http.basic.ServiceCreator;
 
 import java.io.IOException;

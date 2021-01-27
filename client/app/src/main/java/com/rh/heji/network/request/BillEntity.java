@@ -1,12 +1,10 @@
-package com.rh.heji.data.network.request;
+package com.rh.heji.network.request;
 
-import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Image;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Date: 2020/9/23

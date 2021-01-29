@@ -41,7 +41,7 @@ public class AsyncCategoryTask implements Runnable {
 
     private void deleteCategory(Category category) {
         try {
-            Response<BaseResponse<?>> response = heJiServer.deleteCategoryByName(category.getCategory()).execute();
+            Response<BaseResponse<String>> response = heJiServer.deleteCategoryByName(category.getCategory()).execute();
             if (null != response && response.isSuccessful()) {
                 if (response.code() == 200) {
                     String str = String.valueOf(response.body());

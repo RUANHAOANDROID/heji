@@ -110,6 +110,13 @@ public final class AppCache {
         }
     }
 
+    public void deleteToken() {
+        String fileName = "TokenFile";
+        File file = new File(context.getFilesDir().getAbsolutePath());
+        File tokenFile = new File(file, fileName);
+        FileUtils.delete(tokenFile);
+    }
+
     public boolean isLogin() {
         return !TextUtils.isEmpty(getToken());
     }

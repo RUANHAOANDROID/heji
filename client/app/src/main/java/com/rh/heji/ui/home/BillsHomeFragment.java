@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,10 +40,17 @@ public class BillsHomeFragment extends BaseFragment {
     private String homeUUID;
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        homeUUID = UUID.randomUUID().toString();
+        getMainActivity().getMainViewModel().setHomeUUID(homeUUID);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(layoutId(), container, false);
         initView(view);
-        BusUtils.post("TAG","HELLO WORD");
+        BusUtils.post("TAG", "HELLO WORD");
         return view;
     }
 
@@ -52,12 +60,6 @@ public class BillsHomeFragment extends BaseFragment {
         initBillsAdapter();
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        homeUUID = UUID.randomUUID().toString();
-        getMainActivity().getMainViewModel().setHomeUUID(homeUUID);
-    }
 
     @Override
     protected int layoutId() {
@@ -65,16 +67,17 @@ public class BillsHomeFragment extends BaseFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        getMainActivity().getToolbar().setVisibility(View.VISIBLE);
-        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_save, false);
-        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_settings, false);
-        setYearMonthVisible(true);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onResume() {
+        getMainActivity().getToolbar().setVisibility(View.VISIBLE);
+        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_save, false);
+        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_settings, false);
+        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_settings, false);
+        getMainActivity().setYearMonthItemVisible(true);
         super.onResume();
         int thisYear = homeViewModel.getYear();
         int thisMonth = homeViewModel.getMonth();
@@ -111,6 +114,7 @@ public class BillsHomeFragment extends BaseFragment {
     @Override
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        getMainActivity().setYearMonthItemVisible(true);
     }
 
     /**
@@ -190,21 +194,11 @@ public class BillsHomeFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (homeUUID.equals(getMainActivity().getMainViewModel().getHomeUUID())) {
-            setYearMonthVisible(false);
+            getMainActivity().setYearMonthItemVisible(false);
         }
 
     }
 
-    /**
-     * Toolbar显示控制
-     *
-     * @param b 显示否
-     */
-    private void setYearMonthVisible(boolean b) {
-        MenuItem menuItem = getMainActivity().getToolbar().getMenu().findItem(R.id.action_year_month);
-        if (null != menuItem)
-            menuItem.setVisible(b);
-    }
 
     /**
      * 刷新列表数据、收支情况数据

@@ -49,7 +49,7 @@ interface HeJiServer {
     fun deleteCategoryById(@Query("_id") _id: String?): Call<BaseResponse<String>>
 
     @GET("category/deleteByName")
-    fun deleteCategoryByName(@Query("categoryName") categoryName: String?): Call<BaseResponse<*>?>?
+    fun deleteCategoryByName(@Query("categoryName") categoryName: String): Call<BaseResponse<String>>
 
     @GET("category/getByBookId")//获取基础的类别
     fun getCategories(@Query("book_id") book_id:String): Call<BaseResponse<List<CategoryEntity>>>
@@ -61,7 +61,7 @@ interface HeJiServer {
      */
     @Multipart
     @POST("image/uploadImage")
-    fun uploadImg(@Part part: MultipartBody.Part?, @Query("billId") billId: String?, @Query("time") time: Long): Call<BaseResponse<String?>?>?
+    fun uploadImg(@Part part: MultipartBody.Part, @Query("billId") billId: String?, @Query("time") time: Long): Call<BaseResponse<String>>
 
     /**
      * 多个文件上传
@@ -71,13 +71,13 @@ interface HeJiServer {
      */
     @Multipart
     @POST("image/uploadFiles")
-    fun uploadImgs(@Part parts: List<MultipartBody.Part?>?): Call<BaseResponse<List<String?>?>?>?
+    fun uploadImgs(@Part parts: List<MultipartBody.Part>): Call<BaseResponse<List<String>>>
 
     @Streaming
     @GET("image/downloadFile/{fileName}")
-    fun downloadFile(@Path("fileName") fileName: String?): Call<ResponseBody>
+    fun downloadFile(@Path("fileName") fileName: String): Call<ResponseBody>
 
     @Streaming
     @GET("image/{imageId}")
-    fun getImage(@Path("imageId") _id: String?): Call<ResponseBody>
+    fun getImage(@Path("imageId") _id: String): Call<ResponseBody>
 }

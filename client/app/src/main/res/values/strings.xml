@@ -14,6 +14,8 @@
     <string name="delete">删除</string>
     <string name="customize">自定义</string>
     <string name="save">保存</string>
+    <string name="login">登陆</string>
+    <string name="logout">退出登陆</string>
 
 
     <string name="date">日期</string>

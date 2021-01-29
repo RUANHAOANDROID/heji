@@ -44,7 +44,7 @@ public class BillsController {
     @ResponseBody
     @PostMapping(value = {"/add"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String addBill(@RequestBody BillModule billModule) {
-        MBill mBill =new MBill(billModule);
+        MBill mBill = new MBill(billModule);
         String billID = billService.addBill(mBill);
         return Result.success(billID);
     }
@@ -67,16 +67,10 @@ public class BillsController {
 
     @ResponseBody
     @GetMapping(value = {"delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Result deleteById(String _id) {
-        imageService.removeBillImages(_id);
-        boolean isDeleted = billService.removeBill(_id);
-        //if (!isDeleted)
-            //return Result.error("账单不存在 _id:" + _id);
-        Result result =new Result();
-        result.setCode(111);
-        result.setData("账单不存在");
-        result.setMsg("账单不存在");
-        return result ;
+    public String deleteById(String _id) {
+        imageService.removeBillImages(_id);//删除照片
+        boolean isDeleted = billService.removeBill(_id);//删除账单
+        return Result.success("删除成功:" , _id);
         //return Result.success(_id);
     }
 
@@ -84,7 +78,7 @@ public class BillsController {
     @GetMapping(value = {"update"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateBill(MBill bill) {
         billService.updateBill(bill);
-        return Result.success(bill.get_id());
+        return Result.success("更新成功",bill.get_id());
     }
 
     @PostMapping("/export")

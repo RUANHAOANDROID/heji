@@ -2,10 +2,13 @@ package com.heji.server.result;
 
 import com.google.gson.Gson;
 import com.sun.istack.NotNull;
+import lombok.Data;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-
+@Data
 @Slf4j
+@ToString
 public class Result<T>{
 
     /**

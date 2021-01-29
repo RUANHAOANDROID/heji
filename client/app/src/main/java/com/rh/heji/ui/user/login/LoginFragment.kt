@@ -9,6 +9,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.R
 import com.rh.heji.databinding.LoginFragmentBinding
 import com.rh.heji.ui.base.BaseFragment
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 class LoginFragment : BaseFragment() {
 
@@ -20,8 +21,16 @@ class LoginFragment : BaseFragment() {
         viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
     }
 
-    override fun initView(view: View?) {
+    override fun onStart() {
+        super.onStart()
+        mainActivity.toolbar.visibility =View.GONE
+    }
 
+    override fun onDestroyView() {
+        mainActivity.toolbar.visibility =View.VISIBLE
+        super.onDestroyView()
+    }
+    override fun initView(view: View?) {
 
         view?.let { v ->
             binding = LoginFragmentBinding.bind(v);
@@ -34,7 +43,7 @@ class LoginFragment : BaseFragment() {
                 viewModel.login(username, password)
                         .observe(this.viewLifecycleOwner, Observer { token ->
                             //Navigation.findNavController(view).navigate)
-                            Navigation.findNavController(view).popBackStack(R.id.nav_home,true)
+                            Navigation.findNavController(view).popBackStack()
                             mainActivity.startSyncDataService()
                             LogUtils.e(token)
                         })

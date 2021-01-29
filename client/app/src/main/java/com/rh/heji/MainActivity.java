@@ -32,6 +32,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnConfirmListener;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
 import com.rh.heji.databinding.ActivityMainBinding;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private MainViewModel mainViewModel;
     private NavHeaderMainBinding navHeaderMainBinding;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
         });
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         setContentView(R.layout.activity_main);
-        toolbar =findViewById(R.id.toolbar);
-        fab =findViewById(R.id.fab);
+        toolbar = findViewById(R.id.toolbar);
+        fab = findViewById(R.id.fab);
         setSupportActionBar(toolbar);
         initDrawerLayout();
         initFab();
@@ -85,7 +87,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initDrawerLayout() {
         drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
+        //Logout Menu
+        Menu navMenu = navigationView.getMenu();
+        navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener(item -> {
+            new XPopup.Builder(MainActivity.this).asConfirm("退出确认", "确认退出当前用户吗?", () -> {
+                AppCache.getInstance().deleteToken();
+                finish();
+            }).show();
+            return false;
+        });
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -96,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+
         NavController.OnDestinationChangedListener listener = destinationChangedListener();
         navController.addOnDestinationChangedListener(listener);
         View navHeaderView = navigationView.getHeaderView(0);
@@ -104,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
             ToastUtils.showLong("");
             getNavController().navigate(R.id.nav_user_info);
         });
-//        Menu navMenu = navigationView.getMenu();
-
     }
 
     private void setDrawerLayout(JWTParse.User user) {
@@ -322,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
         menuItem.setActionView(view);
-        menuItem.setVisible(true);
+        setYearMonthItemVisible(false);
     }
 
 

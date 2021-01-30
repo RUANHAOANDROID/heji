@@ -52,7 +52,7 @@
     <fragment
         android:id="@+id/nav_register"
         android:name="com.rh.heji.ui.user.register.RegisterFragment"
-        android:label="register_fragment"
+        android:label="@string/register"
         tools:layout="@layout/register_fragment" />
     <fragment
         android:id="@+id/nav_login"
@@ -81,6 +81,6 @@
     <fragment
         android:id="@+id/nav_user_info"
         android:name="com.rh.heji.ui.user.info.UserInfoFragment"
-        android:label="fragment_user_info"
+        android:label="@string/userinfo"
         tools:layout="@layout/fragment_user_info" />
 </navigation>

@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         navHeaderView.setOnClickListener(v -> {
             ToastUtils.showLong("");
             getNavController().navigate(R.id.nav_user_info);
+            drawerLayout.closeDrawers();
         });
     }
 

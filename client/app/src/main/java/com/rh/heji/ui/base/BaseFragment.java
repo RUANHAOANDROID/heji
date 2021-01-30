@@ -39,12 +39,27 @@ public abstract class BaseFragment extends Fragment {
         return view;
     }
 
-    /**
-     * 初始化View
-     *
-     * @param view
-     */
-    protected abstract void initView(View view);
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUpViews();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        restoreVies();
+    }
 
     /**
      * 执行在onCreateView的时候
@@ -52,6 +67,29 @@ public abstract class BaseFragment extends Fragment {
      * @return layoutID
      */
     protected abstract int layoutId();
+
+    /**
+     * 初始化View
+     *
+     * @param view
+     */
+    protected abstract void initView(View view);
+
+
+    /**
+     * 设定MainActivity全局控件
+     */
+    protected void setUpViews() {
+
+    }
+
+    /**
+     * 恢复Main全局控件
+     */
+    protected void restoreVies() {
+
+    }
+
 
     public <T extends ViewModel> T getViewModel(Class<T> clazz) {
         return new ViewModelProvider(this).get(clazz);

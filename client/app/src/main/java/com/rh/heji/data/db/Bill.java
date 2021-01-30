@@ -23,14 +23,7 @@ import java.util.Objects;
  */
 @Entity(tableName = "bill")
 public class Bill {
-
     public static final String COLUMN_ID = "bill_id";
-
-    public static final int STATUS_SYNCED = 1;//已同步的
-    public static final int STATUS_DELETE = -1;//本地删除的
-    public static final int STATUS_NOT_SYNC = 0;//未同步的
-    public static final int STATUS_SYNCING = 3;//正在同步的
-
     @NonNull
     @PrimaryKey()
     @ColumnInfo(name = "bill_id")
@@ -86,7 +79,7 @@ public class Bill {
 
 
     @ColumnInfo(name = "sync_status")
-    int synced = STATUS_NOT_SYNC;
+    int synced = Constant.STATUS_NOT_SYNC;
 
     public Bill() {
 

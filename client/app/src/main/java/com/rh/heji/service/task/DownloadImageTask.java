@@ -9,6 +9,7 @@ import com.rh.heji.AppCache;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.BillDao;
+import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.Image;
 import com.rh.heji.data.db.ImageDao;
 
@@ -57,7 +58,7 @@ public class DownloadImageTask implements Runnable {
                                     sink.flush();
                                     sink.close();
                                     img.setLocalPath(imgFile.getAbsolutePath());
-                                    int updateCount =imageDao.updateImageLocalPath(String.valueOf(img.getId()), imgFile.getAbsolutePath(),Bill.STATUS_SYNCED);
+                                    int updateCount =imageDao.updateImageLocalPath(String.valueOf(img.getId()), imgFile.getAbsolutePath(), Constant.STATUS_SYNCED);
                                     LogUtils.d("已更新本地照片：", updateCount,img.getId(), imgFile.getAbsolutePath());
                                 } catch (Exception e) {
                                     e.printStackTrace();

@@ -6,6 +6,7 @@ import com.rh.heji.AppCache;
 import com.rh.heji.Constants;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Bill;
+import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.Image;
 import com.rh.heji.network.BaseResponse;
 import com.rh.heji.network.HeJiServer;
@@ -52,7 +53,7 @@ public class AsyncPushTask implements Runnable {
 
     private void uploadBills(List<String> billIds) throws IOException {
         billIds.stream().forEach(uid -> {
-            List<Bill> bills = AppDatabase.getInstance().billDao().findBillByIdAndSyncStatus(uid, Bill.STATUS_NOT_SYNC);
+            List<Bill> bills = AppDatabase.getInstance().billDao().findBillByIdAndSyncStatus(uid, Constant.STATUS_NOT_SYNC);
             if (bills.size() > 0)
                 bills.forEach(bill -> {
                     Response<BaseResponse<String>> response = null;
@@ -65,7 +66,7 @@ public class AsyncPushTask implements Runnable {
                         if (response.code() == 200) {
                             BaseResponse entity = response.body();
                             bill.setId(String.valueOf(entity.getDate()));
-                            bill.setSynced(Bill.STATUS_SYNCED);
+                            bill.setSynced(Constant.STATUS_SYNCED);
                             int updateCount =AppDatabase.getInstance().billDao().update(bill);
                             LogUtils.d(entity.toString());
                             if (bill.getImgCount() > 0) {
@@ -108,7 +109,7 @@ public class AsyncPushTask implements Runnable {
                     if (ticketResponse.code() == 200) {
                         String ticketsUUID = ticketResponse.body().data;
                         image.setOnlinePath(ticketsUUID);
-                        image.setSynced(Bill.STATUS_SYNCED);
+                        image.setSynced(Constant.STATUS_SYNCED);
                         AppDatabase.getInstance().billDao().update(bill);
                         AppDatabase.getInstance().imageDao().update(image);
                         LogUtils.d("图片上传成功：",ticketsUUID);

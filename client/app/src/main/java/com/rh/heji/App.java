@@ -3,6 +3,8 @@ package com.rh.heji;
 import android.app.Application;
 import android.content.Context;
 
+import androidx.lifecycle.ViewModelStore;
+
 import com.blankj.utilcode.util.CrashUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.rh.heji.data.AppDatabase;
@@ -20,11 +22,13 @@ import java.io.File;
  */
 public class App extends Application {
     static Context context;
+    private ViewModelStore appViewModelStore;
 
     @Override
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
+        appViewModelStore = new ViewModelStore();
         if (BuildConfig.DEBUG) {
 //            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
 //                    .detectDiskReads()
@@ -59,6 +63,9 @@ public class App extends Application {
 
     public static final String PATH_CARSH = "carsh";
 
+    public ViewModelStore viewModelStore() {
+        return appViewModelStore;
+    }
 
     /**
      * com.rh.heji 持久文件存储目录

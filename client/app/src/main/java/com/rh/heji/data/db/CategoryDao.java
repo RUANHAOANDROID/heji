@@ -21,10 +21,10 @@ public interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Category category);
 
-    @Query("select * from  bill_category where type =:type AND sync_status !=" + Category.STATUS_DELETE)
+    @Query("select * from  bill_category where type =:type AND sync_status !=" + Constant.STATUS_DELETE)
     LiveData<List<Category>> findIncomeOrExpenditure(int type);
 
-    @Query("select * from  bill_category where sync_status ==" + Category.STATUS_DELETE + " or sync_status ==" + Category.STATUS_NOT_SYNC)
+    @Query("select * from  bill_category where sync_status ==" + Constant.STATUS_DELETE + " or sync_status ==" + Constant.STATUS_NOT_SYNC)
     LiveData<List<Category>> observeNotUploadOrDelete();
 
     @Query("select category from bill_category where category =:name")

@@ -2,6 +2,7 @@ package com.rh.heji.service.task;
 
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Category;
+import com.rh.heji.data.db.Constant;
 import com.rh.heji.network.BaseResponse;
 import com.rh.heji.network.HeJiServer;
 import com.rh.heji.network.request.CategoryEntity;
@@ -30,9 +31,9 @@ public class AsyncCategoryTask implements Runnable {
     public void run() {
         if (null != categories && categories.size() > 0)
             categories.forEach(category -> {
-                if (category.getSynced() == Category.STATUS_DELETE) {
+                if (category.getSynced() == Constant.STATUS_DELETE) {
                     deleteCategory(category);
-                } else if (category.getSynced() == Category.STATUS_NOT_SYNC) {
+                } else if (category.getSynced() == Constant.STATUS_NOT_SYNC) {
                     pushCategory(category);
                 }
 
@@ -59,7 +60,7 @@ public class AsyncCategoryTask implements Runnable {
             if (null != response && response.isSuccessful()) {
                 if (response.code() == 200) {
                     String str = String.valueOf(response.body());
-                    category.setSynced(Category.STATUS_SYNCED);//已上传
+                    category.setSynced(Constant.STATUS_SYNCED);//已上传
                     AppDatabase.getInstance().categoryDao().update(category);
                 }
             }

@@ -4,11 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
-import static com.rh.heji.data.db.Bill.STATUS_NOT_SYNC;
+import static com.rh.heji.data.db.Constant.STATUS_NOT_SYNC;
 
 /**
  * Date: 2020/8/28
@@ -17,9 +16,6 @@ import static com.rh.heji.data.db.Bill.STATUS_NOT_SYNC;
  */
 @Entity(tableName = "bill_category", primaryKeys = {"category", "level", "type"})
 public class Category {
-    public static final int STATUS_SYNCED = 1;//已同步的
-    public static final int STATUS_DELETE = -1;//本地删除的
-    public static final int STATUS_NOT_SYNC = 0;//未同步的
 
     @NonNull
     @ColumnInfo(name = "category")

@@ -1,6 +1,7 @@
 package com.rh.heji.network.request;
 
 import com.rh.heji.data.db.Bill;
+import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.Image;
 
 import java.math.BigDecimal;
@@ -56,7 +57,7 @@ public class BillEntity {
         bill.setCategory(category);
         bill.setCreateTime(createTime);
         bill.setBillTime(time);
-        bill.setSynced(Bill.STATUS_SYNCED);
+        bill.setSynced(Constant.STATUS_SYNCED);
         bill.setUpdateTime(updateTime);
         if (images != null) {
             for (int i = 0; i < images.size(); i++) {

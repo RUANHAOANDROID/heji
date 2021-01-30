@@ -67,11 +67,6 @@ public class BillsHomeFragment extends BaseFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
     public void onResume() {
         getMainActivity().getToolbar().setVisibility(View.VISIBLE);
         getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_save, false);

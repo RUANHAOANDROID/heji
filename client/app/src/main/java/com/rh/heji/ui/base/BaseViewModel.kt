@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 open class BaseViewModel : ViewModel() {
 
     fun launch(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) = viewModelScope.launch {
-        contentValuesOf()
         try {
             block()
         } catch (e: Throwable) {

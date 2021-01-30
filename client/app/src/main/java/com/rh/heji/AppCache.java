@@ -32,6 +32,7 @@ public final class AppCache {
     Context context;
     private HeJiServer service;
     private Gson gson = new GsonBuilder().create();
+    AppViewModule appViewModule = null;
 
     public static AppCache getInstance() {
         return appCache;
@@ -52,6 +53,12 @@ public final class AppCache {
 
     public Gson getGson() {
         return gson;
+    }
+
+    public AppViewModule getAppViewModule() {
+        if (appViewModule == null)
+            appViewModule = new AppViewModule((Application) context);
+        return appViewModule;
     }
 
     /**

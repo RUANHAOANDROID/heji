@@ -32,6 +32,7 @@ public interface BillDao {
     @Insert(onConflict = REPLACE)
     long install(Bill billTab);
 
+
     @Transaction
     @Query("update bill set img_count=:count where bill_id=:id")
     int updateImageCount(int count, String id);

@@ -47,7 +47,7 @@ public interface ImageDao {
     @Query("SELECT * FROM bill_img WHERE bill_img_id =:billId")
     List<Image> findByBillImgId(String billId);
 
-    @Query("SELECT * FROM bill_img WHERE bill_img_id =:billId AND sync_status==" + Bill.STATUS_NOT_SYNC)
+    @Query("SELECT * FROM bill_img WHERE bill_img_id =:billId AND sync_status==" + Constant.STATUS_NOT_SYNC)
     List<Image> findByBillImgIdNotAsync(String billId);
 
     @Query("SELECT * FROM bill_img WHERE (img_path ISNULL OR img_path=='') AND(img_online_path!='' OR img_online_path != NULL)")

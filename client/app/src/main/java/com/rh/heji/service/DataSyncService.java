@@ -29,6 +29,7 @@ import com.rh.heji.R;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Category;
+import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.Image;
 import com.rh.heji.service.task.AsyncDeleteTask;
 import com.rh.heji.service.task.AsyncPullTask;
@@ -138,8 +139,8 @@ public class DataSyncService extends Service {
             mExecutor.execute(new DownloadImageTask(images));
         }
     };
-    LiveData<List<String>> deleteLiveData = Transformations.distinctUntilChanged(AppDatabase.getInstance().billDao().observeSyncStatus(Bill.STATUS_DELETE));
-    LiveData<List<String>> notUploadLiveData = Transformations.distinctUntilChanged(AppDatabase.getInstance().billDao().observeSyncStatus(Bill.STATUS_NOT_SYNC));
+    LiveData<List<String>> deleteLiveData = Transformations.distinctUntilChanged(AppDatabase.getInstance().billDao().observeSyncStatus(Constant.STATUS_DELETE));
+    LiveData<List<String>> notUploadLiveData = Transformations.distinctUntilChanged(AppDatabase.getInstance().billDao().observeSyncStatus(Constant.STATUS_NOT_SYNC));
     LiveData<List<Category>> categoryLiveData = Transformations.distinctUntilChanged(AppDatabase.getInstance().categoryDao().observeNotUploadOrDelete());
     LiveData<List<Image>> imagesLiveData = Transformations.distinctUntilChanged(AppDatabase.getInstance().imageDao().observerNotDownloadImages());
 

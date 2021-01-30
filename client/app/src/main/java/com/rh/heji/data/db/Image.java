@@ -9,8 +9,6 @@ import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
-import static com.rh.heji.data.db.Bill.STATUS_NOT_SYNC;
-
 /**
  * Date: 2020/11/19
  * Author: 锅得铁

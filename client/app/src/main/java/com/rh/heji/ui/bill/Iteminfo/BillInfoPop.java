@@ -24,6 +24,7 @@ import com.rh.heji.BuildConfig;
 import com.rh.heji.R;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Bill;
+import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.Image;
 import com.rh.heji.databinding.ItemImgBinding;
 import com.rh.heji.databinding.PopBilliInfoBinding;
@@ -134,7 +135,7 @@ public class BillInfoPop extends BottomPopupView {
     private void deleteBill() {
         new XPopup.Builder(getContext()).asConfirm("删除提示", "确认删除该条账单吗？",
                 () -> {
-                    bill.setSynced(Bill.STATUS_DELETE);
+                    bill.setSynced(Constant.STATUS_DELETE);
                     AppDatabase.getInstance().billDao().update(bill);
 //                     HeJiServer heJiServer = (HeJiServer) ServiceCreator.getInstance().createService(HeJiServer.class);
 //                     heJiServer.deleteBill(bill.getId()).enqueue(new Callback<BaseResponse>() {
@@ -190,7 +191,7 @@ public class BillInfoPop extends BottomPopupView {
                 ImageUtils.save(resource, imgFile, Bitmap.CompressFormat.JPEG);
             if (FileUtils.isFileExists(imgFile)) {
                 String imageLocalPath = imgFile.getAbsolutePath();
-                AppDatabase.getInstance().imageDao().updateImageLocalPath(String.valueOf(image.getId()),imageLocalPath,Bill.STATUS_SYNCED);
+                AppDatabase.getInstance().imageDao().updateImageLocalPath(String.valueOf(image.getId()),imageLocalPath,Constant.STATUS_SYNCED);
             }
         }
 

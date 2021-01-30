@@ -12,6 +12,7 @@ import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.BillType;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Category;
+import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.mongo.ObjectId;
 import com.rh.heji.utlis.http.basic.OkHttpConfig;
 
@@ -64,7 +65,7 @@ public class ETCViewModel extends ViewModel {
         Category category;
         if (categories.size() <= 0) {
             category = new Category("过路费", 1, BillType.EXPENDITURE.type());
-            category.setSynced(Category.STATUS_NOT_SYNC);
+            category.setSynced(Constant.STATUS_NOT_SYNC);
             AppDatabase.getInstance().categoryDao().insert(category);
         } else {
             category = categories.get(0);

@@ -7,6 +7,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.rh.heji.R;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Category;
+import com.rh.heji.data.db.Constant;
 import com.rh.heji.databinding.ItemCategoryManagerBinding;
 import com.rh.heji.utlis.textdraw.ColorGenerator;
 import com.rh.heji.utlis.textdraw.TextDrawable;
@@ -34,7 +35,7 @@ public class CategoryManagerAdapter extends BaseQuickAdapter<Category, BaseViewH
         itemBinding.roundImageView.setImageDrawable(drawable);
         itemBinding.tvLabel.setText(label.getLabel());
         itemBinding.btnDelete.setOnClickListener(v -> {
-            label.setSynced(Category.STATUS_DELETE);
+            label.setSynced(Constant.STATUS_DELETE);
             AppDatabase.getInstance().categoryDao().update(label);
             notifyItemChanged(getItemPosition(label));
         });

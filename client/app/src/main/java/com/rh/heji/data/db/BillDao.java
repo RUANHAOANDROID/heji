@@ -69,7 +69,7 @@ public interface BillDao {
      * @param end   结束时间
      * @return
      */
-    @Query("SELECT * FROM bill WHERE (bill_time BETWEEN :start AND :end) AND (sync_status !=" + Bill.STATUS_DELETE + ") ORDER BY bill_time DESC")
+    @Query("SELECT * FROM bill WHERE (bill_time BETWEEN :start AND :end) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC")
     LiveData<List<Bill>> findBillsByTime(long start, long end);
 
     /**
@@ -80,7 +80,7 @@ public interface BillDao {
      * @param end   结束时间
      * @return 账单列表
      */
-    @Query("SELECT * FROM bill WHERE (bill_time BETWEEN :start AND :end) AND (sync_status !=" + Bill.STATUS_DELETE + ") ORDER BY bill_time DESC")
+    @Query("SELECT * FROM bill WHERE (bill_time BETWEEN :start AND :end) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC")
     Flowable<List<Bill>> findBillsFlowableByTime(long start, long end);
 
     /**
@@ -90,7 +90,7 @@ public interface BillDao {
      * @param end   结束时间
      * @return
      */
-    @Query("SELECT SUM(money) AS value FROM Bill WHERE (bill_time BETWEEN :start AND :end )AND (type =:sz) AND (sync_status != " + Bill.STATUS_DELETE + ")")
+    @Query("SELECT SUM(money) AS value FROM Bill WHERE (bill_time BETWEEN :start AND :end )AND (type =:sz) AND (sync_status != " + Constant.STATUS_DELETE + ")")
     LiveData<Double> findTotalMoneyByTime(long start, long end, int sz);
 
     @Transaction
@@ -98,7 +98,7 @@ public interface BillDao {
     List<BillWithImage> findAllBillWhitImage();
 
     @Transaction
-    @Query("SELECT * FROM bill WHERE img_count > 0 AND sync_status==" + Bill.STATUS_NOT_SYNC)
+    @Query("SELECT * FROM bill WHERE img_count > 0 AND sync_status==" + Constant.STATUS_NOT_SYNC)
     List<BillWithImage> findNotSyncBillWhitImage();
 
     /**

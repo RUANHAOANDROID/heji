@@ -7,6 +7,7 @@ import com.rh.heji.AppCache;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Category;
+import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.Image;
 import com.rh.heji.network.BaseResponse;
 import com.rh.heji.network.HeJiServer;
@@ -106,7 +107,7 @@ public class AsyncPullTask implements Runnable {
                         String localCategoryName = AppDatabase.getInstance().categoryDao().existsByName(entity.getName());
                         if (TextUtils.isEmpty(localCategoryName)) {
                             Category dbCategory = entity.toDbCategory();
-                            dbCategory.setSynced(Category.STATUS_SYNCED);
+                            dbCategory.setSynced(Constant.STATUS_SYNCED);
                             AppDatabase.getInstance().categoryDao().insert(dbCategory);
                         }
                     });

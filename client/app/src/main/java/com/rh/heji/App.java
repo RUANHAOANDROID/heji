@@ -45,7 +45,7 @@ public class App extends Application {
         }
         HttpRetrofit.initClient(OkHttpConfig.getClientBuilder().build());
         AppCache.init(this);
-        fakeData();
+        AppCache.getInstance().getAppViewModule();
         CrashUtils.init();
         LogUtils.getConfig().setGlobalTag("tag");
     }
@@ -78,36 +78,5 @@ public class App extends Application {
         if (!headDir.exists())
             headDir.mkdir();
         return headDir.getPath();
-    }
-
-    void fakeData() {
-        Dealer u1 = new Dealer("司机");
-        Dealer u2 = new Dealer("祝");
-        Dealer u3 = new Dealer("皓");
-        Dealer u4 = new Dealer("孔");
-//        Category t1 = new Category("购车", 1, -1);
-//        Category t2 = new Category("加气", 1, -1);
-//        Category t3 = new Category("过路费", 1, -1);
-//        Category t4 = new Category("配件", 1, -1);
-//        Category t5 = new Category("维修", 1, -1);
-//        Category t6 = new Category("装饰", 1, -1);
-//        Category t7 = new Category("住宿", 1, -1);
-//        Category t8 = new Category("吃饭", 1, -1);
-//        Category t9 = new Category("罚款 ", 1, -1);
-//        Category t10 = new Category("拉货 ", 1, 1);
-        AppDatabase.getInstance().dealerDao().insert(u1);
-        AppDatabase.getInstance().dealerDao().insert(u2);
-        AppDatabase.getInstance().dealerDao().insert(u3);
-        AppDatabase.getInstance().dealerDao().insert(u4);
-//        AppDatabase.getInstance().categoryDao().insert(t1);
-//        AppDatabase.getInstance().categoryDao().insert(t2);
-//        AppDatabase.getInstance().categoryDao().insert(t3);
-//        AppDatabase.getInstance().categoryDao().insert(t4);
-//        AppDatabase.getInstance().categoryDao().insert(t5);
-//        AppDatabase.getInstance().categoryDao().insert(t6);
-//        AppDatabase.getInstance().categoryDao().insert(t7);
-//        AppDatabase.getInstance().categoryDao().insert(t8);
-//        AppDatabase.getInstance().categoryDao().insert(t9);
-//        AppDatabase.getInstance().categoryDao().insert(t10);
     }
 }

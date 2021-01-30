@@ -26,6 +26,9 @@ interface HeJiServer {
     @POST("bill/add")
     fun saveBill(@Body entity: BillEntity): Call<BaseResponse<String>>
 
+    @POST("bill/update")
+    fun updateBill(@Body entity: BillEntity): Call<BaseResponse<String>>
+
     @POST("bill/addBills")
     fun saveBills(@Body entity: List<BillEntity>): Call<BaseResponse<String>>
 
@@ -34,7 +37,7 @@ interface HeJiServer {
 
     @POST("bill/getBills")
     fun getBills(@Query("startTime") startTime: String?,
-                 @Query("endTime") uid: String?): Call<BaseResponse<List<BillEntity>>>
+                 @Query("endTime") endTime: String?): Call<BaseResponse<List<BillEntity>>>
 
     @POST("bill/export")
     fun exportBills(@Query("year") year: String?, @Query("month") month: String?): Call<ResponseBody>
@@ -52,7 +55,7 @@ interface HeJiServer {
     fun deleteCategoryByName(@Query("categoryName") categoryName: String): Call<BaseResponse<String>>
 
     @GET("category/getByBookId")//获取基础的类别
-    fun getCategories(@Query("book_id") book_id:String): Call<BaseResponse<List<CategoryEntity>>>
+    fun getCategories(@Query("book_id") book_id: String): Call<BaseResponse<List<CategoryEntity>>>
 
     /**
      * @param part

@@ -47,7 +47,7 @@ import static android.app.Activity.RESULT_OK;
  * 支出 收入
  */
 public class AddBillFragment extends BaseFragment {
-    private AddBillViewModel incomeViewModel;
+    private AddBillViewModel billViewModel;
     private CategoryViewModule categoryViewModule;
     IncomeFragmentBinding binding;
     CategoryTabFragment categoryTabFragment;
@@ -62,7 +62,7 @@ public class AddBillFragment extends BaseFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        incomeViewModel = getViewModel(AddBillViewModel.class);
+        billViewModel = getViewModel(AddBillViewModel.class);
         categoryViewModule = getViewModel(CategoryViewModule.class);
     }
 
@@ -99,12 +99,12 @@ public class AddBillFragment extends BaseFragment {
                 BillType billType = BillType.transform(category.getType());
                 binding.keyboard.setType(billType);
                 changeMoneyTextColor(billType);
-                String categoryName =category.getCategory();
+                String categoryName = category.getCategory();
                 if (category.getCategory().equals("管理")) {
-                    categoryName =billType.text();
+                    categoryName = billType.text();
                 }
-                incomeViewModel.getBill().setCategory(categoryName);
-                incomeViewModel.getBill().setType(category.getType());
+                billViewModel.getBill().setCategory(categoryName);
+                billViewModel.getBill().setType(category.getType());
             }
 
         });
@@ -125,13 +125,13 @@ public class AddBillFragment extends BaseFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                incomeViewModel.getBill().setRemark(s.toString().trim());
+                billViewModel.getBill().setRemark(s.toString().trim());
             }
         });
     }
 
     private void selectYearAndDay() {
-        String nowTime = incomeViewModel.getTime();
+        String nowTime = billViewModel.getTime();
         binding.tvBillTime.setText(nowTime);
         binding.tvBillTime.setOnClickListener(v -> {
             DatePickerDialog dialog = new DatePickerDialog(getMainActivity());
@@ -171,10 +171,10 @@ public class AddBillFragment extends BaseFragment {
      */
     private void setNoteTime(String selectTime) {
         binding.tvBillTime.setText(selectTime);
-        incomeViewModel.setTime(selectTime);
+        billViewModel.setTime(selectTime);
         if (BuildConfig.DEBUG) {
             LogUtils.d(selectTime);
-            long billTime = TimeUtils.string2Millis(incomeViewModel.getTime(), "yyyy-MM-dd HH:mm");
+            long billTime = TimeUtils.string2Millis(billViewModel.getTime(), "yyyy-MM-dd HH:mm");
             LogUtils.d(TimeUtils.millis2String(billTime, "yyyy-MM-dd HH:mm"));
         }
 
@@ -185,10 +185,10 @@ public class AddBillFragment extends BaseFragment {
      * 选择经手人
      */
     private void selectPerson() {
-        List<String> names = incomeViewModel.getDealers();//经手人名单
+        List<String> names = billViewModel.getDealers();//经手人名单
         if (names.size() > 0) {
             binding.tvUserLabel.setText("经手人:" + names.get(0));//默认经手人
-            incomeViewModel.getBill().setDealer(names.get(0));//设置默经手人
+            billViewModel.getBill().setDealer(names.get(0));//设置默经手人
         }
         binding.tvUserLabel.setOnClickListener(v -> {
             new XPopup.Builder(getContext())
@@ -196,7 +196,7 @@ public class AddBillFragment extends BaseFragment {
                     .asBottomList("请选择经手人", names.toArray(new String[names.size()]),
                             (position, text) -> {
                                 binding.tvUserLabel.setText("经手人:" + text);
-                                incomeViewModel.getBill().setDealer(text);
+                                billViewModel.getBill().setDealer(text);
                             })
                     .show();
         });
@@ -213,7 +213,7 @@ public class AddBillFragment extends BaseFragment {
             public void save(String result) {
                 ToastUtils.showLong(result);
                 BillType billType = binding.keyboard.getBillType();
-                saveBill(result,billType);
+                saveBill(result, billType);
             }
 
             @Override
@@ -243,22 +243,7 @@ public class AddBillFragment extends BaseFragment {
             ToastUtils.showShort("未填写金额");
             return;
         }
-        incomeViewModel.save(new ObjectId().toString(), money,billType).observe(getViewLifecycleOwner(), str -> {
-            //BillEntity entity = new BillEntity(bill);
-//            HeJiServer billService = (HeJiServer) ServiceCreator.getInstance().createService(HeJiServer.class);
-//                billService.saveBill(entity).enqueue(new BaseCallback<BaseResponse>() {
-//                    @Override
-//                    protected void onSuccess(BaseResponse data) throws IOException {
-//                        LogUtils.e(data.toString());
-//                        AppDatabase.getInstance().billDao().update(bill);
-//                    }
-//
-//                    @Override
-//                    protected void onError(BaseResponse response) {
-//                        super.onError(response);
-//                    }
-//                });
-            //AppDatabase.getInstance().imageDao().install(images);
+        billViewModel.save(new ObjectId().toString(), money, billType).observe(getViewLifecycleOwner(), str -> {
             NavController navController = Navigation.findNavController(view);
             navController.popBackStack();
         });
@@ -277,7 +262,7 @@ public class AddBillFragment extends BaseFragment {
                     .show();
             //selectImagePou.getLayoutParams().height = binding.keyboard.getRoot().getHeight();
             selectImagePou.setDeleteClickListener(data -> {
-                incomeViewModel.setImgUrls(data);
+                billViewModel.setImgUrls(data);
             });
             selectImagePou.setData(new ArrayList<>());
         });
@@ -285,7 +270,7 @@ public class AddBillFragment extends BaseFragment {
             binding.imgTicket.setText("图片(x" + data.size() + ")");
             selectImagePou.setData(data);
         };
-        incomeViewModel.getImgUrlsLive().observe(getViewLifecycleOwner(), imgObserver);
+        billViewModel.getImgUrlsLive().observe(getViewLifecycleOwner(), imgObserver);
     }
 
 
@@ -306,18 +291,18 @@ public class AddBillFragment extends BaseFragment {
                 });
 
                 setImages(mSelected);
-                if (incomeViewModel.getImgUrls().size() > 0) {
+                if (billViewModel.getImgUrls().size() > 0) {
                     mSelected.stream().forEach(s -> {
                         /**
                          * 包含的话就删除重新加
                          */
-                        if (incomeViewModel.getImgUrls().contains(s)) {
-                            incomeViewModel.getImgUrls().remove(s);
+                        if (billViewModel.getImgUrls().contains(s)) {
+                            billViewModel.getImgUrls().remove(s);
                         }
-                        incomeViewModel.addImgUrl(s);
+                        billViewModel.addImgUrl(s);
                     });
                 } else {
-                    incomeViewModel.setImgUrls(mSelected);
+                    billViewModel.setImgUrls(mSelected);
                 }
 
             }
@@ -327,8 +312,8 @@ public class AddBillFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        Stack stack=incomeViewModel.getKeyBoardStack();
-        if (null!=stack&&!stack.isEmpty()){
+        Stack stack = billViewModel.getKeyBoardStack();
+        if (null != stack && !stack.isEmpty()) {
             binding.keyboard.setStack(stack);
         }
     }
@@ -336,8 +321,8 @@ public class AddBillFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (binding!=null&&incomeViewModel!=null){
-            incomeViewModel.setKeyBoardStack(binding.keyboard.getStack());
+        if (binding != null && billViewModel != null) {
+            billViewModel.setKeyBoardStack(binding.keyboard.getStack());
         }
     }
 

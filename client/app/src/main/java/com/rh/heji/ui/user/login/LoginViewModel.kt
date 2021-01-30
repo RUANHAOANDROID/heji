@@ -14,7 +14,7 @@ class LoginViewModel : BaseViewModel() {
             var requestBody = HejiNetwork.getInstance().login(username, password)
             var token = requestBody.data
             loginLiveData.value = token
-            AppCache.getInstance().saveToken(token)
+            AppCache.instance.saveToken(token)
             ToastUtils.showLong(requestBody.data)
         }, {
             ToastUtils.showLong("登陆错误:${it.message}")

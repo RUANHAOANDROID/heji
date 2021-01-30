@@ -57,9 +57,9 @@ public class OkHttpConfig {
     static class HttpHeaderInterceptor implements Interceptor {
         @Override
         public Response intercept(Chain chain) throws IOException {
-            String bearerToken =AppCache.getInstance().getToken();
-            if (TextUtils.isEmpty(bearerToken)){
-                
+            String bearerToken = AppCache.Companion.getInstance().getToken();
+            if (TextUtils.isEmpty(bearerToken)) {
+
             }
             Request request = chain.request().newBuilder()
                     //.header("Content-Type", "application/json")

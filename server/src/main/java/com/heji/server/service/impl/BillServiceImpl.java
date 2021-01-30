@@ -53,12 +53,13 @@ public class BillServiceImpl extends BaseMongoTemplate implements BillService {
 
     @Override
     public MBill updateBill(MBill bill) {
-        Criteria cr = Criteria.where("_id").is(bill.get_id());
-        Query query = Query.query(cr);
-        Update update = new Update().set("images", bill.getImages());
-        // 执行更新，如果没有找到匹配查询的文档，则创建并插入一个新文档
-        UpdateResult updateResult = getMongoTemplate().upsert(query, update, MBill.class, BILL);
-        updateResult.getMatchedCount();
+//        Criteria cr = Criteria.where("_id").is(bill.get_id());
+//        Query query = Query.query(cr);
+//        Update update = new Update().set("images", bill.getImages());
+//        // 执行更新，如果没有找到匹配查询的文档，则创建并插入一个新文档
+//        UpdateResult updateResult = getMongoTemplate().upsert(query, update, MBill.class, BILL);
+//        updateResult.getMatchedCount();
+        mBillRepository.save(bill);
         return bill;
     }
 

@@ -44,7 +44,7 @@ public class CategoryServiceImpl extends BaseMongoTemplate implements CategorySe
 
     @Override
     public List<MCategory> findByBookId(String book_id) {
-        return null;
+        return mCategoryRepository.findAll();
     }
     @Override
     public List<MCategory> findAll() {

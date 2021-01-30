@@ -35,7 +35,7 @@ class RegisterViewModel : ViewModel() {
         user.code = code;
         viewModelScope.launch() {
             withContext(Dispatchers.IO) {
-                var response = AppCache.getInstance().heJiServer.register(user).execute();
+                var response = AppCache.instance.heJiServer.register(user).execute();
                 if (response.isSuccessful){
                     if (response.code()==200){
                         ToastUtils.showLong(response.message())

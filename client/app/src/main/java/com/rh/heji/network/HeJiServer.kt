@@ -1,5 +1,6 @@
 package com.rh.heji.network
 
+import com.rh.heji.data.db.Bill
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterViewModel
@@ -49,10 +50,7 @@ interface HeJiServer {
     fun addCategory(@Body categories: CategoryEntity): Call<BaseResponse<String>>
 
     @GET("category/delete")
-    fun deleteCategoryById(@Query("_id") _id: String?): Call<BaseResponse<String>>
-
-    @GET("category/deleteByName")
-    fun deleteCategoryByName(@Query("categoryName") categoryName: String): Call<BaseResponse<String>>
+    fun deleteCategoryById(@Query("_id") _id: String): Call<BaseResponse<String>>
 
     @GET("category/getByBookId")//获取基础的类别
     fun getCategories(@Query("book_id") book_id: String): Call<BaseResponse<List<CategoryEntity>>>
@@ -64,7 +62,7 @@ interface HeJiServer {
      */
     @Multipart
     @POST("image/uploadImage")
-    fun uploadImg(@Part part: MultipartBody.Part, @Query("billId") billId: String?, @Query("time") time: Long): Call<BaseResponse<String>>
+    fun uploadImg(@Part part: MultipartBody.Part, @Query("billId") billId: String, @Query("time") time: Long): Call<BaseResponse<String>>
 
     /**
      * 多个文件上传

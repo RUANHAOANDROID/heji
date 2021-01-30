@@ -45,7 +45,7 @@ public class App extends Application {
         }
         HttpRetrofit.initClient(OkHttpConfig.getClientBuilder().build());
         AppCache.init(this);
-        AppCache.getInstance().getAppViewModule();
+        AppCache.Companion.getInstance().getAppViewModule();
         CrashUtils.init();
         LogUtils.getConfig().setGlobalTag("tag");
     }

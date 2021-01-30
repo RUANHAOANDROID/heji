@@ -94,7 +94,7 @@ public class AddBillFragment extends BaseFragment {
     private void category() {
         categoryTabFragment = (CategoryTabFragment) getChildFragmentManager().findFragmentById(R.id.categoryFragment);
 
-        categoryViewModule.getSelectCategory().observe(getViewLifecycleOwner(), category -> {
+        categoryViewModule.getCategoryLiveData().observe(getViewLifecycleOwner(), category -> {
             if (null != category) {
                 BillType billType = BillType.transform(category.getType());
                 binding.keyboard.setType(billType);

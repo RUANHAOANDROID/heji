@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         initDrawerLayout();
         initFab();
-        String token = AppCache.getInstance().getToken();
+        String token = AppCache.Companion.getInstance().getToken();
         if (TextUtils.isEmpty(token)) {
             navController.navigate(R.id.nav_login);
         } else {
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         Menu navMenu = navigationView.getMenu();
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener(item -> {
             new XPopup.Builder(MainActivity.this).asConfirm("退出确认", "确认退出当前用户吗?", () -> {
-                AppCache.getInstance().deleteToken();
+                AppCache.Companion.getInstance().deleteToken();
                 finish();
             }).show();
             return false;

@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+import com.rh.heji.data.db.mongo.ObjectId;
 
 import java.util.Objects;
 
@@ -14,18 +17,25 @@ import static com.rh.heji.data.db.Constant.STATUS_NOT_SYNC;
  * Author: 锅得铁
  * #收入/支出 类型标签
  */
-@Entity(tableName = "bill_category", primaryKeys = {"category", "level", "type"})
+@Entity(tableName = "bill_category")
 public class Category {
+
+    @PrimaryKey()
+    @NonNull
+    @ColumnInfo(name = "_id")
+    String _id;
 
     @NonNull
     @ColumnInfo(name = "category")
     String category;
+
     @ColumnInfo(name = "level")
     int level;
     /**
      * 收入、支出
      */
-    @ColumnInfo(name = "type")
+    @NonNull
+    @ColumnInfo(name = "type", defaultValue = "-1")
     int type;
     /**
      * 在账本下排序
@@ -50,7 +60,20 @@ public class Category {
     }
 
     @Ignore
+    public Category(String _id) {
+        this._id = _id;
+    }
+
+    @Ignore
     public Category(@NonNull String label, int level, int szType) {
+        this.category = label;
+        this.level = level;
+        this.type = szType;
+    }
+
+    @Ignore
+    public Category(@NonNull String _id, String label, int level, int szType) {
+        this._id = _id;
         this.category = label;
         this.level = level;
         this.type = szType;
@@ -112,6 +135,23 @@ public class Category {
 
     public void setSynced(int synced) {
         this.synced = synced;
+    }
+
+    @NonNull
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(@NonNull String _id) {
+        this._id = _id;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     @Override

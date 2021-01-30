@@ -51,7 +51,7 @@ public class BillsController {
 
     @ResponseBody
     @GetMapping(value = {"/info"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getBillInfo(String billId) {
+    public String getBillInfo(@RequestParam String billId) {
         MBill bills = billService.getBillInfo(billId);
         return Result.success(bills);
     }
@@ -67,7 +67,7 @@ public class BillsController {
 
     @ResponseBody
     @GetMapping(value = {"delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String deleteById(String _id) {
+    public String deleteById(@RequestParam String _id) {
         imageService.removeBillImages(_id);//删除照片
         boolean isDeleted = billService.removeBill(_id);//删除账单
         return Result.success("删除成功:" , _id);
@@ -75,8 +75,8 @@ public class BillsController {
     }
 
     @ResponseBody
-    @GetMapping(value = {"update"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String updateBill(MBill bill) {
+    @PostMapping(value = {"update"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String updateBill(@RequestBody MBill bill) {
         billService.updateBill(bill);
         return Result.success("更新成功",bill.get_id());
     }

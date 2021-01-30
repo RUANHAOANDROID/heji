@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.Dealer
+import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.HejiNetwork
 import kotlinx.coroutines.launch
 
@@ -41,19 +42,18 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         AppDatabase.getInstance().dealerDao().insert(u2)
         AppDatabase.getInstance().dealerDao().insert(u3)
         AppDatabase.getInstance().dealerDao().insert(u4)
-        val c1 = Category("加气", 0, -1)
-        val c2 = Category("修理", 0, -1)
-        val c3 = Category("过路费", 0, -1)
-        val c4 = Category("罚款", 0, -1)
-        val c5 = Category("保险", 0, -1)
+        val c1 = Category(ObjectId().toString(),"加气", 0, -1)
+        val c2 = Category(ObjectId().toString(),"修理", 0, -1)
+        val c3 = Category(ObjectId().toString(),"过路费", 0, -1)
+        val c4 = Category(ObjectId().toString(),"罚款", 0, -1)
+        val c5 = Category(ObjectId().toString(),"保险", 0, -1)
+        val c6 = Category(ObjectId().toString(),"矿石", 0, 1)
 
-        val c6 = Category("矿石", 0, 1)
-
-        AppDatabase.getInstance().categoryDao().insert(c1)
-        AppDatabase.getInstance().categoryDao().insert(c2)
-        AppDatabase.getInstance().categoryDao().insert(c3)
-        AppDatabase.getInstance().categoryDao().insert(c4)
-        AppDatabase.getInstance().categoryDao().insert(c5)
-        AppDatabase.getInstance().categoryDao().insert(c6)
+//        AppDatabase.getInstance().categoryDao().insert(c1)
+//        AppDatabase.getInstance().categoryDao().insert(c2)
+//        AppDatabase.getInstance().categoryDao().insert(c3)
+//        AppDatabase.getInstance().categoryDao().insert(c4)
+//        AppDatabase.getInstance().categoryDao().insert(c5)
+//        AppDatabase.getInstance().categoryDao().insert(c6)
     }
 }

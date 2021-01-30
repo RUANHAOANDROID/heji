@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.rh.heji.data.db.Constant;
+import com.rh.heji.data.db.mongo.ObjectId;
 import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.R;
 import com.rh.heji.data.AppDatabase;
@@ -100,25 +101,11 @@ public class CategoryManagerFragment extends BaseFragment implements Observer<Li
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
-            saveCategory();
+            String name = binding.editCategoryValue.getText().toString().trim();
+            categoryViewModule.saveCategory(name, args.getIeType());
+            Navigation.findNavController(view).popBackStack();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void saveCategory() {
-        String name = binding.editCategoryValue.getText().toString().trim();
-        if (TextUtils.isEmpty(name)) {
-            ToastUtils.showShort("您必须填写分类名称");
-            return;
-        }
-        Category category = new Category();
-        category.setType(args.getIeType());
-        category.setLabel(name);
-        category.setLevel(0);
-        category.setSynced(Constant.STATUS_NOT_SYNC);
-        AppDatabase.getInstance().categoryDao().insert(category);
-        Navigation.findNavController(view).popBackStack();
-        ToastUtils.showShort("保存成功");
     }
 
 

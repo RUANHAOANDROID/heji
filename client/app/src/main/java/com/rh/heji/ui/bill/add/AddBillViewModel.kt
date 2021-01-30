@@ -3,19 +3,16 @@ package com.rh.heji.ui.bill.add
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.AppCache
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.Dealer
 import com.rh.heji.data.db.Image
-import com.rh.heji.network.BaseResponse
-import com.rh.heji.network.HeJiServer
+import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.ui.base.BaseViewModel
@@ -40,6 +37,7 @@ class AddBillViewModel : BaseViewModel() {
         }
     var keyBoardStack: Stack<String>? = null
     var saveLiveData: MutableLiveData<Bill>? = null
+    private val billRepository = BillRepository()
 
     /**
      * @param billId
@@ -73,13 +71,7 @@ class AddBillViewModel : BaseViewModel() {
             if (count > 0) {
                 ToastUtils.showShort("$count: 保存成功")
             }
-            var response = HejiNetwork.getInstance().billPush(BillEntity(bill))
-            if (response.getCode() == 200) {
-                if (response.data == billId) {
-                    bill.synced = Constant.STATUS_UPDATE
-                    AppDatabase.getInstance().billDao().update(bill)
-                }
-            }
+            billRepository.pushBill(BillEntity(bill))
         }, {
             ToastUtils.showShort(it.message)
         })

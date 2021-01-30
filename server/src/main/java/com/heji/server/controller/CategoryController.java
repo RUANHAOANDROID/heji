@@ -66,13 +66,4 @@ public class CategoryController {
         }
         return Result.success("删除成功");
     }
-    @ResponseBody
-    @GetMapping(value = {"/deleteByName"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String deleteByName(@RequestParam("categoryName") String name) {
-        boolean isOk = categoryService.deleteByName(name);
-        if (!isOk) {
-            throw new DeleteException("删除失败");
-        }
-        return Result.success("删除成功");
-    }
 }

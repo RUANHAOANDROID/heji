@@ -1,7 +1,13 @@
 package com.rh.heji
 
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
+import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.db.Category
+import com.rh.heji.data.db.Constant
+import com.rh.heji.data.db.Image
 import com.rh.heji.data.repository.BillRepository
-import com.rh.heji.network.request.BillEntity
+import com.rh.heji.service.task.DownloadImageTask
 import com.rh.heji.ui.base.BaseViewModel
 
 /**
@@ -16,21 +22,10 @@ class MainViewModel : BaseViewModel() {
     var homeUUID: String? = null
     var reportUUID: String? = null
     var settingUUID: String? = null
-    val billRepository: BillRepository by lazy { com.rh.heji.data.repository.BillRepository }
+    var deleteLiveData = Transformations.distinctUntilChanged(AppDatabase.getInstance().billDao().observeSyncStatus(Constant.STATUS_DELETE))
+    var notUploadLiveData = Transformations.distinctUntilChanged(AppDatabase.getInstance().billDao().observeSyncStatus(Constant.STATUS_NOT_SYNC))
+    var categoryLiveData = Transformations.distinctUntilChanged(AppDatabase.getInstance().categoryDao().observeNotUploadOrDelete())
+    var imagesLiveData = Transformations.distinctUntilChanged(AppDatabase.getInstance().imageDao().observerNotDownloadImages())
 
-    fun asyncBillSave(billEntity: BillEntity) {
-        launch({ billRepository.saveBill(billEntity) }, { it.printStackTrace() })
-    }
 
-    fun asyncBillUpdate(billEntity: BillEntity) {
-        launch({ billRepository.updateBill(billEntity) }, { it.printStackTrace() })
-    }
-
-    fun asyncBillDelete(_id: String) {
-        launch({ billRepository.deleteBill(_id) }, { it.printStackTrace() })
-    }
-
-    fun asyncBillPull(_id: String) {
-        launch({ billRepository.pullBill() }, { it.printStackTrace() })
-    }
 }

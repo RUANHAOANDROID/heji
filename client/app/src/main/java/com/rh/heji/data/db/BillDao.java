@@ -102,6 +102,9 @@ public interface BillDao {
     @Query("SELECT * FROM bill WHERE img_count > 0 AND sync_status==" + Constant.STATUS_NOT_SYNC)
     List<BillWithImage> findNotSyncBillWhitImage();
 
+    @Query("SELECT * FROM bill WHERE  sync_status==:syncStatus")
+    List<Bill> findBillsByStatus(int syncStatus);
+
     /**
      * @param bill
      */

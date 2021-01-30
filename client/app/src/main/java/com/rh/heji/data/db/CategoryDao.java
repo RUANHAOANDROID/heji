@@ -18,8 +18,17 @@ import java.util.List;
 @Dao
 public interface CategoryDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Category category);
+
+    @Query("select _id from bill_category where _id=:id")
+    String findCategoryID(String id);
+
+    @Query("select * from bill_category where sync_status=:syncStatus")
+    List<Category> findCategoryByStatic(int syncStatus);
+
+    @Query("select * from bill_category where category=:name and type=:type")
+    List<Category> findByNameAndType(String name, int type);
 
     @Query("select * from  bill_category where type =:type AND sync_status !=" + Constant.STATUS_DELETE)
     LiveData<List<Category>> findIncomeOrExpenditure(int type);
@@ -27,21 +36,8 @@ public interface CategoryDao {
     @Query("select * from  bill_category where sync_status ==" + Constant.STATUS_DELETE + " or sync_status ==" + Constant.STATUS_NOT_SYNC)
     LiveData<List<Category>> observeNotUploadOrDelete();
 
-    @Query("select category from bill_category where category =:name")
-    String existsByName(String name);
-
     @Query("select * from bill_category where category =:category")
     List<Category> queryByCategoryName(String category);
-
-    @Query("select * from bill_category where level =:level")
-    List<Category> queryByLevel(int level);
-
-
-    @Query("select * from bill_category where type =:type")
-    List<Category> queryByType(int type);
-
-    @Query("select * from bill_category where sync_status =:syncStatus ")
-    List<Category> queryBillByStatus(int syncStatus);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void update(Category category);

@@ -63,7 +63,7 @@ public class CategoryFragment extends BaseFragment {
     }
 
     Observer<List<Category>> labelObserver = categories -> {
-        Category selectCategory = categoryViewModule.getSelectCategory().getValue();
+        Category selectCategory = categoryViewModule.getSelectCategory();
         if (null != selectCategory) {
             categories.stream().forEach(category -> {
                 boolean isSelected = category.getCategory().equals(selectCategory.getCategory())

@@ -48,7 +48,7 @@ public class DownloadImageTask implements Runnable {
                     String serverPath = img.getOnlinePath();
                     if (!TextUtils.isEmpty(serverPath)) {
                         try {
-                            Response<ResponseBody> response = AppCache.getInstance().getHeJiServer().getImage(serverPath).execute();
+                            Response<ResponseBody> response = AppCache.Companion.getInstance().getHeJiServer().getImage(serverPath).execute();
                             if (null != response && response.isSuccessful() && response.code() == 200) {
                                 final File filesDir = App.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                                 File imgFile = new File(filesDir, img.getOnlinePath());

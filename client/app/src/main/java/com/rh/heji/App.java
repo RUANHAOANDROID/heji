@@ -51,8 +51,6 @@ public class App extends Application {
         AppCache.init(this);
         AppCache.Companion.getInstance().getAppViewModule();
         LogUtils.getConfig().setGlobalTag("tag");
-        String nullString =null;
-        Log.d(null,null);
     }
 
     @Override

@@ -35,7 +35,7 @@ public interface ImageDao {
     void delete(Image ticket);
 
     @Transaction
-    @Query("update bill_img set img_path=:imagePath, sync_status =:status where id =:id")
+    @Query("update bill_img set img_path=:imagePath, sync_status =:status where _id =:id")
     int updateImageLocalPath(String id, String imagePath, int status);
 
     @Query("select * from bill_img where img_online_path=:path")
@@ -46,6 +46,9 @@ public interface ImageDao {
 
     @Query("SELECT * FROM bill_img WHERE bill_img_id =:billId")
     List<Image> findByBillId(String billId);
+
+    @Query("SELECT * FROM bill_img WHERE _id =:id")
+    List<Image> findById(String id);
 
     @Query("SELECT * FROM bill_img WHERE bill_img_id =:billId AND sync_status==" + Constant.STATUS_NOT_SYNC)
     List<Image> findByBillImgIdNotAsync(String billId);

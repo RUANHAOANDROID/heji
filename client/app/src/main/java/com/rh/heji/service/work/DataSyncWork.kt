@@ -1,6 +1,7 @@
 package com.rh.heji.service.work
 
 import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.repository.BillRepository
@@ -155,30 +156,35 @@ class DataSyncWork {
             data?.let { serverBills ->
                 if (serverBills.isNotEmpty()) {
                     serverBills.forEach { serverBill ->
-                        val localBill = billDao.findByBillId(serverBill.id)
-                        if (serverBill.images.isEmpty()) {//不存在照片
-                            if (localBill.isEmpty())
-                                billDao.install(serverBill.toBill())
-                        } else {
-                            val localBillImage = AppDatabase.getInstance().imageDao().findByBillId(serverBill.id)//查询已有照片
-                            if (localBillImage.isEmpty()) {
-                                serverBill.images.forEach { sImage ->
-                                    var img: Image = Image()
-                                    img.billImageID = serverBill.id
-                                    img.onlinePath = sImage
-                                    img.synced = Constant.STATUS_SYNCED
-                                    AppDatabase.getInstance().imageDao().install(img)
-                                    var bill =serverBill.toBill();
-                                    bill.imgCount =serverBill.images.size
-                                    billDao.update(bill)
+                        val localBill = billDao.findByBillId(serverBill.id)//本地的
+
+                        if (localBill.isEmpty()) {//不存在直接存入
+                            billDao.install(serverBill.toBill())
+                        }
+                        var imagesId = serverBill.images//云图片
+                        if (null != imagesId && imagesId.size > 0) {//有图片
+                            imagesId.forEach { imgID ->
+                                var response = network.billPullImages(serverBill.id)
+                                if (response != null && response.code == 0 && response.date.isNotEmpty()) {
+                                    response.date?.forEach {
+                                        var image = Image()
+                                        image.id = it._id
+                                        image.md5 = it.md5
+                                        image.onlinePath = it._id
+                                        image.ext = it.ext
+                                        image.billImageID = serverBill.id
+                                        AppDatabase.getInstance().imageDao().install(image)
+                                    }
+                                    billDao.updateImageCount(response.date.size, serverBill.id)
                                 }
                             }
-                        }
 
+                        }
                     }
                 }
             }
 
         }
     }
+
 }

@@ -67,6 +67,7 @@ public class ImageController {
 
     @PostMapping("/uploadImage")
     public String uploadImage(@RequestParam("file") MultipartFile imageFile,
+                              @RequestParam(name = "_id") String _id,
                               @RequestParam(name = "billId", defaultValue = "0") String billId,
                               @RequestParam(name = "time", defaultValue = "0") long time) throws IOException, NoSuchAlgorithmException {
         if (Objects.isNull(billId) && billId.equals(""))
@@ -77,7 +78,7 @@ public class ImageController {
         if (Objects.isNull(bill))
             throw new NotFindBillException("账单不存在");
         String md5 = MD5Util.getMD5(imageFile.getInputStream());
-        MBillImage image = new MBillImage();
+        MBillImage image = new MBillImage().set_id(_id);
         String fileName = TimeUtils.millis2String(time) + imageFile.getOriginalFilename();
         image.setFilename(fileName);
         image.setExt(".jpg");

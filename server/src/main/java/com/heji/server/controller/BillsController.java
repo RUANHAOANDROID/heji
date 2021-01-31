@@ -72,6 +72,16 @@ public class BillsController {
     @ResponseBody
     @GetMapping(value = {"delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteById(@RequestParam String _id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        MBill mBill = billService.getBillInfo(_id);
+        if (null != mBill) {
+            if (!mBill.getCreateUser().equals(username)) {//查询是否是该用户创建
+                return Result.error("非法跨权限删除操作");
+            }
+        } else {
+            log.info("该账单已经不存在 id{}", _id);
+        }
+
         imageService.removeBillImages(_id);//删除照片
         boolean isDeleted = billService.removeBill(_id);//删除账单
         return Result.success("删除成功:", _id);

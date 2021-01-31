@@ -47,7 +47,7 @@ public class BillServiceImpl extends BaseMongoTemplate implements BillService {
         Criteria cr = Criteria.where("_id").is(_id);
         Query query = Query.query(cr);
         DeleteResult updateResult = getMongoTemplate().remove(query, BILL);
-        log.info("删除成功 delete count ={}, _id={}", updateResult.getDeletedCount(), _id);
+        log.info("删除 {} 条, _id={}", updateResult.getDeletedCount(), _id);
         return updateResult.getDeletedCount() > 0;
     }
 

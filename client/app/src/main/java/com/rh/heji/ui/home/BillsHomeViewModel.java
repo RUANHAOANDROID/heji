@@ -83,7 +83,7 @@ public class BillsHomeViewModel extends ViewModel {
     }
 
     public List<Image> getBillImages(String billId) {
-        return AppDatabase.getInstance().imageDao().findByBillImgId(billId);
+        return AppDatabase.getInstance().imageDao().findByBillId(billId);
     }
 
     @Override

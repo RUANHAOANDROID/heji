@@ -9,10 +9,11 @@ import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
 import com.google.gson.GsonBuilder
 import com.rh.heji.network.HeJiServer
+import com.rh.heji.ui.user.JWTParse
+import com.rh.heji.ui.user.JWTParse.getUser
+import com.rh.heji.ui.user.UserInfo
 import com.rh.heji.utlis.http.basic.ServiceCreator
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import java.io.*
 import java.nio.charset.StandardCharsets
@@ -43,7 +44,6 @@ class AppCache {
         heJiServer = ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer
         appViewModule = AppViewModule(app)
     }
-
 
     /**
      * 把文件公开。添加到扫描中

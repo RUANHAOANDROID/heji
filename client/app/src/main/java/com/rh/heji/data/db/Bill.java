@@ -68,6 +68,10 @@ public class Bill {
      */
     @ColumnInfo(name = "dealer")
     public String dealer;
+
+    @ColumnInfo(name = "create_user")
+    private String createUser;
+
     /**
      * 备注
      */
@@ -185,6 +189,14 @@ public class Bill {
 
     public void setImgCount(int imgCount) {
         this.imgCount = imgCount;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
     }
 
     @Ignore

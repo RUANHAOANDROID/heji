@@ -16,6 +16,8 @@ import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.ui.base.BaseViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.util.*
 import java.util.function.Consumer
@@ -66,16 +68,17 @@ class AddBillViewModel : BaseViewModel() {
             bill.setCategory(billType.text())
         }
         launch({
-            AppDatabase.getInstance().imageDao().install(images)
-            val count = AppDatabase.getInstance().billDao().install(bill)
-            if (count > 0) {
-                ToastUtils.showShort("$count: 保存成功")
+            withContext(Dispatchers.IO) {
+                AppDatabase.getInstance().imageDao().install(images)
+                val count = AppDatabase.getInstance().billDao().install(bill)
+                if (count > 0) {
+                    ToastUtils.showShort("$count: 保存成功")
+                }
+                saveLiveData?.postValue(bill)
             }
-            billRepository.pushBill(BillEntity(bill))
         }, {
             ToastUtils.showShort(it.message)
         })
-        saveLiveData?.postValue(bill)
         return saveLiveData!!
     }
 

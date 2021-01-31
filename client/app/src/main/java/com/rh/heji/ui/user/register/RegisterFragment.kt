@@ -35,8 +35,9 @@ class RegisterFragment : BaseFragment() {
                 return@setOnClickListener
             }
             val code = binding.editInviteCode.text.toString()
-            val tel = binding.editUser.text.toString()
-            viewModel.register(tel, code, password1).observe(viewLifecycleOwner, Observer {
+            val tel = binding.editTEL.text.toString()
+            val username =binding.editUserName.text.toString()
+            viewModel.register(username,tel, code, password1).observe(viewLifecycleOwner, Observer {
 
             })
         }

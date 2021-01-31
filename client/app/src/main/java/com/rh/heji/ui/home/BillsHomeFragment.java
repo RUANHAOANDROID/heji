@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.BusUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.lxj.xpopup.XPopup;
 import com.rh.heji.databinding.FragmentBillsHomeBinding;
@@ -50,7 +49,6 @@ public class BillsHomeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(layoutId(), container, false);
         initView(view);
-        BusUtils.post("TAG", "HELLO WORD");
         return view;
     }
 

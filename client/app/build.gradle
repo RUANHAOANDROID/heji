@@ -52,8 +52,8 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 
     flavorDimensions  "network"
@@ -146,7 +146,7 @@ dependencies {
     //spinner
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
     //工具框架
-    implementation 'com.blankj:utilcode:1.26.0'
+    implementation 'com.blankj:utilcode:1.30.5'
     //xpopup
     implementation 'com.lxj:xpopup:2.2.5'
     //图片压缩

@@ -1,6 +1,7 @@
 package com.rh.heji.network
 
 import com.rh.heji.AppCache
+import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import okhttp3.MultipartBody
@@ -8,6 +9,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.http.Part
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -28,17 +30,18 @@ class HejiNetwork {
     suspend fun categoryPull(_id: String = "0") = hejiServer.getCategories(_id).await()
 
     private suspend fun <T> Call<T>.await(): T {
+        //调用suspendCoroutine 挂起
         return suspendCoroutine { continuation ->
             enqueue(object : Callback<T> {
                 override fun onFailure(call: Call<T>, t: Throwable) {
-                    continuation.resumeWithException(t)
+                    continuation.resumeWithException(t)//异常恢复
                 }
 
                 override fun onResponse(call: Call<T>, response: Response<T>) {
                     val body = response.body()
                     val errorBody = response.errorBody()
                     when {
-                        body != null -> continuation.resume(body)
+                        body != null -> continuation.resume(body)//正常恢复
                         errorBody != null -> continuation.resumeWithException(RuntimeException(errorBody.string()))
                         else -> continuation.resumeWithException(RuntimeException("response body is null"))
                     }

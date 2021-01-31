@@ -7,7 +7,7 @@
     tools:context=".ui.user.register.RegisterFragment">
 
     <EditText
-        android:id="@+id/editUser"
+        android:id="@+id/editTEL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="209dp"
@@ -27,8 +27,8 @@
         android:ems="10"
         android:hint="密码"
         android:inputType="textPassword"
-        app:layout_constraintStart_toStartOf="@+id/editUser"
-        app:layout_constraintTop_toBottomOf="@+id/editUser" />
+        app:layout_constraintStart_toStartOf="@+id/editTEL"
+        app:layout_constraintTop_toBottomOf="@+id/editTEL" />
 
     <EditText
         android:id="@+id/editPassword2"
@@ -69,6 +69,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
+
+    <EditText
+        android:id="@+id/editUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintBottom_toTopOf="@+id/editTEL"
+        app:layout_constraintEnd_toEndOf="@+id/editTEL"
+        app:layout_constraintStart_toStartOf="@+id/editTEL" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

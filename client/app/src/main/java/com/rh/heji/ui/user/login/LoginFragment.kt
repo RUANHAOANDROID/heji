@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.blankj.utilcode.util.LogUtils
+import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.databinding.LoginFragmentBinding
 import com.rh.heji.ui.base.BaseFragment
@@ -54,7 +55,8 @@ class LoginFragment : BaseFragment() {
                             //Navigation.findNavController(view).navigate)
                             Navigation.findNavController(view).popBackStack()
                             mainActivity.startSyncDataService()
-                            LogUtils.e(token)
+                            AppCache.instance.appViewModule.asyncData()
+                            LogUtils.d(token)
                         })
             }
         }

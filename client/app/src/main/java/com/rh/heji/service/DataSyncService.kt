@@ -62,11 +62,11 @@ class DataSyncService : Service() {
     @SuppressLint("RestrictedApi")
     private fun syncBills() {
         if (!AppCache.instance.isLogin) return
-        GlobalScope.launch {
-            var dataAsyncWork = DataSyncWork()
-            dataAsyncWork.asyncBills()
-            dataAsyncWork.asyncCategory()
-        }
+//        GlobalScope.launch {
+//            var dataAsyncWork = DataSyncWork()
+//            dataAsyncWork.asyncBills()
+//            dataAsyncWork.asyncCategory()
+//        }
     }
 
 

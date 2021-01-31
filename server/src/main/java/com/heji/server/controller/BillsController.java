@@ -10,11 +10,13 @@ import com.heji.server.result.Result;
 import com.heji.server.service.BillService;
 import com.heji.server.service.ImageService;
 import com.heji.server.utils.TimeUtils;
+import io.jsonwebtoken.JwtParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -44,7 +46,9 @@ public class BillsController {
     @ResponseBody
     @PostMapping(value = {"/add"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String addBill(@RequestBody BillModule billModule) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         MBill mBill = new MBill(billModule);
+        mBill.setCreateUser(username);
         String billID = billService.addBill(mBill);
         return Result.success(billID);
     }
@@ -70,7 +74,7 @@ public class BillsController {
     public String deleteById(@RequestParam String _id) {
         imageService.removeBillImages(_id);//删除照片
         boolean isDeleted = billService.removeBill(_id);//删除账单
-        return Result.success("删除成功:" , _id);
+        return Result.success("删除成功:", _id);
         //return Result.success(_id);
     }
 
@@ -78,7 +82,7 @@ public class BillsController {
     @PostMapping(value = {"update"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateBill(@RequestBody MBill bill) {
         billService.updateBill(bill);
-        return Result.success("更新成功",bill.get_id());
+        return Result.success("更新成功", bill.get_id());
     }
 
     @PostMapping("/export")

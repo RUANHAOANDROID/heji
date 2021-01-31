@@ -19,6 +19,7 @@ public class BillModule {
     private String category;
     private Integer type;
     private String dealer;
+    private String createUser;
     private String remark;
     private String[] images;
     private long time;//选择的时间

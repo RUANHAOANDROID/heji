@@ -8,13 +8,15 @@ public interface UserService {
 
     void update(MUser mUser);
 
-    String login(String username,String password );
+    String login(String username, String password);
 
     User getUserId(String token);
 
     void logout(String mUser);
 
     MUser findByName(String username);
+
+    MUser findByTEL(String tel);
 
     MUser findByTel(String tel);
 }

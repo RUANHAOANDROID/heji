@@ -4,6 +4,7 @@ import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.MBillImage;
 import com.heji.server.exception.NotFindBillException;
 import com.heji.server.exception.NullFileException;
+import com.heji.server.result.Response;
 import com.heji.server.result.Result;
 import com.heji.server.service.BillService;
 import com.heji.server.service.ImageService;
@@ -49,6 +50,20 @@ public class ImageController {
         return imgBytes;
     }
 
+    /**
+     * @param bill_id 图片ID
+     * @return
+     * @throws IOException
+     */
+    @GetMapping(value = "/getBillImages", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public String getBillImages(@RequestParam String bill_id) throws IOException {
+        List<MBillImage> img = imageService.getBillImages(bill_id);
+        if (img.isEmpty() || img.size() == 0)
+            throw new NotFindBillException("账单图片没找到");
+        return Result.success(img);
+    }
+
 
     @PostMapping("/uploadImage")
     public String uploadImage(@RequestParam("file") MultipartFile imageFile,
@@ -56,14 +71,14 @@ public class ImageController {
                               @RequestParam(name = "time", defaultValue = "0") long time) throws IOException, NoSuchAlgorithmException {
         if (Objects.isNull(billId) && billId.equals(""))
             return Result.error("账单不存在");
-        if (time==0)
-            time =TimeUtils.getNowMills();
+        if (time == 0)
+            time = TimeUtils.getNowMills();
         MBill bill = billService.getBillInfo(billId);
         if (Objects.isNull(bill))
             throw new NotFindBillException("账单不存在");
         String md5 = MD5Util.getMD5(imageFile.getInputStream());
         MBillImage image = new MBillImage();
-        String fileName =TimeUtils.millis2String(time)+imageFile.getOriginalFilename();
+        String fileName = TimeUtils.millis2String(time) + imageFile.getOriginalFilename();
         image.setFilename(fileName);
         image.setExt(".jpg");
         image.setData(imageFile.getBytes());
@@ -83,7 +98,7 @@ public class ImageController {
         billService.updateBill(bill);
 
         log.info("上传文件 OriginalFilename={}, SaveFileName={}", imageFile.getOriginalFilename(), imgId);
-        return Result.success(imgId);
+        return Result.success(image);
     }
 
 

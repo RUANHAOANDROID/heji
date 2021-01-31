@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service("ImageService")
 public class ImageServiceImpl extends BaseMongoTemplate implements ImageService {
     final MImageRepository mImageRepository;
@@ -36,6 +38,22 @@ public class ImageServiceImpl extends BaseMongoTemplate implements ImageService 
         MBillImage mBillImage = getMongoTemplate().findOne(query, MBillImage.class, MBillImage.COLLECTION_NAME);
         //return mImageRepository.findById(imgId).get();
         return mBillImage;
+    }
+
+    @Override
+    public List<MBillImage> getBillImages(String bill_id) {
+        Criteria cr = Criteria.where("bill_id").is(bill_id);
+        Query query = Query.query(cr);
+        //排除图片文件数据
+        query.fields().exclude("data")
+//                .include("_id")
+//                .include("bill_id")
+//                .include("ext")
+//                .include("length")
+//                .include("bill_id")
+//                .include("md5")
+        ;
+        return getMongoTemplate().find(query, MBillImage.class, MBillImage.COLLECTION_NAME);
     }
 
     @Override

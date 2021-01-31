@@ -12,6 +12,7 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.Dealer
 import com.rh.heji.data.db.Image
+import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.BillEntity
@@ -58,7 +59,7 @@ class AddBillViewModel : BaseViewModel() {
         bill.billTime = billTime
         //
         val images = imgUrls.stream().map { s: String? ->
-            val image = Image(billId)
+            val image = Image(ObjectId().toString(),billId)
             image.localPath = s
             image
         }.collect(Collectors.toList())

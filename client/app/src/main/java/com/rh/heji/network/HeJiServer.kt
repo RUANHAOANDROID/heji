@@ -63,7 +63,10 @@ interface HeJiServer {
      */
     @Multipart
     @POST("image/uploadImage")
-    fun uploadImg(@Part part: MultipartBody.Part, @Query("billId") billId: String, @Query("time") time: Long): Call<BaseResponse<ImageEntity>>
+    fun uploadImg(@Part part: MultipartBody.Part,
+                  @Query("_id") _id: String,
+                  @Query("billId") billId: String,
+                  @Query("time") time: Long): Call<BaseResponse<ImageEntity>>
 
     /**
      * 多个文件上传

@@ -12,13 +12,17 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ClickUtils;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.lxj.xpopup.XPopup;
+import com.rh.heji.data.db.Image;
 import com.rh.heji.databinding.FragmentBillsHomeBinding;
 import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.R;
@@ -28,6 +32,8 @@ import com.rh.heji.ui.bill.adapter.BillInfoAdapter;
 import com.rh.heji.ui.bill.Iteminfo.BillInfoPop;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.rh.heji.Constants.BACKGROUND_ALPHA;
@@ -37,6 +43,10 @@ public class BillsHomeFragment extends BaseFragment {
     private BillsHomeViewModel homeViewModel;
     BillInfoAdapter adapter;
     private String homeUUID;
+    //最后点击时间
+    private long lastClickTime = 0L;
+    // 两次点击间隔不能少于1000ms
+    private static final int FAST_CLICK_DELAY_TIME = 1000;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -144,8 +154,12 @@ public class BillsHomeFragment extends BaseFragment {
         });
         binding.materialupAppBar.getBackground().setAlpha(BACKGROUND_ALPHA);
         adapter.setOnItemClickListener((adapter, view, position) -> {
-            Bill billTab = (Bill) adapter.getItem(position);
-            showBillItemPop(billTab);
+            if (System.currentTimeMillis() - lastClickTime >= FAST_CLICK_DELAY_TIME) {
+                Bill billTab = (Bill) adapter.getItem(position);
+                showBillItemPop(billTab);
+                lastClickTime = System.currentTimeMillis();
+            }
+
         });
         //差异化比对更新
         adapter.setDiffCallback(new DiffUtil.ItemCallback<Bill>() {
@@ -177,8 +191,10 @@ public class BillsHomeFragment extends BaseFragment {
                 .asCustom(popupView)/*.enableDrag(false)*/
                 .show();
         popupView.post(() -> {
-            popupView.setBill(billTab);
-            popupView.setBillImages(homeViewModel.getBillImages(billTab.getId()));
+            popupView.setBill(billTab);//账单信息
+            popupView.setBillImages(new ArrayList<>());//首先把图片重置
+            homeViewModel.getBillImages(billTab.getId()).observe(getViewLifecycleOwner(), images -> popupView.setBillImages(images));
+
         });
         popupView.show();
     }

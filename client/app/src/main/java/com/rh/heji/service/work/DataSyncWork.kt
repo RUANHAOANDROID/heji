@@ -22,18 +22,14 @@ class DataSyncWork {
             billsUpdate()
             billsPush()
             billsPull()
-
         }
     }
 
     suspend fun asyncCategory() {
         withContext(Dispatchers.IO) {
             categoryDelete()
-
             categoryUpdate()
-
             categoryPush()
-
             categoryPull()
         }
     }
@@ -137,13 +133,7 @@ class DataSyncWork {
         pushBills?.let {
             if (it.isNotEmpty() && it.size > 0) {
                 it.forEach { bill ->
-                    val images = AppDatabase.INSTANCE.imageDao().findByBillId(bill.id)
-                    billRepository.uploadImage(bill.getId())
-                    var response = network.billPush(BillEntity(bill))
-                    if (response.code == 0) {
-                        bill.synced = Constant.STATUS_SYNCED
-                        billDao.update(bill)
-                    }
+                    billRepository.pushBill(BillEntity(bill))
                 }
             }
         }
@@ -163,20 +153,19 @@ class DataSyncWork {
                         }
                         var imagesId = serverBill.images//云图片
                         if (null != imagesId && imagesId.size > 0) {//有图片
-                            imagesId.forEach { imgID ->
-                                var response = network.billPullImages(serverBill.id)
-                                if (response != null && response.code == 0 && response.date.isNotEmpty()) {
-                                    response.date?.forEach {
-                                        var image = Image()
-                                        image.id = it._id
-                                        image.md5 = it.md5
-                                        image.onlinePath = it._id
-                                        image.ext = it.ext
-                                        image.billImageID = serverBill.id
-                                        AppDatabase.getInstance().imageDao().install(image)
-                                    }
-                                    billDao.updateImageCount(response.date.size, serverBill.id)
+                            var response = network.billPullImages(serverBill.id)
+                            if (response != null && response.code == 0 && response.date.isNotEmpty()) {
+                                response.date?.forEach { entity ->
+                                    var image = Image()
+                                    image.id = entity._id
+                                    image.md5 = entity.md5
+                                    image.onlinePath = entity._id
+                                    image.ext = entity.ext
+                                    image.billImageID = serverBill.id
+                                    image.synced = Constant.STATUS_SYNCED
+                                    AppDatabase.getInstance().imageDao().install(image)
                                 }
+                                billDao.updateImageCount(response.date.size, serverBill.id)
                             }
 
                         }

@@ -39,6 +39,7 @@ class AppCache {
     val gson = GsonBuilder().create()
     lateinit var appViewModule: AppViewModule
 
+
     fun onInit(app: Application) {
         context = app
         heJiServer = ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer

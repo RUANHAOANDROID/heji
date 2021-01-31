@@ -51,7 +51,7 @@ public interface ImageDao {
     List<Image> findById(String id);
 
     @Query("SELECT * FROM bill_img WHERE bill_img_id =:billId AND sync_status==" + Constant.STATUS_NOT_SYNC)
-    List<Image> findByBillImgIdNotAsync(String billId);
+    List<Image> findByBillIdNotAsync(String billId);
 
     @Query("SELECT * FROM bill_img WHERE (img_path ISNULL OR img_path=='') AND(img_online_path!='' OR img_online_path != NULL)")
     LiveData<List<Image>> observerNotDownloadImages();

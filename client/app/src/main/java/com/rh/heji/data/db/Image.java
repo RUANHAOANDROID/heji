@@ -50,8 +50,9 @@ public class Image {
     }
 
     @Ignore
-    public Image(String imgID) {
-        this.billImageID = imgID;
+    public Image(String _id, String bill_id) {
+        this._id = _id;
+        this.billImageID = bill_id;
     }
 
     public String getId() {

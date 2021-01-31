@@ -6,6 +6,7 @@ import com.rh.heji.Constants
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Constant
+import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.BillEntity
@@ -68,8 +69,8 @@ class BillRepository {
     /**
      * 上传账单图片
      */
-    suspend fun uploadImage(_id: String) {
-        val images = imgDao.findByBillImgIdNotAsync(_id)
+    suspend fun uploadImage(bill_id: String) {
+        val images = imgDao.findByBillIdNotAsync(bill_id)
         if (images.isNotEmpty()) {
             images.forEach { image ->
                 var img = File(image.localPath)
@@ -86,7 +87,8 @@ class BillRepository {
                 val requestBody = RequestBody.create("image/png".toMediaTypeOrNull(), img)
                 val part: MultipartBody.Part = MultipartBody.Part.createFormData("file", fileName, requestBody)
                 val time = img.lastModified()
-                val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part, _id, time)
+                val objectId = ObjectId().toString()
+                val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part, objectId, bill_id, time)
                 response.data.let { imgUUID ->
                     image.onlinePath = response.data._id
                     image.md5 = response.data.md5

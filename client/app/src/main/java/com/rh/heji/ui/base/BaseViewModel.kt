@@ -16,4 +16,12 @@ open class BaseViewModel : ViewModel() {
         }
     }
 
+    fun launchIO(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            block()
+        } catch (e: Throwable) {
+            error(e)
+        }
+    }
+
 }

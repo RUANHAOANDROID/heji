@@ -23,7 +23,7 @@ class HejiNetwork {
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
     suspend fun billUpdate(billEntity: BillEntity) = hejiServer.updateBill(billEntity).await()
     suspend fun billPull(startTime: String, endTime: String) = hejiServer.getBills(startTime, endTime).await()
-    suspend fun billImageUpload(@Part part: MultipartBody.Part, bill_id: String, time: Long) = hejiServer.uploadImg(part, bill_id, time).await()
+    suspend fun billImageUpload(@Part part: MultipartBody.Part, _id: String, bill_id: String, time: Long) = hejiServer.uploadImg(part, _id, bill_id, time).await()
     suspend fun billPullImages(_id: String) = hejiServer.getBillImages(_id).await()
 
     suspend fun categoryPush(category: CategoryEntity) = hejiServer.addCategory(category).await()

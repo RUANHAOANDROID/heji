@@ -15,10 +15,12 @@ import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.TimeUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BottomPopupView;
+import com.lxj.xpopup.impl.ConfirmPopupView;
 import com.rh.heji.App;
 import com.rh.heji.AppCache;
 import com.rh.heji.BuildConfig;
@@ -30,11 +32,13 @@ import com.rh.heji.data.db.Image;
 import com.rh.heji.databinding.ItemImgBinding;
 import com.rh.heji.databinding.PopBilliInfoBinding;
 import com.rh.heji.ui.bill.img.ImageLoader;
+import com.rh.heji.ui.user.JWTParse;
 import com.rh.heji.utlis.GlideApp;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,7 +51,7 @@ import java.util.stream.Collectors;
 public class BillInfoPop extends BottomPopupView {
     private Bill bill;
     PopBilliInfoBinding binding;
-    private TicketPopuInfoAdapter ticketAdapter;
+    private ImagePopupInfoAdapter imagePopupInfoAdapter;
 
     public BillInfoPop(@NonNull Context context) {
         super(context);
@@ -67,15 +71,25 @@ public class BillInfoPop extends BottomPopupView {
     }
 
     public void setBillImages(List<Image> images) {
-        if (images.isEmpty()) return;
+        if (images.isEmpty()) {
+            if (imagePopupInfoAdapter != null) {
+                imagePopupInfoAdapter.setNewInstance(new ArrayList<>());
+                imagePopupInfoAdapter.notifyDataSetChanged();
+            }
+            return;
+        }
+
         initTicketImg();
         //服务器返回的是图片的ID、需要加上前缀
         List<Image> imagePaths = images.stream().map(image -> {
-            String path = BuildConfig.HTTP_URL + "/image/" + image.getOnlinePath();
-            image.setOnlinePath(path);
+            String onlinePath = image.getOnlinePath();
+            if (null != onlinePath && !image.getOnlinePath().contains("http")) {
+                String path = BuildConfig.HTTP_URL + "/image/" + image.getOnlinePath();
+                image.setOnlinePath(path);
+            }
             return image;
         }).collect(Collectors.toList());
-        ticketAdapter.setNewInstance(imagePaths);
+        imagePopupInfoAdapter.setNewInstance(imagePaths);
     }
 
     @Override
@@ -98,10 +112,10 @@ public class BillInfoPop extends BottomPopupView {
     private void initTicketImg() {
         binding.ticketRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        ticketAdapter = new TicketPopuInfoAdapter();
-        binding.ticketRecycler.setAdapter(ticketAdapter);
+        imagePopupInfoAdapter = new ImagePopupInfoAdapter();
+        binding.ticketRecycler.setAdapter(imagePopupInfoAdapter);
 
-        ticketAdapter.setDiffCallback(new DiffUtil.ItemCallback<Image>() {
+        imagePopupInfoAdapter.setDiffCallback(new DiffUtil.ItemCallback<Image>() {
             @Override
             public boolean areItemsTheSame(@NonNull Image oldItem, @NonNull Image newItem) {
                 return oldItem.equals(newItem);
@@ -112,7 +126,7 @@ public class BillInfoPop extends BottomPopupView {
                 return oldItem.equals(newItem);
             }
         });
-        ticketAdapter.setOnItemClickListener((adapter, view, position) -> {
+        imagePopupInfoAdapter.setOnItemClickListener((adapter, view, position) -> {
             showTicketImg(view, position);
         });
 
@@ -120,11 +134,11 @@ public class BillInfoPop extends BottomPopupView {
 
 
     private void showTicketImg(View itemView, int itemPosition) {
-        List<Object> objects = ticketAdapter.getData().stream().map((Function<Image, Object>) image -> ticketAdapter.getImagePath(image)).collect(Collectors.toList());
+        List<Object> objects = imagePopupInfoAdapter.getData().stream().map((Function<Image, Object>) image -> imagePopupInfoAdapter.getImagePath(image)).collect(Collectors.toList());
         if (objects.isEmpty()) return;
         new XPopup.Builder(getContext()).asImageViewer((ImageView) itemView, itemPosition, objects,
                 (popupView, position1) -> {
-                    popupView.updateSrcView((ImageView) ticketAdapter.getViewByPosition(itemPosition, R.id.itemImage));
+                    popupView.updateSrcView((ImageView) imagePopupInfoAdapter.getViewByPosition(itemPosition, R.id.itemImage));
                 }, new ImageLoader())
                 .isShowSaveButton(false)
                 .show();
@@ -136,10 +150,17 @@ public class BillInfoPop extends BottomPopupView {
     private void deleteBill() {
         new XPopup.Builder(getContext()).asConfirm("删除提示", "确认删除该条账单吗？",
                 () -> {
-                    bill.setSynced(Constant.STATUS_DELETE);
-                    AppDatabase.getInstance().billDao().update(bill);
-                    AppCache.Companion.getInstance().getAppViewModule().billDelete(bill.getId());
+                    JWTParse.User user = JWTParse.INSTANCE.getUser(AppCache.Companion.getInstance().getToken());
+                    String createUser = bill.getCreateUser();
+                    if (createUser == null || bill.getCreateUser().equals(user.getUsername())) {
+                        bill.setSynced(Constant.STATUS_DELETE);
+                        AppDatabase.getInstance().billDao().update(bill);
+                        AppCache.Companion.getInstance().getAppViewModule().billDelete(bill.getId());
+                    } else {
+                        ToastUtils.showLong("只有账单创建人有权删除该账单");
+                    }
                     BillInfoPop.this.dismiss();
+
                 }).show();
 
     }
@@ -147,10 +168,10 @@ public class BillInfoPop extends BottomPopupView {
     /**
      * 票据图片Adapter
      */
-    public static class TicketPopuInfoAdapter extends BaseQuickAdapter<Image, BaseViewHolder> {
+    public static class ImagePopupInfoAdapter extends BaseQuickAdapter<Image, BaseViewHolder> {
         ItemImgBinding binding;
 
-        public TicketPopuInfoAdapter() {
+        public ImagePopupInfoAdapter() {
             super(R.layout.item_img);
         }
 
@@ -175,7 +196,7 @@ public class BillInfoPop extends BottomPopupView {
                 ImageUtils.save(resource, imgFile, Bitmap.CompressFormat.JPEG);
             if (FileUtils.isFileExists(imgFile)) {
                 String imageLocalPath = imgFile.getAbsolutePath();
-                AppDatabase.getInstance().imageDao().updateImageLocalPath(String.valueOf(image.getId()),imageLocalPath,Constant.STATUS_SYNCED);
+                AppDatabase.getInstance().imageDao().updateImageLocalPath(String.valueOf(image.getId()), imageLocalPath, Constant.STATUS_SYNCED);
             }
         }
 

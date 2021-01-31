@@ -9,6 +9,7 @@ import com.rh.heji.data.db.Constant
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.BillEntity
+import com.rh.heji.network.response.ImageEntity
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -67,7 +68,7 @@ class BillRepository {
     /**
      * 上传账单图片
      */
-     suspend fun uploadImage(_id: String) {
+    suspend fun uploadImage(_id: String) {
         val images = imgDao.findByBillImgIdNotAsync(_id)
         if (images.isNotEmpty()) {
             images.forEach { image ->
@@ -85,9 +86,11 @@ class BillRepository {
                 val requestBody = RequestBody.create("image/png".toMediaTypeOrNull(), img)
                 val part: MultipartBody.Part = MultipartBody.Part.createFormData("file", fileName, requestBody)
                 val time = img.lastModified()
-                val response: BaseResponse<String> = hejiNetwork.billImageUpload(part, _id, time)
+                val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part, _id, time)
                 response.data.let { imgUUID ->
-                    image.onlinePath = imgUUID
+                    image.onlinePath = response.data._id
+                    image.md5 = response.data.md5
+                    image.id = response.data._id
                     image.synced = Constant.STATUS_SYNCED
                     AppDatabase.getInstance().imageDao().update(image)
                     LogUtils.d("图片上传成功：", imgUUID)

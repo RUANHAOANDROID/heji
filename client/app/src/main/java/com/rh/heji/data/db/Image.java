@@ -23,8 +23,9 @@ public class Image {
     public static final String COLUMN_ONLINE_PATH = "img_online_path";
     public static final String COLUMN_STATUS = "sync_status";
 
-    @PrimaryKey(autoGenerate = true)
-    long id;
+    @NonNull
+    @PrimaryKey()
+    String _id;
 
 
     @ForeignKey(entity = Bill.class, parentColumns = "bill_id", childColumns = "bill_img_id", onDelete = ForeignKey.CASCADE)
@@ -32,14 +33,18 @@ public class Image {
     @ColumnInfo(name = COLUMN_ID)
     String billImageID;
 
+    String md5;
+
+    private String ext;
+
     @ColumnInfo(name = COLUMN_PATH)
     String localPath;
 
     @ColumnInfo(name = COLUMN_ONLINE_PATH)
     String onlinePath;
 
-    @ColumnInfo(name = COLUMN_STATUS,defaultValue = "0")
-    int synced ;
+    @ColumnInfo(name = COLUMN_STATUS, defaultValue = "0")
+    int synced;
 
     public Image() {
     }
@@ -49,12 +54,12 @@ public class Image {
         this.billImageID = imgID;
     }
 
-    public long getId() {
-        return id;
+    public String getId() {
+        return _id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(String id) {
+        this._id = id;
     }
 
     public String getLocalPath() {
@@ -95,14 +100,30 @@ public class Image {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
-        return id == image.id &&
+        return _id == image._id &&
                 billImageID.equals(image.billImageID) &&
                 Objects.equals(localPath, image.localPath) &&
                 Objects.equals(onlinePath, image.onlinePath);
     }
 
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(id, billImageID, localPath, onlinePath);
+        return Objects.hash(_id, billImageID, localPath, onlinePath);
+    }
+
+    public String getExt() {
+        return ext;
+    }
+
+    public void setExt(String ext) {
+        this.ext = ext;
     }
 }

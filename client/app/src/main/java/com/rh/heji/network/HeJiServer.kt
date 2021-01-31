@@ -3,6 +3,7 @@ package com.rh.heji.network
 import com.rh.heji.data.db.Bill
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
+import com.rh.heji.network.response.ImageEntity
 import com.rh.heji.ui.user.register.RegisterViewModel
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -62,7 +63,7 @@ interface HeJiServer {
      */
     @Multipart
     @POST("image/uploadImage")
-    fun uploadImg(@Part part: MultipartBody.Part, @Query("billId") billId: String, @Query("time") time: Long): Call<BaseResponse<String>>
+    fun uploadImg(@Part part: MultipartBody.Part, @Query("billId") billId: String, @Query("time") time: Long): Call<BaseResponse<ImageEntity>>
 
     /**
      * 多个文件上传
@@ -77,6 +78,10 @@ interface HeJiServer {
     @Streaming
     @GET("image/downloadFile/{fileName}")
     fun downloadFile(@Path("fileName") fileName: String): Call<ResponseBody>
+
+    @Streaming
+    @GET("image/getBillImages")
+    fun getBillImages(@Query("bill_id") bill_id: String): Call<BaseResponse<List<ImageEntity>>>
 
     @Streaming
     @GET("image/{imageId}")

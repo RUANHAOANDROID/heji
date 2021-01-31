@@ -24,10 +24,12 @@ class HejiNetwork {
     suspend fun billUpdate(billEntity: BillEntity) = hejiServer.updateBill(billEntity).await()
     suspend fun billPull(startTime: String, endTime: String) = hejiServer.getBills(startTime, endTime).await()
     suspend fun billImageUpload(@Part part: MultipartBody.Part, bill_id: String, time: Long) = hejiServer.uploadImg(part, bill_id, time).await()
+    suspend fun billPullImages(_id: String) = hejiServer.getBillImages(_id).await()
 
     suspend fun categoryPush(category: CategoryEntity) = hejiServer.addCategory(category).await()
     suspend fun categoryDelete(_id: String) = hejiServer.deleteCategoryById(_id).await()
     suspend fun categoryPull(_id: String = "0") = hejiServer.getCategories(_id).await()
+
 
     private suspend fun <T> Call<T>.await(): T {
         //调用suspendCoroutine 挂起

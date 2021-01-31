@@ -63,7 +63,7 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
         String code = mUser.getCode();//邀请码
         boolean exists = mVerificationService.existsCode(code);//邀请码存在
         if (exists) {
-            MUser mUser0 = findByName(mUser.getName());
+            MUser mUser0 = findByTel(mUser.getTel());
             if (null != mUser0) {
                 throw new RuntimeException(" 用户已存在");
             }
@@ -118,6 +118,13 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
     @Override
     public MUser findByName(String username) {
         Criteria criteria = Criteria.where("name").is(username);
+        Query query = new Query(criteria);
+        return getMongoTemplate().findOne(query, MUser.class);
+    }
+
+    @Override
+    public MUser findByTEL(String tel) {
+        Criteria criteria = Criteria.where("tel").is(tel);
         Query query = new Query(criteria);
         return getMongoTemplate().findOne(query, MUser.class);
     }

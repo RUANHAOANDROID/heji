@@ -41,6 +41,8 @@ public class MBill {
 
     private String dealer;
 
+    private String createUser;
+
     private String remark;
 
     private String[] images;
@@ -66,8 +68,9 @@ public class MBill {
         type = billModule.getType();
         dealer = billModule.getDealer();
         remark = billModule.getRemark();
-        time = billModule.getTime() ;
+        time = billModule.getTime();
         createTime = billModule.getCreateTime();
         updateTime = billModule.getUpdateTime();
+        createUser = billModule.getCreateUser();
     }
 }

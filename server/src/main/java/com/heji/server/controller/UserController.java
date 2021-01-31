@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping(value = {"/register"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String register(@RequestBody UserInfo userInfo) {
         MUser mUser = new MUser()
-                .setName(userInfo.getTel())
+                .setName(userInfo.getUsername())
                 .setPassword(userInfo.getPassword())
                 .setTel(userInfo.getTel())
                 .setCode(userInfo.getCode());

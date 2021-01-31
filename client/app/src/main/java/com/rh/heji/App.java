@@ -1,10 +1,15 @@
 package com.rh.heji;
 
+import android.Manifest;
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelStore;
 
+import com.balsikandar.crashreporter.CrashReporter;
 import com.blankj.utilcode.util.CrashUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.rh.heji.data.AppDatabase;
@@ -43,11 +48,15 @@ public class App extends Application {
 //                    .penaltyDeath()
 //                    .build());
         }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            CrashUtils.init(storage("Crash"));
+        }
         HttpRetrofit.initClient(OkHttpConfig.getClientBuilder().build());
         AppCache.init(this);
         AppCache.Companion.getInstance().getAppViewModule();
-        CrashUtils.init();
         LogUtils.getConfig().setGlobalTag("tag");
+        String nullString =null;
+        Log.d(null,null);
     }
 
     @Override
@@ -56,12 +65,9 @@ public class App extends Application {
         }
         super.onTerminate();
     }
-
     public static Context getContext() {
         return context;
     }
-
-    public static final String PATH_CARSH = "carsh";
 
     public ViewModelStore viewModelStore() {
         return appViewModelStore;
@@ -79,4 +85,5 @@ public class App extends Application {
             headDir.mkdir();
         return headDir.getPath();
     }
+
 }

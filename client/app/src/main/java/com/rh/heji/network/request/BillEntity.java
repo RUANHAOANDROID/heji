@@ -23,7 +23,7 @@ public class BillEntity {
     private int type;
 
     private String dealer;
-
+    private String createUser;
     private String remark;
 
     private List<String> images;
@@ -44,6 +44,7 @@ public class BillEntity {
         this.time = bill.getBillTime();
         this.createTime = bill.getCreateTime();
         this.updateTime = bill.getUpdateTime();
+        this.createUser = bill.getCreateUser();
         int imgCount = bill.getImgCount();
     }
 
@@ -59,6 +60,7 @@ public class BillEntity {
         bill.setBillTime(time);
         bill.setSynced(Constant.STATUS_SYNCED);
         bill.setUpdateTime(updateTime);
+        bill.setCreateUser(createUser);
         if (images != null) {
             for (int i = 0; i < images.size(); i++) {
                 Image image = new Image();

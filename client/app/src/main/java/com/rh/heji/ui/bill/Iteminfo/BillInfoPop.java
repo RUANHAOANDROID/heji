@@ -20,6 +20,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BottomPopupView;
 import com.rh.heji.App;
+import com.rh.heji.AppCache;
 import com.rh.heji.BuildConfig;
 import com.rh.heji.R;
 import com.rh.heji.data.AppDatabase;
@@ -137,24 +138,7 @@ public class BillInfoPop extends BottomPopupView {
                 () -> {
                     bill.setSynced(Constant.STATUS_DELETE);
                     AppDatabase.getInstance().billDao().update(bill);
-//                     HeJiServer heJiServer = (HeJiServer) ServiceCreator.getInstance().createService(HeJiServer.class);
-//                     heJiServer.deleteBill(bill.getId()).enqueue(new Callback<BaseResponse>() {
-//                         @Override
-//                         public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-//                             LogUtils.e(response.body().msg);
-//                             if (null != response && response.isSuccessful()) {
-//                                 if (response.code() == 200) {
-//                                     AppDatabase.getInstance().billDao().delete(bill);
-//                                 }
-//                             }
-//
-//                         }
-//
-//                         @Override
-//                         public void onFailure(Call<BaseResponse> call, Throwable t) {
-//                             t.printStackTrace();
-//                         }
-//                     });
+                    AppCache.Companion.getInstance().getAppViewModule().billDelete(bill.getId());
                     BillInfoPop.this.dismiss();
                 }).show();
 

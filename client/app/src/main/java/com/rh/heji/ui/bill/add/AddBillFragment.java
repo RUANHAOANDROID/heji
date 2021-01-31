@@ -24,6 +24,9 @@ import com.blankj.utilcode.util.UriUtils;
 import com.lxj.xpopup.XPopup;
 import com.matisse.Matisse;
 import com.matisse.entity.ConstValue;
+import com.rh.heji.AppCache;
+import com.rh.heji.data.repository.BillRepository;
+import com.rh.heji.network.request.BillEntity;
 import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.BuildConfig;
 import com.rh.heji.R;
@@ -243,9 +246,10 @@ public class AddBillFragment extends BaseFragment {
             ToastUtils.showShort("未填写金额");
             return;
         }
-        billViewModel.save(new ObjectId().toString(), money, billType).observe(getViewLifecycleOwner(), str -> {
+        billViewModel.save(new ObjectId().toString(), money, billType).observe(getViewLifecycleOwner(), bill -> {
             NavController navController = Navigation.findNavController(view);
             navController.popBackStack();
+            AppCache.Companion.getInstance().getAppViewModule().billPush(new BillEntity(bill));
         });
     }
 

@@ -45,7 +45,7 @@ public interface ImageDao {
     void deleteById(String imgID);
 
     @Query("SELECT * FROM bill_img WHERE bill_img_id =:billId")
-    List<Image> findByBillImgId(String billId);
+    List<Image> findByBillId(String billId);
 
     @Query("SELECT * FROM bill_img WHERE bill_img_id =:billId AND sync_status==" + Constant.STATUS_NOT_SYNC)
     List<Image> findByBillImgIdNotAsync(String billId);

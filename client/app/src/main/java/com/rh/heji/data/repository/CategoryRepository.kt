@@ -30,7 +30,7 @@ class CategoryRepository {
         }
     }
 
-    suspend fun getCategory() {
+    suspend fun pullCategory() {
         val response: BaseResponse<List<CategoryEntity>> = network.categoryPull()
         val categories = response.data
         if (categories.isNotEmpty()) {

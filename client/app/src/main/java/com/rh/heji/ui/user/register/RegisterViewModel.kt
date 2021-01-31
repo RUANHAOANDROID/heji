@@ -27,18 +27,18 @@ class RegisterViewModel : ViewModel() {
         return password == password1;
     }
 
-    fun register(tel: String, code: String, password: String): LiveData<String> {
-        var user = User();
-        user.name = tel;
-        user.tel =tel;
-        user.password = password;
-        user.code = code;
+    fun register(username: String, tel: String, code: String, password: String): LiveData<String> {
+        var user = User()
+        user.name = username
+        user.tel = tel
+        user.password = password
+        user.code = code
         viewModelScope.launch() {
             withContext(Dispatchers.IO) {
                 var response = AppCache.instance.heJiServer.register(user).execute();
-                if (response.isSuccessful){
-                    if (response.code()==200){
-                        ToastUtils.showLong(response.message())
+                if (response.isSuccessful) {
+                    if (response.code() == 200) {
+                        ToastUtils.showLong(response.body()?.data?.name)
                     }
                 }
             }

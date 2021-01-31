@@ -81,6 +81,15 @@ public class Image {
         this.synced = synced;
     }
 
+    @NonNull
+    public String getBillImageID() {
+        return billImageID;
+    }
+
+    public void setBillImageID(@NonNull String billImageID) {
+        this.billImageID = billImageID;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

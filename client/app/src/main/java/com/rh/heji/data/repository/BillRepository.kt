@@ -17,8 +17,8 @@ import java.io.File
 
 class BillRepository {
     val hejiNetwork = HejiNetwork.getInstance()
-    var billDao = AppDatabase.INSTANCE.billDao()
-    val imgDao = AppDatabase.INSTANCE.imageDao()
+    var billDao = AppDatabase.getInstance().billDao()
+    val imgDao = AppDatabase.getInstance().imageDao()
 
     /**
      * 保存账单至Server
@@ -29,7 +29,7 @@ class BillRepository {
             response.data.let {
                 var bill = billEntity.toBill()
                 bill.synced = Constant.STATUS_SYNCED
-                billDao.update(Bill())
+                billDao.update(bill)
                 uploadImage(bill.id)
             }
         }
@@ -67,7 +67,7 @@ class BillRepository {
     /**
      * 上传账单图片
      */
-    private suspend fun uploadImage(_id: String) {
+     suspend fun uploadImage(_id: String) {
         val images = imgDao.findByBillImgIdNotAsync(_id)
         if (images.isNotEmpty()) {
             images.forEach { image ->

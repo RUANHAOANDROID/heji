@@ -9,12 +9,8 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelStore;
 
-import com.balsikandar.crashreporter.CrashReporter;
 import com.blankj.utilcode.util.CrashUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.rh.heji.data.AppDatabase;
-import com.rh.heji.data.db.Category;
-import com.rh.heji.data.db.Dealer;
 import com.rh.heji.utlis.http.basic.HttpRetrofit;
 import com.rh.heji.utlis.http.basic.OkHttpConfig;
 

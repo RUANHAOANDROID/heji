@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 @Component
 public class StorageProperties {
 
-    private String locations = "/storage/images";
+    private String locations = "/storage";
     private String excel = "/storage/excel";
 
     public String getLocation() {
@@ -28,15 +28,9 @@ public class StorageProperties {
      */
     private String createDirIfNotExists() {
         //获取跟目录
-        //第五种
         ApplicationHome h = new ApplicationHome(getClass());
         File file = h.getSource();
         log.info("Root dir={}", file.getAbsoluteFile());
-//        try {
-//            //file = new File(ResourceUtils.getURL("classpath:").getPath());
-//        } catch (FileNotFoundException e) {
-//            throw new RuntimeException("获取根目录失败，无法创建上传目录！");
-//        }
         if (!file.exists()) {
             file = new File("");
         }

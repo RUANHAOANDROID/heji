@@ -3,12 +3,7 @@ package com.heji.server.data.mongo;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 //import static com.heji.server.data.mongo.Authority.COLLECTION_NAME;
 

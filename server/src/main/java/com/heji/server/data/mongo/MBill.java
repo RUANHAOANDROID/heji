@@ -1,23 +1,13 @@
 package com.heji.server.data.mongo;
 
-import com.heji.server.data.converts.PathConverter;
 import com.heji.server.module.BillModule;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.bson.BsonDateTime;
-import org.bson.BsonNumber;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.MongoId;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import java.util.List;
 
 import static com.heji.server.data.mongo.MBill.COLLECTION_NAME;
 

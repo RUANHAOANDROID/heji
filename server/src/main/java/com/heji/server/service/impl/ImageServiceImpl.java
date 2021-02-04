@@ -65,6 +65,11 @@ public class ImageServiceImpl extends BaseMongoTemplate implements ImageService 
     }
 
     @Override
+    public boolean markAsDelete(String bill_id) {
+        return false;
+    }
+
+    @Override
     public void removeImages(String... imageId) {
 
     }

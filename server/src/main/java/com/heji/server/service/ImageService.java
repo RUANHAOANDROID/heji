@@ -13,6 +13,8 @@ public interface ImageService {
 
     boolean removeBillImages(String billId);
 
+    boolean markAsDelete(String book_id);
+
     void removeImages(String... imgId);
 
     void removeImage(String imgId);

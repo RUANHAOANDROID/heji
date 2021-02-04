@@ -7,11 +7,13 @@ import com.heji.server.exception.NotFindBillException;
 import com.heji.server.file.StorageService;
 import com.heji.server.module.BillModule;
 import com.heji.server.result.Result;
+import com.heji.server.service.BillBackupServer;
 import com.heji.server.service.BillService;
 import com.heji.server.service.ImageService;
 import com.heji.server.utils.TimeUtils;
 import io.jsonwebtoken.JwtParser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -33,14 +35,17 @@ public class BillsController {
     final BillService billService;
     //本地存储
     final StorageService storageService;
-
+    //备份(目前是删除的做备份)
+    final
+    BillBackupServer billBackupServer;
     //账单照片存储
     final ImageService imageService;
 
-    public BillsController(BillService billService, StorageService storageService, ImageService imageService) {
+    public BillsController(BillService billService, StorageService storageService, ImageService imageService, BillBackupServer billBackupServer) {
         this.billService = billService;
         this.storageService = storageService;
         this.imageService = imageService;
+        this.billBackupServer = billBackupServer;
     }
 
     @ResponseBody
@@ -74,6 +79,7 @@ public class BillsController {
     public String deleteById(@RequestParam String _id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         MBill mBill = billService.getBillInfo(_id);
+
         if (null != mBill) {
             if (!mBill.getCreateUser().equals(username)) {//查询是否是该用户创建
                 return Result.error("非法跨权限删除操作");
@@ -81,9 +87,12 @@ public class BillsController {
         } else {
             log.info("该账单已经不存在 id{}", _id);
         }
-
-        imageService.removeBillImages(_id);//删除照片
+        //imageService.markAsDelete(_id);//不用标记为已删除,删除表以后无法通过ID找到该图片,可以在备份表中更具ID删除这些图片
+        //imageService.removeBillImages(_id);//删除照片
         boolean isDeleted = billService.removeBill(_id);//删除账单
+        if (isDeleted) {//删除成功,写入备份表(回收站)
+            billBackupServer.backup(mBill);
+        }
         return Result.success("删除成功:", _id);
         //return Result.success(_id);
     }

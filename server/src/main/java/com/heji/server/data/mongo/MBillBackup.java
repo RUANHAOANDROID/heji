@@ -9,15 +9,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import static com.heji.server.data.mongo.MBill.COLLECTION_NAME;
+import static com.heji.server.data.mongo.MBillBackup.COLLECTION_NAME;
 
-//@Transient 普通字段注解
+//@Transient 不存入库临时字段
 @Data//get set
 @ToString//tostring
 @Accessors(chain = true)//能让我们方便使用链式方法创建实体对象。
 @Document(COLLECTION_NAME)
-public class MBill {
-    public static final String COLLECTION_NAME = "bill";
+public class MBillBackup {
+    public static final String COLLECTION_NAME = "bill_backup";
     @Id
     private String _id;
     //账本ID
@@ -47,11 +47,11 @@ public class MBill {
     @Field(name = "update_time")
     private long updateTime;
 
-    public MBill() {
+    public MBillBackup() {
 
     }
 
-    public MBill(BillModule billModule) {
+    public MBillBackup(BillModule billModule) {
         _id = billModule.get_id();
         bookId = billModule.getBookId();
         money = billModule.getMoney();

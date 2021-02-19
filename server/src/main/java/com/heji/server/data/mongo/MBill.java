@@ -21,7 +21,7 @@ public class MBill {
     @Id
     private String _id;
     //账本ID
-    @Field(name = "book_id", value = "0")
+    @Field(name = "book_id")
     private String bookId;
 
     private Double money;

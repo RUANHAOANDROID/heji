@@ -8,10 +8,8 @@ import java.util.List;
 //findAndModify 查询并修改
 //upsert补增
 public interface MBillRepository extends MongoRepository<MBill,String> {
-    @Query
-    List<MBill> findMBillsBy_id(String id);
 
     // 回傳id欄位值有包含在參數之中的文件數量
-    @Query(value = "{'_id': {'$in': ?0}}", count = true)
-    int countByIdIn(List<String> ids);
+    //@Query(value = "{'_id': {'$in': ?0}}", count = true)
+    //int countByIdIn(List<String> ids);
 }

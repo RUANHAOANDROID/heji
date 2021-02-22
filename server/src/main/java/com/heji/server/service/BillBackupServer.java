@@ -1,6 +1,7 @@
 package com.heji.server.service;
 
 import com.heji.server.data.mongo.MBill;
+import com.heji.server.data.mongo.MBillBackup;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public interface BillBackupServer {
 
-    void backup(MBill bill);
+    void backup(MBillBackup bill);
 
     MBill getAllBacks(String book_id);
 

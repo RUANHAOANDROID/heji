@@ -64,4 +64,19 @@ public class MBillBackup {
         updateTime = billModule.getUpdateTime();
         createUser = billModule.getCreateUser();
     }
+
+    public MBillBackup(MBill mBill) {
+        _id = mBill.get_id();
+        bookId = mBill.getBookId();
+        money = mBill.getMoney();
+        category = mBill.getCategory();
+        type = mBill.getType();
+        dealer = mBill.getDealer();
+        remark = mBill.getRemark();
+        time = mBill.getTime();
+        images = mBill.getImages();
+        createTime = mBill.getCreateTime();
+        updateTime = mBill.getUpdateTime();
+        createUser = mBill.getCreateUser();
+    }
 }

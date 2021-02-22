@@ -3,6 +3,7 @@ package com.heji.server.controller;
 import com.alibaba.excel.EasyExcel;
 import com.heji.server.data.bean.QianjiExcelBean;
 import com.heji.server.data.mongo.MBill;
+import com.heji.server.data.mongo.MBillBackup;
 import com.heji.server.exception.NotFindBillException;
 import com.heji.server.file.StorageService;
 import com.heji.server.module.BillModule;
@@ -13,6 +14,7 @@ import com.heji.server.service.ImageService;
 import com.heji.server.utils.TimeUtils;
 import io.jsonwebtoken.JwtParser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -89,9 +91,11 @@ public class BillsController {
         }
         //imageService.markAsDelete(_id);//不用标记为已删除,删除表以后无法通过ID找到该图片,可以在备份表中更具ID删除这些图片
         //imageService.removeBillImages(_id);//删除照片
+
         boolean isDeleted = billService.removeBill(_id);//删除账单
         if (isDeleted) {//删除成功,写入备份表(回收站)
-            billBackupServer.backup(mBill);
+            MBillBackup backupBill=  new MBillBackup(mBill);
+            billBackupServer.backup(backupBill);
         }
         return Result.success("删除成功:", _id);
         //return Result.success(_id);

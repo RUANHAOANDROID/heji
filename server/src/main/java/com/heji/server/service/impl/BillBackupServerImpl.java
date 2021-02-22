@@ -26,10 +26,9 @@ public class BillBackupServerImpl extends BaseMongoTemplate implements BillBacku
     }
 
     @Override
-    public void backup(MBill bill) {
-        MBillBackup backup = new MBillBackup();
-        BeanUtils.copyProperties(backup, bill);//转换后的,要转换的
-        backupRepository.save(backup);
+    public void backup(MBillBackup bill) {
+
+        backupRepository.save(bill);
     }
 
     @Override

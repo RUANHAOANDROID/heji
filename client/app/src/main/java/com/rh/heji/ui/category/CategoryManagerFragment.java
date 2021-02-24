@@ -52,9 +52,6 @@ public class CategoryManagerFragment extends BaseFragment implements Observer<Li
     @Override
     public void onStart() {
         super.onStart();
-        getMainActivity().getToolbar().setVisibility(View.VISIBLE);
-        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_settings, false);
-        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_save, true);
     }
 
     @Override

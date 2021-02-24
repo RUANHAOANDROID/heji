@@ -71,9 +71,6 @@ public class AddBillFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getMainActivity().getToolbar().setVisibility(View.GONE);
-        getMainActivity().getFab().setVisibility(View.GONE);
-
         /**
          * 不复用View，否则xml fragment不触发生命周期
          */
@@ -281,7 +278,6 @@ public class AddBillFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        getMainActivity().getFab().setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -37,7 +37,6 @@ public class ETCFragment extends BaseFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_input, true);
         etcViewModel = getViewModel(ETCViewModel.class);
     }
 
@@ -109,7 +108,6 @@ public class ETCFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_input, false);
     }
 
     /**

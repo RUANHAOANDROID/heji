@@ -2,64 +2,52 @@ package com.rh.heji;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.blankj.utilcode.util.CrashUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.interfaces.OnConfirmListener;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
-import com.rh.heji.databinding.ActivityMainBinding;
 import com.rh.heji.databinding.NavHeaderMainBinding;
 import com.rh.heji.service.DataSyncService;
-import com.rh.heji.ui.home.BillsHomeFragment;
-import com.rh.heji.ui.bill.YearSelectPop;
 import com.rh.heji.ui.user.JWTParse;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Calendar;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration mAppBarConfiguration;
     private NavController navController;//导航控制
-    private FloatingActionButton fab;//加号按钮
-    private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private MainViewModel mainViewModel;
     private NavHeaderMainBinding navHeaderMainBinding;
-    private NavigationView navigationView;
+    private NavigationView navigationView;//导航视图
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +57,8 @@ public class MainActivity extends AppCompatActivity {
         });
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         setContentView(R.layout.activity_main);
-        toolbar = findViewById(R.id.toolbar);
-        fab = findViewById(R.id.fab);
-        setSupportActionBar(toolbar);
         initDrawerLayout();
-        initFab();
+
         String token = AppCache.Companion.getInstance().getToken();
         if (TextUtils.isEmpty(token)) {
             navController.navigate(R.id.nav_login);
@@ -101,19 +86,13 @@ public class MainActivity extends AppCompatActivity {
             }).show();
             return false;
         });
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_setting)
-                .setDrawerLayout(drawerLayout)
-                .build();
+
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        //系统默认侧滑控制
+        //NavigationUI.setupWithNavController(navigationView, navController);
+        //自定义控制
+        navigationDrawerController();
 
-
-        NavController.OnDestinationChangedListener listener = destinationChangedListener();
-        navController.addOnDestinationChangedListener(listener);
         View navHeaderView = navigationView.getHeaderView(0);
         navHeaderMainBinding = NavHeaderMainBinding.bind(navHeaderView);
         navHeaderView.setOnClickListener(v -> {
@@ -123,52 +102,72 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void navigationDrawerController() {
+        navigationView.setNavigationItemSelectedListener(
+                item -> {
+                    boolean handled = item.isChecked();//已选中
+                    ViewParent parent = navigationView.getParent();
+                    if (parent instanceof DrawerLayout) {
+                        ((DrawerLayout) parent).closeDrawer(navigationView);
+                    }
+
+                    if (!handled) {
+                        NavigationUI.onNavDestinationSelected(item, navController);
+                        if (navController.getCurrentBackStackEntry().getDestination().getId() != R.id.nav_home)
+                            navController.popBackStack();
+                        try {
+                            navController.navigate(item.getItemId());
+                            return true;
+                        } catch (IllegalArgumentException e) {
+                            return false;
+                        }
+
+                    }
+
+                    return true;
+                });
+        final WeakReference<NavigationView> weakReference = new WeakReference<>(navigationView);
+        navController.addOnDestinationChangedListener(
+                new NavController.OnDestinationChangedListener() {
+                    @Override
+                    public void onDestinationChanged(@NonNull NavController controller,
+                                                     @NonNull NavDestination destination, @Nullable Bundle arguments) {
+                        NavigationView view = weakReference.get();
+                        if (view == null) {
+                            navController.removeOnDestinationChangedListener(this);
+                            return;
+                        }
+                        Menu menu = view.getMenu();
+                        for (int h = 0, size = menu.size(); h < size; h++) {
+                            MenuItem item = menu.getItem(h);
+                            NavDestination currentDestination = destination;
+                            while (currentDestination.getId() != item.getItemId() && currentDestination.getParent() != null) {
+                                currentDestination = currentDestination.getParent();
+                            }
+                            boolean isChecked = currentDestination.getId() == item.getItemId();
+                            item.setChecked(isChecked);
+                        }
+                        final String home = getResources().getString(R.string.menu_home);
+                        final String report = getResources().getString(R.string.menu_report);
+                        final String setting = getResources().getString(R.string.menu_setting);
+                        String itemLabel = destination.getLabel().toString();
+
+                        if (itemLabel.equals(home)) {
+                            setTitle("记账");
+                        } else if (itemLabel.equals(report)) {
+                        } else if (itemLabel.equals(setting)) {
+                        }
+                        LogUtils.i("onDestinationChanged:", destination.getLabel());
+
+                    }
+                });
+    }
+
     private void setDrawerLayout(JWTParse.User user) {
         navHeaderMainBinding.tvTitle.setText(user.getUsername());
         navHeaderMainBinding.tvNice.setText(user.getAuth().toString());
     }
 
-    /**
-     * ➕ 浮动按钮
-     */
-    private void initFab() {
-        fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            getNavController().navigate(R.id.nav_income);
-        });
-    }
-
-    @NotNull
-    private NavController.OnDestinationChangedListener destinationChangedListener() {
-        final String home = getResources().getString(R.string.menu_home);
-        final String report = getResources().getString(R.string.menu_report);
-        final String setting = getResources().getString(R.string.menu_setting);
-
-        return (controller, destination, arguments) -> {
-            String itemLabel = destination.getLabel().toString();
-
-            if (itemLabel.equals(home)) {
-            } else if (itemLabel.equals(report)) {
-            } else if (itemLabel.equals(setting)) {
-            }
-            LogUtils.i("onDestinationChanged:", destination.getLabel());
-        };
-    }
-
-    public void setYearMonthItemVisible(boolean visible) {
-        MenuItem item = getToolbar().getMenu().findItem(R.id.action_year_month);
-        if (null != item)
-            item.setVisible(visible);
-    }
-
-    public void setSaveItemVisible(boolean visible) {
-        getToolbar().getMenu().setGroupVisible(R.id.menu_save, visible);
-    }
-
-    public void setSettingItemVisible(boolean visible) {
-        getToolbar().getMenu().setGroupVisible(R.id.menu_settings, visible);
-
-    }
 
     public void startSyncDataService() {
         Intent intent = new Intent(this, DataSyncService.class);
@@ -185,21 +184,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Intent intent = new Intent(this, DataSyncService.class);
         stopService(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        menu.setGroupVisible(R.id.menu_save, false);
-        return true;
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
     }
 
     public void checkPermissions(RequestCallback requestCallback) {
@@ -236,22 +220,6 @@ public class MainActivity extends AppCompatActivity {
         return navController;
     }
 
-    public AppBarConfiguration getAppBarConfiguration() {
-        return mAppBarConfiguration;
-    }
-
-    public FloatingActionButton getFab() {
-        return fab;
-    }
-
-    public Toolbar getToolbar() {
-        return toolbar;
-    }
-
-    public DrawerLayout getDrawer() {
-        return drawerLayout;
-    }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         List<Fragment> fragments = getFragments();
@@ -276,12 +244,11 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < fragments.size(); i++) {
             fragments.get(i).onPrepareOptionsMenu(menu);
         }
-        addYearMonthView(menu);
         return super.onPrepareOptionsMenu(menu);
     }
 
     @NotNull
-    private List<Fragment> getFragments() {
+    public List<Fragment> getFragments() {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         return navHostFragment.getChildFragmentManager().getFragments();
     }
@@ -302,43 +269,18 @@ public class MainActivity extends AppCompatActivity {
         return mainViewModel;
     }
 
-    /**
-     * 该Menu属于全局所以在这里控制
-     *
-     * @param menu
-     */
-    private void addYearMonthView(Menu menu) {
-        MenuItem menuItem = menu.findItem(R.id.action_year_month);
-        LayoutInflater layoutInflater = LayoutInflater.from(this);
-        View view = layoutInflater.inflate(R.layout.menu_item_month, null);
-        TextView tvYearMonth = view.findViewById(R.id.tvYearMonth);
-        Calendar calendar = Calendar.getInstance();
-        int thisYear = calendar.get(Calendar.YEAR);//当前年份
-        int thisMonth = calendar.get(Calendar.MONTH) + 1;
-        final String yearMonth = thisYear + "年" + thisMonth + "月";
-        tvYearMonth.setText(yearMonth);
-        view.setOnClickListener(v -> {
-            new XPopup.Builder(v.getContext())
-                    //.hasBlurBg(true)//模糊
-                    .hasShadowBg(true)
-                    .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
-                    //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                    .asCustom(new YearSelectPop(v.getContext(), thisYear, thisMonth, (year, month) -> {
-                        tvYearMonth.setText(year + "年" + month + "月");
-                        List<Fragment> fragments = getFragments();
-                        fragments.forEach(fragment -> {
-                            if (fragment instanceof BillsHomeFragment) {
-                                BillsHomeFragment homeFragment = (BillsHomeFragment) fragment;
-                                homeFragment.notifyData(year, month);
-                            }
-                        });
-                    }))/*.enableDrag(false)*/
-                    .show();
-
-        });
-        menuItem.setActionView(view);
-        setYearMonthItemVisible(false);
+    public void openDrawer() {
+        drawerLayout.openDrawer(Gravity.START);
     }
 
+    public void closeDrawer() {
+        drawerLayout.closeDrawer(Gravity.START);
+    }
 
+    public void disableDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+    public void enableDrawer(){
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
 }

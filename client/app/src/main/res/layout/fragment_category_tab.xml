@@ -5,17 +5,32 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:background="@color/colorPrimary"
-        android:textSize="16sp"
-        app:tabGravity="center"
-        app:tabIndicatorColor="@color/white"
-        app:tabSelectedTextColor="@color/white"
-        app:tabTextColor="@color/white"></com.google.android.material.tabs.TabLayout>
+        android:layout_height="?attr/actionBarSize">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center"
+            style="@style/MineCustomTabText"
+            app:tabGravity="center"
+            app:tabIndicatorColor="@color/white"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/white"></com.google.android.material.tabs.TabLayout>
+
+        <ImageButton
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center|left"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_dialog_close_dark">
+        </ImageButton>
+    </FrameLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpContent"

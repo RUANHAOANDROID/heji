@@ -1,11 +1,13 @@
 package com.rh.heji.ui.user.register
 
 import android.content.Context
+import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
@@ -38,16 +40,15 @@ class RegisterFragment : BaseFragment() {
             val tel = binding.editTEL.text.toString()
             val username =binding.editUserName.text.toString()
             viewModel.register(username,tel, code, password1).observe(viewLifecycleOwner, Observer {
-
+                var mBundle  = Bundle()
+                mBundle.putSerializable("user",it)
+                Navigation.findNavController(view).navigate(R.id.nav_login,mBundle)
             })
         }
     }
 
 
-    override fun setUpViews() {
-        mainActivity.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        mainActivity.fab.visibility = View.GONE
-        mainActivity.toolbar.visibility = View.VISIBLE
-        super.setUpViews()
+    override fun setUpToolBar() {
+        super.setUpToolBar()
     }
 }

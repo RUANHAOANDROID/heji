@@ -15,6 +15,8 @@
         android:layout_height="wrap_content"
         android:background="@color/white">
 
+        <include layout="@layout/app_toolbar"></include>
+
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/mainCollapsing"
             android:layout_width="match_parent"
@@ -46,5 +48,13 @@
 
         </androidx.recyclerview.widget.RecyclerView>
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_baseline_add_32" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

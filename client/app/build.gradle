@@ -90,6 +90,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation "androidx.annotation:annotation:$rootProject.annotation"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation 'androidx.mediarouter:mediarouter:1.1.0'
@@ -151,4 +152,12 @@ dependencies {
     implementation 'com.lxj:xpopup:2.2.5'
     //图片压缩
     implementation 'top.zibin:Luban:1.1.8'
+    //日历
+    implementation 'com.necer.ncalendar:ncalendar:5.0.2'
+    //抽屉
+    implementation "com.mikepenz:materialdrawer:8.3.3"
+// Add for NavController support
+    implementation "com.mikepenz:materialdrawer-nav:8.3.3"
+// Add for Android-Iconics support
+    implementation "com.mikepenz:materialdrawer-iconics:8.3.3"
 }

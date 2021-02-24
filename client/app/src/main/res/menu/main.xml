@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_year_month"
-        android:actionLayout="@layout/menu_item_month"
-        android:title="@string/year"
-        android:visible="false"
-        app:showAsAction="always" />
-
     <group android:id="@+id/menu_save">
         <item
             android:id="@+id/action_save"

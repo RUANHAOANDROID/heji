@@ -13,12 +13,14 @@ import kotlinx.coroutines.withContext
 import okhttp3.RequestBody
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.Serializable
 
 class RegisterViewModel : ViewModel() {
     lateinit var tel: String;
     lateinit var code: String;
     lateinit var password: String;
     lateinit var password1: String;
+    val registerLiveData = MutableLiveData<User>()
 
     /**
      * 再次确认密码
@@ -27,7 +29,7 @@ class RegisterViewModel : ViewModel() {
         return password == password1;
     }
 
-    fun register(username: String, tel: String, code: String, password: String): LiveData<String> {
+    fun register(username: String, tel: String, code: String, password: String): LiveData<User> {
         var user = User()
         user.name = username
         user.tel = tel
@@ -39,15 +41,17 @@ class RegisterViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     if (response.code() == 200) {
                         ToastUtils.showLong(response.body()?.data?.name)
+                        registerLiveData.postValue(user)
                     }
                 }
             }
         }
 
-        return MutableLiveData();
+
+        return registerLiveData;
     }
 
-    class User {
+    class User : Serializable {
         var name: String? = null
         var password: String? = null
         var tel: String? = null

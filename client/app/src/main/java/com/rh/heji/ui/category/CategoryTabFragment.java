@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.google.android.material.tabs.TabLayout;
@@ -27,9 +29,8 @@ import java.util.Arrays;
 public class CategoryTabFragment extends BaseFragment {
     public final String[] TAB_TITLES = {BillType.EXPENDITURE.text(), BillType.INCOME.text()};
     FragmentCategoryTabBinding binding;
-    private BillType type=BillType.EXPENDITURE;
+    private BillType type = BillType.EXPENDITURE;
     public CategoryFragment[] fragments;
-    private int toolbarHeight;
     CategoryViewModule categoryViewModule;
 
     public void setType(BillType type) {
@@ -50,7 +51,6 @@ public class CategoryTabFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        toolbarHeight = getMainActivity().getToolbar().getHeight();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -58,6 +58,9 @@ public class CategoryTabFragment extends BaseFragment {
     protected void initView(View view) {
         binding = FragmentCategoryTabBinding.bind(view);
         showPager();
+
+        binding.close.setOnClickListener(v -> Navigation.findNavController(view).navigateUp());
+
     }
 
     @Override
@@ -74,7 +77,6 @@ public class CategoryTabFragment extends BaseFragment {
         };
         FragmentViewPagerAdapter pagerAdapter = new FragmentViewPagerAdapter(getChildFragmentManager(), Arrays.asList(fragments), Arrays.asList(TAB_TITLES));
         binding.vpContent.setAdapter(pagerAdapter);
-        binding.tab.getLayoutParams().height = toolbarHeight;
         binding.tab.setupWithViewPager(binding.vpContent);
 
         //TabLayout+ViewPager联动

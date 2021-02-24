@@ -10,8 +10,9 @@
         android:id="@+id/keyboard"
         android:layout_width="match_parent"
         android:layout_height="260dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        app:layout_constraintBottom_toBottomOf="parent"></com.rh.heji.widget.KeyBoardView>
+    </com.rh.heji.widget.KeyBoardView>
 
     <TextView
         android:id="@+id/tvMoney"

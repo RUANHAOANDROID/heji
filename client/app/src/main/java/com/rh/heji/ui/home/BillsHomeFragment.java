@@ -6,33 +6,35 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.ClickUtils;
-import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.lxj.xpopup.XPopup;
-import com.rh.heji.data.db.Image;
-import com.rh.heji.databinding.FragmentBillsHomeBinding;
-import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.R;
 import com.rh.heji.data.BillType;
 import com.rh.heji.data.db.Bill;
-import com.rh.heji.ui.bill.adapter.BillInfoAdapter;
+import com.rh.heji.databinding.FragmentBillsHomeBinding;
+import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.ui.bill.Iteminfo.BillInfoPop;
+import com.rh.heji.ui.bill.YearSelectPop;
+import com.rh.heji.ui.bill.adapter.BillInfoAdapter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,6 +49,7 @@ public class BillsHomeFragment extends BaseFragment {
     private long lastClickTime = 0L;
     // 两次点击间隔不能少于1000ms
     private static final int FAST_CLICK_DELAY_TIME = 1000;
+    private TextView toolBarCenterTitle;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -56,9 +59,17 @@ public class BillsHomeFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.home, menu);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(layoutId(), container, false);
+
         initView(view);
+
         return view;
     }
 
@@ -66,6 +77,32 @@ public class BillsHomeFragment extends BaseFragment {
         homeViewModel = getActivityViewModel(BillsHomeViewModel.class);
         binding = FragmentBillsHomeBinding.bind(view);
         initBillsAdapter();
+        binding.fab.setOnClickListener(v -> {
+            Navigation.findNavController(view).navigate(R.id.nav_income);
+        });
+    }
+
+    @Override
+    protected void setUpToolBar() {
+        super.setUpToolBar();
+        addYearMonthView();
+        Toolbar toolbar = getToolBar();
+        toolbar.inflateMenu(R.menu.home);
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_baseline_dehaze_24, getMainActivity().getTheme()));
+        toolbar.setNavigationOnClickListener(v -> {
+            //展开侧滑菜单
+            getMainActivity().openDrawer();
+        });
+        toolbar.getMenu().findItem(R.id.item1).setOnMenuItemClickListener(item -> {
+            ToastUtils.showLong("aa");
+            Navigation.findNavController(view).navigate(R.id.nav_gallery);
+            return false;
+        });
+        toolbar.getMenu().findItem(R.id.item2).setOnMenuItemClickListener(item -> {
+            ToastUtils.showLong("aa");
+            Navigation.findNavController(view).navigate(R.id.nav_gallery);
+            return false;
+        });
     }
 
 
@@ -76,11 +113,7 @@ public class BillsHomeFragment extends BaseFragment {
 
     @Override
     public void onResume() {
-        getMainActivity().getToolbar().setVisibility(View.VISIBLE);
-        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_save, false);
-        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_settings, false);
-        getMainActivity().getToolbar().getMenu().setGroupVisible(R.id.menu_settings, false);
-        getMainActivity().setYearMonthItemVisible(true);
+
         super.onResume();
         int thisYear = homeViewModel.getYear();
         int thisMonth = homeViewModel.getMonth();
@@ -113,12 +146,6 @@ public class BillsHomeFragment extends BaseFragment {
         });
     }
 
-
-    @Override
-    public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        getMainActivity().setYearMonthItemVisible(true);
-    }
 
     /**
      * 刷新头部收支
@@ -199,15 +226,6 @@ public class BillsHomeFragment extends BaseFragment {
         popupView.show();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (homeUUID.equals(getMainActivity().getMainViewModel().getHomeUUID())) {
-            getMainActivity().setYearMonthItemVisible(false);
-        }
-
-    }
-
 
     /**
      * 刷新列表数据、收支情况数据
@@ -223,6 +241,41 @@ public class BillsHomeFragment extends BaseFragment {
             LogUtils.d("notify: ", bills.size());
         });
         totalExpenseAndIncome(year, month);
+    }
+
+
+    /**
+     * 该Menu属于全局所以在这里控制
+     */
+    public void addYearMonthView() {
+        toolBarCenterTitle = getToolBar().findViewById(R.id.toolbar_center_title);
+        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_baseline_arrow_down_white_32), null);
+        toolBarCenterTitle.setCompoundDrawablePadding(8);
+
+        Calendar calendar = Calendar.getInstance();
+        int thisYear = calendar.get(Calendar.YEAR);//当前年份
+        int thisMonth = calendar.get(Calendar.MONTH) + 1;
+        final String yearMonth = thisYear + "." + thisMonth ;
+        toolBarCenterTitle.setText(yearMonth);
+        toolBarCenterTitle.setOnClickListener(v -> {
+            new XPopup.Builder(getMainActivity())
+                    //.hasBlurBg(true)//模糊
+                    .hasShadowBg(true)
+                    .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+                    //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                    .asCustom(new YearSelectPop(getMainActivity(), thisYear, thisMonth, (year, month) -> {
+                        toolBarCenterTitle.setText(year + "年" + month + "月");
+                        List<Fragment> fragments = getMainActivity().getFragments();
+                        fragments.forEach(fragment -> {
+                            if (fragment instanceof BillsHomeFragment) {
+                                BillsHomeFragment homeFragment = (BillsHomeFragment) fragment;
+                                homeFragment.notifyData(year, month);
+                            }
+                        });
+                    }))/*.enableDrag(false)*/
+                    .show();
+
+        });
     }
 
 }

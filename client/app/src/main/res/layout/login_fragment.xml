@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.user.login.LoginFragment">
 
+    <include layout="@layout/app_toolbar"></include>
 
     <EditText
         android:id="@+id/editUser"

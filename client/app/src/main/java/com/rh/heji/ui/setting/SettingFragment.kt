@@ -14,8 +14,6 @@ class SettingFragment : BaseFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         settingViewModel = getViewModel(SettingViewModel::class.java)
-        mainActivity.fab.visibility = View.GONE
-        mainActivity.toolbar.menu.setGroupVisible(R.id.menu_settings, false)
     }
 
     override fun initView(view: View) {
@@ -30,7 +28,5 @@ class SettingFragment : BaseFragment() {
 
     override fun onDetach() {
         super.onDetach()
-        mainActivity.fab.visibility = View.VISIBLE
-        mainActivity.toolbar.menu.setGroupVisible(R.id.menu_settings, true)
     }
 }

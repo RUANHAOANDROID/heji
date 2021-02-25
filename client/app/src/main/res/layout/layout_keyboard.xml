@@ -86,10 +86,10 @@
         app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
     <TextView
-        android:id="@+id/ksz"
+        android:id="@+id/kSaveAgain"
         style="@style/NumberKeyBoardStyle2"
-        android:text="支出"
-        android:textColor="@android:color/holo_red_dark"
+        android:text="再记"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
@@ -154,9 +154,9 @@
     <TextView
         android:id="@+id/kSave"
         style="@style/NumberKeyBoardStyle2"
-
-
+        android:background="@drawable/keyboard_save_bg"
         android:text="保存"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline3"

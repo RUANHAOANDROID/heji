@@ -28,10 +28,13 @@ public enum BillType {
     public static BillType transform(int type) {
         if (type == BillType.INCOME.type()) {
             return BillType.INCOME;
-        } else if (type == BillType.EXPENDITURE.type()) {
+        }else {
             return BillType.EXPENDITURE;
         }
-        return null;
+//        else if (type == BillType.EXPENDITURE.type()) {
+//            return BillType.EXPENDITURE;
+//        }
+//        return null;
     }
 
     public static BillType transform(String text) {

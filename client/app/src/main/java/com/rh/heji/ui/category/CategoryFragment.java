@@ -84,7 +84,7 @@ public class CategoryFragment extends BaseFragment {
         AddBillFragment addBillFragment = (AddBillFragment) getParentFragment().getParentFragment();
         CategoryTabFragment tabFragment = (CategoryTabFragment) getParentFragment();
         categoryViewModule = addBillFragment.getCategoryViewModule();
-        tabType = tabFragment.getType();
+        tabType =categoryViewModule.getType();
         thisType = getArguments().getInt(KEY_TYPE);
     }
 

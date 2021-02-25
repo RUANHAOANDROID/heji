@@ -33,15 +33,6 @@ public class CategoryTabFragment extends BaseFragment {
     public CategoryFragment[] fragments;
     CategoryViewModule categoryViewModule;
 
-    public void setType(BillType type) {
-        this.type = type;
-        int index = 0;
-        if (type.equals(BillType.INCOME)) {
-            index = 1;
-        }
-        binding.tab.getTabAt(index).select();
-    }
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -90,6 +81,7 @@ public class CategoryTabFragment extends BaseFragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 fragments[tab.getPosition()].setCategory();
                 LogUtils.d("onTabSelected", tab.getPosition());
+                categoryViewModule.setType(BillType.transform(tab.getPosition()));
             }
 
             @Override
@@ -104,7 +96,4 @@ public class CategoryTabFragment extends BaseFragment {
         });
     }
 
-    public BillType getType() {
-        return type;
-    }
 }

@@ -32,9 +32,6 @@ public class KeyBoardView extends ConstraintLayout {
     LayoutKeyboardBinding binding;
     Stack<String> stack = new Stack<>();
     private OnKeyboardListener keyboardListener;
-    private BillType type = BillType.EXPENDITURE;
-
-
     public void setKeyboardListener(OnKeyboardListener keyboardListener) {
         this.keyboardListener = keyboardListener;
     }
@@ -51,19 +48,6 @@ public class KeyBoardView extends ConstraintLayout {
         binding = LayoutKeyboardBinding.bind(view);
         initKeyboardListener(view);
     }
-
-    public void setType(BillType type) {
-        post(() -> {
-            if (type == BillType.EXPENDITURE) {
-                binding.ksz.setText(BillType.EXPENDITURE.text());
-                binding.ksz.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            } else if (type == BillType.INCOME) {
-                binding.ksz.setText(BillType.INCOME.text());
-                binding.ksz.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            }
-        });
-    }
-
 
     private void initKeyboardListener(View view) {
         binding.k0.setOnClickListener(k0 -> {
@@ -109,27 +93,15 @@ public class KeyBoardView extends ConstraintLayout {
         binding.kDelete.setOnClickListener(delete -> {
             delete();
         });
-        binding.ksz.setOnClickListener(sz -> {
-            //互斥
-            if (type.equals(BillType.INCOME)) {
-                this.type = BillType.EXPENDITURE;
-            } else if (type.equals(BillType.EXPENDITURE)) {
-                this.type = BillType.INCOME;
-            }
-            setType(type);
+        binding.kSaveAgain.setOnClickListener(saveAgain -> {
             if (keyboardListener != null)
-                keyboardListener.switchModel(type);
-
+                keyboardListener.saveAgain(finalCompute());
         });
         binding.kSave.setOnClickListener(save -> {
             if (keyboardListener != null)
                 keyboardListener.save(finalCompute());
 
         });
-    }
-
-    public BillType getBillType() {
-        return type;
     }
 
     public String getValue() {
@@ -141,8 +113,7 @@ public class KeyBoardView extends ConstraintLayout {
 
         void calculation(String result);
 
-        void switchModel(BillType type);
-
+        void saveAgain(String result);
     }
 
     public void input(String input) {
@@ -346,5 +317,10 @@ public class KeyBoardView extends ConstraintLayout {
     public void setStack(Stack<String> stack) {
         this.stack = stack;
         request();
+    }
+
+    public void clear() {
+        stack.clear();
+        defValue = "0";
     }
 }

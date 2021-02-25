@@ -97,7 +97,6 @@ public class AddBillFragment extends BaseFragment {
         categoryViewModule.getCategoryLiveData().observe(getViewLifecycleOwner(), category -> {
             if (null != category) {
                 BillType billType = BillType.transform(category.getType());
-                binding.keyboard.setType(billType);
                 changeMoneyTextColor(billType);
                 String categoryName = category.getCategory();
                 if (category.getCategory().equals("管理")) {
@@ -107,6 +106,9 @@ public class AddBillFragment extends BaseFragment {
                 billViewModel.getBill().setType(category.getType());
             }
 
+        });
+        categoryViewModule.getTypeLiveData().observe(getViewLifecycleOwner(), billType -> {
+            changeMoneyTextColor(billType);
         });
     }
 
@@ -212,7 +214,7 @@ public class AddBillFragment extends BaseFragment {
             @Override
             public void save(String result) {
                 ToastUtils.showLong(result);
-                BillType billType = binding.keyboard.getBillType();
+                BillType billType = categoryViewModule.getType();
                 saveBill(result, billType);
             }
 
@@ -222,12 +224,10 @@ public class AddBillFragment extends BaseFragment {
             }
 
             @Override
-            public void switchModel(BillType billType) {
-                changeMoneyTextColor(billType);
-
-                if (null != categoryTabFragment)
-                    categoryTabFragment.setType(billType);
-
+            public void saveAgain(String result) {
+                binding.keyboard.clear();
+                binding.tvMoney.setText("0");
+                ToastUtils.showLong(result);
             }
         });
 

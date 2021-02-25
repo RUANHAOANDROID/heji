@@ -3,6 +3,7 @@ package com.rh.heji.ui.category
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.data.AppDatabase
@@ -24,6 +25,13 @@ class CategoryViewModule : ViewModel() {
     var categoryLiveData = MediatorLiveData<Category>()
     var incomeCategoryLiveData = MediatorLiveData<List<Category>>()
     var expenditureCategory = MediatorLiveData<List<Category>>()
+    var type: BillType = BillType.EXPENDITURE
+        set(value) {
+            field = value//field 为type本身 (field领域)
+            typeLiveData.postValue(value)
+        }
+    val typeLiveData = MutableLiveData<BillType>()
+
 
     init {
         /**
@@ -71,5 +79,4 @@ class CategoryViewModule : ViewModel() {
         AppDatabase.getInstance().categoryDao().insert(category)
         ToastUtils.showShort("保存成功")
     }
-
 }

@@ -2,11 +2,13 @@ package com.rh.heji.ui.bill.adapter;
 
 import android.view.View;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.rh.heji.R;
 import com.rh.heji.data.BillType;
+import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.Constants;
 import com.rh.heji.databinding.ItemBillBinding;
@@ -30,9 +32,7 @@ public class BillInfoAdapter extends BaseQuickAdapter<Bill, BaseViewHolder> {
     protected void convert(@NotNull BaseViewHolder holder, Bill billTab) {
         ItemBillBinding binding = ItemBillBinding.bind(holder.itemView);
         binding.tvTicketTime.setText("小票时间：未知");
-        if (billTab.getBillTime() != 0) {
-            binding.tvTicketTime.setText("小票时间：" + TimeUtils.millis2String(billTab.getBillTime(), "yyyy-MM-dd HH:mm"));
-        }
+        binding.tvTicketTime.setText("小票时间：" + TimeUtils.date2String(billTab.getBillTime(), "yyyy-MM-dd HH:mm"));
         if (billTab.getType() == BillType.EXPENDITURE.type()) {
             binding.tvSZ.setText("- " + billTab.getMoney());
             binding.tvSZ.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_light));
@@ -55,13 +55,7 @@ public class BillInfoAdapter extends BaseQuickAdapter<Bill, BaseViewHolder> {
     }
 
     private String getTime(Bill billTab) {
-        long time = 0;
-        if (0 != billTab.getBillTime()) {
-            time = billTab.getBillTime();
-        } else {
-            time = billTab.getCreateTime();
-        }
-        String stringTime = TimeUtils.millis2String(time, "yyyy-MM-dd HH:mm");
+        String stringTime = TimeUtils.date2String(billTab.getBillTime(), "yyyy-MM-dd HH:mm");
         return stringTime;
     }
 }

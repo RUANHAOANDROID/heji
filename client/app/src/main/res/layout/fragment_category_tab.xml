@@ -27,7 +27,7 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="center|left"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
+            android:padding="16dp"
             app:srcCompat="@drawable/ic_dialog_close_dark">
         </ImageButton>
     </FrameLayout>

@@ -12,15 +12,18 @@ import java.util.Date;
  * #时间转换 -注意查的时候月份-1 ，存的时候不处理
  */
 public class DateConverters {
+    public static final String DB_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String SHOW_PATTERN = "yyyy-MM-dd HH:mm";
+
     @TypeConverter
-    public static Date fromTimestamp(Long value) {
-        Date date = value == null ? null : TimeUtils.millis2Date(value);
+    public static Date str2Date(String value) {
+        Date date = value == null ? null : TimeUtils.string2Date(value, DB_PATTERN);
         return date;
     }
 
     @TypeConverter
-    public static Long dateToTimestamp(Date date) {
-        Long time = date == null ? null : TimeUtils.date2Millis(date);
+    public static String date2Str(Date date) {
+        String time = date == null ? null : TimeUtils.date2String(date,DB_PATTERN);
         return time;
     }
 }

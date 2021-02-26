@@ -30,7 +30,7 @@ public interface CategoryDao {
     @Query("select * from bill_category where category=:name and type=:type")
     List<Category> findByNameAndType(String name, int type);
 
-    @Query("select * from  bill_category where type =:type AND sync_status !=" + Constant.STATUS_DELETE)
+    @Query("select * from  bill_category where type =:type AND sync_status !=" + Constant.STATUS_DELETE + " ORDER BY `index` DESC,_id DESC ")
     LiveData<List<Category>> findIncomeOrExpenditure(int type);
 
     @Query("select * from  bill_category where sync_status ==" + Constant.STATUS_DELETE + " or sync_status ==" + Constant.STATUS_NOT_SYNC)

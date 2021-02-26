@@ -57,6 +57,11 @@ class ExportFragment : BaseFragment() {
         return R.layout.export_fragment;
     }
 
+    override fun setUpToolBar() {
+        super.setUpToolBar()
+        showBlack()
+        toolBar.title ="导出"
+    }
 
     private fun createFile(pickerInitialUri: Uri) {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {

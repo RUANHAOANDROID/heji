@@ -7,11 +7,14 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.converters.MoneyConverters;
 
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,8 +51,9 @@ public class Bill {
     /**
      * 账单时间-产生费用的日期-以这个为主
      */
+    @TypeConverters(DateConverters.class)
     @ColumnInfo(name = "bill_time")
-    public long time;
+    public Date time;
 
     /**
      * 创建时间
@@ -143,11 +147,11 @@ public class Bill {
         this.remark = remark;
     }
 
-    public long getBillTime() {
+    public Date getBillTime() {
         return time;
     }
 
-    public void setBillTime(long billTime) {
+    public void setBillTime(Date billTime) {
         this.time = billTime;
     }
 
@@ -175,11 +179,11 @@ public class Bill {
         this.updateTime = updateTime;
     }
 
-    public long getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 

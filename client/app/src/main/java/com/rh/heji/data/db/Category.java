@@ -79,15 +79,6 @@ public class Category {
         this.type = szType;
     }
 
-    @NonNull
-    public String getLabel() {
-        return category;
-    }
-
-    public void setLabel(@NonNull String label) {
-        this.category = label;
-    }
-
     public int getLevel() {
         return level;
     }

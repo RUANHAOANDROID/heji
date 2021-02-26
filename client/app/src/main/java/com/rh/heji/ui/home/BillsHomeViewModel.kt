@@ -41,9 +41,9 @@ class BillsHomeViewModel : BaseViewModel() {
         get() {
             compositeDisposable!!.clear()
             if (mBillLiveData == null) mBillLiveData = MediatorLiveData()
-            val start = TimeUtils.string2Millis(MyTimeUtils.getFirstDayOfMonth(year, month))
+            val start = MyTimeUtils.getFirstDayOfMonth(year, month)
             LogUtils.d("Start time: ", start)
-            val end = TimeUtils.string2Millis(MyTimeUtils.getLastDayOfMonth(year, month))
+            val end = MyTimeUtils.getLastDayOfMonth(year, month)
             LogUtils.d("End time: ", end)
             val disposable = billDao.findBillsFlowableByTime(start, end)
                     .subscribeOn(Schedulers.io()).distinctUntilChanged()
@@ -53,7 +53,7 @@ class BillsHomeViewModel : BaseViewModel() {
                             val billTime = bill.billTime
                             val startTime = TimeUtils.string2Millis(MyTimeUtils.getFirstDayOfMonth(year, month))
                             val stopTime = TimeUtils.string2Millis(MyTimeUtils.getLastDayOfMonth(year, month))
-                            if (billTime >= startTime && billTime <= stopTime) {
+                            if (billTime >= TimeUtils.millis2Date(startTime) && billTime <= TimeUtils.millis2Date(stopTime)) {
                                 return@filter true
                             }
                             false
@@ -87,9 +87,9 @@ class BillsHomeViewModel : BaseViewModel() {
     }
 
     fun getIncomesOrExpenses(year: Int, month: Int, type: Int): LiveData<Double> {
-        val start = TimeUtils.string2Millis(MyTimeUtils.getFirstDayOfMonth(year, month))
+        val start = MyTimeUtils.getFirstDayOfMonth(year, month)
         LogUtils.d("Start time: ", start)
-        val end = TimeUtils.string2Millis(MyTimeUtils.getLastDayOfMonth(year, month))
+        val end = MyTimeUtils.getLastDayOfMonth(year, month)
         LogUtils.d("End time: ", end)
         return Transformations.distinctUntilChanged(AppDatabase.getInstance().billDao().findTotalMoneyByTime(start, end, type))
     }

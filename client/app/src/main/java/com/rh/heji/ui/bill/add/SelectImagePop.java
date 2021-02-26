@@ -30,7 +30,8 @@ import java.util.function.Consumer;
  */
 public class SelectImagePop extends BottomPopupView {
     private int MAX_SELECT_COUNT = 3;
-    private TicketPhotoAdapter  ticketAdpater = new TicketPhotoAdapter();;
+    private TicketPhotoAdapter ticketAdpater = new TicketPhotoAdapter();
+    ;
     private MainActivity activity;
     RecyclerView selectImgRecycler;
 
@@ -105,6 +106,11 @@ public class SelectImagePop extends BottomPopupView {
                 ticketAdpater.notifyDataSetChanged();
             }
         }
+    }
+
+    public void clear() {
+        ticketAdpater.getData().clear();
+        ticketAdpater.notifyDataSetChanged();
     }
 
     /**

@@ -95,7 +95,7 @@ public class BillsHomeFragment extends BaseFragment {
         });
         toolbar.getMenu().findItem(R.id.item1).setOnMenuItemClickListener(item -> {
             ToastUtils.showLong("aa");
-            Navigation.findNavController(view).navigate(R.id.nav_gallery);
+            Navigation.findNavController(view).navigate(R.id.nav_calendar_note);
             return false;
         });
         toolbar.getMenu().findItem(R.id.item2).setOnMenuItemClickListener(item -> {

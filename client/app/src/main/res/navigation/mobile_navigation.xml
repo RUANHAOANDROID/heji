@@ -79,6 +79,11 @@
             app:destination="@id/nav_income" />
     </fragment>
     <fragment
+        android:id="@+id/nav_calendar_note"
+        android:name="com.rh.heji.ui.bill.add.calendar.CalendarNoteFragment"
+        android:label="日历记账"
+        tools:layout="@layout/fragment_calendar_note"></fragment>
+    <fragment
         android:id="@+id/nav_user_info"
         android:name="com.rh.heji.ui.user.info.UserInfoFragment"
         android:label="@string/userinfo"

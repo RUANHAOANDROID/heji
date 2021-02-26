@@ -10,6 +10,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.Gson;
 import com.rh.heji.data.AppDatabase;
 import com.rh.heji.data.BillType;
+import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Category;
 import com.rh.heji.data.db.Constant;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -89,7 +91,7 @@ public class ETCViewModel extends ViewModel {
                 bill.setId(new ObjectId().toString());
                 bill.setMoney(new BigDecimal(info.etcPrice).divide(new BigDecimal(100)));
                 bill.setRemark(info.exEnStationName);
-                bill.setBillTime(TimeUtils.string2Millis(info.exchargetime, "yyyy-MM-dd HH:mm:ss"));
+                bill.setBillTime(TimeUtils.string2Date(info.exchargetime, "yyyy-MM-dd HH:mm:ss"));
                 bill.setCategory(getCategoryName());
                 bill.setDealer("ETC");
                 bill.setCreateTime(TimeUtils.getNowMills());
@@ -254,7 +256,7 @@ public class ETCViewModel extends ViewModel {
     private void saveToBillDB(HBETCEntity.DataBean.OrderArrBean info) {
         int money = info.totalFee;
         String remark = info.enStationName + "|" + info.exStationName;
-        long billTime = TimeUtils.string2Millis(info.exTime, "yyyy-MM-dd HH:mm:ss");
+        Date billTime = DateConverters.str2Date(info.exTime);
 
         Bill bill = new Bill();
         bill.setId(new ObjectId().toString());

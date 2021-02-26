@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.rh.heji.MainActivity;
@@ -89,6 +90,11 @@ public abstract class BaseFragment extends Fragment {
         } catch (Exception e) {
             LogUtils.e("not include toolbar");
         }
+    }
+
+    protected void showBlack() {
+        getToolBar().setNavigationIcon(blackDrawable());
+        getToolBar().setNavigationOnClickListener(v -> Navigation.findNavController(view).navigateUp());
     }
 
     public androidx.appcompat.widget.Toolbar getToolBar() {

@@ -22,7 +22,7 @@ public class BillModule {
     private String createUser;
     private String remark;
     private String[] images;
-    private long time;//选择的时间
+    private String time;//选择的时间
     private long createTime;
     private long updateTime;
 

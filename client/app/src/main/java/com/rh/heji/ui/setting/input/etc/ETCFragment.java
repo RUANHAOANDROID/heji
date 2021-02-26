@@ -9,15 +9,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.navigation.Navigation;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.impl.LoadingPopupView;
+import com.lxj.xpopup.interfaces.OnConfirmListener;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.R;
@@ -41,6 +46,22 @@ public class ETCFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        //拦截回退直接退出  object : Class 内部类
+        getMainActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (binding.etcWeb.canGoBack()) {
+                    binding.etcWeb.goBack();
+                } else {
+                    Navigation.findNavController(view).popBackStack();
+                }
+            }
+        });
+    }
+
+    @Override
     protected void initView(View view) {
         binding = FragmentEtcBinding.bind(view);
 
@@ -59,6 +80,20 @@ public class ETCFragment extends BaseFragment {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view1, WebResourceRequest request) {
                 return super.shouldOverrideUrlLoading(view1, request);
+            }
+
+            @Nullable
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {//拦截请求
+               //拦截的URL "http://hubeiweixin.u-road.com/HuBeiCityAPIServer/index.php/huibeicityserver/getCardMonthStatInfo"
+                //关键字
+                String key ="showetcacount";
+                //获取参数
+                String requestUrl =request.getRequestHeaders().get("Referer");
+                if (!TextUtils.isEmpty(requestUrl)&&requestUrl.contains(key)){
+                    getParameters(requestUrl);
+                }
+                return super.shouldInterceptRequest(view, request);
             }
 
             @Override
@@ -106,6 +141,22 @@ public class ETCFragment extends BaseFragment {
     }
 
     @Override
+    protected void setUpToolBar() {
+        super.setUpToolBar();
+        showBlack();
+        getToolBar().setTitle("ETC账单");
+        getToolBar().inflateMenu(R.menu.input);
+        getToolBar().getMenu().findItem(R.id.item1).setTitle("导入");
+        getToolBar().getMenu().findItem(R.id.item1).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                requestAlert();
+                return false;
+            }
+        });
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
     }
@@ -141,15 +192,15 @@ public class ETCFragment extends BaseFragment {
 
     private void requestAlert() {
         if (TextUtils.isEmpty(etcViewModel.getEtcID()) || TextUtils.isEmpty(etcViewModel.getCarID()) || TextUtils.isEmpty(etcViewModel.getYearMonth())) {
-            selectMonth();
-//            new XPopup.Builder(getContext())
-//                    .asConfirm("导入提示", "请先按月份查询账单", new OnConfirmListener() {
-//                        @Override
-//                        public void onConfirm() {
-//
-//                        }
-//                    })
-//                    .show();
+            //selectMonth();
+            new XPopup.Builder(getContext())
+                    .asConfirm("导入提示", "请先按月份查询账单", new OnConfirmListener() {
+                        @Override
+                        public void onConfirm() {
+
+                        }
+                    })
+                    .show();
         } else {
             new XPopup.Builder(getContext())
                     .asConfirm("确认导入" + etcViewModel.getYearMonth() + "的账单吗？", "账单可能会有延迟，月初导入上月账单最佳", () -> {

@@ -3,9 +3,9 @@ package com.rh.heji.ui.setting
 import android.content.Context
 import android.view.View
 import androidx.navigation.Navigation
-import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentSettingBinding
+import com.rh.heji.ui.base.BaseFragment
 
 class SettingFragment : BaseFragment() {
     lateinit var settingViewModel: SettingViewModel
@@ -24,6 +24,15 @@ class SettingFragment : BaseFragment() {
 
     override fun layoutId(): Int {
         return R.layout.fragment_setting
+    }
+
+    override fun setUpToolBar() {
+        super.setUpToolBar()
+        toolBar.title = "设置"
+        toolBar.navigationIcon = blackDrawable()
+        toolBar.setNavigationOnClickListener {
+            Navigation.findNavController(view).navigateUp()
+        }
     }
 
     override fun onDetach() {

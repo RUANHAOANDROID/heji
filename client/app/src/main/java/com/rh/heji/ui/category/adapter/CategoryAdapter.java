@@ -33,10 +33,10 @@ public class CategoryAdapter extends BaseQuickAdapter<Category, BaseViewHolder> 
         itemBinding = ItemCategoryBinding.bind(holder.itemView);
         int bgColor =getContext().getColor(label.selected?R.color.category_ico_selected:R.color.category_ico);
         if (TextUtils.isEmpty(label.getCategory()))return;
-        TextDrawable drawable = TextDrawable.builder().buildRound(label.getLabel().substring(0, 1), bgColor);
+        TextDrawable drawable = TextDrawable.builder().buildRound(label.getCategory().substring(0, 1), bgColor);
         itemBinding.roundImageView.setImageDrawable(drawable);
-        itemBinding.tvLabel.setText(label.getLabel());
-        if (label.getLabel().equals(SETTING)) {
+        itemBinding.tvLabel.setText(label.getCategory());
+        if (label.getCategory().equals(SETTING)) {
             itemBinding.roundImageView.setImageDrawable(
                     TextDrawable.builder().buildRound(SETTING,
                             ColorGenerator.MATERIAL.getRandomColor()));

@@ -1,5 +1,6 @@
 package com.rh.heji.network.request;
 
+import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.Image;
@@ -28,7 +29,7 @@ public class BillEntity {
 
     private List<String> images;
 
-    private long time;
+    private String time;
 
     private long createTime;
 
@@ -41,7 +42,7 @@ public class BillEntity {
         this.type = bill.getType();
         this.dealer = bill.getDealer();
         this.remark = bill.getRemark();
-        this.time = bill.getBillTime();
+        this.time = DateConverters.date2Str(bill.getBillTime());
         this.createTime = bill.getCreateTime();
         this.updateTime = bill.getUpdateTime();
         this.createUser = bill.getCreateUser();
@@ -57,7 +58,7 @@ public class BillEntity {
         bill.setDealer(dealer);
         bill.setCategory(category);
         bill.setCreateTime(createTime);
-        bill.setBillTime(time);
+        bill.setBillTime(DateConverters.str2Date(time));
         bill.setSynced(Constant.STATUS_SYNCED);
         bill.setUpdateTime(updateTime);
         bill.setCreateUser(createUser);
@@ -118,11 +119,11 @@ public class BillEntity {
         this.remark = remark;
     }
 
-    public long getBillTime() {
+    public String getBillTime() {
         return time;
     }
 
-    public void setBillTime(long billTime) {
+    public void setBillTime(String billTime) {
         this.time = billTime;
     }
 

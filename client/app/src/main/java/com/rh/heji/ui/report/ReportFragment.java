@@ -35,6 +35,13 @@ public class ReportFragment extends BaseFragment {
     }
 
     @Override
+    protected void setUpToolBar() {
+        super.setUpToolBar();
+        showBlack();
+        getToolBar().setTitle("统计");
+    }
+
+    @Override
     protected void initView(View view) {
         final TextView textView = view.findViewById(R.id.text_gallery);
         reportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {

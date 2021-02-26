@@ -13,6 +13,7 @@ import com.blankj.utilcode.util.CrashUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.rh.heji.utlis.http.basic.HttpRetrofit;
 import com.rh.heji.utlis.http.basic.OkHttpConfig;
+import com.tencent.mmkv.MMKV;
 
 import java.io.File;
 
@@ -29,6 +30,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
+        String rootDir = MMKV.initialize(this);
         appViewModelStore = new ViewModelStore();
         if (BuildConfig.DEBUG) {
 //            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
@@ -51,6 +53,13 @@ public class App extends Application {
         AppCache.init(this);
         AppCache.Companion.getInstance().getAppViewModule();
         LogUtils.getConfig().setGlobalTag("tag");
+        startCount();
+    }
+
+    private void startCount() {
+        String key = "start";
+        int startCount = AppCache.Companion.getInstance().getKvStorage().decodeInt(key, 0);
+        AppCache.Companion.getInstance().getKvStorage().encode(key, startCount + 1);
     }
 
     @Override
@@ -59,6 +68,7 @@ public class App extends Application {
         }
         super.onTerminate();
     }
+
     public static Context getContext() {
         return context;
     }

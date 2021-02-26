@@ -38,7 +38,7 @@ public class MBill {
 
     private String[] images;
 
-    private long time;//选择的时间
+    private String time;//选择的时间
 
     @CreatedDate
     @Field(name = "create_time")

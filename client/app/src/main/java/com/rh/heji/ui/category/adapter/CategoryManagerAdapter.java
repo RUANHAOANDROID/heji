@@ -1,6 +1,7 @@
 package com.rh.heji.ui.category.adapter;
 
 import android.text.TextUtils;
+import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -27,18 +28,25 @@ public class CategoryManagerAdapter extends BaseQuickAdapter<Category, BaseViewH
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder holder, Category label) {
+    protected void convert(@NotNull BaseViewHolder holder, Category category) {
         itemBinding = ItemCategoryManagerBinding.bind(holder.itemView);
-        int bgColor = getContext().getColor(label.selected ? R.color.category_ico_selected : R.color.category_ico);
-        if (TextUtils.isEmpty(label.getCategory())) return;
-        TextDrawable drawable = TextDrawable.builder().buildRound(label.getLabel().substring(0, 1), bgColor);
+        int bgColor = getContext().getColor(category.selected ? R.color.category_ico_selected : R.color.category_ico);
+        if (TextUtils.isEmpty(category.getCategory())) return;
+        TextDrawable drawable = TextDrawable.builder().buildRound(category.getCategory().substring(0, 1), bgColor);
         itemBinding.roundImageView.setImageDrawable(drawable);
-        itemBinding.tvLabel.setText(label.getLabel());
+        itemBinding.tvName.setText(category.getCategory());
         itemBinding.btnDelete.setOnClickListener(v -> {
-            label.setSynced(Constant.STATUS_DELETE);
-            AppDatabase.getInstance().categoryDao().update(label);
-            notifyItemChanged(getItemPosition(label));
+            category.setSynced(Constant.STATUS_DELETE);
+            AppDatabase.getInstance().categoryDao().update(category);
+            notifyItemChanged(getItemPosition(category));
         });
+        if (category.getCategory().equals("其他")){
+            itemBinding.btnEdit.setVisibility(View.INVISIBLE);
+            itemBinding.btnDelete.setVisibility(View.INVISIBLE);
+        }else{
+            itemBinding.btnEdit.setVisibility(View.VISIBLE);
+            itemBinding.btnDelete.setVisibility(View.VISIBLE);
+        }
     }
 
 }

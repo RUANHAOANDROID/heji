@@ -1,23 +1,26 @@
 package com.rh.heji.ui.user.info
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentUserInfoBinding
+import com.rh.heji.ui.base.BaseFragment
 
-class UserInfoFragment : Fragment() {
+class UserInfoFragment : BaseFragment() {
     private val viewModel by lazy { ViewModelProvider(this).get(UserInfoViewModel::class.java) }
     lateinit var binding: FragmentUserInfoBinding
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
 
-        val view = inflater.inflate(R.layout.fragment_user_info, container, false)
-        binding = FragmentUserInfoBinding.bind(view)
-        return view
+    override fun layoutId(): Int {
+        return R.layout.fragment_user_info
     }
 
+    override fun initView(view: View) {
+        binding = FragmentUserInfoBinding.bind(view)
+    }
+
+    override fun setUpToolBar() {
+        super.setUpToolBar()
+        showBlack()
+        toolBar.title = "个人信息"
+    }
 }

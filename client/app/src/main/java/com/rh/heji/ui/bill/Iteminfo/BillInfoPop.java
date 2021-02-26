@@ -26,6 +26,7 @@ import com.rh.heji.AppCache;
 import com.rh.heji.BuildConfig;
 import com.rh.heji.R;
 import com.rh.heji.data.AppDatabase;
+import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.Image;
@@ -66,7 +67,7 @@ public class BillInfoPop extends BottomPopupView {
         binding.tvMonney.setText(bill.getMoney().toString());
         binding.tvType.setText(bill.getCategory());
         binding.tvRecordTime.setText(TimeUtils.millis2String(bill.getCreateTime()));
-        binding.tvTicketTime.setText(TimeUtils.millis2String(bill.getBillTime()));
+        binding.tvTicketTime.setText(DateConverters.date2Str(bill.getBillTime()));
         binding.rePeople.setText(bill.getDealer());
     }
 

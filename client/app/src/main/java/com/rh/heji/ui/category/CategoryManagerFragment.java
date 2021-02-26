@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.rh.heji.data.db.Constant;
@@ -59,7 +60,12 @@ public class CategoryManagerFragment extends BaseFragment implements Observer<Li
         binding = FragmentCategoryManagerBinding.bind(view);
         args = CategoryManagerFragmentArgs.fromBundle(getArguments());
 
-        binding.btnSave.setOnClickListener(v -> {
+        binding.btnAdd.setOnClickListener(v -> {
+            String name = binding.editCategoryValue.getText().toString().trim();
+            categoryViewModule.saveCategory(name, args.getIeType());
+            KeyboardUtils.hideSoftInput(view);//隐藏键盘
+            binding.editCategoryValue.setText("");
+            binding.editCategoryValue.clearFocus();//清除聚焦
 
         });
 
@@ -82,8 +88,12 @@ public class CategoryManagerFragment extends BaseFragment implements Observer<Li
 
     }
 
-    private void operatingView() {
-
+    @Override
+    protected void setUpToolBar() {
+        super.setUpToolBar();
+        getToolBar().setTitle("分类管理");
+        getToolBar().setNavigationIcon(blackDrawable());
+        getToolBar().setNavigationOnClickListener(v -> Navigation.findNavController(view).navigateUp());
     }
 
     @Override
@@ -98,8 +108,7 @@ public class CategoryManagerFragment extends BaseFragment implements Observer<Li
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
-            String name = binding.editCategoryValue.getText().toString().trim();
-            categoryViewModule.saveCategory(name, args.getIeType());
+
             Navigation.findNavController(view).popBackStack();
         }
         return super.onOptionsItemSelected(item);

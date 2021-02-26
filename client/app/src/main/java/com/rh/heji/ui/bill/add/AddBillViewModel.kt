@@ -7,15 +7,9 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.BillType
-import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Constant
-import com.rh.heji.data.db.Dealer
-import com.rh.heji.data.db.Image
+import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
-import com.rh.heji.network.HejiNetwork
-import com.rh.heji.network.request.BillEntity
 import com.rh.heji.ui.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,7 +24,7 @@ import java.util.stream.Collectors
 class AddBillViewModel : BaseViewModel() {
     private var imgUrls: MutableList<String> = ArrayList() //image list
     private val imgUrlsLive = MutableLiveData<List<String>>() // image live
-    private val billType = BillType.EXPENDITURE
+
     val bill = Bill()
     var time: String? = null
         get() {
@@ -39,7 +33,7 @@ class AddBillViewModel : BaseViewModel() {
             return field
         }
     var keyBoardStack: Stack<String>? = null
-    var saveLiveData: MutableLiveData<Bill>? = null
+    var saveLiveData: MutableLiveData<Bill> = MutableLiveData<Bill>()
     private val billRepository = BillRepository()
 
     /**
@@ -48,39 +42,37 @@ class AddBillViewModel : BaseViewModel() {
      * @param billType
      * @return
      */
-    fun save(billId: String?, money: String?, billType: BillType): LiveData<Bill> {
+    fun save(billId: String?, money: String?, category: Category): LiveData<Bill> {
         val bill = bill
-        saveLiveData = MutableLiveData<Bill>()
-        val billTime = TimeUtils.string2Millis(time, "yyyy-MM-dd HH:mm")//String time to millis
-        LogUtils.d(TimeUtils.millis2String(billTime, "yyyy-MM-dd HH:mm"))
+        val billTime = TimeUtils.string2Millis(time, "yyyy-MM-dd HH:mm:ss")//String time to millis
+        LogUtils.d(TimeUtils.millis2String(billTime, "yyyy-MM-dd HH:mm:ss"))
         bill.setId(billId!!)
         bill.setMoney(BigDecimal(money))
         bill.setCreateTime(System.currentTimeMillis())
-        bill.billTime = billTime
+        bill.billTime = TimeUtils.string2Date(time)
         //
         val images = imgUrls.stream().map { s: String? ->
-            val image = Image(ObjectId().toString(),billId)
+            val image = Image(ObjectId().toString(), billId)
             image.localPath = s
             image
         }.collect(Collectors.toList())
         bill.imgCount = images.size
-        if (bill.getCategory() == null) {
-            bill.setType(billType.type())
-            bill.setCategory(billType.text())
-        }
+        bill.setType(category.type)
+        bill.setCategory(category.category)
         launch({
             withContext(Dispatchers.IO) {
                 AppDatabase.getInstance().imageDao().install(images)
+                bill.setRemark(time)
                 val count = AppDatabase.getInstance().billDao().install(bill)
                 if (count > 0) {
-                    ToastUtils.showShort("$count: 保存成功")
+                    ToastUtils.showShort("已保存: ${bill.getCategory() + money}  ")
                 }
                 saveLiveData?.postValue(bill)
             }
         }, {
             ToastUtils.showShort(it.message)
         })
-        return saveLiveData!!
+        return saveLiveData
     }
 
     fun addImgUrl(imgUrl: String) {

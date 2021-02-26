@@ -9,6 +9,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
+import com.rh.heji.data.db.CategoryDao
 import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.CategoryRepository
@@ -19,18 +20,20 @@ import com.rh.heji.data.repository.CategoryRepository
  * # 分类
  */
 class CategoryViewModule : ViewModel() {
-    var categoryRepository = CategoryRepository()
-    var categoryDao = AppDatabase.getInstance().categoryDao()
-    var selectCategory = Category(ObjectId().toString())
-    var categoryLiveData = MediatorLiveData<Category>()
-    var incomeCategoryLiveData = MediatorLiveData<List<Category>>()
-    var expenditureCategory = MediatorLiveData<List<Category>>()
     var type: BillType = BillType.EXPENDITURE
+
+    var categoryRepository = CategoryRepository()
+    var categoryDao: CategoryDao = AppDatabase.getInstance().categoryDao()
+
+    var selectCategory = Category(ObjectId().toString())
         set(value) {
             field = value//field 为type本身 (field领域)
-            typeLiveData.postValue(value)
+            selectCategoryLiveData.postValue(value)
         }
-    val typeLiveData = MutableLiveData<BillType>()
+    var selectCategoryLiveData = MediatorLiveData<Category>();
+
+    var incomeCategoryLiveData = MediatorLiveData<List<Category>>()
+    var expenditureCategory = MediatorLiveData<List<Category>>()
 
 
     init {
@@ -43,14 +46,6 @@ class CategoryViewModule : ViewModel() {
         expenditureCategory.addSource(categoryDao.findIncomeOrExpenditure(BillType.EXPENDITURE.type())) { expenditureCategories: List<Category> -> expenditureCategory.setValue(expenditureCategories) }
     }
 
-    /**
-     * 选中的标签
-     *
-     * @param selectCategory
-     */
-    fun notifyCategory(selectCategory: Category) {
-        categoryLiveData.postValue(selectCategory)
-    }
 
     /**
      * 获取收入标签
@@ -67,7 +62,7 @@ class CategoryViewModule : ViewModel() {
         }
         val category = Category(ObjectId().toString())
         category.type = type
-        category.label = name!!
+        category.category = name!!
         category.level = 0
         category.synced = Constant.STATUS_NOT_SYNC
         val categories = AppDatabase.getInstance().categoryDao().findByNameAndType(name, type)

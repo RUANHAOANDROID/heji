@@ -46,7 +46,6 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract DealerDao dealerDao();
 
-
     public static AppDatabase getInstance() {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {

@@ -134,8 +134,8 @@ public class BillsController {
         return bills.stream()
                 .map(bill -> {
                     QianjiExcelBean excel = new QianjiExcelBean();
-                    excel.setTime(TimeUtils.millis2String(bill.getTime(), "yyyy/MM/dd HH:mm:ss"));
-                    //excel.setTime(bill.getTime().toString());
+                    //excel.setTime(TimeUtils.millis2String(bill.getTime(), "yyyy/MM/dd HH:mm:ss"));
+                    excel.setTime(bill.getTime());
                     excel.setMoney(String.valueOf(bill.getMoney()));
                     excel.setRemark(bill.getRemark());
                     excel.setType(bill.getType() == 1 ? "收入" : "支出");

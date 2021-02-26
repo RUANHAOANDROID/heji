@@ -113,7 +113,7 @@ public class CategoryFragment extends BaseFragment {
     //点击事件
     OnItemClickListener onItemClickListener = (adapter, view, position) -> {
         Category category = labelAdapter.getItem(position);//当前点击的
-        if (category.getLabel().equals(CategoryAdapter.SETTING)) {//设置
+        if (category.getCategory().equals(CategoryAdapter.SETTING)) {//设置
             CategoryManagerFragmentArgs args = new CategoryManagerFragmentArgs
                     .Builder()
                     .setIeType(thisType).build();

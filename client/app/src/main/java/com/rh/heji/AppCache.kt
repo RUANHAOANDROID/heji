@@ -13,6 +13,7 @@ import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.JWTParse.getUser
 import com.rh.heji.ui.user.UserInfo
 import com.rh.heji.utlis.http.basic.ServiceCreator
+import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import java.io.*
@@ -127,4 +128,6 @@ class AppCache {
             instance.onInit(app)
         }
     }
+
+    val kvStorage = MMKV.defaultMMKV()
 }

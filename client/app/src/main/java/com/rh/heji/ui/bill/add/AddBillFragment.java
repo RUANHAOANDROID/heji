@@ -25,6 +25,7 @@ import com.lxj.xpopup.XPopup;
 import com.matisse.Matisse;
 import com.matisse.entity.ConstValue;
 import com.rh.heji.AppCache;
+import com.rh.heji.data.db.Category;
 import com.rh.heji.data.repository.BillRepository;
 import com.rh.heji.network.request.BillEntity;
 import com.rh.heji.ui.base.BaseFragment;
@@ -50,6 +51,8 @@ import static android.app.Activity.RESULT_OK;
  * 支出 收入
  */
 public class AddBillFragment extends BaseFragment {
+    private static final String PATTERN_DB = "yyyy-MM-dd HH:mm:ss";
+    private static final String PATTERN_SHOW = "yyyy-MM-dd HH:mm";
     private AddBillViewModel billViewModel;
     private CategoryViewModule categoryViewModule;
     IncomeFragmentBinding binding;
@@ -94,7 +97,7 @@ public class AddBillFragment extends BaseFragment {
     private void category() {
         categoryTabFragment = (CategoryTabFragment) getChildFragmentManager().findFragmentById(R.id.categoryFragment);
 
-        categoryViewModule.getCategoryLiveData().observe(getViewLifecycleOwner(), category -> {
+        categoryViewModule.getSelectCategoryLiveData().observe(getViewLifecycleOwner(), category -> {
             if (null != category) {
                 BillType billType = BillType.transform(category.getType());
                 changeMoneyTextColor(billType);
@@ -104,11 +107,8 @@ public class AddBillFragment extends BaseFragment {
                 }
                 billViewModel.getBill().setCategory(categoryName);
                 billViewModel.getBill().setType(category.getType());
+                changeMoneyTextColor(billType);
             }
-
-        });
-        categoryViewModule.getTypeLiveData().observe(getViewLifecycleOwner(), billType -> {
-            changeMoneyTextColor(billType);
         });
     }
 
@@ -176,8 +176,8 @@ public class AddBillFragment extends BaseFragment {
         billViewModel.setTime(selectTime);
         if (BuildConfig.DEBUG) {
             LogUtils.d(selectTime);
-            long billTime = TimeUtils.string2Millis(billViewModel.getTime(), "yyyy-MM-dd HH:mm");
-            LogUtils.d(TimeUtils.millis2String(billTime, "yyyy-MM-dd HH:mm"));
+            long billTime = TimeUtils.string2Millis(billViewModel.getTime(), "yyyy-MM-dd HH:mm:ss");
+            LogUtils.d(TimeUtils.millis2String(billTime, "yyyy-MM-dd HH:mm:ss"));
         }
 
     }
@@ -214,8 +214,10 @@ public class AddBillFragment extends BaseFragment {
             @Override
             public void save(String result) {
                 ToastUtils.showLong(result);
-                BillType billType = categoryViewModule.getType();
-                saveBill(result, billType);
+                Category category = categoryViewModule.getSelectCategory();
+                saveBill(result, category);
+                NavController navController = Navigation.findNavController(view);
+                navController.popBackStack();
             }
 
             @Override
@@ -225,9 +227,9 @@ public class AddBillFragment extends BaseFragment {
 
             @Override
             public void saveAgain(String result) {
-                binding.keyboard.clear();
-                binding.tvMoney.setText("0");
                 ToastUtils.showLong(result);
+                saveBill(result, categoryViewModule.getSelectCategory());
+                clear();
             }
         });
 
@@ -238,14 +240,13 @@ public class AddBillFragment extends BaseFragment {
         binding.tvMoney.setTextColor(getResources().getColor(textColor));
     }
 
-    private void saveBill(String money, BillType billType) {
+    private void saveBill(String money, Category category) {
         if (TextUtils.isEmpty(money) || money.equals("0")) {
             ToastUtils.showShort("未填写金额");
             return;
         }
-        billViewModel.save(new ObjectId().toString(), money, billType).observe(getViewLifecycleOwner(), bill -> {
-            NavController navController = Navigation.findNavController(view);
-            navController.popBackStack();
+        billViewModel.getBill().setCategory(category.getCategory());
+        billViewModel.save(new ObjectId().toString(), money, category).observe(getViewLifecycleOwner(), bill -> {
             AppCache.Companion.getInstance().getAppViewModule().billPush(new BillEntity(bill));
         });
     }
@@ -340,5 +341,14 @@ public class AddBillFragment extends BaseFragment {
 
     public CategoryViewModule getCategoryViewModule() {
         return categoryViewModule;
+    }
+
+    public void clear() {
+        binding.keyboard.clear();
+        binding.eidtRemark.setText("");
+        binding.tvMoney.setText("0");
+        billViewModel.setImgUrls(new ArrayList<>());
+        selectImagePou.clear();
+
     }
 }

@@ -62,7 +62,6 @@ class AddBillViewModel : BaseViewModel() {
         launch({
             withContext(Dispatchers.IO) {
                 AppDatabase.getInstance().imageDao().install(images)
-                bill.setRemark(time)
                 val count = AppDatabase.getInstance().billDao().install(bill)
                 if (count > 0) {
                     ToastUtils.showShort("已保存: ${bill.getCategory() + money}  ")

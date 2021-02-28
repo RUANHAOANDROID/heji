@@ -96,10 +96,9 @@ public class MyMonthView extends MonthView {
 
             mSchemePaint.setColor(scheme.getShcemeColor());
 
-            canvas.drawRect(x + mItemWidth - sw - 2 * space,
-
-                    indexY - sh, x + mItemWidth - 2 * space, indexY, mSchemePaint);
+            canvas.drawRect(x + mItemWidth - sw - 2 * space, indexY - sh, x + mItemWidth - 2 * space, indexY, mSchemePaint);
             indexY = indexY - space - sh;
+            canvas.drawText(scheme.getScheme(),x + mItemWidth - sw - 2 * space, indexY - sh, x + mItemWidth - 2 * space, indexY, mSchemePaint);
         }
     }
 
@@ -127,10 +126,11 @@ public class MyMonthView extends MonthView {
                     mSelectTextPaint);
             canvas.drawText(calendar.getLunar(), cx, mTextBaseLine + y + mItemHeight / 10, mSelectedLunarTextPaint);
         } else if (hasScheme) {
+            //日期
             canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top,
                     calendar.isCurrentMonth() && isInRange ? mSchemeTextPaint : mOtherMonthTextPaint);
 
-            canvas.drawText(calendar.getLunar(), cx, mTextBaseLine + y + mItemHeight / 10, mCurMonthLunarTextPaint);
+            canvas.drawText(calendar.getScheme(), cx, mTextBaseLine + y + mItemHeight / 10, mCurMonthLunarTextPaint);
         } else {
             canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top,
                     calendar.isCurrentDay() ? mCurDayTextPaint :

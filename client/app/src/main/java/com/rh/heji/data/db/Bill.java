@@ -11,7 +11,6 @@ import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.converters.MoneyConverters;
 
 import org.jetbrains.annotations.NotNull;
-import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.Date;

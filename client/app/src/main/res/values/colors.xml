@@ -11,8 +11,8 @@
     <color name="category.ico">#BCAAA4</color>
     <color name="category.ico_selected">#8D6E63</color>
     <color name="tv_normal">#333333</color>
-    <color name="income">@android:color/holo_red_dark</color>
-    <color name="expenditure">@android:color/holo_green_dark</color>
+    <color name="expenditure">@android:color/holo_red_dark</color>
+    <color name="income">@android:color/holo_green_dark</color>
 
     <!-- Gray
         ＃F5F5F5

@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_nav_income_to_nav_category_manager"
             app:destination="@id/nav_category_manager" />
+        <argument
+            android:name="calendar"
+            app:argType="java.util.Calendar" />
     </fragment>
     <fragment
         android:id="@+id/nav_category_manager"

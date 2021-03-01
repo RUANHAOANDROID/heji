@@ -16,7 +16,6 @@ import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.service.work.DataSyncWork
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.joda.time.DateTime
 
 class AppViewModule(application: Application) : AndroidViewModel(application) {
     val network: HejiNetwork = HejiNetwork.getInstance()

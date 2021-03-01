@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if (!handled) {
                         NavigationUI.onNavDestinationSelected(item, navController);
-                        if (navController.getCurrentBackStackEntry().getDestination().getId() != R.id.nav_home)
+                        if (navController.getCurrentDestination().getId() != R.id.nav_home)
                             navController.popBackStack();
                         try {
                             navController.navigate(item.getItemId());

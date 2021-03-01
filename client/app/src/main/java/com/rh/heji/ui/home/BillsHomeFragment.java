@@ -31,6 +31,7 @@ import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.ui.bill.Iteminfo.BillInfoPop;
 import com.rh.heji.ui.bill.YearSelectPop;
 import com.rh.heji.ui.bill.adapter.BillInfoAdapter;
+import com.rh.heji.ui.bill.add.AddBillFragmentArgs;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -78,7 +79,8 @@ public class BillsHomeFragment extends BaseFragment {
         binding = FragmentBillsHomeBinding.bind(view);
         initBillsAdapter();
         binding.fab.setOnClickListener(v -> {
-            Navigation.findNavController(view).navigate(R.id.nav_income);
+            Calendar calendar = Calendar.getInstance();//当前日期
+            Navigation.findNavController(view).navigate(R.id.nav_income, new AddBillFragmentArgs.Builder(calendar).build().toBundle());
         });
     }
 
@@ -255,7 +257,7 @@ public class BillsHomeFragment extends BaseFragment {
         Calendar calendar = Calendar.getInstance();
         int thisYear = calendar.get(Calendar.YEAR);//当前年份
         int thisMonth = calendar.get(Calendar.MONTH) + 1;
-        final String yearMonth = thisYear + "." + thisMonth ;
+        final String yearMonth = thisYear + "." + thisMonth;
         toolBarCenterTitle.setText(yearMonth);
         toolBarCenterTitle.setOnClickListener(v -> {
             new XPopup.Builder(getMainActivity())

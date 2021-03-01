@@ -19,10 +19,6 @@ public class MyMonthView extends MonthView {
      * 收入画笔
      */
     private Paint incomePaint = new Paint();
-    /**
-     * 支出画笔
-     */
-    private Paint expenditurePaint = new Paint();
 
     public MyMonthView(Context context) {
         super(context);
@@ -35,15 +31,8 @@ public class MyMonthView extends MonthView {
         incomePaint.setStyle(Paint.Style.FILL);
         incomePaint.setTextAlign(Paint.Align.CENTER);
         incomePaint.setFakeBoldText(true);
-        incomePaint.setTextSize(18);
+        incomePaint.setTextSize(dipToPx(getContext(), 9));
         incomePaint.setColor(context.getColor(R.color.income));
-
-        expenditurePaint.setAntiAlias(true);
-        expenditurePaint.setStyle(Paint.Style.FILL);
-        expenditurePaint.setTextAlign(Paint.Align.CENTER);
-        expenditurePaint.setFakeBoldText(true);
-        expenditurePaint.setTextSize(18);
-        expenditurePaint.setColor(context.getColor(R.color.expenditure));
 
 
         //兼容硬件加速无效的代码
@@ -84,22 +73,20 @@ public class MyMonthView extends MonthView {
     @Override
     protected void onDrawScheme(Canvas canvas, Calendar calendar, int x, int y) {
         //mSchemeBasicPaint.setColor(calendar.getSchemeColor());
-        List<Calendar.Scheme> schemes = calendar.getSchemes();
-        if (schemes == null || schemes.size() == 0) {
-            return;
-        }
-        int space = dipToPx(getContext(), 2);
-        int indexY = y + mItemHeight - 2 * space;
-        int sw = dipToPx(getContext(), mItemWidth / 10);
-        int sh = dipToPx(getContext(), 4);
-        for (Calendar.Scheme scheme : schemes) {
+//        List<Calendar.Scheme> schemes = calendar.getSchemes();
+//        if (schemes == null || schemes.size() == 0) {
+//            return;
+//        }
+//        int space = dipToPx(getContext(), 2);
+//        int indexY = y + mItemHeight - 2 * space;
+//        int sw = dipToPx(getContext(), mItemWidth / 10);
+//        int sh = dipToPx(getContext(), 4);
+//        for (Calendar.Scheme scheme : schemes) {
+//            mSchemePaint.setColor(scheme.getShcemeColor());
+//            canvas.drawRect(x + mItemWidth - sw - 2 * space, indexY - sh, x + mItemWidth - 2 * space, indexY, mSchemePaint);
+//            indexY = indexY - space - sh;
+//        }
 
-            mSchemePaint.setColor(scheme.getShcemeColor());
-
-            canvas.drawRect(x + mItemWidth - sw - 2 * space, indexY - sh, x + mItemWidth - 2 * space, indexY, mSchemePaint);
-            indexY = indexY - space - sh;
-            canvas.drawText(scheme.getScheme(),x + mItemWidth - sw - 2 * space, indexY - sh, x + mItemWidth - 2 * space, indexY, mSchemePaint);
-        }
     }
 
     /**
@@ -122,26 +109,47 @@ public class MyMonthView extends MonthView {
         boolean isInRange = isInRange(calendar);
 
         if (isSelected) {
-            canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top,
-                    mSelectTextPaint);
-            canvas.drawText(calendar.getLunar(), cx, mTextBaseLine + y + mItemHeight / 10, mSelectedLunarTextPaint);
-        } else if (hasScheme) {
+            //选中时的字体
+            canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top, mSelectTextPaint);
+            if (hasScheme) {//收支
+                drawScheme(canvas, calendar, y, cx, isSelected);
+            } else {//农历
+                canvas.drawText(calendar.getLunar(), cx, mTextBaseLine + y + mItemHeight / 10, mSelectedLunarTextPaint);
+            }
+        } else if (hasScheme) { //有收支的日子
             //日期
-            canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top,
-                    calendar.isCurrentMonth() && isInRange ? mSchemeTextPaint : mOtherMonthTextPaint);
-
-            canvas.drawText(calendar.getScheme(), cx, mTextBaseLine + y + mItemHeight / 10, mCurMonthLunarTextPaint);
+            canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top, calendar.isCurrentMonth() && isInRange ? mSchemeTextPaint : mOtherMonthTextPaint);
+            //收入
+            drawScheme(canvas, calendar, y, cx, isSelected);
         } else {
-            canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top,
-                    calendar.isCurrentDay() ? mCurDayTextPaint :
-                            calendar.isCurrentMonth() && isInRange ? mCurMonthTextPaint : mOtherMonthTextPaint);
+            //日期
+            canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top, calendar.isCurrentDay() ? mCurDayTextPaint :
+                    calendar.isCurrentMonth() && isInRange ? mCurMonthTextPaint : mOtherMonthTextPaint);
+            //农历
             canvas.drawText(calendar.getLunar(), cx, mTextBaseLine + y + mItemHeight / 10,
                     calendar.isCurrentDay() && isInRange ? mCurDayLunarTextPaint :
                             calendar.isCurrentMonth() ? mCurMonthLunarTextPaint : mOtherMonthLunarTextPaint);
         }
-        //canvas.drawText("+40", cx, mTextBaseLine + y + mItemHeight / 10 * 3, incomePaint);
-        //canvas.drawText("-70", cx, mTextBaseLine + y + mItemHeight / 10 * 2, expenditurePaint);
     }
+
+    private void drawScheme(Canvas canvas, Calendar calendar, int y, int cx, boolean isSelected) {
+        int space = dipToPx(getContext(), 2);//间距
+        int indexY = (int) (mTextBaseLine + y + mItemHeight / 10);
+        //特定日期
+        for (int i = 0; i < calendar.getSchemes().size(); i++) {
+            Calendar.Scheme scheme = calendar.getSchemes().get(i);
+            if (scheme.getScheme().equals("0"))
+                return;
+            if (isSelected) {
+                incomePaint.setColor(mSelectTextPaint.getColor());
+            } else {
+                incomePaint.setColor(scheme.getShcemeColor());
+            }
+            canvas.drawText(scheme.getScheme(), cx, indexY, incomePaint);
+            indexY = (int) (indexY + incomePaint.getTextSize());
+        }
+    }
+
 
     /**
      * dp转px

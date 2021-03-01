@@ -42,8 +42,11 @@ import com.rh.heji.widget.KeyBoardView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
+
+import javax.sql.DataSource;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -133,17 +136,22 @@ public class AddBillFragment extends BaseFragment {
     }
 
     private void selectYearAndDay() {
+        Bundle arguments = getArguments();
+        Calendar calendar = AddBillFragmentArgs.fromBundle(arguments).getCalendar();
+        billViewModel.setTime(TimeUtils.date2String(calendar.getTime()));//设置日历选中的时间
         String nowTime = billViewModel.getTime();
         binding.tvBillTime.setText(nowTime);
         binding.tvBillTime.setOnClickListener(v -> {
-            DatePickerDialog dialog = new DatePickerDialog(getMainActivity());
-            dialog.setOnDateSetListener((datePicker, year, month, dayOfMonth) -> {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, month, dayOfMonth);
-                String yearTime = TimeUtils.date2String(calendar.getTime(), "yyyy-MM-dd") + " 00:00";//未选时自动补全
+
+            DatePickerDialog.OnDateSetListener onDateSetListener = (datePicker, year, month, dayOfMonth) -> {
+                Calendar selectCalendar = Calendar.getInstance();
+                selectCalendar.set(year, month, dayOfMonth);
+                String yearTime = TimeUtils.date2String(selectCalendar.getTime(), "yyyy-MM-dd") + " 00:00";//未选时自动补全
                 setNoteTime(yearTime);
                 selectHourAndMinute(yearTime);
-            });
+            };
+            DatePickerDialog dialog = new DatePickerDialog(getMainActivity(), onDateSetListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            dialog.setOnDateSetListener(onDateSetListener);
             dialog.show();
         });
     }

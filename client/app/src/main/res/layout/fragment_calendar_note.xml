@@ -39,8 +39,8 @@
             app:scheme_text_color="#333"
             app:scheme_theme_color="#333"
             app:select_mode="default_mode"
-            app:selected_text_color="@color/colorPrimary"
             app:selected_lunar_text_color="@color/colorPrimary"
+            app:selected_text_color="@color/colorPrimary"
             app:selected_theme_color="#804248f4"
             app:week_background="#fff"
             app:week_start_with="sun"
@@ -64,5 +64,27 @@
         <!--        </androidx.recyclerview.widget.RecyclerView>-->
     </androidx.cardview.widget.CardView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_baseline_add_32" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/todayFab"
+        style="@style/TodayFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_today_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

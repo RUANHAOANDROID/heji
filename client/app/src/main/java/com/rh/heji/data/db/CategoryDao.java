@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface CategoryDao {
     void insert(Category category);
 
     @Query("select _id from bill_category where _id=:id")
-    String findCategoryID(String id);
+    String findByID(String id);
 
     @Query("select * from bill_category where sync_status=:syncStatus")
     List<Category> findCategoryByStatic(int syncStatus);
@@ -44,4 +45,25 @@ public interface CategoryDao {
 
     @Delete
     void delete(Category category);
+
+    @Update()
+    void updateOrders();
+    //getSubListByParentId
+    //getByType
+//    public final List<Category> assembleCategories(List<? extends Category> paramList) {
+//        LinkedHashMap linkedHashMap = new LinkedHashMap();
+//        for (Category category : paramList) {
+//            if (category.isParentCategory()) {
+//                linkedHashMap.put(Long.valueOf(category.getId()), category);
+//                continue;
+//            }
+//            if (category.isSubCategory()) {
+//                Category category1 = (Category)linkedHashMap.get(Long.valueOf(category.getParentId()));
+//                if (category1 != null)
+//                    category1.addSubCategory(category, false);
+//            }
+//        }
+//        Collection collection = linkedHashMap.values();
+//        return f.a(collection);
+//    }
 }

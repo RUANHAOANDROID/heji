@@ -35,7 +35,7 @@ class CategoryRepository {
         val categories = response.data
         if (categories.isNotEmpty()) {
             categories.stream().forEach { entity: CategoryEntity ->
-                val _id = AppDatabase.getInstance().categoryDao().findCategoryID(entity._id)
+                val _id = AppDatabase.getInstance().categoryDao().findByID(entity._id)
                 if (TextUtils.isEmpty(_id)) {
                     val dbCategory = entity.toDbCategory()
                     dbCategory!!.synced = Constant.STATUS_SYNCED

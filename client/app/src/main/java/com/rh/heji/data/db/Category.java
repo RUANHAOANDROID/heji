@@ -42,7 +42,23 @@ public class Category {
      */
     @ColumnInfo(name = "index")
     int index;
+    /**
+     * 账本ID
+     */
+    @ColumnInfo(name = "book_id")
+    String bookId;
 
+    /**
+     *父ID
+     */
+    String parentId;
+
+
+    /**
+     * 用户ID
+     */
+    @ColumnInfo(name = "user_id")
+    String userId;
     /**
      * 是否在记账页面显示
      */

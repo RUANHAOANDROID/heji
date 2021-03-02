@@ -46,8 +46,7 @@ public interface CategoryDao {
     @Delete
     void delete(Category category);
 
-    @Update()
-    void updateOrders();
+    // updateOrders();
     //getSubListByParentId
     //getByType
 //    public final List<Category> assembleCategories(List<? extends Category> paramList) {

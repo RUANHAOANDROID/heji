@@ -3,20 +3,19 @@ package com.rh.heji.ui.bill.add.calendar
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
+import com.rh.heji.data.db.Bill
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.YearSelectPop
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
-import com.rh.heji.ui.home.BillsHomeFragment
-import java.util.function.Consumer
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -53,6 +52,12 @@ class CalendarNoteFragment : BaseFragment() {
             binding.calendarView.scrollToCurrent()
             binding.todayFab.hide()
         }
+        binding.recycler.layoutManager = LinearLayoutManager(mainActivity)
+        binding.recycler.adapter = CalendarBillsAdapter(R.layout.item_calendar_bill, null)
+        initCalendarView()
+    }
+
+    private fun initCalendarView() {
         binding.calendarView.setOnCalendarSelectListener(object : OnCalendarSelectListener {
             override fun onCalendarOutOfRange(calendar: Calendar) {
                 LogUtils.i(calendar.toString())
@@ -72,7 +77,6 @@ class CalendarNoteFragment : BaseFragment() {
                 setTitleYearMonth(calendar.year, calendar.month)
             }
         })
-        val calendar: java.util.Calendar = java.util.Calendar.getInstance();
         viewModel.calendarLiveData.observe(viewLifecycleOwner, monthObserver())
     }
 

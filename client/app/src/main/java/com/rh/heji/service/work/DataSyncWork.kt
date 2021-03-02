@@ -146,7 +146,7 @@ class DataSyncWork {
             data?.let { serverBills ->
                 if (serverBills.isNotEmpty()) {
                     serverBills.forEach { serverBill ->
-                        val localBill = billDao.findByBillId(serverBill.id)//本地的
+                        val localBill = billDao.findByID(serverBill.id)//本地的
 
                         if (localBill.isEmpty()) {//不存在直接存入
                             billDao.install(serverBill.toBill())

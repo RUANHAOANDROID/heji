@@ -85,7 +85,13 @@ public interface BillDao {
      */
 
     @Query("SELECT * FROM bill WHERE (bill_time BETWEEN :start AND :end) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
-    Flowable<List<Bill>> findBillsFlowableByTime(String start, String end);
+    Flowable<List<Bill>> findBillsFollowableByTime(String start, String end);
+
+    @Query("SELECT * FROM bill WHERE (bill_time BETWEEN :start AND :end) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
+    List<Bill> findBillsBetweenTime(String start, String end);
+
+    @Query("SELECT SUM(money/100) FROM bill WHERE date(bill_time) =:time AND type =:type AND sync_status!=-1")
+    String findDayIncome(String time, String type);
 
     /**
      * 时间内收入、支出

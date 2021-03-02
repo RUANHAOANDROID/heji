@@ -254,9 +254,8 @@ public class BillsHomeFragment extends BaseFragment {
         toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.ic_baseline_arrow_down_white_32), null);
         toolBarCenterTitle.setCompoundDrawablePadding(8);
 
-        Calendar calendar = Calendar.getInstance();
-        int thisYear = calendar.get(Calendar.YEAR);//当前年份
-        int thisMonth = calendar.get(Calendar.MONTH) + 1;
+        int thisYear = homeViewModel.getYear();
+        int thisMonth = homeViewModel.getMonth();
         final String yearMonth = thisYear + "." + thisMonth;
         toolBarCenterTitle.setText(yearMonth);
         toolBarCenterTitle.setOnClickListener(v -> {
@@ -265,8 +264,8 @@ public class BillsHomeFragment extends BaseFragment {
                     .hasShadowBg(true)
                     .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
                     //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                    .asCustom(new YearSelectPop(getMainActivity(), thisYear, thisMonth, (year, month) -> {
-                        toolBarCenterTitle.setText(year + "年" + month + "月");
+                    .asCustom(new YearSelectPop(getMainActivity(), (year, month) -> {
+                        toolBarCenterTitle.setText(year + "." + month + "");
                         List<Fragment> fragments = getMainActivity().getFragments();
                         fragments.forEach(fragment -> {
                             if (fragment instanceof BillsHomeFragment) {

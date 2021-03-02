@@ -12,7 +12,7 @@ import java.io.IOException
 
 class CategoryRepository {
     val network = HejiNetwork.getInstance()
-    val categoryDao = AppDatabase.INSTANCE.categoryDao()
+    val categoryDao = AppDatabase.getInstance().categoryDao()
     suspend fun pushCategory(category: CategoryEntity) {
         val response = network.categoryPush(category)
         response.let {

@@ -45,7 +45,7 @@ class BillsHomeViewModel : BaseViewModel() {
             LogUtils.d("Start time: ", start)
             val end = MyTimeUtils.getLastDayOfMonth(year, month)
             LogUtils.d("End time: ", end)
-            val disposable = billDao.findBillsFlowableByTime(start, end)
+            val disposable = billDao.findBillsFollowableByTime(start, end)
                     .subscribeOn(Schedulers.io()).distinctUntilChanged()
                     .map { bills: List<Bill> ->
                         LogUtils.i("input size " + bills.size)

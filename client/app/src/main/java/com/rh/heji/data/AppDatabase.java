@@ -36,7 +36,7 @@ import com.rh.heji.data.db.Image;
         },
         version = 1)
 public abstract class AppDatabase extends RoomDatabase {
-    public static volatile AppDatabase INSTANCE;
+    private static volatile AppDatabase INSTANCE;
 
     public abstract BillDao billDao();
 

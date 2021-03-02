@@ -157,9 +157,9 @@ public class BillsHomeFragment extends BaseFragment {
         BigDecimal expenses = new BigDecimal(binding.homeHeadView.tvTotalExpensesValue.getText().toString());
         BigDecimal totalRevenue = income.subtract(expenses);
         if (totalRevenue.longValue() > 0) {
-            binding.homeHeadView.tvTotalRevenueValue.setTextColor(Color.GREEN);
+            binding.homeHeadView.tvTotalRevenueValue.setTextColor(getMainActivity().getColor(R.color.income));
         } else {
-            binding.homeHeadView.tvTotalRevenueValue.setTextColor(Color.RED);
+            binding.homeHeadView.tvTotalRevenueValue.setTextColor(getMainActivity().getColor(R.color.expenditure));
         }
         binding.homeHeadView.tvTotalRevenueValue.setText(totalRevenue.toString());
     }

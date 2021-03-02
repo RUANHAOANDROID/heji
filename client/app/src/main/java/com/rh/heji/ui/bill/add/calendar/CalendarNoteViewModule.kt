@@ -1,7 +1,5 @@
 package com.rh.heji.ui.bill.add.calendar
 
-import android.util.TimeUtils
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.haibin.calendarview.Calendar
@@ -9,15 +7,12 @@ import com.rh.heji.App
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
-import com.rh.heji.data.converters.MoneyConverters
-import com.rh.heji.data.db.Bill
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.MyTimeUtils
-import java.math.BigDecimal
 
 class CalendarNoteViewModule : BaseViewModel() {
     val dataBase = AppDatabase.getInstance()
-    val calendarLiveData = MediatorLiveData<Map<String, Calendar>>()
+    val calendarLiveData = MutableLiveData<Map<String, Calendar>>()
     var year: Int = thisYear
     var month: Int = thisMonth
     private val thisYear: Int
@@ -38,10 +33,11 @@ class CalendarNoteViewModule : BaseViewModel() {
                 var thisYear = calendar.get(java.util.Calendar.YEAR)
                 var thisMonth = calendar.get(java.util.Calendar.MONTH) + 1
                 var thisDay = calendar.get(java.util.Calendar.DAY_OF_MONTH)
+
                 var time = com.blankj.utilcode.util.TimeUtils.date2String(it.billTime, "yyyy-MM-dd")
-                var expenditure = dataBase.billDao().findDayIncome(time, BillType.EXPENDITURE.type().toString())
+                var expenditure = dataBase.billDao().findIncomeByDay(time, BillType.EXPENDITURE.type().toString())
                         ?: "0"
-                var income = dataBase.billDao().findDayIncome(time, BillType.INCOME.type().toString())
+                var income = dataBase.billDao().findIncomeByDay(time, BillType.INCOME.type().toString())
                         ?: "0"
                 if (expenditure != "0" || income != "0") {
                     val calender: Calendar = getSchemeCalendar(thisYear, thisMonth, thisDay, expenditure, income)

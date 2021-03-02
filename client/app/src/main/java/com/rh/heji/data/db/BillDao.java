@@ -13,6 +13,7 @@ import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.converters.MoneyConverters;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -43,11 +44,8 @@ public interface BillDao {
     @Query("select bill_id from bill where bill_time =:time and money =:money and remark=:remark")
     List<String> findBill(Date time, BigDecimal money, String remark);
 
-    @Query("select * from bill where bill_id =:id and sync_status =:syncStatus")
-    List<Bill> findBillByIdAndSyncStatus(String id, int syncStatus);
-
     @Query("select * from bill where bill_id =:id")
-    List<Bill> findByBillId(String id);
+    List<Bill> findByID(String id);
 
     /**
      * @param syncStatus 同步状态
@@ -91,7 +89,10 @@ public interface BillDao {
     List<Bill> findBillsBetweenTime(String start, String end);
 
     @Query("SELECT SUM(money/100) FROM bill WHERE date(bill_time) =:time AND type =:type AND sync_status!=-1")
-    String findDayIncome(String time, String type);
+    String findIncomeByDay(String time, String type);
+
+    @Query("SELECT * FROM bill WHERE date(bill_time) =:time AND sync_status!=-1")
+    List<Bill> getListByDay(String time);
 
     /**
      * 时间内收入、支出

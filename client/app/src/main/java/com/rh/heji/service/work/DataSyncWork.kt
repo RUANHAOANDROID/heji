@@ -12,8 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DataSyncWork {
-    private val billDao = AppDatabase.INSTANCE.billDao()
-    private val categoryDao = AppDatabase.INSTANCE.categoryDao()
+    private val billDao = AppDatabase.getInstance().billDao()
+    private val categoryDao = AppDatabase.getInstance().categoryDao()
     private val network = HejiNetwork.getInstance()
     private val billRepository = com.rh.heji.data.repository.BillRepository()
     suspend fun asyncBills() {

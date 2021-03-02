@@ -138,14 +138,13 @@ public class MyMonthView extends MonthView {
         //特定日期
         for (int i = 0; i < calendar.getSchemes().size(); i++) {
             Calendar.Scheme scheme = calendar.getSchemes().get(i);
-            if (scheme.getScheme().equals("0"))
-                return;
+            if (null == scheme.getObj()) return;
             if (isSelected) {
                 incomePaint.setColor(mSelectTextPaint.getColor());
             } else {
                 incomePaint.setColor(scheme.getShcemeColor());
             }
-            canvas.drawText(scheme.getScheme(), cx, indexY, incomePaint);
+            canvas.drawText(String.valueOf(scheme.getObj()), cx, indexY, incomePaint);
             indexY = (int) (indexY + incomePaint.getTextSize());
         }
     }

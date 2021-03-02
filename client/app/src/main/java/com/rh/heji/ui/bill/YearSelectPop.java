@@ -36,11 +36,12 @@ public class YearSelectPop extends CenterPopupView implements View.OnClickListen
     private PopYearMonthBinding binding;
     private int selectYear;
 
-    public YearSelectPop(@NonNull Context context, int thisYear, int thisMonth, OnTabSelected onTabSelected) {
+    public YearSelectPop(@NonNull Context context, OnTabSelected onTabSelected) {
         super(context);
         this.onTabSelected = onTabSelected;
+        Calendar calendar = Calendar.getInstance();
         years = new ArrayList<>();
-        for (int i = thisYear; i >= earliestYear; i--) {
+        for (int i = calendar.get(Calendar.YEAR); i >= earliestYear; i--) {
             years.add(i);
         }
         LogUtils.i(years);

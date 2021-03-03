@@ -92,7 +92,7 @@ class CalendarNoteFragment : BaseFragment() {
                 setTitleYearMonth(calendar.year, calendar.month)
             }
         })
-        viewModel.todayBills(binding.calendarView.selectedCalendar)
+        binding.calendarView.post { viewModel.todayBills(calendarView.selectedCalendar) }
         viewModel.calendarLiveData.observe(viewLifecycleOwner, monthObserver())
     }
 

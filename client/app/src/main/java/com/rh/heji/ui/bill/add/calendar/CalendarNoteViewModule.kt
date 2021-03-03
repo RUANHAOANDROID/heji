@@ -43,7 +43,7 @@ class CalendarNoteViewModule : BaseViewModel() {
                 var thisMonth = calendar.get(java.util.Calendar.MONTH) + 1
                 var thisDay = calendar.get(java.util.Calendar.DAY_OF_MONTH)
 
-                var time = com.blankj.utilcode.util.TimeUtils.date2String(it.billTime, "yyyy-MM-dd")
+                var time = TimeUtils.date2String(it.billTime, "yyyy-MM-dd")
                 var expenditure = dataBase.billDao().findIncomeByDay(time, BillType.EXPENDITURE.type().toString())
                         ?: "0"
                 var income = dataBase.billDao().findIncomeByDay(time, BillType.INCOME.type().toString())
@@ -64,33 +64,36 @@ class CalendarNoteViewModule : BaseViewModel() {
         launchIO({
             val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
             val dayBills = dataBase.billDao().findListByDay(dateTime)
-            var expenditure = "0"
-            var income = "0"
-            calendar.schemes?.forEach {
-                if (it.type == 1) {
-                    income = it.obj as String
-                } else {
-                    expenditure = it.obj as String
+            dayBills?.let {
+                var expenditure = "0"
+                var income = "0"
+                calendar.schemes?.forEach { scheme ->
+                    if (scheme.type == 1) {
+                        income = scheme.obj as String
+                    } else {
+                        expenditure = scheme.obj as String
+                    }
                 }
-            }
 
-            var weekDay = calendar.week
-            var dayIncome = DayIncome(
-                    expected = expenditure as String,
-                    income = income as String,
-                    month = calendar.month,
-                    weekday = weekDay,
-                    monthDay = calendar.day
-            )
+                var weekDay = calendar.week
 
-            var parentNode = mutableListOf<BaseNode>()
-            var childNodes = emptyList<BaseNode>().toMutableList()
-            dayBills.forEach {
-                var billsNode = DayBillsNode(it)
-                childNodes.add(billsNode)
+                var dayIncome = DayIncome(
+                        expected = expenditure as String,
+                        income = income as String,
+                        month = calendar.month,
+                        weekday = weekDay,
+                        monthDay = calendar.day
+                )
+
+                var parentNode = mutableListOf<BaseNode>()
+                var childNodes = emptyList<BaseNode>().toMutableList()
+                it.forEach {
+                    var billsNode = DayBillsNode(it)
+                    childNodes.add(billsNode)
+                }
+                parentNode.add(DayIncomeNode(childNodes, dayIncome))
+                dayBillsLiveData.postValue(parentNode)
             }
-            parentNode.add(DayIncomeNode(childNodes, dayIncome))
-            dayBillsLiveData.postValue(parentNode)
         }, {})
     }
 

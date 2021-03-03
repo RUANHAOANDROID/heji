@@ -63,29 +63,12 @@ class CalendarNoteFragment : BaseFragment() {
         binding.recycler.layoutManager = LinearLayoutManager(mainActivity)
         val adapter = NodeBillsAdapter()
         binding.recycler.adapter = adapter
-        adapter.setNewInstance(getFakeData())
         binding.recycler.addItemDecoration(CardViewDecoration(mainActivity.resources, 10f))
         viewModel.dayBillsLiveData.observe(viewLifecycleOwner, Observer {
             adapter.setNewInstance(it as MutableList<BaseNode>)
             adapter.notifyDataSetChanged()
         })
         initCalendarView()
-
-    }
-
-    private fun getFakeData(): MutableList<BaseNode> {
-        var child = mutableListOf<BaseNode>()
-        var a = 5
-        while (a > 0) {
-            var item = DayBillsNode(Bill())
-            child.add(item)
-            a--
-        }
-        var item0 = DayIncomeNode(child, DayIncome("123", "123", 10, 1, 0))
-        var item1 = DayIncomeNode(child, DayIncome("123", "123", 12, 1, 1))
-        var item2 = DayIncomeNode(child, DayIncome("123", "123", 3, 2, 2))
-        val parent = mutableListOf<BaseNode>(item0, item1, item2)
-        return parent
     }
 
     private fun initCalendarView() {

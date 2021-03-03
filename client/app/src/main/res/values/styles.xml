@@ -47,4 +47,9 @@
         <item name="colorControlHighlight">@color/gray</item>
         <item name="backgroundTint">@color/white</item>
     </style>
+    <!-- fab 灰边 白色-->
+    <style name="Selected_BackgroundWhite" >
+        <item name="android:background">@color/white</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
 </resources>

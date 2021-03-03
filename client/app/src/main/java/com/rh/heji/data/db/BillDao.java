@@ -92,7 +92,7 @@ public interface BillDao {
     String findIncomeByDay(String time, String type);
 
     @Query("SELECT * FROM bill WHERE date(bill_time) =:time AND sync_status!=-1")
-    List<Bill> getListByDay(String time);
+    List<Bill> findListByDay(String time);
 
     /**
      * 时间内收入、支出

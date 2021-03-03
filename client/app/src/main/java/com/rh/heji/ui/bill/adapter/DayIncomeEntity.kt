@@ -3,13 +3,6 @@ package com.rh.heji.ui.bill.adapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.rh.heji.data.db.Bill
 
-/**
- * 日收益Node
- */
-class DayIncomeNode(var bill: Bill) : BaseNode() {
-    override val childNode: MutableList<BaseNode>?
-        get() = null
-}
 
 /**
  * 日收益Object
@@ -19,10 +12,19 @@ data class DayIncome(var expected: String,
                      var monthDay: String,
                      var weekday: String)
 
+
 /**
- * bills
+ * 日收益Node,子节点为账单List
  */
-class DayBillsNode(private val dayListNodes: MutableList<BaseNode>, val dayIncome: DayIncome) : BaseNode() {
+class DayIncomeNode(private val dayListNodes: MutableList<BaseNode>, val dayIncome: DayIncome) : BaseNode() {
     override val childNode: MutableList<BaseNode>?
         get() = dayListNodes
+}
+
+/**
+ * 当日账单List
+ */
+class DayBillsNode(var bill: Bill) : BaseNode() {
+    override val childNode: MutableList<BaseNode>?
+        get() = null
 }

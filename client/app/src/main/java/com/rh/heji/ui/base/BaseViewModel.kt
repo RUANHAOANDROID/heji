@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 
 open class BaseViewModel : ViewModel() {
@@ -13,6 +14,7 @@ open class BaseViewModel : ViewModel() {
             block()
         } catch (e: Throwable) {
             error(e)
+            e.printStackTrace()
         }
     }
 
@@ -21,7 +23,16 @@ open class BaseViewModel : ViewModel() {
             block()
         } catch (e: Throwable) {
             error(e)
+            e.printStackTrace()
         }
     }
 
+    fun launchNewThread(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) = viewModelScope.launch(newSingleThreadContext("rh_newThread")) {
+        try {
+            block()
+        } catch (e: Throwable) {
+            error(e)
+            e.printStackTrace()
+        }
+    }
 }

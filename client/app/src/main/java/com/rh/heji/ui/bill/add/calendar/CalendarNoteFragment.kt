@@ -81,10 +81,10 @@ class CalendarNoteFragment : BaseFragment() {
             child.add(item)
             a--
         }
-        var item0 = DayIncomeNode(child, DayIncome("123", "123", 10, 1,0))
-        var item1 = DayIncomeNode(child, DayIncome("123", "123", 12, 1,1))
-        var item2 = DayIncomeNode(child, DayIncome("123", "123", 3, 2,2))
-        val parent = mutableListOf<BaseNode>(item0, item1,item2)
+        var item0 = DayIncomeNode(child, DayIncome("123", "123", 10, 1, 0))
+        var item1 = DayIncomeNode(child, DayIncome("123", "123", 12, 1, 1))
+        var item2 = DayIncomeNode(child, DayIncome("123", "123", 3, 2, 2))
+        val parent = mutableListOf<BaseNode>(item0, item1, item2)
         return parent
     }
 
@@ -96,8 +96,9 @@ class CalendarNoteFragment : BaseFragment() {
 
             override fun onCalendarSelect(calendar: Calendar, isClick: Boolean) {
                 if (isClick) {
-                    viewModel.todayBills(calendar)
+
                 }
+                viewModel.todayBills(calendar)
                 val thisMonth = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.MONTH) + 1;
                 if (calendar.month == thisMonth) {
                     binding.todayFab.hide()
@@ -108,6 +109,7 @@ class CalendarNoteFragment : BaseFragment() {
                 setTitleYearMonth(calendar.year, calendar.month)
             }
         })
+        viewModel.todayBills(binding.calendarView.selectedCalendar)
         viewModel.calendarLiveData.observe(viewLifecycleOwner, monthObserver())
     }
 

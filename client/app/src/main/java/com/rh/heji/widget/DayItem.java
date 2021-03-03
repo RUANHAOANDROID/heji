@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.cardview.widget.CardView;
 
 public class DayItem extends ViewGroup {
+
     public DayItem(Context context) {
         super(context);
     }

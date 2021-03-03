@@ -14,6 +14,7 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
+import okhttp3.internal.notify
 
 class CalendarNoteViewModule : BaseViewModel() {
     val dataBase = AppDatabase.getInstance()
@@ -51,31 +52,34 @@ class CalendarNoteViewModule : BaseViewModel() {
                 }
 
             }
+
             calendarLiveData.postValue(map)
         }, {})
     }
 
     fun todayBills(calendar: Calendar) {
-        val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
-        val dayBills = dataBase.billDao().findListByDay(dateTime)
         launchIO({
+            val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
+            val dayBills = dataBase.billDao().findListByDay(dateTime)
             var expenditure = calendar.schemes[0]?.obj ?: 0
             var income = calendar.schemes[1]?.obj ?: 0
             var weekDay = calendar.week
-            var dayIncomeList = emptyList<DayIncomeNode>().toMutableList()
             var dayIncome = DayIncome(
                     expected = expenditure as String,
                     income = income as String,
-                    weekday = weekDay.toString(),
-                    monthDay = calendar.day.toString())
+                    month = calendar.month,
+                    weekday = weekDay,
+                    monthDay = calendar.day
+            )
 
-            var dayBillsNode = emptyList<BaseNode>().toMutableList()
+            var parentNode = mutableListOf<BaseNode>()
+            var childNodes = emptyList<BaseNode>().toMutableList()
             dayBills.forEach {
                 var billsNode = DayBillsNode(it)
-                dayBillsNode.add(billsNode)
+                childNodes.add(billsNode)
             }
-            dayIncomeList[0] = DayIncomeNode(dayBillsNode, dayIncome)
-            dayBillsLiveData.postValue(dayIncomeList)
+            parentNode.add(DayIncomeNode(childNodes, dayIncome))
+            dayBillsLiveData.postValue(parentNode)
         }, {})
     }
 

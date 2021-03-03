@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
+import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import com.lxj.xpopup.XPopup
@@ -15,6 +16,10 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.YearSelectPop
+import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
+import com.rh.heji.ui.bill.adapter.DayBillsNode
+import com.rh.heji.ui.bill.adapter.DayIncome
+import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 
 private const val ARG_PARAM1 = "param1"
@@ -53,8 +58,29 @@ class CalendarNoteFragment : BaseFragment() {
             binding.todayFab.hide()
         }
         binding.recycler.layoutManager = LinearLayoutManager(mainActivity)
-        binding.recycler.adapter = CalendarBillsAdapter(R.layout.item_calendar_bill, null)
+        val adapter = NodeBillsAdapter()
+        binding.recycler.adapter = adapter
+        adapter.setNewInstance(getFakeData())
+        viewModel.dayBillsLiveData.observe(viewLifecycleOwner, Observer {
+            adapter.setNewInstance(it as MutableList<BaseNode>)
+            adapter.notifyDataSetChanged()
+        })
         initCalendarView()
+
+    }
+
+    private fun getFakeData(): MutableList<BaseNode> {
+        var child = mutableListOf<BaseNode>()
+        var a = 10
+        while (a > 0) {
+            var item = DayBillsNode(Bill())
+            child.add(item)
+            a--
+        }
+        var item0 = DayIncomeNode(child, DayIncome("123", "123", "jint", "week"))
+        var item1 = DayIncomeNode(child, DayIncome("123", "123", "jint", "week"))
+        val parent = mutableListOf<BaseNode>(item0, item1)
+        return parent
     }
 
     private fun initCalendarView() {
@@ -65,7 +91,7 @@ class CalendarNoteFragment : BaseFragment() {
 
             override fun onCalendarSelect(calendar: Calendar, isClick: Boolean) {
                 if (isClick) {
-
+                    viewModel.todayBills(calendar)
                 }
                 val thisMonth = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.MONTH) + 1;
                 if (calendar.month == thisMonth) {

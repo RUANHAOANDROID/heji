@@ -2,17 +2,23 @@ package com.rh.heji.ui.bill.add.calendar
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.blankj.utilcode.util.TimeUtils
+import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
 import com.rh.heji.App
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.ui.bill.adapter.DayBillsNode
+import com.rh.heji.ui.bill.adapter.DayIncome
+import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
 
 class CalendarNoteViewModule : BaseViewModel() {
     val dataBase = AppDatabase.getInstance()
     val calendarLiveData = MutableLiveData<Map<String, Calendar>>()
+    val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>();
     var year: Int = thisYear
     var month: Int = thisMonth
     private val thisYear: Int
@@ -46,6 +52,30 @@ class CalendarNoteViewModule : BaseViewModel() {
 
             }
             calendarLiveData.postValue(map)
+        }, {})
+    }
+
+    fun todayBills(calendar: Calendar) {
+        val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
+        val dayBills = dataBase.billDao().findListByDay(dateTime)
+        launchIO({
+            var expenditure = calendar.schemes[0]?.obj ?: 0
+            var income = calendar.schemes[1]?.obj ?: 0
+            var weekDay = calendar.week
+            var dayIncomeList = emptyList<DayIncomeNode>().toMutableList()
+            var dayIncome = DayIncome(
+                    expected = expenditure as String,
+                    income = income as String,
+                    weekday = weekDay.toString(),
+                    monthDay = calendar.day.toString())
+
+            var dayBillsNode = emptyList<BaseNode>().toMutableList()
+            dayBills.forEach {
+                var billsNode = DayBillsNode(it)
+                dayBillsNode.add(billsNode)
+            }
+            dayIncomeList[0] = DayIncomeNode(dayBillsNode, dayIncome)
+            dayBillsLiveData.postValue(dayIncomeList)
         }, {})
     }
 

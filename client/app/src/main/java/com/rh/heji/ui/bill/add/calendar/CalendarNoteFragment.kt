@@ -1,5 +1,6 @@
 package com.rh.heji.ui.bill.add.calendar
 
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -21,6 +22,8 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
+import com.rh.heji.widget.CardViewDecoration
+import kotlinx.android.synthetic.main.fragment_calendar_note.*
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -61,6 +64,7 @@ class CalendarNoteFragment : BaseFragment() {
         val adapter = NodeBillsAdapter()
         binding.recycler.adapter = adapter
         adapter.setNewInstance(getFakeData())
+        binding.recycler.addItemDecoration(CardViewDecoration(mainActivity.resources, 10f))
         viewModel.dayBillsLiveData.observe(viewLifecycleOwner, Observer {
             adapter.setNewInstance(it as MutableList<BaseNode>)
             adapter.notifyDataSetChanged()
@@ -71,15 +75,16 @@ class CalendarNoteFragment : BaseFragment() {
 
     private fun getFakeData(): MutableList<BaseNode> {
         var child = mutableListOf<BaseNode>()
-        var a = 10
+        var a = 5
         while (a > 0) {
             var item = DayBillsNode(Bill())
             child.add(item)
             a--
         }
-        var item0 = DayIncomeNode(child, DayIncome("123", "123", "jint", "week"))
-        var item1 = DayIncomeNode(child, DayIncome("123", "123", "jint", "week"))
-        val parent = mutableListOf<BaseNode>(item0, item1)
+        var item0 = DayIncomeNode(child, DayIncome("123", "123", 10, 1,0))
+        var item1 = DayIncomeNode(child, DayIncome("123", "123", 12, 1,1))
+        var item2 = DayIncomeNode(child, DayIncome("123", "123", 3, 2,2))
+        val parent = mutableListOf<BaseNode>(item0, item1,item2)
         return parent
     }
 

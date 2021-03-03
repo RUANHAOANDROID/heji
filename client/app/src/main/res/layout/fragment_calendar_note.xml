@@ -12,57 +12,60 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></include>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card1"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedSccrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:minHeight="260dp"
-        app:cardCornerRadius="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <com.haibin.calendarview.CalendarView
-            android:id="@+id/calendarView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            app:calendar_height="50dp"
-            app:current_month_lunar_text_color="#bababa"
-            app:current_month_text_color="#333333"
-            app:min_year="2000"
-            app:month_view="com.rh.heji.widget.MyMonthView"
-            app:month_view_show_mode="mode_only_current"
-            app:other_month_text_color="#e1e1e1"
-            app:scheme_text="假"
-            app:scheme_text_color="#333"
-            app:scheme_theme_color="#333"
-            app:select_mode="default_mode"
-            app:selected_lunar_text_color="@color/colorPrimary"
-            app:selected_text_color="@color/colorPrimary"
-            app:selected_theme_color="#804248f4"
-            app:week_background="#fff"
-            app:week_start_with="sun"
-            app:week_text_color="#111" />
-    </androidx.cardview.widget.CardView>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:minHeight="80dp"
-        app:cardCornerRadius="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/card1">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:minHeight="260dp"
+                app:cardCornerRadius="5dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <com.haibin.calendarview.CalendarView
+                    android:id="@+id/calendarView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#fff"
+                    app:calendar_height="50dp"
+                    app:current_month_lunar_text_color="#bababa"
+                    app:current_month_text_color="#333333"
+                    app:min_year="2000"
+                    app:month_view="com.rh.heji.widget.MyMonthView"
+                    app:month_view_show_mode="mode_only_current"
+                    app:other_month_text_color="#e1e1e1"
+                    app:scheme_text="假"
+                    app:scheme_text_color="#333"
+                    app:scheme_theme_color="#333"
+                    app:select_mode="default_mode"
+                    app:selected_lunar_text_color="@color/colorPrimary"
+                    app:selected_text_color="@color/colorPrimary"
+                    app:selected_theme_color="#804248f4"
+                    app:week_background="#fff"
+                    app:week_start_with="sun"
+                    app:week_text_color="#111" />
+            </androidx.cardview.widget.CardView>
 
-        </androidx.recyclerview.widget.RecyclerView>
-    </androidx.cardview.widget.CardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addFab"
@@ -70,6 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_margin="@dimen/fab_margin"
+        android:layout_marginBottom="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

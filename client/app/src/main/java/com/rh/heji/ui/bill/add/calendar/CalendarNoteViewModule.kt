@@ -2,6 +2,7 @@ package com.rh.heji.ui.bill.add.calendar
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
@@ -14,6 +15,7 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.internal.notify
 
 class CalendarNoteViewModule : BaseViewModel() {
@@ -58,11 +60,20 @@ class CalendarNoteViewModule : BaseViewModel() {
     }
 
     fun todayBills(calendar: Calendar) {
+        LogUtils.i(calendar.toString())
         launchIO({
             val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
             val dayBills = dataBase.billDao().findListByDay(dateTime)
-            var expenditure = calendar.schemes[0]?.obj ?: 0
-            var income = calendar.schemes[1]?.obj ?: 0
+            var expenditure = "0"
+            var income = "0"
+            calendar.schemes?.forEach {
+                if (it.type == 1) {
+                    income = it.obj as String
+                } else {
+                    expenditure = it.obj as String
+                }
+            }
+
             var weekDay = calendar.week
             var dayIncome = DayIncome(
                     expected = expenditure as String,

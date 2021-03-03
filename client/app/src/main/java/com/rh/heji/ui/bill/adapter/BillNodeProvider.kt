@@ -1,6 +1,7 @@
 package com.rh.heji.ui.bill.adapter
 
 import android.graphics.Color
+import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import com.blankj.utilcode.util.ToastUtils
@@ -59,7 +60,7 @@ class DayBillsNodeProvider : BaseNodeProvider() {
         } else {
             helper.getView<TextView>(R.id.tvInfo).setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         }
-        helper.setGone(R.id.tvInfo, null == bill.remark && bill.imgCount == 0)
+        helper.setGone(R.id.tvInfo, TextUtils.isEmpty(bill.remark) && bill.imgCount == 0)
 
     }
 }

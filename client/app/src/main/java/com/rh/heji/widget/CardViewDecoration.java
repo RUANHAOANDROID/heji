@@ -21,7 +21,7 @@ import com.rh.heji.R;
  */
 public class CardViewDecoration extends RecyclerView.ItemDecoration {
 
-    final static float SHADOW_MULTIPLIER = 1.8f;
+    final static float SHADOW_MULTIPLIER = 1.2f;
     /*
 32 	 * This helper is set by CardView implementations. <p> Prior to API 17, canvas.drawRoundRect is expensive; which is
 33 	 * why we need this interface to draw efficient rounded rectangles before 17.

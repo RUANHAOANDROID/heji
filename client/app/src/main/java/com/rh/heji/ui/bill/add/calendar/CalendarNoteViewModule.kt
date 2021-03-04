@@ -1,6 +1,5 @@
 package com.rh.heji.ui.bill.add.calendar
 
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -15,8 +14,6 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.internal.notify
 
 class CalendarNoteViewModule : BaseViewModel() {
     val dataBase = AppDatabase.getInstance()

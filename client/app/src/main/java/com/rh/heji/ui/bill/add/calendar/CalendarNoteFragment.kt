@@ -3,6 +3,7 @@ package com.rh.heji.ui.bill.add.calendar
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +34,10 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         return R.layout.fragment_calendar_note
     }
 
+    override fun onResume() {
+        super.onResume()
+        notifyCalendarView()
+    }
     override fun setUpToolBar() {
         super.setUpToolBar()
         //toolBar.title = "日历记账"
@@ -69,7 +74,7 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         val adapter = NodeBillsAdapter()
         binding.recycler.adapter = adapter
         binding.recycler.addItemDecoration(CardViewDecoration(mainActivity.resources, 10f))
-        viewModel.dayBillsLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.dayBillsLiveData.observe(viewLifecycleOwner, Observer {CardView.IMPORTANT_FOR_ACCESSIBILITY_AUTO
             adapter.setNewInstance(it as MutableList<BaseNode>)
             adapter.notifyDataSetChanged()
         })
@@ -113,6 +118,7 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
     private fun monthObserver(): Observer<Map<String, Calendar>> =
             Observer {
                 binding.calendarView.setSchemeDate(it)//更新日历视图
+                binding.calendarView.invalidate()
                 viewModel.todayBills(calendarView.selectedCalendar)//刷新列表
             }
 

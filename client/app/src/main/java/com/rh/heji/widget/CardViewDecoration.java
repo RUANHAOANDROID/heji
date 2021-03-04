@@ -18,6 +18,7 @@ import com.rh.heji.R;
 
 /**
  * Created by David on 16.06.2015.
+ * https://github.com/bleeding182/recyclerviewItemDecorations
  */
 public class CardViewDecoration extends RecyclerView.ItemDecoration {
 

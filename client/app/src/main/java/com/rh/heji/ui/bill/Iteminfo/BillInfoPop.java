@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BottomPopupView;
 import com.lxj.xpopup.impl.ConfirmPopupView;
+import com.lxj.xpopup.util.XPopupUtils;
 import com.rh.heji.App;
 import com.rh.heji.AppCache;
 import com.rh.heji.BuildConfig;
@@ -53,6 +55,7 @@ public class BillInfoPop extends BottomPopupView {
     private Bill bill;
     PopBilliInfoBinding binding;
     private ImagePopupInfoAdapter imagePopupInfoAdapter;
+    private PopClickListener popClickListener;
 
     public BillInfoPop(@NonNull Context context) {
         super(context);
@@ -106,8 +109,13 @@ public class BillInfoPop extends BottomPopupView {
             deleteBill();
         });
         binding.tvUpdate.setOnClickListener(v -> {
+            if (popClickListener != null) {
+                popClickListener.update(bill.getId());
+            }
         });
-
+        //设置圆角背景
+        getPopupImplView().setBackground(XPopupUtils.createDrawable(getResources().getColor(R.color._xpopup_light_color),
+                popupInfo.borderRadius, popupInfo.borderRadius, 0, 0));
     }
 
     private void initTicketImg() {
@@ -157,6 +165,9 @@ public class BillInfoPop extends BottomPopupView {
                         bill.setSynced(Constant.STATUS_DELETE);
                         AppDatabase.getInstance().billDao().update(bill);
                         AppCache.Companion.getInstance().getAppViewModule().billDelete(bill.getId());
+                        if (popClickListener != null) {
+                            popClickListener.delete(bill.getId());
+                        }
                     } else {
                         ToastUtils.showLong("只有账单创建人有权删除该账单");
                     }
@@ -218,5 +229,15 @@ public class BillInfoPop extends BottomPopupView {
             return path;
         }
 
+    }
+
+    public interface PopClickListener {
+        void delete(String _id);
+
+        void update(String _id);
+    }
+
+    public void setPopClickListener(PopClickListener popClickListener) {
+        this.popClickListener = popClickListener;
     }
 }

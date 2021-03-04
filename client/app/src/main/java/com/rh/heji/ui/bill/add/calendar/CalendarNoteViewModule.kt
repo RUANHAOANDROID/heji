@@ -91,7 +91,9 @@ class CalendarNoteViewModule : BaseViewModel() {
                     var billsNode = DayBillsNode(it)
                     childNodes.add(billsNode)
                 }
-                parentNode.add(DayIncomeNode(childNodes, dayIncome))
+                if (childNodes.size>0){
+                    parentNode.add(DayIncomeNode(childNodes, dayIncome))
+                }
                 dayBillsLiveData.postValue(parentNode)
             }
         }, {})

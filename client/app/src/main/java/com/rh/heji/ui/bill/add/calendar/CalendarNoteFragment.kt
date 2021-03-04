@@ -1,6 +1,5 @@
 package com.rh.heji.ui.bill.add.calendar
 
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -13,14 +12,10 @@ import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
-import com.rh.heji.data.db.Bill
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.YearSelectPop
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
-import com.rh.heji.ui.bill.adapter.DayBillsNode
-import com.rh.heji.ui.bill.adapter.DayIncome
-import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.widget.CardViewDecoration
 import kotlinx.android.synthetic.main.fragment_calendar_note.*
@@ -46,7 +41,12 @@ class CalendarNoteFragment : BaseFragment() {
 
     override fun initView(view: View) {
         binding = FragmentCalendarNoteBinding.bind(view)
+        initFab(view)
+        initCalendarView()
+        initAdapter();
+    }
 
+    private fun initFab(view: View) {
         binding.addFab.setOnClickListener {
             val year = binding.calendarView.selectedCalendar.year
             val month = binding.calendarView.selectedCalendar.month
@@ -60,6 +60,10 @@ class CalendarNoteFragment : BaseFragment() {
             binding.calendarView.scrollToCurrent()
             binding.todayFab.hide()
         }
+        fabShow()
+    }
+
+    private fun initAdapter() {
         binding.recycler.layoutManager = LinearLayoutManager(mainActivity)
         val adapter = NodeBillsAdapter()
         binding.recycler.adapter = adapter
@@ -68,7 +72,7 @@ class CalendarNoteFragment : BaseFragment() {
             adapter.setNewInstance(it as MutableList<BaseNode>)
             adapter.notifyDataSetChanged()
         })
-        initCalendarView()
+        binding.calendarView.post({ viewModel.todayBills(calendarView.selectedCalendar) })
     }
 
     private fun initCalendarView() {
@@ -81,19 +85,22 @@ class CalendarNoteFragment : BaseFragment() {
                 if (isClick) {
 
                 }
-                viewModel.todayBills(calendar)
-                val thisMonth = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.MONTH) + 1;
-                if (calendar.month == thisMonth) {
-                    binding.todayFab.hide()
-                } else {
-                    binding.todayFab.show()
-                }
+                fabShow()
                 viewModel.updateYearMonth(calendar.year, calendar.month)
+                viewModel.todayBills(calendar)
                 setTitleYearMonth(calendar.year, calendar.month)
             }
         })
-        binding.calendarView.post { viewModel.todayBills(calendarView.selectedCalendar) }
         viewModel.calendarLiveData.observe(viewLifecycleOwner, monthObserver())
+    }
+
+    private fun fabShow() {
+        val thisMonth = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.MONTH) + 1;
+        if (binding.calendarView.curMonth == thisMonth) {
+            binding.todayFab.hide()
+        } else {
+            binding.todayFab.show()
+        }
     }
 
     private fun monthObserver(): Observer<Map<String, Calendar>> =

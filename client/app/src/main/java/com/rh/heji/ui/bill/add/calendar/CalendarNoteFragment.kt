@@ -7,22 +7,24 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
+import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
+import com.rh.heji.data.db.Bill
+import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
 import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.bill.Iteminfo.BillInfoPop
 import com.rh.heji.ui.bill.YearSelectPop
+import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.widget.CardViewDecoration
 import kotlinx.android.synthetic.main.fragment_calendar_note.*
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 
 class CalendarNoteFragment : BaseFragment() {
     lateinit var binding: FragmentCalendarNoteBinding
@@ -72,7 +74,12 @@ class CalendarNoteFragment : BaseFragment() {
             adapter.setNewInstance(it as MutableList<BaseNode>)
             adapter.notifyDataSetChanged()
         })
-        binding.calendarView.post({ viewModel.todayBills(calendarView.selectedCalendar) })
+        adapter.setOnItemClickListener { adapter, view, position ->
+            if (adapter.getItem(position) is DayBillsNode) {
+                var billNode = adapter.getItem(position) as DayBillsNode
+                billNode?.let { it.bill?.let { bill -> showBillItemPop(bill) } }
+            }
+        }
     }
 
     private fun initCalendarView() {
@@ -87,7 +94,6 @@ class CalendarNoteFragment : BaseFragment() {
                 }
                 fabShow()
                 viewModel.updateYearMonth(calendar.year, calendar.month)
-                viewModel.todayBills(calendar)
                 setTitleYearMonth(calendar.year, calendar.month)
             }
         })
@@ -105,7 +111,8 @@ class CalendarNoteFragment : BaseFragment() {
 
     private fun monthObserver(): Observer<Map<String, Calendar>> =
             Observer {
-                binding.calendarView.setSchemeDate(it)
+                binding.calendarView.setSchemeDate(it)//更新日历视图
+                viewModel.todayBills(calendarView.selectedCalendar)//刷新列表
             }
 
     /**
@@ -138,4 +145,23 @@ class CalendarNoteFragment : BaseFragment() {
         viewModel.month = month
     }
 
+    /**
+     * 显示单条账单
+     *
+     * @param billTab
+     */
+    private fun showBillItemPop(bill: Bill) {
+        val popupView = BillInfoPop(mainActivity)
+        XPopup.Builder(mainActivity) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
+                //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+                //.hasBlurBg(true)//模糊默认false
+                //.hasShadowBg(true)//默认true
+                .asCustom(popupView) /*.enableDrag(false)*/
+                .show()
+        popupView.post {
+            popupView.bill = bill //账单信息
+            popupView.setBillImages(ArrayList()) //首先把图片重置
+        }
+        popupView.show()
+    }
 }

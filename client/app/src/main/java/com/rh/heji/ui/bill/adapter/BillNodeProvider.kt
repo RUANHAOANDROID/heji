@@ -26,9 +26,6 @@ class DayIncomeNodeProvider : BaseNodeProvider() {
         helper.setText(R.id.text2, context.resources.getStringArray(R.array.week_day_names)[Integer.valueOf(entity.dayIncome.weekday)])
         helper.setText(R.id.text3, "支:${entity.dayIncome.expected}")
         helper.setText(R.id.text4, "收:${entity.dayIncome.income}")
-        helper.itemView.setOnClickListener {
-            ToastUtils.showShort("aaa")
-        }
     }
 
     override fun onClick(helper: BaseViewHolder, view: View, data: BaseNode, position: Int) {

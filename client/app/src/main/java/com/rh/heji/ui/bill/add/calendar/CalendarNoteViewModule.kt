@@ -52,7 +52,7 @@ class CalendarNoteViewModule : BaseViewModel() {
                     val calender: Calendar = getSchemeCalendar(thisYear, thisMonth, thisDay, expenditure, income)
                     map[calender.toString()] = calender
                 }
-
+                LogUtils.i("$time  $expenditure  $income")
             }
 
             calendarLiveData.postValue(map)
@@ -91,10 +91,11 @@ class CalendarNoteViewModule : BaseViewModel() {
                     var billsNode = DayBillsNode(it)
                     childNodes.add(billsNode)
                 }
-                if (childNodes.size>0){
+                if (childNodes.size > 0) {
                     parentNode.add(DayIncomeNode(childNodes, dayIncome))
                 }
                 dayBillsLiveData.postValue(parentNode)
+                LogUtils.i(dayIncome.toString())
             }
         }, {})
     }

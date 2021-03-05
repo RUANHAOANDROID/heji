@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -115,7 +116,6 @@ public class BillsHomeFragment extends BaseFragment {
 
     @Override
     public void onResume() {
-
         super.onResume();
         int thisYear = homeViewModel.getYear();
         int thisMonth = homeViewModel.getMonth();
@@ -238,13 +238,14 @@ public class BillsHomeFragment extends BaseFragment {
     public void notifyData(int year, int month) {
         homeViewModel.setYear(year);
         homeViewModel.setMonth(month);
-        homeViewModel.getBills().observe(getMainActivity(), bills -> {
-            adapter.setDiffNewData(bills);
-            LogUtils.d("notify: ", bills.size());
-        });
+        homeViewModel.getBills().observe(getMainActivity(), listObserver);
         totalExpenseAndIncome(year, month);
     }
 
+    Observer<List<Bill>> listObserver = bills -> {
+        adapter.setDiffNewData(bills);
+        LogUtils.d("notify: ", bills.size());
+    };
 
     /**
      * 该Menu属于全局所以在这里控制

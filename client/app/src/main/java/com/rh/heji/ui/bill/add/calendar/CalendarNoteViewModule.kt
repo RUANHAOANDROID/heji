@@ -31,7 +31,7 @@ class CalendarNoteViewModule : BaseViewModel() {
 
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
-            val haveBillDays = billDao.findHaveBillDays(MyTimeUtils.getFirstDayOfMonth(year, month), MyTimeUtils.getLastDayOfMonth(year, month))
+            val haveBillDays = billDao.findHaveBillDays(MyTimeUtils.firstDayOfMonth(year, month), MyTimeUtils.lastDayOfMonth(year, month))
             var map = mutableMapOf<String, Calendar>()
 
             haveBillDays?.forEach { time ->

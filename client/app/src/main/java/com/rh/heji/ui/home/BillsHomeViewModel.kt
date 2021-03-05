@@ -17,14 +17,9 @@ class BillsHomeViewModel : BaseViewModel() {
     var year: Int = thisYear //默认为当前时间
     var month: Int = thisMonth//默认为当前月份
 
-    private val billDao: BillDao
-    private var mBillLiveData: MediatorLiveData<List<Bill>>
+    private val billDao: BillDao = AppDatabase.getInstance().billDao()
     var billImagesLiveData: MediatorLiveData<List<Image>> = MediatorLiveData()
 
-    init {
-        mBillLiveData = MediatorLiveData<List<Bill>>()
-        billDao = AppDatabase.getInstance().billDao()
-    }
 
     /**
      * 调用getBills之前必须先设定year ,month
@@ -33,10 +28,9 @@ class BillsHomeViewModel : BaseViewModel() {
      */
     val bills: LiveData<List<Bill>>
         get() {
-            if (mBillLiveData == null) mBillLiveData = MediatorLiveData()
-            val start = MyTimeUtils.getFirstDayOfMonth(year, month)
+            val start = MyTimeUtils.firstDayOfMonth(year, month)
             LogUtils.d("Start time: ", start)
-            val end = MyTimeUtils.getLastDayOfMonth(year, month)
+            val end = MyTimeUtils.lastDayOfMonth(year, month)
             LogUtils.d("End time: ", end)
             val disposable = billDao.findBillsFollowableByTime(start, end)
             return Transformations.distinctUntilChanged(disposable)
@@ -53,11 +47,11 @@ class BillsHomeViewModel : BaseViewModel() {
 
 
     fun getIncomesOrExpenses(year: Int, month: Int, type: Int): LiveData<Double> {
-        val start = MyTimeUtils.getFirstDayOfMonth(year, month)
+        val start = MyTimeUtils.firstDayOfMonth(year, month)
         LogUtils.d("Start time: ", start)
-        val end = MyTimeUtils.getLastDayOfMonth(year, month)
+        val end = MyTimeUtils.lastDayOfMonth(year, month)
         LogUtils.d("End time: ", end)
-        return Transformations.distinctUntilChanged(AppDatabase.getInstance().billDao().findTotalMoneyByTime(start, end, type))
+        return Transformations.distinctUntilChanged(billDao.findTotalMoneyByTime(start, end, type))
     }
 
     private val thisYear: Int

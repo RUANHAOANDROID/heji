@@ -12,11 +12,13 @@ public class MyTimeUtils {
 
     /**
      * 获取当前月第一天
+     * date(timestring, modifier, modifier, ...)
+     * 以 YYYY-MM-DD 格式返回日期。
      *
      * @param month
      * @return
      */
-    public static  String getFirstDayOfMonth(int year, int month) {
+    public static String firstDayOfMonth(int year, int month) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         // 设置月份
@@ -27,11 +29,19 @@ public class MyTimeUtils {
         calendar.set(Calendar.DAY_OF_MONTH, firstDay);
         // 格式化日期
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String strFirstDay = sdf.format(calendar.getTime()) + " 00:00:00";
+        String strFirstDay = sdf.format(calendar.getTime());
         return strFirstDay;
     }
 
-    public static String getLastDayOfMonth(int year, int month) {
+    /**
+     * date(timestring, modifier, modifier, ...)
+     * 以 YYYY-MM-DD 格式返回日期。
+     *
+     * @param year
+     * @param month
+     * @return
+     */
+    public static String lastDayOfMonth(int year, int month) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         // 设置月份
@@ -48,9 +58,7 @@ public class MyTimeUtils {
         calendar.set(Calendar.DAY_OF_MONTH, lastDay);
         // 格式化日期
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String strLastDay = sdf.format(calendar.getTime()) + " 23:59:59";
+        String strLastDay = sdf.format(calendar.getTime());
         return strLastDay;
     }
-
-
 }

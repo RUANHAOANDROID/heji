@@ -37,8 +37,16 @@ public interface BillDao {
     @Query("update bill set img_count=:count where bill_id=:id")
     int updateImageCount(int count, String id);
 
+    /**
+     * 根据精确时间datetime(),money,remark查询
+     *
+     * @param time
+     * @param money
+     * @param remark
+     * @return
+     */
     @TypeConverters({MoneyConverters.class, DateConverters.class})
-    @Query("select bill_id from bill where date(bill_time) =:time and money =:money and remark=:remark")
+    @Query("select bill_id from bill where datetime(bill_time) =:time and money =:money and remark=:remark")
     List<String> findBill(Date time, BigDecimal money, String remark);
 
     @Query("select * from bill where bill_id =:id")

@@ -4,18 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.data.db.Image
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.MyTimeUtils
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import java.util.*
-import java.util.stream.Collectors
 
 class BillsHomeViewModel : BaseViewModel() {
 
@@ -56,9 +51,6 @@ class BillsHomeViewModel : BaseViewModel() {
         return billImagesLiveData
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
 
     fun getIncomesOrExpenses(year: Int, month: Int, type: Int): LiveData<Double> {
         val start = MyTimeUtils.getFirstDayOfMonth(year, month)
@@ -68,14 +60,8 @@ class BillsHomeViewModel : BaseViewModel() {
         return Transformations.distinctUntilChanged(AppDatabase.getInstance().billDao().findTotalMoneyByTime(start, end, type))
     }
 
-    //return TimeUtils.getNowDate().getYear();
     private val thisYear: Int
         private get() = Calendar.getInstance()[Calendar.YEAR]
-    //return TimeUtils.getNowDate().getYear();
-
-    //return TimeUtils.getNowDate().getMonth();
     private val thisMonth: Int
         private get() = Calendar.getInstance()[Calendar.MONTH] + 1
-    //return TimeUtils.getNowDate().getMonth();
-
 }

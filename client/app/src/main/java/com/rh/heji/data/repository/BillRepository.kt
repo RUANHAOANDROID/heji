@@ -69,7 +69,7 @@ class BillRepository {
     /**
      * 上传账单图片
      */
-    suspend fun uploadImage(bill_id: String) {
+    private suspend fun uploadImage(bill_id: String) {
         val images = imgDao.findByBillIdNotAsync(bill_id)
         if (images.isNotEmpty()) {
             images.forEach { image ->

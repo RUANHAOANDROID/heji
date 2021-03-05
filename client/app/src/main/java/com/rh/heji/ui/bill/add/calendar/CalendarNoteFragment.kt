@@ -3,7 +3,6 @@ package com.rh.heji.ui.bill.add.calendar
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,20 +23,17 @@ import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.widget.CardViewDecoration
 import kotlinx.android.synthetic.main.fragment_calendar_note.*
-import okhttp3.internal.notify
 
 class CalendarNoteFragment : BaseFragment(), PopClickListener {
     lateinit var binding: FragmentCalendarNoteBinding
     private val viewModel by lazy { getViewModel(CalendarNoteViewModule::class.java) }
+    var adapter: NodeBillsAdapter? = null
+
 
     override fun layoutId(): Int {
         return R.layout.fragment_calendar_note
     }
 
-    override fun onResume() {
-        super.onResume()
-        notifyCalendarView()
-    }
     override fun setUpToolBar() {
         super.setUpToolBar()
         //toolBar.title = "日历记账"
@@ -47,6 +43,7 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
 
     override fun initView(view: View) {
         binding = FragmentCalendarNoteBinding.bind(view)
+
         initFab(view)
         initCalendarView()
         initAdapter();
@@ -69,16 +66,19 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         fabShow()
     }
 
+    private val dayBillsObserver = Observer<Collection<BaseNode>> {
+        adapter?.setNewInstance(it as MutableList<BaseNode>)
+        adapter?.notifyDataSetChanged()
+    }
+
     private fun initAdapter() {
         binding.recycler.layoutManager = LinearLayoutManager(mainActivity)
-        val adapter = NodeBillsAdapter()
+        adapter = NodeBillsAdapter()
         binding.recycler.adapter = adapter
         binding.recycler.addItemDecoration(CardViewDecoration(mainActivity.resources, 10f))
-        viewModel.dayBillsLiveData.observe(viewLifecycleOwner, Observer {CardView.IMPORTANT_FOR_ACCESSIBILITY_AUTO
-            adapter.setNewInstance(it as MutableList<BaseNode>)
-            adapter.notifyDataSetChanged()
-        })
-        adapter.setOnItemClickListener { adapter, view, position ->
+
+        viewModel.dayBillsLiveData.observe(this, dayBillsObserver)
+        adapter?.setOnItemClickListener { adapter, view, position ->
             if (adapter.getItem(position) is DayBillsNode) {
                 var billNode = adapter.getItem(position) as DayBillsNode
                 billNode?.let { it.bill?.let { bill -> showBillItemPop(bill) } }
@@ -87,40 +87,38 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
     }
 
     private fun initCalendarView() {
+        binding.calendarView.setOnMonthChangeListener { year, month -> //月份滑动事件
+            setTitleYearMonth(year, month)
+            notifyCalendar()
+            viewModel.year = year
+            viewModel.month = month
+            fabShow()
+            notifyBillsList()
+        }
         binding.calendarView.setOnCalendarSelectListener(object : OnCalendarSelectListener {
             override fun onCalendarOutOfRange(calendar: Calendar) {
                 LogUtils.i(calendar.toString())
             }
 
-            override fun onCalendarSelect(calendar: Calendar, isClick: Boolean) {
+            override fun onCalendarSelect(calendar: Calendar, isClick: Boolean) {//选择日期事件
                 if (isClick) {
-
+                    notifyBillsList()
                 }
-                viewModel.year = calendar.year
-                viewModel.month = calendar.month
-                setTitleYearMonth(calendar.year, calendar.month)
-                fabShow()
-                notifyCalendarView()
             }
         })
-        viewModel.calendarLiveData.observe(viewLifecycleOwner, monthObserver())
+        viewModel.calendarLiveData.observe(this, monthObserver)
+    }
+
+    private var monthObserver = Observer<Map<String, Calendar>> {
+        binding.calendarView.addSchemeDate(it)//更新日历视图
+        notifyBillsList()
     }
 
     private fun fabShow() {
         val thisMonth = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.MONTH) + 1;
-        if (binding.calendarView.curMonth == thisMonth) {
-            binding.todayFab.hide()
-        } else {
-            binding.todayFab.show()
-        }
+        if (binding.calendarView.curMonth == thisMonth) binding.todayFab.hide() else binding.todayFab.show()
     }
 
-    private fun monthObserver(): Observer<Map<String, Calendar>> =
-            Observer {
-                binding.calendarView.setSchemeDate(it)//更新日历视图
-                binding.calendarView.invalidate()
-                viewModel.todayBills(calendarView.selectedCalendar)//刷新列表
-            }
 
     /**
      * 该Menu属于全局所以在这里控制
@@ -174,14 +172,21 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
     }
 
     override fun delete(_id: String) {
-        notifyCalendarView()
+        notifyCalendar()
     }
 
     override fun update(_id: String) {
-        notifyCalendarView()
+        notifyCalendar()
     }
 
-    fun notifyCalendarView() {
+    private fun notifyBillsList() {
+        binding.calendarView.post {
+            viewModel.todayBills(binding.calendarView.selectedCalendar)//刷新列表
+        }
+
+    }
+
+    private fun notifyCalendar() {
         viewModel.updateYearMonth(viewModel.year, viewModel.month)
     }
 }

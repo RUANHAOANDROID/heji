@@ -11,8 +11,6 @@ import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.MonthView;
 import com.rh.heji.R;
 
-import java.util.List;
-
 public class MyMonthView extends MonthView {
     private Paint mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);//抗锯齿设置
     /**
@@ -86,7 +84,7 @@ public class MyMonthView extends MonthView {
 //            canvas.drawRect(x + mItemWidth - sw - 2 * space, indexY - sh, x + mItemWidth - 2 * space, indexY, mSchemePaint);
 //            indexY = indexY - space - sh;
 //        }
-
+        //drawScheme(canvas,calendar,x,y,false);
     }
 
     /**

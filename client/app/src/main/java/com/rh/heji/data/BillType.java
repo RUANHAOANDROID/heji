@@ -25,16 +25,16 @@ public enum BillType {
         return text;
     }
 
+    public String typeString() {
+        return String.valueOf(type);
+    }
+
     public static BillType transform(int type) {
         if (type == BillType.INCOME.type()) {
             return BillType.INCOME;
-        }else {
+        } else {
             return BillType.EXPENDITURE;
         }
-//        else if (type == BillType.EXPENDITURE.type()) {
-//            return BillType.EXPENDITURE;
-//        }
-//        return null;
     }
 
     public static BillType transform(String text) {

@@ -9,6 +9,8 @@ import com.rh.heji.App
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
+import com.rh.heji.data.converters.DateConverters
+import com.rh.heji.data.db.BillDao
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
@@ -16,7 +18,7 @@ import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
 
 class CalendarNoteViewModule : BaseViewModel() {
-    val dataBase = AppDatabase.getInstance()
+    val billDao: BillDao = AppDatabase.getInstance().billDao()
     val calendarLiveData = MutableLiveData<Map<String, Calendar>>()
     val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>();
     var year: Int = thisYear
@@ -29,29 +31,30 @@ class CalendarNoteViewModule : BaseViewModel() {
 
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
-            val bills = dataBase.billDao().findBillsBetweenTime(MyTimeUtils.getFirstDayOfMonth(year, month), MyTimeUtils.getLastDayOfMonth(year, month))
+            val haveBillDays = billDao.findHaveBillDays(MyTimeUtils.getFirstDayOfMonth(year, month), MyTimeUtils.getLastDayOfMonth(year, month))
             var map = mutableMapOf<String, Calendar>()
 
-            bills?.forEach {
+            haveBillDays?.forEach { time ->
                 var calendar = java.util.Calendar.getInstance()
-                calendar.time = it.billTime
+                calendar.time = DateConverters.str2Date(time)
 
                 var thisYear = calendar.get(java.util.Calendar.YEAR)
                 var thisMonth = calendar.get(java.util.Calendar.MONTH) + 1
                 var thisDay = calendar.get(java.util.Calendar.DAY_OF_MONTH)
 
-                var time = TimeUtils.date2String(it.billTime, "yyyy-MM-dd")
-                var expenditure = dataBase.billDao().findIncomeByDay(time, BillType.EXPENDITURE.type().toString())
+                var time = TimeUtils.date2String(calendar.time, "yyyy-MM-dd")
+                var expenditure = billDao.findIncomeByDay(time, BillType.EXPENDITURE.typeString())
                         ?: "0"
-                var income = dataBase.billDao().findIncomeByDay(time, BillType.INCOME.type().toString())
-                        ?: "0"
+                var income = billDao.findIncomeByDay(time, BillType.INCOME.typeString()) ?: "0"
                 if (expenditure != "0" || income != "0") {
                     val calender: Calendar = getSchemeCalendar(thisYear, thisMonth, thisDay, expenditure, income)
                     map[calender.toString()] = calender
                 }
             }
-            calendarLiveData.postValue(map)
-            LogUtils.i("${map.toString()}")
+            if (map.isNotEmpty()) {
+                calendarLiveData.postValue(map)
+            }
+            LogUtils.i(year, month, "$map")
         }, {})
     }
 
@@ -59,7 +62,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         LogUtils.i(calendar.toString())
         launchIO({
             val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
-            val dayBills = dataBase.billDao().findListByDay(dateTime)
+            val dayBills = billDao.findListByDay(dateTime)
             dayBills?.let {
                 var expenditure = "0"
                 var income = "0"

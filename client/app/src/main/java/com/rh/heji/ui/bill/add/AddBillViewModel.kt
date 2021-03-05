@@ -8,7 +8,6 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.ui.base.BaseViewModel
 import java.math.BigDecimal
 import java.util.*
@@ -35,7 +34,6 @@ class AddBillViewModel : BaseViewModel() {
         }
     var keyBoardStack: Stack<String>? = null
     var saveLiveData: MutableLiveData<Bill> = MutableLiveData()
-    private val billRepository = BillRepository()
 
     /**
      * @param billId

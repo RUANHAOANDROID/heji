@@ -14,6 +14,7 @@ import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.service.work.DataSyncWork
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -72,14 +73,22 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         super.onCleared()
     }
 
-    private fun launch(block: suspend () -> Unit, error: suspend (Throwable) -> Unit = { it.printStackTrace() }) = viewModelScope.launch(Dispatchers.IO) {
+    private fun launchIO(block: suspend () -> Unit, error: suspend (Throwable) -> Unit = { it.printStackTrace() }) = viewModelScope.launch(Dispatchers.IO) {
         try {
             block()
         } catch (e: Throwable) {
             error(e)
+            e.printStackTrace()
         }
     }
-
+    private fun launch(block: suspend () -> Unit, error: suspend (Throwable) -> Unit = { it.printStackTrace() }) = viewModelScope.launch() {
+        try {
+            block()
+        } catch (e: Throwable) {
+            error(e)
+            e.printStackTrace()
+        }
+    }
     fun fakeData() {
         val u1 = Dealer("司机")
         val u2 = Dealer("祝")

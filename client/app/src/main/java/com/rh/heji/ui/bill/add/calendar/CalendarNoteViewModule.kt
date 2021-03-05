@@ -49,10 +49,9 @@ class CalendarNoteViewModule : BaseViewModel() {
                     val calender: Calendar = getSchemeCalendar(thisYear, thisMonth, thisDay, expenditure, income)
                     map[calender.toString()] = calender
                 }
-                LogUtils.i("$time  $expenditure  $income")
             }
-
             calendarLiveData.postValue(map)
+            LogUtils.i("${map.toString()}")
         }, {})
     }
 

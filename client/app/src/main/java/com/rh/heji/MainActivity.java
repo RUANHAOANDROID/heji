@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             JWTParse.User user = JWTParse.INSTANCE.getUser(token);
             setDrawerLayout(user);
-            ToastUtils.showLong(token);
+            LogUtils.i(token);
             startSyncDataService();
             AppCache.Companion.getInstance().appViewModule.asyncData();
         }
@@ -280,7 +280,8 @@ public class MainActivity extends AppCompatActivity {
     public void disableDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
-    public void enableDrawer(){
+
+    public void enableDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 }

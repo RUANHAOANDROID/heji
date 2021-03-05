@@ -94,7 +94,10 @@ public class AddBillFragment extends BaseFragment {
         remark();
         category();
         keyboardListener();
-
+        billViewModel.getSaveLiveData().observe(getViewLifecycleOwner(), bill -> {
+            AppCache.Companion.getInstance().getAppViewModule().billPush(new BillEntity(bill));
+            getMainActivity().getNavController().popBackStack();
+        });
     }
 
     private void category() {
@@ -224,8 +227,6 @@ public class AddBillFragment extends BaseFragment {
                 ToastUtils.showLong(result);
                 Category category = categoryViewModule.getSelectCategory();
                 saveBill(result, category);
-                NavController navController = Navigation.findNavController(view);
-                navController.popBackStack();
             }
 
             @Override
@@ -254,9 +255,7 @@ public class AddBillFragment extends BaseFragment {
             return;
         }
         billViewModel.getBill().setCategory(category.getCategory());
-        billViewModel.save(new ObjectId().toString(), money, category).observe(getViewLifecycleOwner(), bill -> {
-            AppCache.Companion.getInstance().getAppViewModule().billPush(new BillEntity(bill));
-        });
+        billViewModel.save(new ObjectId().toString(), money, category);
     }
 
     /**

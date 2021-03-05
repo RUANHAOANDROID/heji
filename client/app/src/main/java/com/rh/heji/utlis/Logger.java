@@ -15,31 +15,31 @@ public class Logger {
     static String TAG = "Logger";
 
     public static void d(String text) {
-        if (isDebug) return;
+        if (!isDebug) return;
         Log.d(TAG, info(text));
     }
 
     public static void i(String text) {
-        if (isDebug) return;
+        if (!isDebug) return;
         Log.i(TAG, info(text));
     }
 
     public static void e(String text) {
-        if (isDebug) return;
+        if (!isDebug) return;
         Log.e(TAG, info(text));
     }
 
     public static void v(String text) {
-        if (isDebug) return;
+        if (!isDebug) return;
         Log.v(TAG, info(text));
     }
 
     public static void w(String text) {
-        if (isDebug) return;
+        if (!isDebug) return;
         Log.w(TAG, info(text));
     }
 
-    public static String info(String text) {
+    private static String info(String text) {
         StackTraceElement[] trace = Thread.currentThread().getStackTrace();
         StringBuilder builder = new StringBuilder();
         builder

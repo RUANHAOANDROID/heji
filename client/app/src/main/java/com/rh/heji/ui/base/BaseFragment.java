@@ -88,7 +88,7 @@ public abstract class BaseFragment extends Fragment {
         try {
             getToolBar().getMenu().clear();
         } catch (Exception e) {
-            LogUtils.e("not include toolbar");
+           Logger.i(e.getMessage());
         }
     }
 

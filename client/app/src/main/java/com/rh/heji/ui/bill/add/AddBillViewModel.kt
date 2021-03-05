@@ -1,7 +1,6 @@
 package com.rh.heji.ui.bill.add
 
 import android.text.TextUtils
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -11,8 +10,6 @@ import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.ui.base.BaseViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.util.*
 import java.util.function.Consumer
@@ -22,8 +19,12 @@ import java.util.stream.Collectors
  * 账单添加页ViewModel 不要在其他页面应用该ViewModel
  */
 class AddBillViewModel : BaseViewModel() {
-    private var imgUrls: MutableList<String> = ArrayList() //image list
-    private val imgUrlsLive = MutableLiveData<List<String>>() // image live
+    var imgUrls = mutableListOf<String>()
+        set(value) {
+            field = value
+            imgUrlsLive.postValue(imgUrls)
+        }//image list
+    var imgUrlsLive = MutableLiveData<List<String>>() // image live
 
     val bill = Bill()
     var time: String? = null
@@ -33,7 +34,7 @@ class AddBillViewModel : BaseViewModel() {
             return field
         }
     var keyBoardStack: Stack<String>? = null
-    var saveLiveData: MutableLiveData<Bill> = MutableLiveData<Bill>()
+    var saveLiveData: MutableLiveData<Bill> = MutableLiveData()
     private val billRepository = BillRepository()
 
     /**
@@ -42,7 +43,7 @@ class AddBillViewModel : BaseViewModel() {
      * @param billType
      * @return
      */
-    fun save(billId: String?, money: String?, category: Category): LiveData<Bill> {
+    fun save(billId: String?, money: String?, category: Category) {
         val bill = bill
         val billTime = TimeUtils.string2Millis(time, "yyyy-MM-dd HH:mm:ss")//String time to millis
         LogUtils.d(TimeUtils.millis2String(billTime, "yyyy-MM-dd HH:mm:ss"))
@@ -59,45 +60,21 @@ class AddBillViewModel : BaseViewModel() {
         bill.imgCount = images.size
         bill.setType(category.type)
         bill.setCategory(category.category)
-        launch({
-            withContext(Dispatchers.IO) {
-                AppDatabase.getInstance().imageDao().install(images)
-                val count = AppDatabase.getInstance().billDao().install(bill)
-                if (count > 0) {
-                    ToastUtils.showShort("已保存: ${bill.getCategory() + money}  ")
-                }
-                saveLiveData?.postValue(bill)
+        launchIO({
+            AppDatabase.getInstance().imageDao().install(images)
+            val count = AppDatabase.getInstance().billDao().install(bill)
+            saveLiveData?.postValue(bill)
+            if (count > 0) {
+                ToastUtils.showShort("已保存: ${bill.getCategory() + money}  ")
             }
         }, {
             ToastUtils.showShort(it.message)
         })
-        return saveLiveData
     }
 
     fun addImgUrl(imgUrl: String) {
         imgUrls.add(imgUrl)
         imgUrlsLive.postValue(imgUrls)
-    }
-
-    fun setImgUrls(imgUrls: MutableList<String>) {
-        this.imgUrls = imgUrls
-        imgUrlsLive.postValue(imgUrls)
-    }
-
-    fun removeImgUrl(imgUrl: String?) {
-        if (imgUrls.size > 0 && imgUrls.contains(imgUrl)) {
-            imgUrls.remove(imgUrl)
-        }
-        imgUrlsLive.postValue(imgUrls)
-    }
-
-    fun getImgUrlsLive(): MutableLiveData<List<String>> {
-        imgUrlsLive.postValue(imgUrls)
-        return imgUrlsLive
-    }
-
-    fun getImgUrls(): List<String> {
-        return imgUrls
     }
 
     val dealers: List<String>

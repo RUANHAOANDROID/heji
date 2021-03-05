@@ -26,15 +26,6 @@ import kotlin.coroutines.CoroutineContext
  * #与APP同在
  */
 class AppCache {
-    internal class CloseableCoroutineScope(context: CoroutineContext) : Closeable, CoroutineScope {
-        override val coroutineContext: CoroutineContext = context
-
-        override fun close() {
-            coroutineContext.cancel()
-        }
-    }
-
-
     var context: Context? = null
     lateinit var heJiServer: HeJiServer
     val gson = GsonBuilder().create()
@@ -46,6 +37,7 @@ class AppCache {
         heJiServer = ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer
         appViewModule = AppViewModule(app)
     }
+
 
     /**
      * 把文件公开。添加到扫描中
@@ -111,10 +103,6 @@ class AppCache {
         val file = File(context!!.filesDir.absolutePath)
         val tokenFile = File(file, fileName)
         FileUtils.delete(tokenFile)
-    }
-
-    override fun hashCode(): Int {
-        return appViewModule?.hashCode() ?: 0
     }
 
     val isLogin: Boolean

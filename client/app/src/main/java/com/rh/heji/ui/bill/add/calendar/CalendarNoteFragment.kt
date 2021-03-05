@@ -88,10 +88,10 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
 
     private fun initCalendarView() {
         binding.calendarView.setOnMonthChangeListener { year, month -> //月份滑动事件
-            setTitleYearMonth(year, month)
-            notifyCalendar()
             viewModel.year = year
             viewModel.month = month
+            setTitleYearMonth(year, month)
+            notifyCalendar()
             fabShow()
             notifyBillsList()
         }

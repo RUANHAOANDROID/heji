@@ -36,13 +36,10 @@ class CalendarNoteViewModule : BaseViewModel() {
 
             haveBillDays?.forEach { time ->
                 var calendar = java.util.Calendar.getInstance()
-                calendar.time = DateConverters.str2Date(time)
-
+                calendar.time = TimeUtils.string2Date(time, "yyyy-MM-dd")
                 var thisYear = calendar.get(java.util.Calendar.YEAR)
                 var thisMonth = calendar.get(java.util.Calendar.MONTH) + 1
                 var thisDay = calendar.get(java.util.Calendar.DAY_OF_MONTH)
-
-                var time = TimeUtils.date2String(calendar.time, "yyyy-MM-dd")
                 var expenditure = billDao.findIncomeByDay(time, BillType.EXPENDITURE.typeString())
                         ?: "0"
                 var income = billDao.findIncomeByDay(time, BillType.INCOME.typeString()) ?: "0"
@@ -73,17 +70,7 @@ class CalendarNoteViewModule : BaseViewModel() {
                         expenditure = scheme.obj as String
                     }
                 }
-
-                var weekDay = calendar.week
-
-                var dayIncome = DayIncome(
-                        expected = expenditure as String,
-                        income = income as String,
-                        month = calendar.month,
-                        weekday = weekDay,
-                        monthDay = calendar.day
-                )
-
+                var dayIncome = DayIncome(expenditure, income, calendar.month, calendar.day, calendar.week)
                 var parentNode = mutableListOf<BaseNode>()
                 var childNodes = emptyList<BaseNode>().toMutableList()
                 it.forEach {

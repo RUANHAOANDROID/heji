@@ -25,7 +25,6 @@ class BillsHomeViewModel : BaseViewModel() {
     private val billDao: BillDao
     private var mBillLiveData: MediatorLiveData<List<Bill>>
     var billImagesLiveData: MediatorLiveData<List<Image>> = MediatorLiveData()
-    var compositeDisposable: CompositeDisposable? = CompositeDisposable()
 
     init {
         mBillLiveData = MediatorLiveData<List<Bill>>()
@@ -39,32 +38,13 @@ class BillsHomeViewModel : BaseViewModel() {
      */
     val bills: LiveData<List<Bill>>
         get() {
-            compositeDisposable!!.clear()
             if (mBillLiveData == null) mBillLiveData = MediatorLiveData()
             val start = MyTimeUtils.getFirstDayOfMonth(year, month)
             LogUtils.d("Start time: ", start)
             val end = MyTimeUtils.getLastDayOfMonth(year, month)
             LogUtils.d("End time: ", end)
             val disposable = billDao.findBillsFollowableByTime(start, end)
-                    .subscribeOn(Schedulers.io()).distinctUntilChanged()
-                    .map { bills: List<Bill> ->
-                        LogUtils.i("input size " + bills.size)
-                        val outs = bills.stream().filter { bill: Bill ->
-                            val billTime = bill.billTime
-                            val startTime = TimeUtils.string2Millis(MyTimeUtils.getFirstDayOfMonth(year, month))
-                            val stopTime = TimeUtils.string2Millis(MyTimeUtils.getLastDayOfMonth(year, month))
-                            if (billTime >= TimeUtils.millis2Date(startTime) && billTime <= TimeUtils.millis2Date(stopTime)) {
-                                return@filter true
-                            }
-                            false
-                        }.collect(Collectors.toList())
-                        LogUtils.i("output size " + outs.size)
-                        outs
-                    }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { bills: List<Bill>? -> mBillLiveData!!.postValue(bills) }
-            compositeDisposable!!.add(disposable)
-            return Transformations.distinctUntilChanged(mBillLiveData!!)
+            return Transformations.distinctUntilChanged(disposable)
         }
 
     fun getBillImages(billId: String): MediatorLiveData<List<Image>> {
@@ -78,12 +58,6 @@ class BillsHomeViewModel : BaseViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        if (null != compositeDisposable) {
-            if (!compositeDisposable!!.isDisposed) {
-                compositeDisposable!!.clear()
-                compositeDisposable!!.dispose()
-            }
-        }
     }
 
     fun getIncomesOrExpenses(year: Int, month: Int, type: Int): LiveData<Double> {

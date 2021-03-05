@@ -13,11 +13,8 @@ import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.converters.MoneyConverters;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import io.reactivex.Flowable;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
@@ -41,7 +38,7 @@ public interface BillDao {
     int updateImageCount(int count, String id);
 
     @TypeConverters({MoneyConverters.class, DateConverters.class})
-    @Query("select bill_id from bill where bill_time =:time and money =:money and remark=:remark")
+    @Query("select bill_id from bill where date(bill_time) =:time and money =:money and remark=:remark")
     List<String> findBill(Date time, BigDecimal money, String remark);
 
     @Query("select * from bill where bill_id =:id")
@@ -55,25 +52,6 @@ public interface BillDao {
     LiveData<List<String>> observeSyncStatus(int syncStatus);
 
     /**
-     * 根据记账时间——次要的
-     *
-     * @param monthly
-     * @return
-     */
-    @Query("select * from bill where strftime('%m',create_time)=:monthly;")
-    LiveData<List<Bill>> queryAllByCreateTime(String monthly);
-
-    /**
-     * 根据时间区间查
-     *
-     * @param start 起始时间
-     * @param end   结束时间
-     * @return
-     */
-    @Query("SELECT * FROM bill WHERE (bill_time BETWEEN :start AND :end) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time,create_time DESC")
-    LiveData<List<Bill>> findBillsByTime(String start, String end);
-
-    /**
      * 根据时间区间查
      * Flowable的被观察对象使用Consumer观察员
      *
@@ -82,13 +60,17 @@ public interface BillDao {
      * @return 账单列表
      */
 
-    @Query("SELECT * FROM bill WHERE (bill_time BETWEEN :start AND :end) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
-    Flowable<List<Bill>> findBillsFollowableByTime(String start, String end);
+    @Query("SELECT * FROM bill WHERE (date(bill_time) BETWEEN :start AND :end ) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
+    LiveData<List<Bill>> findBillsFollowableByTime(String start, String end);
 
-    @Query("SELECT * FROM bill WHERE (bill_time BETWEEN :start AND :end) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
-    List<Bill> findBillsBetweenTime(String start, String end);
-
-    @Query("SELECT bill_time FROM bill WHERE (bill_time BETWEEN :start AND :end) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
+    /**
+     * 查询有账单的日子,日子去重
+     *
+     * @param start
+     * @param end
+     * @return
+     */
+    @Query("SELECT DISTINCT date(bill_time)   FROM bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
     List<String> findHaveBillDays(String start, String end);
 
     @Query("SELECT SUM(money/100) FROM bill WHERE date(bill_time) =:time AND type =:type AND sync_status!=-1")
@@ -104,7 +86,7 @@ public interface BillDao {
      * @param end   结束时间
      * @return
      */
-    @Query("SELECT SUM(money) AS value FROM Bill WHERE (bill_time BETWEEN :start AND :end )AND (type =:sz) AND (sync_status != " + Constant.STATUS_DELETE + ")")
+    @Query("SELECT SUM(money) AS value FROM Bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (type = :sz) AND (sync_status != " + Constant.STATUS_DELETE + ")")
     LiveData<Double> findTotalMoneyByTime(String start, String end, int sz);
 
     @Transaction

@@ -11,6 +11,7 @@ import androidx.room.Update;
 
 import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.converters.MoneyConverters;
+import com.rh.heji.data.db.query.Income;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -96,6 +97,9 @@ public interface BillDao {
      */
     @Query("SELECT SUM(money) AS value FROM Bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (type = :sz) AND (sync_status != " + Constant.STATUS_DELETE + ")")
     LiveData<Double> findTotalMoneyByTime(String start, String end, int sz);
+
+    @Query("select sum(case when type=-1 then money/100 else 0 end)as expenditure ,sum(case  when  type=1 then money/100 else 0 end)as income from bill  where date(bill_time)=:time")
+    Income sumDayIncome(String time);
 
     @Transaction
     @Query("SELECT * FROM bill")

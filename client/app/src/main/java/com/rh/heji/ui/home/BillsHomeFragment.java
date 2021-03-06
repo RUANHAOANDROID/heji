@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.chad.library.adapter.base.entity.node.BaseNode;
 import com.lxj.xpopup.XPopup;
 import com.rh.heji.R;
 import com.rh.heji.data.BillType;
@@ -32,11 +33,18 @@ import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.ui.bill.Iteminfo.BillInfoPop;
 import com.rh.heji.ui.bill.YearSelectPop;
 import com.rh.heji.ui.bill.adapter.BillInfoAdapter;
+import com.rh.heji.ui.bill.adapter.DayBillsNode;
+import com.rh.heji.ui.bill.adapter.DayIncome;
+import com.rh.heji.ui.bill.adapter.DayIncomeNode;
+import com.rh.heji.ui.bill.adapter.DayIncomeNodeProvider;
+import com.rh.heji.ui.bill.adapter.NodeBillsAdapter;
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs;
+import com.rh.heji.widget.CardViewDecoration;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,7 +53,7 @@ import static com.rh.heji.Constants.BACKGROUND_ALPHA;
 public class BillsHomeFragment extends BaseFragment {
     FragmentBillsHomeBinding binding;
     private BillsHomeViewModel homeViewModel;
-    BillInfoAdapter adapter;
+    NodeBillsAdapter adapter;
     private String homeUUID;
     //最后点击时间
     private long lastClickTime = 0L;
@@ -168,40 +176,68 @@ public class BillsHomeFragment extends BaseFragment {
      * 初始化账单列表适配器
      */
     private void initBillsAdapter() {
-        adapter = new BillInfoAdapter();
+        adapter = new NodeBillsAdapter();
         binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity()));
         binding.homeRecycler.setAdapter(adapter);
-        binding.homeRecycler.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                outRect.left = 8;
-                outRect.right = 8;
-                outRect.top = 8;
-                outRect.bottom = 8;
-            }
-        });
+        binding.homeRecycler.addItemDecoration(new CardViewDecoration(getResources(), 5));
+
         binding.materialupAppBar.getBackground().setAlpha(BACKGROUND_ALPHA);
         adapter.setOnItemClickListener((adapter, view, position) -> {
             if (System.currentTimeMillis() - lastClickTime >= FAST_CLICK_DELAY_TIME) {
-                Bill billTab = (Bill) adapter.getItem(position);
-                showBillItemPop(billTab);
                 lastClickTime = System.currentTimeMillis();
+                if (adapter.getItem(position) instanceof DayIncomeNode) {
+                    DayIncomeNode dayIncome = (DayIncomeNode) adapter.getItem(position);
+                } else {
+                    DayBillsNode dayBills = (DayBillsNode) adapter.getItem(position);
+                    Bill bill = dayBills.getBill();
+                    showBillItemPop(bill);
+                }
             }
 
         });
         //差异化比对更新
-        adapter.setDiffCallback(new DiffUtil.ItemCallback<Bill>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull Bill oldItem, @NonNull Bill newItem) {
-                return oldItem.id.equals(newItem.id);
-            }
-
-            @Override
-            public boolean areContentsTheSame(@NonNull Bill oldItem, @NonNull Bill newItem) {
-                return oldItem.id.equals(newItem.id);
-            }
-        });
+//        adapter.setDiffCallback(new DiffUtil.ItemCallback<Bill>() {
+//            @Override
+//            public boolean areItemsTheSame(@NonNull Bill oldItem, @NonNull Bill newItem) {
+//                return oldItem.id.equals(newItem.id);
+//            }
+//
+//            @Override
+//            public boolean areContentsTheSame(@NonNull Bill oldItem, @NonNull Bill newItem) {
+//                return oldItem.id.equals(newItem.id);
+//            }
+//        });
+//        adapter.setDiffCallback(new DiffUtil.ItemCallback<BaseNode>() {
+//            @Override
+//            public boolean areItemsTheSame(@NonNull BaseNode oldItem, @NonNull BaseNode newItem) {
+//                if (oldItem instanceof DayIncomeNode) {
+//                    DayIncomeNode oldNode = ((DayIncomeNode) oldItem);
+//                    DayIncomeNode newNode = ((DayIncomeNode) oldItem);
+//                    if (oldNode.getDayIncome().getMonthDay() == newNode.getDayIncome().getMonthDay()) {
+//                        if (oldNode.getDayIncome().getExpected() == newNode.getDayIncome().getExpected()
+//                                && oldNode.getDayIncome().getIncome() == newNode.getDayIncome().getIncome()) {
+//                            return true;
+//                        }
+//                    }
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean areContentsTheSame(@NonNull BaseNode oldItem, @NonNull BaseNode newItem) {
+//                if (oldItem instanceof DayIncomeNode) {
+//                    DayIncomeNode oldNode = ((DayIncomeNode) oldItem);
+//                    DayIncomeNode newNode = ((DayIncomeNode) oldItem);
+//                    if (oldNode.getDayIncome().getMonthDay() == newNode.getDayIncome().getMonthDay()) {
+//                        if (oldNode.getDayIncome().getExpected() == newNode.getDayIncome().getExpected()
+//                                && oldNode.getDayIncome().getIncome() == newNode.getDayIncome().getIncome()) {
+//                            return true;
+//                        }
+//                    }
+//                }
+//                return false;
+//            }
+//        });
     }
 
 
@@ -238,14 +274,20 @@ public class BillsHomeFragment extends BaseFragment {
     public void notifyData(int year, int month) {
         homeViewModel.setYear(year);
         homeViewModel.setMonth(month);
-        homeViewModel.getBills().observe(getMainActivity(), listObserver);
+        //homeViewModel.getBills().observe(getMainActivity(), listObserver);
+
+        homeViewModel.getBillsNodLiveData().observe(this, baseNodes -> {
+            adapter.setNewInstance(baseNodes);
+            //adapter.setDiffNewData(baseNodes);
+        });
+        homeViewModel.getBillsData();
         totalExpenseAndIncome(year, month);
     }
 
-    Observer<List<Bill>> listObserver = bills -> {
-        adapter.setDiffNewData(bills);
-        LogUtils.d("notify: ", bills.size());
-    };
+//    Observer<List<Bill>> listObserver = bills -> {
+//        adapter.setDiffNewData(bills);
+//        LogUtils.d("notify: ", bills.size());
+//    };
 
     /**
      * 该Menu属于全局所以在这里控制

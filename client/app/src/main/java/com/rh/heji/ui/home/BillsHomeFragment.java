@@ -46,7 +46,7 @@ public class BillsHomeFragment extends BaseFragment {
     //最后点击时间
     private long lastClickTime = 0L;
     // 两次点击间隔不能少于1000ms
-    private static final int FAST_CLICK_DELAY_TIME = 1000;
+    private static final int FAST_CLICK_DELAY_TIME = 500;
     private TextView toolBarCenterTitle;
 
     @Override

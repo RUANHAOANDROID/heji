@@ -28,9 +28,6 @@ class DayIncomeNodeProvider : BaseNodeProvider() {
         helper.setText(R.id.text4, "收:${entity.dayIncome.income}")
     }
 
-    override fun onClick(helper: BaseViewHolder, view: View, data: BaseNode, position: Int) {
-        getAdapter()!!.expandOrCollapse(position)
-    }
 }
 
 class DayBillsNodeProvider : BaseNodeProvider() {

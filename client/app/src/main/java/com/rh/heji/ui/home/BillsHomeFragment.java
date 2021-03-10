@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.lxj.xpopup.XPopup;
@@ -36,6 +37,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import static android.widget.LinearLayout.HORIZONTAL;
 import static com.rh.heji.Constants.BACKGROUND_ALPHA;
 
 public class BillsHomeFragment extends BaseFragment {
@@ -165,6 +167,7 @@ public class BillsHomeFragment extends BaseFragment {
      */
     private void initBillsAdapter() {
         adapter = new NodeBillsAdapter();
+        //binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity(),LinearLayoutManager.HORIZONTAL,false));
         binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity()));
         binding.homeRecycler.setAdapter(adapter);
         binding.homeRecycler.addItemDecoration(new CardViewDecoration(getResources(), 5));
@@ -182,6 +185,13 @@ public class BillsHomeFragment extends BaseFragment {
                 }
             }
 
+        });
+        binding.nestedSccrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY > oldScrollY) {//向下滑动隐藏
+                binding.fab.hide();
+            } else {
+                binding.fab.show();
+            }
         });
         //差异化比对更新
 //        adapter.setDiffCallback(new DiffUtil.ItemCallback<Bill>() {

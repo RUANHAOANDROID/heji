@@ -2,6 +2,8 @@ package com.rh.heji.ui.bill.adapter;
 
 import android.view.View;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;

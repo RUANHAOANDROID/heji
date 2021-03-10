@@ -1,10 +1,7 @@
 package com.rh.heji.ui.bill.adapter
 
-import android.graphics.Color
 import android.text.TextUtils
-import android.view.View
 import android.widget.TextView
-import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.chad.library.adapter.base.provider.BaseNodeProvider
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -13,7 +10,7 @@ import com.rh.heji.widget.CircleView
 
 class DayIncomeNodeProvider : BaseNodeProvider() {
     override val itemViewType: Int
-        get() = 0
+        get() = TYPE_TITLE
 
     override val layoutId: Int
         get() = R.layout.item_bill_dayincom
@@ -32,7 +29,7 @@ class DayIncomeNodeProvider : BaseNodeProvider() {
 
 class DayBillsNodeProvider : BaseNodeProvider() {
     override val itemViewType: Int
-        get() = 1
+        get() = TYPE_INFO
     override val layoutId: Int
         get() = R.layout.item_bill_daylist
 
@@ -58,3 +55,6 @@ class DayBillsNodeProvider : BaseNodeProvider() {
 
     }
 }
+
+const val TYPE_TITLE = 0
+const val TYPE_INFO = 1

@@ -86,7 +86,7 @@ class BillsHomeViewModel : BaseViewModel() {
         LogUtils.d("Start time: ", start)
         val end = MyTimeUtils.lastDayOfMonth(year, month)
         LogUtils.d("End time: ", end)
-        var list = billDao.sumDayIncome("2021-03-06");
+        //var list = billDao.sumDayIncome("2021-03-06");
         return Transformations.distinctUntilChanged(billDao.findTotalMoneyByTime(start, end, type))
     }
 

@@ -44,7 +44,7 @@ class BillsHomeViewModel : BaseViewModel() {
             var incomeNode = DayIncome(dayIncome.expenditure,
                     dayIncome.income, calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH),
-                    1
+                    calendar.get(Calendar.DAY_OF_WEEK)
             )
             val dayListNodes = mutableListOf<BaseNode>()
             list.forEach {
@@ -55,21 +55,6 @@ class BillsHomeViewModel : BaseViewModel() {
         }
         billsNodLiveData.postValue(listDayNodes)
     }
-
-    /**
-     * 调用getBills之前必须先设定year ,month
-     *
-     * @return 账单列表
-     */
-    val bills: LiveData<List<Bill>>
-        get() {
-            val start = MyTimeUtils.firstDayOfMonth(year, month)
-            LogUtils.d("Start time: ", start)
-            val end = MyTimeUtils.lastDayOfMonth(year, month)
-            LogUtils.d("End time: ", end)
-            val disposable = billDao.findBillsFollowableByTime(start, end)
-            return Transformations.distinctUntilChanged(disposable)
-        }
 
     fun getBillImages(billId: String): MediatorLiveData<List<Image>> {
         launchIO({

@@ -26,6 +26,7 @@
         <item>十一月</item>
         <item>十二月</item>
     </string-array>
+    <!-- Calendar DAY_OF_WEEK 1 对应周日 使用时 index=DAY_OF_WEEK-1 -->
     <string-array name="week_day_names">
         <item>周日</item>
         <item>周一</item>

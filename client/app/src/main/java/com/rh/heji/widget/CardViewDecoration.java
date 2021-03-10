@@ -1,4 +1,5 @@
 package com.rh.heji.widget;
+
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,6 +16,8 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rh.heji.R;
+
+import static com.rh.heji.ui.bill.adapter.BillNodeProviderKt.TYPE_TITLE;
 
 /**
  * Created by David on 16.06.2015.
@@ -72,12 +75,13 @@ public class CardViewDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         Rect bounds = new Rect();
-        float edgeShadowTop = -mCornerRadius - mShadowSize;
+        float edgeShadowTop = -mCornerRadius - mShadowSize;//上影音
 
         RecyclerView.LayoutManager lm = parent.getLayoutManager();
         int padding16dp = getPadding16dp(parent.getContext().getResources());
 
-        for (int i = 0; i < parent.getChildCount(); i++) {
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
             int save = c.save();
 
             // using decorated values, remove what we set before
@@ -92,8 +96,8 @@ public class CardViewDecoration extends RecyclerView.ItemDecoration {
             int viewType = parent.getAdapter().getItemViewType(position);
 
 
-            if (viewType == 0) {
-                bounds.top = (int) (bounds.top + padding16dp/2 - mPadding);
+            if (viewType == TYPE_TITLE) {
+                bounds.top = (int) (bounds.top + padding16dp / 2 - mPadding);
 
                 // LT
                 c.translate(bounds.left + mCornerRadius, bounds.top + mCornerRadius);
@@ -110,11 +114,9 @@ public class CardViewDecoration extends RecyclerView.ItemDecoration {
                 c.rotate(180f);
                 c.translate(-bounds.height(), -bounds.width() + 2 * mCornerRadius);
                 c.drawRect(mCornerRadius, edgeShadowTop, bounds.height(), -mCornerRadius, mEdgeShadowPaint);
-
-
             } else {
-                if (parent.getAdapter().getItemViewType(position + 1) == 0) {
-                    bounds.bottom = (int) (bounds.bottom - padding16dp/2 + mPadding);
+                if (isLastInItemList(parent, position) || isLastItem(parent, position)) {
+                    bounds.bottom = (int) (bounds.bottom - padding16dp / 2 + mPadding);
 
                     // last item before next header
                     c.rotate(180f);
@@ -149,6 +151,7 @@ public class CardViewDecoration extends RecyclerView.ItemDecoration {
             c.restoreToCount(save);
         }
     }
+
 
     private void buildShadowCorners() {
 
@@ -197,18 +200,29 @@ public class CardViewDecoration extends RecyclerView.ItemDecoration {
         int position = params.getViewAdapterPosition();
         int viewType = parent.getAdapter().getItemViewType(position);
 
-        if (viewType == 0) {
+        if (viewType == TYPE_TITLE) {
             // header
-            outRect.set(0, (int) (padding16dp/2), 0, 0);
+            outRect.set(0, (int) (padding16dp / 2), 0, 0);
         } else {
-            if (parent.getAdapter().getItemViewType(position + 1) == 0) {
+            if (isLastInItemList(parent, position) || isLastItem(parent, position)) {
                 // last item before next header
-                outRect.set(0, 0, 0, (int) (padding16dp/2));
+                outRect.set(0, 0, 0, (int) (padding16dp / 2));
             }
         }
 //        outRect.inset((int) size16dp, 0);
         outRect.left = (int) padding16dp;
         outRect.right = (int) padding16dp;
+        if (isLastItem(parent, position)) {//最后一个
+            outRect.bottom = (int) padding16dp / 2;
+        }
+    }
+
+    private boolean isLastItem(RecyclerView parent, int position) {
+        return position == parent.getAdapter().getItemCount() - 1;
+    }
+
+    private boolean isLastInItemList(RecyclerView parent, int position) {
+        return parent.getAdapter().getItemViewType(position + 1) == TYPE_TITLE;
     }
 
     private int getPadding16dp(Resources resources) {

@@ -21,7 +21,7 @@ import com.rh.heji.ui.bill.YearSelectPop
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
-import com.rh.heji.widget.CardViewDecoration
+import com.rh.heji.widget.CardDecoration
 import kotlinx.android.synthetic.main.fragment_calendar_note.*
 
 class CalendarNoteFragment : BaseFragment(), PopClickListener {
@@ -75,7 +75,7 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         binding.recycler.layoutManager = LinearLayoutManager(mainActivity)
         adapter = NodeBillsAdapter()
         binding.recycler.adapter = adapter
-        binding.recycler.addItemDecoration(CardViewDecoration(mainActivity.resources, 10f))
+        binding.recycler.addItemDecoration(CardDecoration())
 
         viewModel.dayBillsLiveData.observe(this, dayBillsObserver)
         adapter?.setOnItemClickListener { adapter, view, position ->

@@ -20,7 +20,7 @@ class DayIncomeNodeProvider : BaseNodeProvider() {
         var entity: DayIncomeNode = node as DayIncomeNode
         helper.setText(R.id.text1, "${entity.dayIncome.month}月${entity.dayIncome.monthDay}日")
 
-        helper.setText(R.id.text2, context.resources.getStringArray(R.array.week_day_names)[Integer.valueOf(entity.dayIncome.weekday) - 1])
+        helper.setText(R.id.text2, context.resources.getStringArray(R.array.week_day_names)[Integer.valueOf(entity.dayIncome.weekday)])
         helper.setText(R.id.text3, "支:${entity.dayIncome.expected}")
         helper.setText(R.id.text4, "收:${entity.dayIncome.income}")
     }

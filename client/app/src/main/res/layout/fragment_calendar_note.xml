@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:minHeight="260dp"
+                android:elevation="0dp"
                 app:cardCornerRadius="5dp">
 
                 <com.haibin.calendarview.CalendarView

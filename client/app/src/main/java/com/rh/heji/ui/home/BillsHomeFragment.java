@@ -14,7 +14,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.lxj.xpopup.XPopup;
@@ -29,7 +28,7 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode;
 import com.rh.heji.ui.bill.adapter.DayIncomeNode;
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter;
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs;
-import com.rh.heji.widget.CardViewDecoration;
+import com.rh.heji.widget.CardDecoration;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -37,7 +36,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-import static android.widget.LinearLayout.HORIZONTAL;
 import static com.rh.heji.Constants.BACKGROUND_ALPHA;
 
 public class BillsHomeFragment extends BaseFragment {
@@ -170,7 +168,8 @@ public class BillsHomeFragment extends BaseFragment {
         //binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity(),LinearLayoutManager.HORIZONTAL,false));
         binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity()));
         binding.homeRecycler.setAdapter(adapter);
-        binding.homeRecycler.addItemDecoration(new CardViewDecoration(getResources(), 5));
+        //binding.homeRecycler.addItemDecoration(new CardViewDecoration(getResources(), 5));
+        binding.homeRecycler.addItemDecoration(new CardDecoration());
 
         binding.materialupAppBar.getBackground().setAlpha(BACKGROUND_ALPHA);
         adapter.setOnItemClickListener((adapter, view, position) -> {

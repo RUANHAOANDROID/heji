@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,8 +33,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.lxj.xpopup.XPopup;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.RequestCallback;
+import com.rh.heji.databinding.ActivityMainBinding;
 import com.rh.heji.databinding.NavHeaderMainBinding;
 import com.rh.heji.service.DataSyncService;
+import com.rh.heji.ui.home.DrawerSlideListener;
+import com.rh.heji.ui.home.HomeDrawerListener;
 import com.rh.heji.ui.user.JWTParse;
 
 import org.jetbrains.annotations.NotNull;
@@ -77,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
     private void initDrawerLayout() {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+        drawerLayout.addDrawerListener(new HomeDrawerListener(this, (left, top, right, bottom) -> {
+            getFragments().get(0).getView().layout(left, top, right, bottom);
+            Log.i("offset", "offset: left=" + left + "right=" + right + "bottom=" + bottom);
+        }));
         //Logout Menu
         Menu navMenu = navigationView.getMenu();
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener(item -> {

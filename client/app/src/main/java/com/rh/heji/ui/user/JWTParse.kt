@@ -20,7 +20,7 @@ object JWTParse {
         val username = jsonObject.opt("sub") as String
         val auth: String = jsonObject.opt("auth") as String
         val roles = auth.split(",")
-        return User(username as String, roles)
+        return User(username , roles)
     }
 
     private fun resolveToken(token: String): String {

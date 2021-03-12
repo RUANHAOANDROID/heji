@@ -44,7 +44,7 @@ class BillsHomeViewModel : BaseViewModel() {
             var incomeNode = DayIncome(dayIncome.expenditure,
                     dayIncome.income, calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH),
-                    calendar.get(Calendar.DAY_OF_WEEK)
+                    calendar.get(Calendar.DAY_OF_WEEK) - 1
             )
             val dayListNodes = mutableListOf<BaseNode>()
             list.forEach {

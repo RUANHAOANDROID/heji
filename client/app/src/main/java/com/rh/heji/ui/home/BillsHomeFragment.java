@@ -251,6 +251,17 @@ public class BillsHomeFragment extends BaseFragment {
      */
     private void showBillItemPop(Bill billTab) {
         BillInfoPop popupView = new BillInfoPop(getContext());
+        popupView.setPopClickListener(new BillInfoPop.PopClickListener() {
+            @Override
+            public void delete(String _id) {
+                notifyData(homeViewModel.getYear(),homeViewModel.getMonth());
+            }
+
+            @Override
+            public void update(String _id) {
+
+            }
+        });
         new XPopup.Builder(getContext())
                 //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
                 //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个

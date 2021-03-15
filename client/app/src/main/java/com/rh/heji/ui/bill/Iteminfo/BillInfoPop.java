@@ -107,6 +107,9 @@ public class BillInfoPop extends BottomPopupView {
         binding = PopBilliInfoBinding.bind(getPopupContentView().findViewById(R.id.billInfoCard));
         binding.tvDelete.setOnClickListener(v -> {
             deleteBill();
+            if (popClickListener != null) {
+                popClickListener.delete(bill.getId());
+            }
         });
         binding.tvUpdate.setOnClickListener(v -> {
             if (popClickListener != null) {

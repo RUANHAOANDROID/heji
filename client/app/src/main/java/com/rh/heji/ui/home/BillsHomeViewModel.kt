@@ -41,10 +41,13 @@ class BillsHomeViewModel : BaseViewModel() {
             var currentDay = calendar.get(Calendar.DAY_OF_MONTH)
             var dayIncome = billDao.sumDayIncome(time)
             var list = billDao.findListByDay(time)
-            var incomeNode = DayIncome(dayIncome.expenditure,
-                    dayIncome.income, calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH),
-                    calendar.get(Calendar.DAY_OF_WEEK) - 1
+            var incomeNode = DayIncome(
+                    expected = dayIncome.expenditure,
+                    income = dayIncome.income,
+                    year = calendar.get(Calendar.YEAR),
+                    month = calendar.get(Calendar.MONTH) + 1,
+                    monthDay = calendar.get(Calendar.DAY_OF_MONTH),
+                    weekday = calendar.get(Calendar.DAY_OF_WEEK) - 1
             )
             val dayListNodes = mutableListOf<BaseNode>()
             list.forEach {

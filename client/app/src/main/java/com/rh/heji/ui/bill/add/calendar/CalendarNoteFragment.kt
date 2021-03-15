@@ -75,7 +75,7 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         binding.recycler.layoutManager = LinearLayoutManager(mainActivity)
         adapter = NodeBillsAdapter()
         binding.recycler.adapter = adapter
-        binding.recycler.addItemDecoration(CardDecoration())
+        binding.recycler.addItemDecoration(CardDecoration(8))
 
         viewModel.dayBillsLiveData.observe(this, dayBillsObserver)
         adapter?.setOnItemClickListener { adapter, view, position ->

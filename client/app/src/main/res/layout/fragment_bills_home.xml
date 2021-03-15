@@ -8,6 +8,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".ui.home.BillsHomeFragment">
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/materialupAppBar"
         android:layout_width="match_parent"
@@ -25,10 +26,11 @@
         android:layout_height="match_parent"
         android:background="@color/colorBackground"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/mainCollapsing"
@@ -44,13 +46,13 @@
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
             ​
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/homeRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="16dp"
                 android:overScrollMode="never"
-                android:paddingBottom="16dp">
+                android:paddingBottom="8dp">
 
             </androidx.recyclerview.widget.RecyclerView>
         </LinearLayout>

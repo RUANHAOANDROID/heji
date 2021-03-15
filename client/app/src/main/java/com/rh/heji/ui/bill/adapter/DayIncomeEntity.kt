@@ -9,6 +9,7 @@ import com.rh.heji.data.db.Bill
  */
 data class DayIncome(var expected: String,
                      var income: String,
+                     var year: Int,
                      var month: Int,
                      var monthDay: Int,
                      var weekday: Int)

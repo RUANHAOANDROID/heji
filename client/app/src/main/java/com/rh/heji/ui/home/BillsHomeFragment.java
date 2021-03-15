@@ -25,6 +25,7 @@ import com.rh.heji.ui.base.BaseFragment;
 import com.rh.heji.ui.bill.Iteminfo.BillInfoPop;
 import com.rh.heji.ui.bill.YearSelectPop;
 import com.rh.heji.ui.bill.adapter.DayBillsNode;
+import com.rh.heji.ui.bill.adapter.DayIncome;
 import com.rh.heji.ui.bill.adapter.DayIncomeNode;
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter;
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs;
@@ -175,9 +176,14 @@ public class BillsHomeFragment extends BaseFragment {
         adapter.setOnItemClickListener((adapter, view, position) -> {
             if (System.currentTimeMillis() - lastClickTime >= FAST_CLICK_DELAY_TIME) {
                 lastClickTime = System.currentTimeMillis();
-                if (adapter.getItem(position) instanceof DayIncomeNode) {
-                    DayIncomeNode dayIncome = (DayIncomeNode) adapter.getItem(position);
-                } else {
+                if (adapter.getItem(position) instanceof DayIncomeNode) {//日视图
+                    DayIncomeNode dayIncomeNode = (DayIncomeNode) adapter.getItem(position);
+                    DayIncome dayIncome = dayIncomeNode.getDayIncome();
+                    Calendar calendar = java.util.Calendar.getInstance();
+                    calendar.set(dayIncome.getYear(), dayIncome.getMonth()-1, dayIncome.getMonthDay());
+                    AddBillFragmentArgs args = new AddBillFragmentArgs.Builder(calendar).build();//选择的日期
+                    Navigation.findNavController(view).navigate(R.id.nav_income, args.toBundle());
+                } else {//日详细列表ITEM
                     DayBillsNode dayBills = (DayBillsNode) adapter.getItem(position);
                     Bill bill = dayBills.getBill();
                     showBillItemPop(bill);

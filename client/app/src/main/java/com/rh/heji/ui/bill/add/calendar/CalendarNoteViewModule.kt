@@ -70,7 +70,13 @@ class CalendarNoteViewModule : BaseViewModel() {
                         expenditure = scheme.obj as String
                     }
                 }
-                var dayIncome = DayIncome(expenditure, income, calendar.month, calendar.day, calendar.week)
+                var dayIncome = DayIncome(
+                        expected = expenditure,
+                        income = income,
+                        year = calendar.year,
+                        month = calendar.month,
+                        monthDay = calendar.day,
+                        weekday = calendar.week)
                 var parentNode = mutableListOf<BaseNode>()
                 var childNodes = emptyList<BaseNode>().toMutableList()
                 it.forEach {

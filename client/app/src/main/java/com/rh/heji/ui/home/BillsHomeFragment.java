@@ -180,7 +180,7 @@ public class BillsHomeFragment extends BaseFragment {
                     DayIncomeNode dayIncomeNode = (DayIncomeNode) adapter.getItem(position);
                     DayIncome dayIncome = dayIncomeNode.getDayIncome();
                     Calendar calendar = java.util.Calendar.getInstance();
-                    calendar.set(dayIncome.getYear(), dayIncome.getMonth()-1, dayIncome.getMonthDay());
+                    calendar.set(dayIncome.getYear(), dayIncome.getMonth() - 1, dayIncome.getMonthDay());
                     AddBillFragmentArgs args = new AddBillFragmentArgs.Builder(calendar).build();//选择的日期
                     Navigation.findNavController(view).navigate(R.id.nav_income, args.toBundle());
                 } else {//日详细列表ITEM
@@ -254,7 +254,7 @@ public class BillsHomeFragment extends BaseFragment {
         popupView.setPopClickListener(new BillInfoPop.PopClickListener() {
             @Override
             public void delete(String _id) {
-                notifyData(homeViewModel.getYear(),homeViewModel.getMonth());
+                notifyData(homeViewModel.getYear(), homeViewModel.getMonth());
             }
 
             @Override
@@ -272,7 +272,12 @@ public class BillsHomeFragment extends BaseFragment {
         popupView.post(() -> {
             popupView.setBill(billTab);//账单信息
             popupView.setBillImages(new ArrayList<>());//首先把图片重置
-            homeViewModel.getBillImages(billTab.getId()).observe(getViewLifecycleOwner(), images -> popupView.setBillImages(images));
+            if (billTab.getImgCount() > 0) {
+                homeViewModel.getBillImages(billTab.getId()).observe(getViewLifecycleOwner(), images ->
+                        popupView.setBillImages(images)
+                );
+
+            }
 
         });
         popupView.show();

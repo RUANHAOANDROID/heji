@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.report.ReportFragment">
+    tools:context=".ui.report.ReportFragment"
+    tools:ignore="MissingConstraints">
 
     <include
         layout="@layout/app_toolbar"
@@ -12,16 +13,211 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></include>
 
-    <TextView
-        android:id="@+id/text_gallery"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedSccrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/incomeInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/bg_circle_white10"
+                android:minHeight="120dp"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="1dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_income_consume_look"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="收支总览"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tyIncome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_income_consume_look"
+                    android:layout_marginTop="8dp"
+                    android:text="收入"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_income_consume_look"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_income_consume_look" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvDayAVGValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tyIncome"
+                    android:layout_alignLeft="@id/tyIncome"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/tyDayIncomeAVG"
+                    app:layout_constraintStart_toStartOf="@+id/tyDayIncomeAVG"
+                    app:layout_constraintTop_toBottomOf="@+id/tyDayIncomeAVG" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvExpenditure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_income_consume_look"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="8dp"
+                    android:text="支出"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_income_consume_look"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_income_consume_look" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvJieYuValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvExpenditure"
+                    android:layout_alignRight="@id/tvExpenditure"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/tvJieYu"
+                    app:layout_constraintStart_toStartOf="@+id/tvJieYu"
+                    app:layout_constraintTop_toBottomOf="@+id/tvJieYu" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvJieYu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvDayAVGValue"
+                    android:text="结余"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/tyIncome"
+                    app:layout_constraintStart_toStartOf="@+id/tyIncome"
+                    app:layout_constraintTop_toBottomOf="@+id/tvIncomeValue" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvIncomeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvJieYu"
+                    android:layout_alignLeft="@id/tvJieYu"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@+id/tyIncome"
+                    app:layout_constraintStart_toStartOf="@+id/tyIncome"
+                    app:layout_constraintTop_toBottomOf="@+id/tyIncome" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tyDayIncomeAVG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvJieYuValue"
+                    android:layout_alignParentRight="true"
+                    android:text="日平均"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/tvExpenditure"
+                    app:layout_constraintStart_toStartOf="@+id/tvExpenditure"
+                    app:layout_constraintTop_toBottomOf="@+id/tvExpenditureValue" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvExpenditureValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tyDayIncomeAVG"
+                    android:layout_alignRight="@id/tvExpenditure"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@+id/tvExpenditure"
+                    app:layout_constraintStart_toStartOf="@+id/tvExpenditure"
+                    app:layout_constraintTop_toBottomOf="@+id/tvExpenditure" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/bg_circle_white10"
+                android:minHeight="120dp"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="收支统计图"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/bg_circle_white10"
+                android:minHeight="120dp"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分类报表"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/bg_circle_white10"
+                android:minHeight="120dp"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="月报表"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

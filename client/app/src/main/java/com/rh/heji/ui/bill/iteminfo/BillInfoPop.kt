@@ -33,19 +33,18 @@ import java.util.stream.Collectors
  * #
  */
 class BillInfoPop(context: Context) : BottomPopupView(context) {
-    var bill: Bill? = null
-        private set
-    var binding: PopBilliInfoBinding? = null
+    var bill: Bill = Bill()
+        set(value) {
+            field = value
+            binding.tvMonney.text = bill.getMoney().toString()
+            binding.tvType.text = bill.getCategory()
+            binding.tvRecordTime.text = TimeUtils.millis2String(bill.getCreateTime())
+            binding.tvTicketTime.text = DateConverters.date2Str(bill.billTime)
+            binding.rePeople.text = bill.getDealer()
+        }
+    lateinit var binding: PopBilliInfoBinding
     private var imageAdapter: ImageAdapter? = null
-    var popClickListener: PopClickListener? = null
-    fun setBill(bill: Bill) {
-        this.bill = bill
-        binding!!.tvMonney.text = bill.getMoney().toString()
-        binding!!.tvType.text = bill.getCategory()
-        binding!!.tvRecordTime.text = TimeUtils.millis2String(bill.getCreateTime())
-        binding!!.tvTicketTime.text = DateConverters.date2Str(bill.billTime)
-        binding!!.rePeople.text = bill.getDealer()
-    }
+    lateinit var popClickListener: PopClickListener
 
     fun setBillImages(images: List<Image>) {
         if (images.isEmpty()) {
@@ -59,7 +58,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         //服务器返回的是图片的ID、需要加上前缀
         val imagePaths = images.stream().map { image: Image ->
             val onlinePath = image.onlinePath
-            if (onlinePath.isNotEmpty() && !image.onlinePath.contains("http")) { //在线Image路径
+            if (onlinePath != null && !image.onlinePath.contains("http")) { //在线Image路径
                 val path = BuildConfig.HTTP_URL + "/image/" + image.onlinePath
                 image.onlinePath = path
             }
@@ -75,14 +74,14 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
     override fun onCreate() {
         super.onCreate()
         binding = PopBilliInfoBinding.bind(popupContentView.findViewById(R.id.billInfoCard))
-        binding!!.tvDelete.setOnClickListener { v: View? ->
+        binding.tvDelete.setOnClickListener { v: View? ->
             deleteBill()
             popClickListener?.let {
                 it.delete(bill!!.getId())
             }
 
         }
-        binding!!.tvUpdate.setOnClickListener { v: View? ->
+        binding.tvUpdate.setOnClickListener { v: View? ->
             popClickListener?.let {
                 it.delete(bill!!.id)
             }
@@ -93,9 +92,9 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
     }
 
     private fun initBillImage() {
-        binding!!.ticketRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.ticketRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         imageAdapter = ImageAdapter()
-        binding!!.ticketRecycler.adapter = imageAdapter
+        binding.ticketRecycler.adapter = imageAdapter
         imageAdapter!!.setDiffCallback(object : DiffUtil.ItemCallback<Image>() {
             override fun areItemsTheSame(oldItem: Image, newItem: Image): Boolean {
                 return oldItem == newItem
@@ -125,12 +124,12 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         ) {
             val (username) = getUser(instance.token)
             val createUser = bill!!.createUser
-            if (createUser.isEmpty() || bill!!.createUser == username) {
+            if (createUser == null || bill!!.createUser == username) {
                 bill!!.synced = Constant.STATUS_DELETE
                 AppDatabase.getInstance().billDao().update(bill)
-                instance.appViewModule.billDelete(bill!!.getId())
-                if (popClickListener != null) {
-                    popClickListener!!.delete(bill!!.getId())
+                instance.appViewModule.billDelete(bill.getId())
+                popClickListener.let {
+                    it.delete(bill!!.getId())
                 }
             } else {
                 ToastUtils.showLong("只有账单创建人有权删除该账单")
@@ -140,7 +139,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
     }
 
     interface PopClickListener {
-        fun delete(_id: String?)
-        fun update(_id: String?)
+        fun delete(_id: String)
+        fun update(_id: String)
     }
 }

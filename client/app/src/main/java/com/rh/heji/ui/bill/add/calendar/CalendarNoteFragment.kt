@@ -167,7 +167,7 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
             popupView.setBillImages(ArrayList()) //首先把图片重置
         }
 
-        popupView.setPopClickListener(this)
+        popupView.popClickListener = this
         popupView.show()
     }
 

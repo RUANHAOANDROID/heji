@@ -15,8 +15,8 @@ import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.Iteminfo.BillInfoPop
-import com.rh.heji.ui.bill.Iteminfo.BillInfoPop.PopClickListener
+import com.rh.heji.ui.bill.iteminfo.BillInfoPop
+import com.rh.heji.ui.bill.iteminfo.BillInfoPop.PopClickListener
 import com.rh.heji.ui.bill.YearSelectPop
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter

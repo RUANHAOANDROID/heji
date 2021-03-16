@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.Iteminfo
+package com.rh.heji.ui.bill.iteminfo
 
 import android.content.Context
 import android.view.View

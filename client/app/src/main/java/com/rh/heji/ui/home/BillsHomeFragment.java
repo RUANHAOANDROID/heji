@@ -22,7 +22,7 @@ import com.rh.heji.data.BillType;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.databinding.FragmentBillsHomeBinding;
 import com.rh.heji.ui.base.BaseFragment;
-import com.rh.heji.ui.bill.Iteminfo.BillInfoPop;
+import com.rh.heji.ui.bill.iteminfo.BillInfoPop;
 import com.rh.heji.ui.bill.YearSelectPop;
 import com.rh.heji.ui.bill.adapter.DayBillsNode;
 import com.rh.heji.ui.bill.adapter.DayIncome;

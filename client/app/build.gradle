@@ -153,15 +153,10 @@ dependencies {
     //图片压缩
     implementation 'top.zibin:Luban:1.1.8'
     //日历
-    //implementation 'com.necer.ncalendar:ncalendar:5.0.2'
-    //implementation 'com.github.prolificinteractive:material-calendarview:2.0.1'
     implementation 'com.haibin:calendarview:3.7.1'
-    //抽屉
-    //implementation "com.mikepenz:materialdrawer:8.3.3"
-// Add for NavController support
-    //implementation "com.mikepenz:materialdrawer-nav:8.3.3"
-// Add for Android-Iconics support
-    //implementation "com.mikepenz:materialdrawer-iconics:8.3.3"
+
     // MMKV  storage
     implementation 'com.tencent:mmkv-static:1.2.7'
+    //图表统计
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

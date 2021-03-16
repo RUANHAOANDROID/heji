@@ -43,11 +43,10 @@ public class ReportFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        final TextView textView = view.findViewById(R.id.text_gallery);
         reportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+
             }
         });
     }

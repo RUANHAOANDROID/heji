@@ -37,7 +37,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         private set
     var binding: PopBilliInfoBinding? = null
     private var imageAdapter: ImageAdapter? = null
-    private var popClickListener: PopClickListener? = null
+    var popClickListener: PopClickListener? = null
     fun setBill(bill: Bill) {
         this.bill = bill
         binding!!.tvMonney.text = bill.getMoney().toString()
@@ -49,9 +49,9 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
 
     fun setBillImages(images: List<Image>) {
         if (images.isEmpty()) {
-            if (imageAdapter != null) {
-                imageAdapter!!.setNewInstance(ArrayList())
-                imageAdapter!!.notifyDataSetChanged()
+            imageAdapter?.let {
+                it.setNewInstance(ArrayList())
+                it.notifyDataSetChanged()
             }
             return
         }
@@ -59,7 +59,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         //服务器返回的是图片的ID、需要加上前缀
         val imagePaths = images.stream().map { image: Image ->
             val onlinePath = image.onlinePath
-            if (null != onlinePath && !image.onlinePath.contains("http")) { //在线Image路径
+            if (onlinePath.isNotEmpty() && !image.onlinePath.contains("http")) { //在线Image路径
                 val path = BuildConfig.HTTP_URL + "/image/" + image.onlinePath
                 image.onlinePath = path
             }
@@ -77,17 +77,18 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         binding = PopBilliInfoBinding.bind(popupContentView.findViewById(R.id.billInfoCard))
         binding!!.tvDelete.setOnClickListener { v: View? ->
             deleteBill()
-            if (popClickListener != null) {
-                popClickListener!!.delete(bill!!.getId())
+            popClickListener?.let {
+                it.delete(bill!!.getId())
             }
+
         }
         binding!!.tvUpdate.setOnClickListener { v: View? ->
-            if (popClickListener != null) {
-                popClickListener!!.update(bill!!.getId())
+            popClickListener?.let {
+                it.delete(bill!!.id)
             }
         }
         //设置圆角背景
-        popupImplView.background = XPopupUtils.createDrawable(resources.getColor(R.color._xpopup_light_color),
+        popupImplView.background = XPopupUtils.createDrawable(resources.getColor(R.color._xpopup_light_color, null),
                 popupInfo.borderRadius, popupInfo.borderRadius, 0f, 0f)
     }
 
@@ -124,7 +125,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         ) {
             val (username) = getUser(instance.token)
             val createUser = bill!!.createUser
-            if (createUser == null || bill!!.createUser == username) {
+            if (createUser.isEmpty() || bill!!.createUser == username) {
                 bill!!.synced = Constant.STATUS_DELETE
                 AppDatabase.getInstance().billDao().update(bill)
                 instance.appViewModule.billDelete(bill!!.getId())
@@ -141,9 +142,5 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
     interface PopClickListener {
         fun delete(_id: String?)
         fun update(_id: String?)
-    }
-
-    fun setPopClickListener(popClickListener: PopClickListener?) {
-        this.popClickListener = popClickListener
     }
 }

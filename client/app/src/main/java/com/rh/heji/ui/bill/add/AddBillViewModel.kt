@@ -33,7 +33,7 @@ class AddBillViewModel : BaseViewModel() {
             return field
         }
     var keyBoardStack: Stack<String>? = null
-    var saveLiveData: MutableLiveData<Bill> = MutableLiveData()
+    private var saveLiveData: MutableLiveData<Bill> = MutableLiveData()
 
     /**
      * @param billId
@@ -41,7 +41,7 @@ class AddBillViewModel : BaseViewModel() {
      * @param billType
      * @return
      */
-    fun save(billId: String?, money: String?, category: Category) {
+    fun save(billId: String?, money: String?, category: Category) :MutableLiveData<Bill>{
         val bill = bill
         val billTime = TimeUtils.string2Millis(time, "yyyy-MM-dd HH:mm:ss")//String time to millis
         LogUtils.d(TimeUtils.millis2String(billTime, "yyyy-MM-dd HH:mm:ss"))
@@ -68,6 +68,7 @@ class AddBillViewModel : BaseViewModel() {
         }, {
             ToastUtils.showShort(it.message)
         })
+        return saveLiveData
     }
 
     fun addImgUrl(imgUrl: String) {

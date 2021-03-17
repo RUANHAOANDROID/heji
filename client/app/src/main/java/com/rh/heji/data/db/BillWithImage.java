@@ -16,7 +16,7 @@ public class BillWithImage {
 
     @Relation(
             parentColumn = "bill_id",
-            entityColumn = "bill_img_id"
+            entityColumn = "_bid"
     )
     public List<Image> images;
 

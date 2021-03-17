@@ -1,3 +1,8 @@
 package com.rh.heji.data.db.query
 
-data class Income(var income: String, var expenditure: String)
+import java.math.BigDecimal
+
+data class Income(
+        var income: BigDecimal,
+        var expenditure: BigDecimal) {
+}

@@ -82,9 +82,6 @@ public interface BillDao {
     @Query("SELECT DISTINCT date(bill_time)   FROM bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
     List<String> findHaveBillDays(String start, String end);
 
-    @Query("SELECT SUM(money/100) FROM bill WHERE date(bill_time) =:time AND type =:type AND sync_status!=-1")
-    String findIncomeByDay(String time, String type);
-
     @Query("SELECT * FROM bill WHERE date(bill_time) =:time AND sync_status!=-1")
     List<Bill> findListByDay(String time);
 
@@ -95,11 +92,17 @@ public interface BillDao {
      * @param end   结束时间
      * @return
      */
+    @TypeConverters(MoneyConverters.class)
     @Query("SELECT SUM(money) AS value FROM Bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (type = :sz) AND (sync_status != " + Constant.STATUS_DELETE + ")")
     LiveData<Double> findTotalMoneyByTime(String start, String end, int sz);
 
-    @Query("select sum(case when type=-1 then money/100 else 0 end)as expenditure ,sum(case  when  type=1 then money/100 else 0 end)as income from bill  where date(bill_time)=:time")
+    @TypeConverters(MoneyConverters.class)
+    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where date(bill_time)=:time")
     Income sumDayIncome(String time);
+
+    @TypeConverters(MoneyConverters.class)
+    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where date(bill_time)=:time")
+    Income sumMonthIncome(String time);
 
     @Transaction
     @Query("SELECT * FROM bill")

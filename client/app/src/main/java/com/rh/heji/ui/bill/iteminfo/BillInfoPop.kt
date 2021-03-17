@@ -77,15 +77,11 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         super.onCreate()
         binding = PopBilliInfoBinding.bind(popupContentView.findViewById(R.id.billInfoCard))
         binding.tvDelete.setOnClickListener { v: View? ->
-            deleteBill()
-            popClickListener?.let {
-                it.delete(bill.getId())
-            }
-
+            deleteTip()
         }
         binding.tvUpdate.setOnClickListener { v: View? ->
             popClickListener?.let {
-                it.delete(bill.id)
+                it.update(bill.id)
             }
         }
         //设置圆角背景
@@ -125,7 +121,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
     /**
      * 删除该条账单
      */
-    private fun deleteBill() {
+    private fun deleteTip() {
         XPopup.Builder(context).asConfirm("删除提示", "确认删除该条账单吗？"
         ) {
             val (username) = getUser(instance.token)

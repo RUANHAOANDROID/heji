@@ -18,7 +18,7 @@ import java.util.Objects;
 public class Image {
 
     public static final String TAB_NAME = "bill_img";
-    public static final String COLUMN_ID = "bill_img_id";
+    public static final String COLUMN_ID = "_bid";
     public static final String COLUMN_PATH = "img_path";
     public static final String COLUMN_ONLINE_PATH = "img_online_path";
     public static final String COLUMN_STATUS = "sync_status";
@@ -28,10 +28,10 @@ public class Image {
     String _id;
 
 
-    @ForeignKey(entity = Bill.class, parentColumns = "bill_id", childColumns = "bill_img_id", onDelete = ForeignKey.CASCADE)
+    @ForeignKey(entity = Bill.class, parentColumns = "bill_id", childColumns = "_bid", onDelete = ForeignKey.CASCADE)
     @NonNull
     @ColumnInfo(name = COLUMN_ID)
-    String billImageID;
+    String bill_id;
 
     String md5;
 
@@ -52,7 +52,7 @@ public class Image {
     @Ignore
     public Image(String _id, String bill_id) {
         this._id = _id;
-        this.billImageID = bill_id;
+        this.bill_id = bill_id;
     }
 
     public String getId() {
@@ -89,11 +89,11 @@ public class Image {
 
     @NonNull
     public String getBillImageID() {
-        return billImageID;
+        return bill_id;
     }
 
     public void setBillImageID(@NonNull String billImageID) {
-        this.billImageID = billImageID;
+        this.bill_id = billImageID;
     }
 
     @Override
@@ -102,7 +102,7 @@ public class Image {
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
         return _id == image._id &&
-                billImageID.equals(image.billImageID) &&
+                bill_id.equals(image.bill_id) &&
                 Objects.equals(localPath, image.localPath) &&
                 Objects.equals(onlinePath, image.onlinePath);
     }
@@ -117,7 +117,7 @@ public class Image {
 
     @Override
     public int hashCode() {
-        return Objects.hash(_id, billImageID, localPath, onlinePath);
+        return Objects.hash(_id, bill_id, localPath, onlinePath);
     }
 
     public String getExt() {
@@ -126,5 +126,18 @@ public class Image {
 
     public void setExt(String ext) {
         this.ext = ext;
+    }
+
+    @Override
+    public String toString() {
+        return "Image{" +
+                "_id='" + _id + '\'' +
+                ", bill_id='" + bill_id + '\'' +
+                ", md5='" + md5 + '\'' +
+                ", ext='" + ext + '\'' +
+                ", localPath='" + localPath + '\'' +
+                ", onlinePath='" + onlinePath + '\'' +
+                ", synced=" + synced +
+                '}';
     }
 }

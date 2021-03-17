@@ -42,6 +42,7 @@ class BillRepository {
     suspend fun deleteBill(_id: String) {
         var response = hejiNetwork.billDelete(_id)
         response.data.let {
+            AppDatabase.getInstance().imageDao().deleteBillImage(_id)
             billDao.delete(Bill(_id))
         }
     }
@@ -73,29 +74,31 @@ class BillRepository {
         val images = imgDao.findByBillIdNotAsync(bill_id)
         if (images.isNotEmpty()) {
             images.forEach { image ->
-                var img = File(image.localPath)
-                val length = img.length()
+                var imgFile = File(image.localPath)
+                val length = imgFile.length()
                 LogUtils.i("图片大小", length)
                 if (length > Constants.FILE_LENGTH_1M * 2) { //图片超过设定值则压缩
                     LogUtils.i("图片大小超过2M,压缩图片", Constants.FILE_LENGTH_1M * 2)
-                    val fileList = Luban.with(App.getContext()).load(img).get()
+                    val fileList = Luban.with(App.getContext()).load(imgFile).get()
                     if (!fileList.isEmpty() && fileList.size > 0) {
-                        img = fileList[0]
+                        imgFile = fileList[0]
                     }
                 }
-                val fileName = img.name
-                val requestBody = RequestBody.create("image/png".toMediaTypeOrNull(), img)
+                val fileName = imgFile.name
+                val requestBody = RequestBody.create("image/png".toMediaTypeOrNull(), imgFile)
                 val part: MultipartBody.Part = MultipartBody.Part.createFormData("file", fileName, requestBody)
-                val time = img.lastModified()
-                val objectId = ObjectId().toString()
+                val time = imgFile.lastModified()
+                val objectId = image.id
                 val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part, objectId, bill_id, time)
                 response.data.let { imgUUID ->
                     image.onlinePath = response.data._id
                     image.md5 = response.data.md5
                     image.id = response.data._id
                     image.synced = Constant.STATUS_SYNCED
-                    AppDatabase.getInstance().imageDao().update(image)
-                    LogUtils.d("图片上传成功：", imgUUID)
+                    LogUtils.d("账单图片上传成功：${image.toString()}")
+                    var count = AppDatabase.getInstance().imageDao().updateOnlinePath(image.id, image.onlinePath, image.synced)
+                    if (count > 0)
+                        LogUtils.d("图片更新成功：${image.toString()}")
                 }
 
             }

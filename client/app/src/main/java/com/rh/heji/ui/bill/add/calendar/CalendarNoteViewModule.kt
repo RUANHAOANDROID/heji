@@ -44,11 +44,12 @@ class CalendarNoteViewModule : BaseViewModel() {
                 var thisYear = calendar.get(java.util.Calendar.YEAR)
                 var thisMonth = calendar.get(java.util.Calendar.MONTH) + 1
                 var thisDay = calendar.get(java.util.Calendar.DAY_OF_MONTH)
-                var expenditure = billDao.findIncomeByDay(time, BillType.EXPENDITURE.typeString())
-                        ?: "0"
-                var income = billDao.findIncomeByDay(time, BillType.INCOME.typeString()) ?: "0"
-                if (expenditure != "0" || income != "0") {
-                    val calender: Calendar = getSchemeCalendar(thisYear, thisMonth, thisDay, expenditure, income)
+//                var expenditure = billDao.findIncomeByDay(time, BillType.EXPENDITURE.typeString())
+//                        ?: "0"
+//                var income = billDao.findIncomeByDay(time, BillType.INCOME.typeString()) ?: "0"
+                var income =billDao.sumDayIncome(time);
+                if (income.expenditure.toString() != "0" || income.income.toString() != "0") {
+                    val calender: Calendar = getSchemeCalendar(thisYear, thisMonth, thisDay, income.expenditure.toString(), income.income.toString())
                     map[calender.toString()] = calender
                 }
             }

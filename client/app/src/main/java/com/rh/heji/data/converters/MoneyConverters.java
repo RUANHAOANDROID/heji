@@ -11,13 +11,13 @@ import java.math.BigDecimal;
  */
 public class MoneyConverters {
     @TypeConverter
-    public BigDecimal fromLong(Long value) {
+    public static BigDecimal fromLong(Long value) {
         BigDecimal bigDecimal = value == null ? null : new BigDecimal(value).divide(new BigDecimal(100));
         return bigDecimal;
     }
 
     @TypeConverter
-    public Long toLong(BigDecimal bigDecimal) {
+    public static Long toLong(BigDecimal bigDecimal) {
         Long longValue = bigDecimal.multiply(new BigDecimal(100)).longValue();
         return longValue;
     }

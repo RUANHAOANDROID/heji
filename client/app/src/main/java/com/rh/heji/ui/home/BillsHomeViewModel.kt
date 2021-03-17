@@ -8,9 +8,11 @@ import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
+import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.data.db.Image
+import com.rh.heji.data.db.query.Income
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
@@ -42,8 +44,8 @@ class BillsHomeViewModel : BaseViewModel() {
             var dayIncome = billDao.sumDayIncome(time)
             var list = billDao.findListByDay(time)
             var incomeNode = DayIncome(
-                    expected = dayIncome.expenditure,
-                    income = dayIncome.income,
+                    expected = dayIncome.expenditure.toString(),
+                    income = dayIncome.income.toString(),
                     year = calendar.get(Calendar.YEAR),
                     month = calendar.get(Calendar.MONTH) + 1,
                     monthDay = calendar.get(Calendar.DAY_OF_MONTH),
@@ -76,6 +78,10 @@ class BillsHomeViewModel : BaseViewModel() {
         LogUtils.d("End time: ", end)
         //var list = billDao.sumDayIncome("2021-03-06");
         return Transformations.distinctUntilChanged(billDao.findTotalMoneyByTime(start, end, type))
+    }
+
+    fun getMonthIncome(yearMonth: String): Income {
+        return AppDatabase.getInstance().billDao().sumMonthIncome(yearMonth)
     }
 
     private val thisYear: Int

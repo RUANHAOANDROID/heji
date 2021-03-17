@@ -1,5 +1,6 @@
 package com.rh.heji.service.work
 
+import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Constant
@@ -120,6 +121,7 @@ class DataSyncWork {
                     val response = network.billUpdate(BillEntity(bill))
                     if (response.code == 0) {
                         bill.synced = Constant.STATUS_SYNCED
+                        AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
                         billDao.delete(bill)
                     }
                 }
@@ -164,6 +166,7 @@ class DataSyncWork {
                                     image.billImageID = serverBill.id
                                     image.synced = Constant.STATUS_SYNCED
                                     AppDatabase.getInstance().imageDao().install(image)
+                                    LogUtils.i("账单图片信息已保存 $image")
                                 }
                                 billDao.updateImageCount(response.date.size, serverBill.id)
                             }

@@ -52,8 +52,8 @@ public class ETCViewModel extends ViewModel {
             "Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)",
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
     };
-    String etcID=DEF_ETC_ID;
-    String carID=DEF_CAR_ID;
+    String etcID = DEF_ETC_ID;
+    String carID = DEF_CAR_ID;
     String yearMonth;
     MediatorLiveData<String> etcLive = new MediatorLiveData();
 
@@ -87,11 +87,12 @@ public class ETCViewModel extends ViewModel {
         if (etcListInfo != null && etcListInfo.data != null && etcListInfo.data.size() > 0) {
             List<ETCListInfoEntity.Info> data = etcListInfo.data;
             data.forEach(info -> {
+                Date billTime = TimeUtils.string2Date(info.exchargetime, "yyyy-MM-dd HH:mm:ss");
                 Bill bill = new Bill();
-                bill.setId(new ObjectId().toString());
+                bill.setId(new ObjectId(billTime).toString());
                 bill.setMoney(new BigDecimal(info.etcPrice).divide(new BigDecimal(100)));
                 bill.setRemark(info.exEnStationName);
-                bill.setBillTime(TimeUtils.string2Date(info.exchargetime, "yyyy-MM-dd HH:mm:ss"));
+                bill.setBillTime(billTime);
                 bill.setCategory(getCategoryName());
                 bill.setDealer("ETC");
                 bill.setCreateTime(TimeUtils.getNowMills());
@@ -190,7 +191,7 @@ public class ETCViewModel extends ViewModel {
         //www - url 解码方式
         RequestBody requestBody = RequestBody
                 .create(MediaType.parse("application/x-www-form-urlencoded"),
-                        "cardNo=" + etcID + "&month=" + month + "&vehplate=" + carID+"&flag=0");
+                        "cardNo=" + etcID + "&month=" + month + "&vehplate=" + carID + "&flag=0");
         //伪装成浏览器请求
         Request request = new Request.Builder()
                 .url(requestURL)
@@ -214,8 +215,8 @@ public class ETCViewModel extends ViewModel {
                                     String error = jsonObject.getString("msg");
                                     ToastUtils.showLong(error);
                                 } else if (status.equals("OK")) {
-                                    Gson gson =new Gson();
-                                    HBETCEntity hbetcEntity =gson.fromJson(strBody,HBETCEntity.class);
+                                    Gson gson = new Gson();
+                                    HBETCEntity hbetcEntity = gson.fromJson(strBody, HBETCEntity.class);
 
                                     if (hbetcEntity != null && hbetcEntity.data != null && hbetcEntity.data.orderArr.size() > 0) {
                                         List<HBETCEntity.DataBean.OrderArrBean> data = hbetcEntity.data.orderArr;
@@ -236,8 +237,8 @@ public class ETCViewModel extends ViewModel {
                             }
                         }
                     }
-                }else if (response.code() ==404){
-                    requestETCList2(etcID,month,carID);
+                } else if (response.code() == 404) {
+                    requestETCList2(etcID, month, carID);
                 }
 
             }
@@ -259,7 +260,7 @@ public class ETCViewModel extends ViewModel {
         Date billTime = DateConverters.str2Date(info.exTime);
 
         Bill bill = new Bill();
-        bill.setId(new ObjectId().toString());
+        bill.setId(new ObjectId(billTime).toString());
         bill.setMoney(new BigDecimal(money).divide(new BigDecimal(100)));
         bill.setRemark(remark);
         bill.setBillTime(billTime);

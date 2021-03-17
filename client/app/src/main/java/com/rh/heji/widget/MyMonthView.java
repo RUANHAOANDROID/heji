@@ -32,7 +32,6 @@ public class MyMonthView extends MonthView {
         incomePaint.setTextSize(dipToPx(getContext(), 9));
         incomePaint.setColor(context.getColor(R.color.income));
 
-
         //兼容硬件加速无效的代码
         setLayerType(View.LAYER_TYPE_SOFTWARE, incomePaint);
         //4.0以上硬件加速会导致无效
@@ -106,9 +105,14 @@ public class MyMonthView extends MonthView {
 
         boolean isInRange = isInRange(calendar);
 
+        mCurDayTextPaint.setColor(getContext().getColor(R.color.colorPrimary));
+        //日期
+        canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top, calendar.isCurrentDay() ? mCurDayTextPaint :
+                calendar.isCurrentMonth() && isInRange ? mCurMonthTextPaint : mOtherMonthTextPaint);
+
         if (isSelected) {
             //选中时的字体
-            canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top, mSelectTextPaint);
+            //canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top, mSelectTextPaint);
             if (hasScheme) {//收支
                 drawScheme(canvas, calendar, y, cx, isSelected);
             } else {//农历
@@ -116,18 +120,16 @@ public class MyMonthView extends MonthView {
             }
         } else if (hasScheme) { //有收支的日子
             //日期
-            canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top, calendar.isCurrentMonth() && isInRange ? mSchemeTextPaint : mOtherMonthTextPaint);
+            //canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top, calendar.isCurrentMonth() && isInRange ? mSchemeTextPaint : mOtherMonthTextPaint);
             //收入
             drawScheme(canvas, calendar, y, cx, isSelected);
         } else {
-            //日期
-            canvas.drawText(String.valueOf(calendar.getDay()), cx, mTextBaseLine + top, calendar.isCurrentDay() ? mCurDayTextPaint :
-                    calendar.isCurrentMonth() && isInRange ? mCurMonthTextPaint : mOtherMonthTextPaint);
             //农历
             canvas.drawText(calendar.getLunar(), cx, mTextBaseLine + y + mItemHeight / 10,
                     calendar.isCurrentDay() && isInRange ? mCurDayLunarTextPaint :
                             calendar.isCurrentMonth() ? mCurMonthLunarTextPaint : mOtherMonthLunarTextPaint);
         }
+
     }
 
     private void drawScheme(Canvas canvas, Calendar calendar, int y, int cx, boolean isSelected) {

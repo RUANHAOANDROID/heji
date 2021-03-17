@@ -25,6 +25,7 @@ import com.lxj.xpopup.XPopup;
 import com.matisse.Matisse;
 import com.matisse.entity.ConstValue;
 import com.rh.heji.AppCache;
+import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.Category;
 import com.rh.heji.data.repository.BillRepository;
 import com.rh.heji.network.request.BillEntity;
@@ -94,10 +95,6 @@ public class AddBillFragment extends BaseFragment {
         remark();
         category();
         keyboardListener();
-        billViewModel.getSaveLiveData().observe(getViewLifecycleOwner(), bill -> {
-            AppCache.Companion.getInstance().getAppViewModule().billPush(new BillEntity(bill));
-            getMainActivity().getNavController().popBackStack();
-        });
     }
 
     private void category() {
@@ -226,7 +223,10 @@ public class AddBillFragment extends BaseFragment {
             public void save(String result) {
                 ToastUtils.showLong(result);
                 Category category = categoryViewModule.getSelectCategory();
-                saveBill(result, category);
+                saveBill(result, category, bill -> {
+                    AppCache.Companion.getInstance().getAppViewModule().billPush(new BillEntity(bill));
+                    getMainActivity().getNavController().popBackStack();
+                });
             }
 
             @Override
@@ -237,7 +237,7 @@ public class AddBillFragment extends BaseFragment {
             @Override
             public void saveAgain(String result) {
                 ToastUtils.showLong(result);
-                saveBill(result, categoryViewModule.getSelectCategory());
+                saveBill(result, categoryViewModule.getSelectCategory(), bill -> AppCache.Companion.getInstance().getAppViewModule().billPush(new BillEntity(bill)));
                 clear();
             }
         });
@@ -249,13 +249,14 @@ public class AddBillFragment extends BaseFragment {
         binding.tvMoney.setTextColor(getResources().getColor(textColor));
     }
 
-    private void saveBill(String money, Category category) {
+    private void saveBill(String money, Category category, Observer<Bill> saveObserver) {
         if (TextUtils.isEmpty(money) || money.equals("0")) {
             ToastUtils.showShort("未填写金额");
             return;
         }
         billViewModel.getBill().setCategory(category.getCategory());
-        billViewModel.save(new ObjectId().toString(), money, category);
+        billViewModel.save(new ObjectId().toString(), money, category).observe(this, saveObserver);
+
     }
 
     /**

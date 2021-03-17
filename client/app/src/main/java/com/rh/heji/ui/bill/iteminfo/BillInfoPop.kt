@@ -43,18 +43,20 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
             binding.rePeople.text = bill.getDealer()
         }
     lateinit var binding: PopBilliInfoBinding
-    private var imageAdapter: ImageAdapter? = null
+    private lateinit var imageAdapter: ImageAdapter
     lateinit var popClickListener: PopClickListener
 
     fun setBillImages(images: List<Image>) {
         if (images.isEmpty()) {
-            imageAdapter?.let {
-                it.setNewInstance(ArrayList())
-                it.notifyDataSetChanged()
+            if (this::imageAdapter.isInitialized) {//判断是否初始化 ::表示作用域
+                imageAdapter?.let {
+                    it.setNewInstance(ArrayList())
+                    it.notifyDataSetChanged()
+                }
             }
             return
         }
-        initBillImage()
+        initBillImage()//初始化列表和适配器
         //服务器返回的是图片的ID、需要加上前缀
         val imagePaths = images.stream().map { image: Image ->
             val onlinePath = image.onlinePath
@@ -64,7 +66,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
             }
             image
         }.collect(Collectors.toList())
-        imageAdapter!!.setNewInstance(imagePaths)
+        imageAdapter.setNewInstance(imagePaths)
     }
 
     override fun getImplLayoutId(): Int {
@@ -77,13 +79,13 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         binding.tvDelete.setOnClickListener { v: View? ->
             deleteBill()
             popClickListener?.let {
-                it.delete(bill!!.getId())
+                it.delete(bill.getId())
             }
 
         }
         binding.tvUpdate.setOnClickListener { v: View? ->
             popClickListener?.let {
-                it.delete(bill!!.id)
+                it.delete(bill.id)
             }
         }
         //设置圆角背景
@@ -95,7 +97,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         binding.ticketRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         imageAdapter = ImageAdapter()
         binding.ticketRecycler.adapter = imageAdapter
-        imageAdapter!!.setDiffCallback(object : DiffUtil.ItemCallback<Image>() {
+        imageAdapter.setDiffCallback(object : DiffUtil.ItemCallback<Image>() {
             override fun areItemsTheSame(oldItem: Image, newItem: Image): Boolean {
                 return oldItem == newItem
             }
@@ -104,14 +106,18 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
                 return oldItem == newItem
             }
         })
-        imageAdapter!!.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View, position: Int -> showImage(view, position) }
+        imageAdapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View, position: Int -> showImage(view, position) }
     }
 
     private fun showImage(itemView: View, itemPosition: Int) {
-        val objects = imageAdapter!!.data.stream().map(Function<Image?, Any> { image: Image? -> imageAdapter!!.getImagePath(image) }).collect(Collectors.toList())
+        val objects = imageAdapter.data.stream().map(Function<Image?, Any> { image: Image? -> imageAdapter.getImagePath(image) }).collect(Collectors.toList())
         if (objects.isEmpty()) return
-        XPopup.Builder(context).asImageViewer(itemView as ImageView, itemPosition, objects,
-                { popupView: ImageViewerPopupView, position1: Int -> popupView.updateSrcView(imageAdapter!!.getViewByPosition(itemPosition, R.id.itemImage) as ImageView?) }, ImageLoader())
+        XPopup.Builder(context)
+                .asImageViewer(itemView as ImageView,
+                        itemPosition,
+                        objects,
+                        { popupView: ImageViewerPopupView, position1: Int -> popupView.updateSrcView(imageAdapter.getViewByPosition(itemPosition, R.id.itemImage) as ImageView?) },
+                        ImageLoader())
                 .isShowSaveButton(false)
                 .show()
     }
@@ -123,13 +129,13 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         XPopup.Builder(context).asConfirm("删除提示", "确认删除该条账单吗？"
         ) {
             val (username) = getUser(instance.token)
-            val createUser = bill!!.createUser
-            if (createUser == null || bill!!.createUser == username) {
-                bill!!.synced = Constant.STATUS_DELETE
+            val createUser = bill.createUser
+            if (createUser == null || bill.createUser == username) {
+                bill.synced = Constant.STATUS_DELETE
                 AppDatabase.getInstance().billDao().update(bill)
                 instance.appViewModule.billDelete(bill.getId())
                 popClickListener.let {
-                    it.delete(bill!!.getId())
+                    it.delete(bill.getId())
                 }
             } else {
                 ToastUtils.showLong("只有账单创建人有权删除该账单")

@@ -11,6 +11,7 @@ import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.BillDao
+import com.rh.heji.data.db.Image
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
@@ -20,7 +21,10 @@ import com.rh.heji.utlis.MyTimeUtils
 class CalendarNoteViewModule : BaseViewModel() {
     val billDao: BillDao = AppDatabase.getInstance().billDao()
     val calendarLiveData = MutableLiveData<Map<String, Calendar>>()
-    val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>();
+    val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>()
+    private val billImageLiveData = MutableLiveData<List<Image>>()
+
+
     var year: Int = thisYear
     var month: Int = thisMonth
     private val thisYear: Int
@@ -122,4 +126,13 @@ class CalendarNoteViewModule : BaseViewModel() {
 
         return calendar
     }
+
+    fun getBillImages(billId: String): MutableLiveData<List<Image>> {
+        launchIO({
+            billImageLiveData.postValue(AppDatabase.getInstance().imageDao().findByBillId(billId));
+        }, {})
+        return billImageLiveData
+    }
+
+
 }

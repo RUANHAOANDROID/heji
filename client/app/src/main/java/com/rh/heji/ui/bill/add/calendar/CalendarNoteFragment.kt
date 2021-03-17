@@ -13,14 +13,15 @@ import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
+import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.iteminfo.BillInfoPop
-import com.rh.heji.ui.bill.iteminfo.BillInfoPop.PopClickListener
 import com.rh.heji.ui.bill.YearSelectPop
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
+import com.rh.heji.ui.bill.iteminfo.BillInfoPop
+import com.rh.heji.ui.bill.iteminfo.BillInfoPop.PopClickListener
 import com.rh.heji.widget.CardDecoration
 import kotlinx.android.synthetic.main.fragment_calendar_note.*
 
@@ -78,10 +79,10 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         binding.recycler.addItemDecoration(CardDecoration(8))
 
         viewModel.dayBillsLiveData.observe(this, dayBillsObserver)
-        adapter?.setOnItemClickListener { adapter, view, position ->
+        adapter?.setOnItemClickListener { adapter, _, position ->
             if (adapter.getItem(position) is DayBillsNode) {
                 var billNode = adapter.getItem(position) as DayBillsNode
-                billNode?.let { it.bill?.let { bill -> showBillItemPop(bill) } }
+                showBillItemPop(billNode.bill)
             }
         }
     }
@@ -116,7 +117,11 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
 
     private fun fabShow() {
         val thisMonth = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.MONTH) + 1;
-        if (binding.calendarView.curMonth == thisMonth) binding.todayFab.hide() else binding.todayFab.show()
+        if (viewModel.month == thisMonth)
+            binding.todayFab.hide()
+        else
+            binding.todayFab.show()
+
     }
 
 
@@ -125,12 +130,12 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
      */
     private fun addYearMonthView() {
         var toolBarCenterTitle = toolBar.findViewById<TextView>(R.id.toolbar_center_title)
-        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32), null)
+        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null), null)
         toolBarCenterTitle.compoundDrawablePadding = 8
 
         setTitleYearMonth(viewModel.year, viewModel.month)
         viewModel.updateYearMonth(viewModel.year, viewModel.month)
-        toolBarCenterTitle.setOnClickListener(View.OnClickListener { v: View? ->
+        toolBarCenterTitle.setOnClickListener {
             XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
                     .hasShadowBg(true)
                     .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
@@ -141,7 +146,7 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
                         viewModel.month = month
                     }) /*.enableDrag(false)*/
                     .show()
-        })
+        }
     }
 
     private fun setTitleYearMonth(year: Int, month: Int) {
@@ -165,6 +170,13 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         popupView.post {
             popupView.bill = bill //账单信息
             popupView.setBillImages(ArrayList()) //首先把图片重置
+            if (bill.imgCount > 0) {
+                viewModel.getBillImages(bill.id).observe(this, Observer {
+                    it.let {
+                        popupView.setBillImages(it)
+                    }
+                })
+            }
         }
 
         popupView.popClickListener = this

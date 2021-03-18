@@ -31,34 +31,36 @@ class BillsHomeViewModel : BaseViewModel() {
     val billsNodLiveData = MediatorLiveData<MutableList<BaseNode>>()
 
     fun getBillsData() {
-        val start = MyTimeUtils.firstDayOfMonth(year, month)
-        LogUtils.d("Start time: ", start)
-        val end = MyTimeUtils.lastDayOfMonth(year, month)
-        LogUtils.d("End time: ", end)
-        val haveBillDays = billDao.findHaveBillDays(MyTimeUtils.firstDayOfMonth(year, month), MyTimeUtils.lastDayOfMonth(year, month))
-        var listDayNodes = mutableListOf<BaseNode>()
-        haveBillDays?.forEach { time ->
-            var calendar = Calendar.getInstance()
-            calendar.time = TimeUtils.string2Date(time, "yyyy-MM-dd")
-            var currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-            var dayIncome = billDao.sumDayIncome(time)
-            var list = billDao.findListByDay(time)
-            var incomeNode = DayIncome(
-                    expected = dayIncome.expenditure.toString(),
-                    income = dayIncome.income.toString(),
-                    year = calendar.get(Calendar.YEAR),
-                    month = calendar.get(Calendar.MONTH) + 1,
-                    monthDay = calendar.get(Calendar.DAY_OF_MONTH),
-                    weekday = calendar.get(Calendar.DAY_OF_WEEK) - 1
-            )
-            val dayListNodes = mutableListOf<BaseNode>()
-            list.forEach {
-                dayListNodes.add(DayBillsNode(it))
+        launchIO({
+            val start = MyTimeUtils.firstDayOfMonth(year, month)
+            val end = MyTimeUtils.lastDayOfMonth(year, month)
+            LogUtils.d("time: ", "$start - $end")
+            val haveBillDays = billDao.findHaveBillDays(MyTimeUtils.firstDayOfMonth(year, month), MyTimeUtils.lastDayOfMonth(year, month))
+            var listDayNodes = mutableListOf<BaseNode>()
+            haveBillDays?.forEach { time ->
+                var calendar = Calendar.getInstance()
+                calendar.time = TimeUtils.string2Date(time, "yyyy-MM-dd")
+                var currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+                var dayIncome = billDao.sumDayIncome(time)
+                var list = billDao.findListByDay(time)
+                var incomeNode = DayIncome(
+                        expected = dayIncome.expenditure.toString(),
+                        income = dayIncome.income.toString(),
+                        year = calendar.get(Calendar.YEAR),
+                        month = calendar.get(Calendar.MONTH) + 1,
+                        monthDay = calendar.get(Calendar.DAY_OF_MONTH),
+                        weekday = calendar.get(Calendar.DAY_OF_WEEK) - 1
+                )
+                val dayListNodes = mutableListOf<BaseNode>()
+                list.forEach {
+                    dayListNodes.add(DayBillsNode(it))
+                }
+                var dayItemNode = DayIncomeNode(dayListNodes, incomeNode)
+                listDayNodes.add(dayItemNode)
             }
-            var dayItemNode = DayIncomeNode(dayListNodes, incomeNode)
-            listDayNodes.add(dayItemNode)
-        }
-        billsNodLiveData.postValue(listDayNodes)
+            billsNodLiveData.postValue(listDayNodes)
+        }, {})
+
     }
 
     fun getBillImages(billId: String): MediatorLiveData<List<Image>> {
@@ -71,17 +73,11 @@ class BillsHomeViewModel : BaseViewModel() {
     }
 
 
-    fun getIncomesOrExpenses(year: Int, month: Int, type: Int): LiveData<Double> {
+    fun getIncomeExpense(year: Int, month: Int): LiveData<Income> {
         val start = MyTimeUtils.firstDayOfMonth(year, month)
-        LogUtils.d("Start time: ", start)
         val end = MyTimeUtils.lastDayOfMonth(year, month)
-        LogUtils.d("End time: ", end)
-        //var list = billDao.sumDayIncome("2021-03-06");
-        return Transformations.distinctUntilChanged(billDao.findTotalMoneyByTime(start, end, type))
-    }
-
-    fun getMonthIncome(yearMonth: String): Income {
-        return AppDatabase.getInstance().billDao().sumMonthIncome(yearMonth)
+        LogUtils.d("time: ", "$start - $end")
+        return Transformations.distinctUntilChanged(billDao.sumIncome(start, end))
     }
 
     private val thisYear: Int

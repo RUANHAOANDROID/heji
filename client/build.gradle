@@ -32,7 +32,7 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 ext {
-    nav_version = "2.3.0-alpha01"
+    nav_version = "2.3.3"
     rxJava = 'io.reactivex.rxjava2:rxjava:2.1.16'
     work_version = "2.3.0-alpha01"
     javaVersion = JavaVersion.VERSION_1_8
@@ -41,7 +41,7 @@ ext {
     buildToolsVersion = '29.0.2'
     minSdk = 21
     targetSDKVersion = 28
-    room_version = "2.2.1"
+    room_version = "2.2.6"
     appcompat = '1.1.0'
     material = '1.0.0'
     recyclerview = '1.0.0'

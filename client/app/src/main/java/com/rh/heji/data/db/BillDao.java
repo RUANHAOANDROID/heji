@@ -101,8 +101,8 @@ public interface BillDao {
     Income sumDayIncome(String time);
 
     @TypeConverters(MoneyConverters.class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where date(bill_time)=:time")
-    Income sumMonthIncome(String time);
+    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where  ( date(bill_time) BETWEEN :start AND :end )")
+    LiveData<Income> sumIncome(String start, String end);
 
     @Transaction
     @Query("SELECT * FROM bill")

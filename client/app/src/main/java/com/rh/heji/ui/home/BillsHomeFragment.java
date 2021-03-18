@@ -125,22 +125,16 @@ public class BillsHomeFragment extends BaseFragment {
      * @param year  年
      * @param month 月
      */
-    private void totalExpenseAndIncome(int year, int month) {
-        homeViewModel.getIncomesOrExpenses(year, month, BillType.INCOME.type()).observe(getMainActivity(), data -> {
-            String incomes = "0";
-            if (null != data) {
-                incomes = String.valueOf(data / 100);
-            }
-            binding.homeHeadView.tvTotalIncomeValue.setText(incomes);
-            refreshHeadView();
-
-        });
-        homeViewModel.getIncomesOrExpenses(year, month, BillType.EXPENDITURE.type()).observe(getMainActivity(), data -> {
+    private void totalIncomeExpense(int year, int month) {
+        homeViewModel.getIncomeExpense(year, month).observe(getMainActivity(), incomeExpense -> {
+            String income = "0";
             String expenses = "0";
-            if (null != data) {
-                expenses = String.valueOf(data / 100);
+            if (null != incomeExpense) {
+                income = incomeExpense.getIncome().toString();
+                expenses = incomeExpense.getExpenditure().toString();
             }
             binding.homeHeadView.tvTotalExpensesValue.setText(expenses);
+            binding.homeHeadView.tvTotalIncomeValue.setText(income);
             refreshHeadView();
         });
     }
@@ -300,13 +294,8 @@ public class BillsHomeFragment extends BaseFragment {
             //adapter.setDiffNewData(baseNodes);
         });
         homeViewModel.getBillsData();
-        totalExpenseAndIncome(year, month);
+        totalIncomeExpense(year, month);
     }
-
-//    Observer<List<Bill>> listObserver = bills -> {
-//        adapter.setDiffNewData(bills);
-//        LogUtils.d("notify: ", bills.size());
-//    };
 
     /**
      * 该Menu属于全局所以在这里控制

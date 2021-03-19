@@ -44,21 +44,21 @@ public class ETCFragment extends BaseFragment {
         super.onAttach(context);
         etcViewModel = getViewModel(ETCViewModel.class);
     }
-
+    OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            if (binding.etcWeb.canGoBack()) {
+                binding.etcWeb.goBack();
+            } else {
+                getMainActivity().getNavController().popBackStack();
+            }
+        }
+    };
     @Override
     public void onResume() {
         super.onResume();
         //拦截回退直接退出  object : Class 内部类
-        getMainActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (binding.etcWeb.canGoBack()) {
-                    binding.etcWeb.goBack();
-                } else {
-                    Navigation.findNavController(view).popBackStack();
-                }
-            }
-        });
+        getMainActivity().getOnBackPressedDispatcher().addCallback(this,onBackPressedCallback);//指定owner 仅在该Fragment生命周期下有效
     }
 
     @Override

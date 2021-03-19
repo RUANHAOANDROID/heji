@@ -33,18 +33,21 @@ class CalendarNoteViewModule : BaseViewModel() {
 
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
-            val haveBillDays = billDao.findHaveBillDays(MyTimeUtils.firstDayOfMonth(year, month), MyTimeUtils.lastDayOfMonth(year, month))
             var map = mutableMapOf<String, Calendar>()
-            haveBillDays?.forEach { time ->
-                var calendar = java.util.Calendar.getInstance()
-                calendar.time = TimeUtils.string2Date(time, "yyyy-MM-dd")
-                var thisYear = calendar.get(java.util.Calendar.YEAR)
-                var thisMonth = calendar.get(java.util.Calendar.MONTH) + 1
-                var thisDay = calendar.get(java.util.Calendar.DAY_OF_MONTH)
-                var income =billDao.sumDayIncome(time)
-                if (income.expenditure.toString() != "0" || income.income.toString() != "0") {
-                    val calender: Calendar = getSchemeCalendar(thisYear, thisMonth, thisDay, income.expenditure.toString(), income.income.toString())
-                    map[calender.toString()] = calender
+            val firstDayOfMonth = MyTimeUtils.firstDayOfMonth(year, month)
+            val lastDayOfMonth = MyTimeUtils.lastDayOfMonth(year, month)
+            var everyDayIncome = billDao.findEveryDayIncome(firstDayOfMonth, lastDayOfMonth)
+            everyDayIncome?.forEach { dayIncome ->
+                var yymmdd = dayIncome.time!!.split("-")
+                if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {
+                    val calender: Calendar = getSchemeCalendar(
+                            year = yymmdd[0].toInt(),
+                            month = yymmdd[1].toInt(),
+                            day = yymmdd[2].toInt(),
+                            expenditure = dayIncome.expenditure.toString(),
+                            income = dayIncome.income.toString())
+                    //map["${dayIncome.time}-${dayIncome.income }${dayIncome.expenditure}"] = calender
+                    map[calender.toString()] = calender// Key需是calendar string
                 }
             }
             calendarLiveData.postValue(map)

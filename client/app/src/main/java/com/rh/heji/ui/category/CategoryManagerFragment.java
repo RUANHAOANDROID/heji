@@ -118,7 +118,7 @@ public class CategoryManagerFragment extends BaseFragment implements Observer<Li
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
 
-            Navigation.findNavController(view).popBackStack();
+            getMainActivity().getNavController().popBackStack();
         }
         return super.onOptionsItemSelected(item);
     }

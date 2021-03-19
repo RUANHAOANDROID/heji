@@ -27,8 +27,8 @@ class LoginFragment : BaseFragment() {
         view?.let { v ->
             binding = LoginFragmentBinding.bind(v);
             binding.tvRegister.setOnClickListener {
-                Navigation.findNavController(v).popBackStack()
-                Navigation.findNavController(v).navigate(R.id.nav_register)
+                mainActivity.navController.popBackStack()
+                mainActivity.navController.navigate(R.id.nav_register)
             }
             binding.btnLogin.setOnClickListener {
                 val username = binding.editUser.text.toString()
@@ -36,7 +36,7 @@ class LoginFragment : BaseFragment() {
                 viewModel.login(username, password)
                         .observe(this.viewLifecycleOwner, Observer { token ->
                             //Navigation.findNavController(view).navigate)
-                            Navigation.findNavController(view).popBackStack()
+                            mainActivity.navController.popBackStack()
                             mainActivity.startSyncDataService()
                             AppCache.instance.appViewModule.asyncData()
                             LogUtils.d(token)

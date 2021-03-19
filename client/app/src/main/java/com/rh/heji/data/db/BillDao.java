@@ -26,6 +26,7 @@ import static androidx.room.OnConflictStrategy.REPLACE;
  */
 @Dao
 public interface BillDao {
+    String REDELETE = "sync_status!=" + Constant.STATUS_DELETE;
 
     @Update(onConflict = REPLACE)
     int update(Bill bill);
@@ -81,7 +82,7 @@ public interface BillDao {
      * @param end
      * @return
      */
-    @Query("SELECT DISTINCT date(bill_time)   FROM bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
+    @Query("SELECT DISTINCT date(bill_time)   FROM bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND ("+REDELETE+") ORDER BY bill_time DESC ,bill_id DESC")
     List<String> findHaveBillDays(String start, String end);
 
     @Query("SELECT * FROM bill WHERE date(bill_time) =:time AND sync_status!=-1")
@@ -99,11 +100,15 @@ public interface BillDao {
     LiveData<Double> findTotalMoneyByTime(String start, String end, int sz);
 
     @TypeConverters(MoneyConverters.class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where date(bill_time)=:time")
+    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND date(bill_time)=:time")
     Income sumDayIncome(String time);
 
     @TypeConverters(MoneyConverters.class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where  ( date(bill_time) BETWEEN :start AND :end )")
+    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income ,date(bill_time) as time from bill  where sync_status!=-1 AND date(bill_time)BETWEEN:startTime and :endTime group by date(bill_time) ")
+    List<Income> findEveryDayIncome(String startTime, String endTime);
+
+    @TypeConverters(MoneyConverters.class)
+    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND ( date(bill_time) BETWEEN :start AND :end )")
     LiveData<Income> sumIncome(String start, String end);
 
     @Transaction

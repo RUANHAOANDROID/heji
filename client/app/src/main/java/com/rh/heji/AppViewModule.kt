@@ -38,8 +38,8 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     }
 
     fun billDelete(_id: String) {
+        AppDatabase.getInstance().billDao().preDelete(_id)
         launchIO({
-            AppDatabase.getInstance().billDao().preDelete(_id)
             billRepository.deleteBill(_id)
         })
 

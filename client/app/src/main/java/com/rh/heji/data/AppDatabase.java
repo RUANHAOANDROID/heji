@@ -56,7 +56,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context,
                             AppDatabase.class, dbName)
                             .fallbackToDestructiveMigration()//暴力丢弃强插升级
-                            .allowMainThreadQueries()
+                            //.allowMainThreadQueries()
                             //.addMigrations(MIGRATION_1_2)
                             .build();
                 }

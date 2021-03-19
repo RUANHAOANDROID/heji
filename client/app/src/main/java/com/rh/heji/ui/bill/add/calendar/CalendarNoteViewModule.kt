@@ -8,8 +8,6 @@ import com.haibin.calendarview.Calendar
 import com.rh.heji.App
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.BillType
-import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.data.db.Image
 import com.rh.heji.ui.base.BaseViewModel
@@ -37,25 +35,19 @@ class CalendarNoteViewModule : BaseViewModel() {
         launchIO({
             val haveBillDays = billDao.findHaveBillDays(MyTimeUtils.firstDayOfMonth(year, month), MyTimeUtils.lastDayOfMonth(year, month))
             var map = mutableMapOf<String, Calendar>()
-
             haveBillDays?.forEach { time ->
                 var calendar = java.util.Calendar.getInstance()
                 calendar.time = TimeUtils.string2Date(time, "yyyy-MM-dd")
                 var thisYear = calendar.get(java.util.Calendar.YEAR)
                 var thisMonth = calendar.get(java.util.Calendar.MONTH) + 1
                 var thisDay = calendar.get(java.util.Calendar.DAY_OF_MONTH)
-//                var expenditure = billDao.findIncomeByDay(time, BillType.EXPENDITURE.typeString())
-//                        ?: "0"
-//                var income = billDao.findIncomeByDay(time, BillType.INCOME.typeString()) ?: "0"
-                var income =billDao.sumDayIncome(time);
+                var income =billDao.sumDayIncome(time)
                 if (income.expenditure.toString() != "0" || income.income.toString() != "0") {
                     val calender: Calendar = getSchemeCalendar(thisYear, thisMonth, thisDay, income.expenditure.toString(), income.income.toString())
                     map[calender.toString()] = calender
                 }
             }
-            if (map.isNotEmpty()) {
-                calendarLiveData.postValue(map)
-            }
+            calendarLiveData.postValue(map)
             LogUtils.i(year, month, "$map")
         }, {})
     }

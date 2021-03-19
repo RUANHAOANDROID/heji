@@ -33,6 +33,8 @@ public interface BillDao {
     @Insert(onConflict = REPLACE)
     long install(Bill billTab);
 
+    @Query("update bill set sync_status = " + Constant.STATUS_DELETE + " where bill_id=:billId")
+    int preDelete(String billId);
 
     @Transaction
     @Query("update bill set img_count=:count where bill_id=:id")

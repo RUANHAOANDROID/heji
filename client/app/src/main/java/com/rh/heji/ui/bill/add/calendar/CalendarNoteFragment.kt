@@ -111,7 +111,12 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
     }
 
     private var monthObserver = Observer<Map<String, Calendar>> {
-        binding.calendarView.addSchemeDate(it)//更新日历视图
+        if (it.isEmpty()){
+            binding.calendarView.clearSchemeDate();
+        }else{
+            binding.calendarView.setSchemeDate(it)//更新日历视图
+        }
+
         notifyBillsList()
     }
 

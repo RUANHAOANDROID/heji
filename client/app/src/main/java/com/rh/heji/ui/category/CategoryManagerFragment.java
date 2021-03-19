@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.mongo.ObjectId;
@@ -74,14 +76,19 @@ public class CategoryManagerFragment extends BaseFragment implements Observer<Li
         binding.categoryRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new CategoryManagerAdapter() {
             @Override
-            protected void convert(@NotNull BaseViewHolder holder, Category label) {
-                super.convert(holder, label);
-                itemBinding.imgDelete.setVisibility(View.INVISIBLE);
-                itemBinding.imgDelete.setOnClickListener(v -> {
-                    alertDeleteTip(label);
-                });
+            protected void convert(@NotNull BaseViewHolder holder, Category category) {
+                super.convert(holder, category);
+                itemBinding.btnDelete.setOnClickListener(v -> categoryViewModule.deleteCategory(category).observe(CategoryManagerFragment.this, new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                        if (aBoolean) {
+                            adapter.notifyItemChanged(getItemPosition(category));
+                        }
+                    }
+                }));
             }
         };
+
         if (args.getIeType() == BillType.INCOME.type())
             categoryViewModule.getIncomeCategory().observe(getViewLifecycleOwner(), this);
         else

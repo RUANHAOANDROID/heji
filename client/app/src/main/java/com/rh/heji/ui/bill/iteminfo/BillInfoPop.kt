@@ -127,8 +127,6 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
             val (username) = getUser(instance.token)
             val createUser = bill.createUser
             if (createUser == null || bill.createUser == username) {
-                bill.synced = Constant.STATUS_DELETE
-                AppDatabase.getInstance().billDao().update(bill)
                 instance.appViewModule.billDelete(bill.getId())
                 popClickListener.let {
                     it.delete(bill.getId())

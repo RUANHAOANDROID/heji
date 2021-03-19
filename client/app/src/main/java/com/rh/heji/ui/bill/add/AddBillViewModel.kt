@@ -41,7 +41,7 @@ class AddBillViewModel : BaseViewModel() {
      * @param billType
      * @return
      */
-    fun save(billId: String?, money: String?, category: Category) :MutableLiveData<Bill>{
+    fun save(billId: String?, money: String?, category: Category): MutableLiveData<Bill> {
         val bill = bill
         val billTime = TimeUtils.string2Millis(time, "yyyy-MM-dd HH:mm:ss")//String time to millis
         LogUtils.d(TimeUtils.millis2String(billTime, "yyyy-MM-dd HH:mm:ss"))
@@ -76,12 +76,17 @@ class AddBillViewModel : BaseViewModel() {
         imgUrlsLive.postValue(imgUrls)
     }
 
-    val dealers: List<String>
+    private suspend fun getDealers(): MutableList<String> {
+        val users = AppDatabase.getInstance().dealerDao().findAll()
+        val dealerNames: MutableList<String> = ArrayList()
+        users.forEach(Consumer { dealer: Dealer -> dealerNames.add(dealer.userName) })
+        return dealerNames
+    }
+
+    val dealersLiveDatabase = MutableLiveData<MutableList<String>>()
         get() {
-            val users = AppDatabase.getInstance().dealerDao().findAll()
-            val dealerNames: MutableList<String> = ArrayList()
-            users.forEach(Consumer { dealer: Dealer -> dealerNames.add(dealer.userName) })
-            return dealerNames
+            launchIO({ field.postValue(getDealers()) }, {})
+            return field
         }
 
 }

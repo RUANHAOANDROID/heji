@@ -167,21 +167,24 @@ class AddBillFragment : BaseFragment() {
      * 选择经手人
      */
     private fun selectPerson() {
-        val names = billViewModel.dealers //经手人名单
-        if (names.size > 0) {
-            binding.tvUserLabel.text = "经手人:" + names[0] //默认经手人
-            billViewModel.bill.setDealer(names[0]) //设置默经手人
-        }
-        binding.tvUserLabel.setOnClickListener {
-            XPopup.Builder(context)
-                    .maxHeight(binding.keyboard.height)
-                    .asBottomList("请选择经手人", names.toTypedArray()
-                    ) { position: Int, text: String ->
-                        binding.tvUserLabel.text = "经手人:$text"
-                        billViewModel.bill.setDealer(text)
-                    }
-                    .show()
-        }
+        billViewModel.dealersLiveDatabase.observe(viewLifecycleOwner, Observer { names ->
+            //经手人名单
+            if (names.size > 0) {
+                binding.tvUserLabel.text = "经手人:" + names[0] //默认经手人
+                billViewModel.bill.setDealer(names[0]) //设置默经手人
+            }
+            binding.tvUserLabel.setOnClickListener {
+                XPopup.Builder(context)
+                        .maxHeight(binding.keyboard.height)
+                        .asBottomList("请选择经手人", names.toTypedArray()
+                        ) { position: Int, text: String ->
+                            binding.tvUserLabel.text = "经手人:$text"
+                            billViewModel.bill.setDealer(text)
+                        }
+                        .show()
+            }
+        })
+
     }
 
     override fun onStart() {

@@ -2,10 +2,6 @@ package com.rh.heji.ui.bill.adapter
 
 import com.chad.library.adapter.base.BaseNodeAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
-import com.rh.heji.ui.bill.adapter.DayBillsNode
-import com.rh.heji.ui.bill.adapter.DayBillsNodeProvider
-import com.rh.heji.ui.bill.adapter.DayIncomeNode
-import com.rh.heji.ui.bill.adapter.DayIncomeNodeProvider
 
 
 class NodeBillsAdapter() : BaseNodeAdapter() {

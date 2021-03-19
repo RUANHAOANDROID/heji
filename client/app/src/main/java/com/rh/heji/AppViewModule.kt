@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.TimeUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Category
+import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.Dealer
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
@@ -24,7 +25,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     private val categoryRepository = CategoryRepository()
 
     init {
-        launch({
+        launchIO({
             fakeData()
         }, {
             it.printStackTrace()
@@ -32,33 +33,36 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     }
 
     fun billPush(billEntity: BillEntity) {
-        launch({ billRepository.pushBill(billEntity) })
+        launchIO({ billRepository.pushBill(billEntity) })
 
     }
 
     fun billDelete(_id: String) {
-        launch({ billRepository.deleteBill(_id) })
+        launchIO({
+            AppDatabase.getInstance().billDao().preDelete(_id)
+            billRepository.deleteBill(_id)
+        })
 
     }
 
     fun billUpdate(billEntity: BillEntity) {
-        launch({ billRepository.updateBill(billEntity) })
+        launchIO({ billRepository.updateBill(billEntity) })
     }
 
     fun billPull() {
-        launch({ billRepository.pullBill() })
+        launchIO({ billRepository.pullBill() })
     }
 
     fun categoryPush(categoryEntity: CategoryEntity) {
-        launch({ categoryRepository.pushCategory(categoryEntity) })
+        launchIO({ categoryRepository.pushCategory(categoryEntity) })
     }
 
     fun categoryPull() {
-        launch({ categoryRepository.pullCategory() })
+        launchIO({ categoryRepository.pullCategory() })
     }
 
     fun asyncData() {
-        launch({
+        launchIO({
             var dataAsyncWork = DataSyncWork()
             //DataSyncWork 方法执行在IO线程
             dataAsyncWork.asyncBills()
@@ -81,6 +85,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
             e.printStackTrace()
         }
     }
+
     private fun launch(block: suspend () -> Unit, error: suspend (Throwable) -> Unit = { it.printStackTrace() }) = viewModelScope.launch() {
         try {
             block()
@@ -89,6 +94,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
             e.printStackTrace()
         }
     }
+
     fun fakeData() {
         val u1 = Dealer("司机")
         val u2 = Dealer("祝")

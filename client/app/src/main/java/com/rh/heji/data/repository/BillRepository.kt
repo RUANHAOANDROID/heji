@@ -31,7 +31,7 @@ class BillRepository {
             response.data.let {
                 var bill = billEntity.toBill()
                 bill.synced = Constant.STATUS_SYNCED
-                billDao.update(bill)
+                billDao.update(bill)//已上传
                 uploadImage(bill.id)
             }
         }
@@ -52,7 +52,7 @@ class BillRepository {
         response.data.let {
             val toBill = billEntity.toBill()
             toBill.synced = Constant.STATUS_SYNCED
-            billDao.update(toBill)
+            billDao.update(toBill) //已上传
         }
     }
 

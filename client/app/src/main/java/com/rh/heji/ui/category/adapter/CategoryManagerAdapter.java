@@ -35,11 +35,11 @@ public class CategoryManagerAdapter extends BaseQuickAdapter<Category, BaseViewH
         TextDrawable drawable = TextDrawable.builder().buildRound(category.getCategory().substring(0, 1), bgColor);
         itemBinding.roundImageView.setImageDrawable(drawable);
         itemBinding.tvName.setText(category.getCategory());
-        itemBinding.btnDelete.setOnClickListener(v -> {
-            category.setSynced(Constant.STATUS_DELETE);
-            AppDatabase.getInstance().categoryDao().update(category);
-            notifyItemChanged(getItemPosition(category));
-        });
+
+        addChildClickViewIds(itemBinding.btnDelete.getId());
+//        itemBinding.btnDelete.setOnClickListener(v -> {
+//            deleteCategory(category);
+//        });
         if (category.getCategory().equals("其他")){
             itemBinding.btnEdit.setVisibility(View.INVISIBLE);
             itemBinding.btnDelete.setVisibility(View.INVISIBLE);

@@ -8,6 +8,7 @@ import android.text.TextUtils
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
 import com.google.gson.GsonBuilder
+import com.rh.heji.data.AppDatabase
 import com.rh.heji.network.HeJiServer
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.JWTParse.getUser
@@ -27,14 +28,12 @@ import kotlin.coroutines.CoroutineContext
  */
 class AppCache {
     var context: Context? = null
-    lateinit var heJiServer: HeJiServer
-    val gson = GsonBuilder().create()
+    val heJiServer :HeJiServer by lazy {  ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer }
     lateinit var appViewModule: AppViewModule
-
-
+    val database:AppDatabase by lazy { AppDatabase.getInstance() }
+    val kvStorage = MMKV.defaultMMKV()
     fun onInit(app: Application) {
         context = app
-        heJiServer = ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer
         appViewModule = AppViewModule(app)
     }
 
@@ -117,5 +116,5 @@ class AppCache {
         }
     }
 
-    val kvStorage = MMKV.defaultMMKV()
+
 }

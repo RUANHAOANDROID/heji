@@ -9,6 +9,12 @@ import java.util.Calendar;
  * #
  */
 public class MyTimeUtils {
+    //millisecond
+    public static final String PATTERN_MILLISECOND = "yyy-MM-dd HH:mm:ss:SSS";
+    //second
+    public static final String PATTERN_SECOND = "yyy-MM-dd HH:mm:ss";
+    //day
+    public static final String PATTERN_DAY = "yyy-MM-dd";
 
     /**
      * 获取当前月第一天

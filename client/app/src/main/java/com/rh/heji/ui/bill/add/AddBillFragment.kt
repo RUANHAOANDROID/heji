@@ -156,9 +156,7 @@ class AddBillFragment : BaseFragment() {
     private fun setNoteTime(selectTime: String) {
         binding.tvBillTime.text = selectTime
         billViewModel.time = "$selectTime:00"
-        if (BuildConfig.DEBUG) {
-            LogUtils.d(selectTime)
-        }
+        LogUtils.d(selectTime)
     }
 
     /**
@@ -183,10 +181,6 @@ class AddBillFragment : BaseFragment() {
             }
         })
 
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     private fun keyboardListener() {
@@ -232,8 +226,8 @@ class AddBillFragment : BaseFragment() {
     private fun selectImage() {
         selectImagePou = context?.let { SelectImagePop(it, mainActivity) }
         binding.imgTicket.setOnClickListener {
-            if (selectImagePou == null) selectImagePou = SelectImagePop(context!!, mainActivity)
-            XPopup.Builder(context)
+            if (selectImagePou == null) selectImagePou = SelectImagePop(mainActivity, mainActivity)
+            XPopup.Builder(mainActivity)
                     .asCustom(selectImagePou)
                     .show()
             //selectImagePou.getLayoutParams().height = binding.keyboard.getRoot().getHeight();

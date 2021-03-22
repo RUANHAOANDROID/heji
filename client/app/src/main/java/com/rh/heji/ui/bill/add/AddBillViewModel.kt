@@ -43,8 +43,6 @@ class AddBillViewModel : BaseViewModel() {
      */
     fun save(billId: String?, money: String?, category: Category): MutableLiveData<Bill> {
         val bill = bill
-        val billTime = TimeUtils.string2Millis(time, "yyyy-MM-dd HH:mm:ss")//String time to millis
-        LogUtils.d(TimeUtils.millis2String(billTime, "yyyy-MM-dd HH:mm:ss"))
         bill.setId(billId!!)
         bill.setMoney(BigDecimal(money))
         bill.setCreateTime(System.currentTimeMillis())

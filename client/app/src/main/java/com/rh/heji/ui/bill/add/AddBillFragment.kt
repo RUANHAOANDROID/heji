@@ -155,11 +155,9 @@ class AddBillFragment : BaseFragment() {
      */
     private fun setNoteTime(selectTime: String) {
         binding.tvBillTime.text = selectTime
-        billViewModel.time = selectTime
+        billViewModel.time = "$selectTime:00"
         if (BuildConfig.DEBUG) {
             LogUtils.d(selectTime)
-            val billTime = TimeUtils.string2Millis(billViewModel.time, "yyyy-MM-dd HH:mm:ss")
-            LogUtils.d(TimeUtils.millis2String(billTime, "yyyy-MM-dd HH:mm:ss"))
         }
     }
 

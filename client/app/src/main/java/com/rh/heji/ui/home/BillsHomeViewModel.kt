@@ -7,9 +7,6 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.BillType
-import com.rh.heji.data.converters.MoneyConverters
-import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.query.Income
@@ -27,7 +24,7 @@ class BillsHomeViewModel : BaseViewModel() {
 
     private val billDao: BillDao = AppDatabase.getInstance().billDao()
     var billImagesLiveData: MediatorLiveData<List<Image>> = MediatorLiveData()
-    var billsMap = mutableListOf<BaseNode>()
+
     val billsNodLiveData = MediatorLiveData<MutableList<BaseNode>>()
 
     fun getBillsData() {
@@ -35,24 +32,20 @@ class BillsHomeViewModel : BaseViewModel() {
             val start = MyTimeUtils.firstDayOfMonth(year, month)
             val end = MyTimeUtils.lastDayOfMonth(year, month)
             LogUtils.d("time: ", "$start - $end")
-            val haveBillDays = billDao.findHaveBillDays(MyTimeUtils.firstDayOfMonth(year, month), MyTimeUtils.lastDayOfMonth(year, month))
+            var monthEveryDayIncome = billDao.findEveryDayIncome(start, end)
             var listDayNodes = mutableListOf<BaseNode>()
-            haveBillDays?.forEach { time ->
-                var calendar = Calendar.getInstance()
-                calendar.time = TimeUtils.string2Date(time, "yyyy-MM-dd")
-                var currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-                var dayIncome = billDao.sumDayIncome(time)
-                var list = billDao.findListByDay(time)
+            monthEveryDayIncome?.forEach { dayIncome ->
+                var yymmdd = dayIncome.time!!.split("-");
                 var incomeNode = DayIncome(
                         expected = dayIncome.expenditure.toString(),
                         income = dayIncome.income.toString(),
-                        year = calendar.get(Calendar.YEAR),
-                        month = calendar.get(Calendar.MONTH) + 1,
-                        monthDay = calendar.get(Calendar.DAY_OF_MONTH),
-                        weekday = calendar.get(Calendar.DAY_OF_WEEK) - 1
+                        year = yymmdd[0].toInt(),
+                        month = yymmdd[1].toInt(),
+                        monthDay = yymmdd[2].toInt(),
+                        weekday = TimeUtils.getChineseWeek(dayIncome.time,TimeUtils.getSafeDateFormat(MyTimeUtils.PATTERN_DAY))
                 )
                 val dayListNodes = mutableListOf<BaseNode>()
-                list.forEach {
+                billDao.findListByDay(dayIncome.time)?.forEach {
                     dayListNodes.add(DayBillsNode(it))
                 }
                 var dayItemNode = DayIncomeNode(dayListNodes, incomeNode)

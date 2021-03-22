@@ -76,13 +76,22 @@ public interface BillDao {
     LiveData<List<Bill>> findBillsFollowableByTime(String start, String end);
 
     /**
+     * 根据时间区间查
+     * @param start 起始时间
+     * @param end   结束时间
+     * @return 账单列表
+     */
+    @Query("SELECT * FROM bill WHERE (date(bill_time) BETWEEN :start AND :end ) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
+    List<Bill> findListBetweenTime(String start, String end);
+
+    /**
      * 查询有账单的日子,日子去重
      *
      * @param start
      * @param end
      * @return
      */
-    @Query("SELECT DISTINCT date(bill_time)   FROM bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND ("+REDELETE+") ORDER BY bill_time DESC ,bill_id DESC")
+    @Query("SELECT DISTINCT date(bill_time)   FROM bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (" + REDELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
     List<String> findHaveBillDays(String start, String end);
 
     @Query("SELECT * FROM bill WHERE date(bill_time) =:time AND sync_status!=-1")

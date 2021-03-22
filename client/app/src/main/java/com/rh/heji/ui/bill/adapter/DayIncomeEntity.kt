@@ -12,7 +12,7 @@ data class DayIncome(var expected: String,
                      var year: Int,
                      var month: Int,
                      var monthDay: Int,
-                     var weekday: Int)
+                     var weekday: Any)
 
 
 /**

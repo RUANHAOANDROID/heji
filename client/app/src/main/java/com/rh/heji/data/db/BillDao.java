@@ -113,7 +113,7 @@ public interface BillDao {
     Income sumDayIncome(String time);
 
     @TypeConverters(MoneyConverters.class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income ,date(bill_time) as time from bill  where sync_status!=-1 AND date(bill_time)BETWEEN:startTime and :endTime group by date(bill_time) ")
+    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income ,date(bill_time) as time from bill  where sync_status!=-1 AND date(bill_time)BETWEEN:startTime and :endTime group by date(bill_time) ORDER BY bill_time DESC ,bill_id DESC")
     List<Income> findEveryDayIncome(String startTime, String endTime);
 
     @TypeConverters(MoneyConverters.class)

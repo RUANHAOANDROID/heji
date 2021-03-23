@@ -6,13 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppCache
-import com.rh.heji.utlis.http.basic.BaseCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.RequestBody
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.Serializable
 
 class RegisterViewModel : ViewModel() {

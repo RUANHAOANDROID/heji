@@ -13,8 +13,8 @@ class ReportViewModel : ViewModel() {
     init {
         mText.value = "This is gallery fragment"
     }
-    public val thisYear: Int
-        public get() = Calendar.getInstance()[Calendar.YEAR]
-    public val thisMonth: Int
-        public get() = Calendar.getInstance()[Calendar.MONTH] + 1
+     val thisYear: Int
+         get() = Calendar.getInstance()[Calendar.YEAR]
+     val thisMonth: Int
+         get() = Calendar.getInstance()[Calendar.MONTH] + 1
 }

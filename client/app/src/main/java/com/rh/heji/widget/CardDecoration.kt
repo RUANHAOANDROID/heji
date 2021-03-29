@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.util.TypedValue
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.lxj.xpopup.util.XPopupUtils
@@ -19,9 +20,9 @@ class CardDecoration(val padding: Int = 8) : ItemDecoration() {
             val params = child.layoutParams as RecyclerView.LayoutParams
             val position = params.viewAdapterPosition
             if (parent.adapter!!.getItemViewType(position) == TYPE_TITLE) {
-                child.background = XPopupUtils.createDrawable(parent.resources.getColor(R.color._xpopup_light_color), 15f, 15f, 0f, 0f)
+                child.background = XPopupUtils.createDrawable(ContextCompat.getColor(parent.context,R.color._xpopup_light_color), 15f, 15f, 0f, 0f)
             } else if (isLastInItemList(parent, position) || isLastItem(parent, position)) {
-                child.background = XPopupUtils.createDrawable(parent.resources.getColor(R.color._xpopup_light_color), 0f, 0f, 15f, 15f)
+                child.background = XPopupUtils.createDrawable(ContextCompat.getColor(parent.context,R.color._xpopup_light_color), 0f, 0f, 15f, 15f)
             }
         }
     }

@@ -26,7 +26,7 @@ open class BaseViewModel : ViewModel() {
             e.printStackTrace()
         }
     }
-
+    @kotlinx.coroutines.ObsoleteCoroutinesApi
     fun launchNewThread(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) = viewModelScope.launch(newSingleThreadContext("rh_newThread")) {
         try {
             block()

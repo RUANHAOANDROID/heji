@@ -10,7 +10,6 @@ import android.view.View
 import android.webkit.*
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
@@ -32,8 +31,10 @@ class ETCFragment : BaseFragment() {
         etcViewModel = getViewModel(ETCViewModel::class.java)
     }
 
-    var onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
+    override fun onResume() {
+        super.onResume()
+        //拦截回退直接退出  object : Class 内部类
+        registerBackPressed {
             if (binding.etcWeb.canGoBack()) {
                 binding.etcWeb.goBack()
             } else {
@@ -42,14 +43,8 @@ class ETCFragment : BaseFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        //拦截回退直接退出  object : Class 内部类
-        mainActivity.onBackPressedDispatcher.addCallback(this, onBackPressedCallback) //指定owner 仅在该Fragment生命周期下有效
-    }
-
-    override fun initView(view: View) {
-        binding = FragmentEtcBinding.bind(view)
+    override fun initView(rootView: View) {
+        binding = FragmentEtcBinding.bind(rootView)
         val webSettings = binding.etcWeb.settings
         webSettings.javaScriptEnabled = true
         webSettings.cacheMode = WebSettings.LOAD_DEFAULT

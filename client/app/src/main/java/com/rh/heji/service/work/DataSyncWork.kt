@@ -143,7 +143,7 @@ class DataSyncWork {
 
     private suspend fun billsPull() {
         val pullBillsResponse = network.billPull("0", "0")
-        pullBillsResponse?.let {
+        pullBillsResponse.let {
             var data = it.data
             data?.let { serverBills ->
                 if (serverBills.isNotEmpty()) {
@@ -156,7 +156,6 @@ class DataSyncWork {
                         var imagesId = serverBill.images//云图片
                         if (null != imagesId && imagesId.size > 0) {//有图片
                             var response = network.billPullImages(serverBill.id)
-                            if (response != null && response.code == 0 && response.date.isNotEmpty()) {
                                 response.date?.forEach { entity ->
                                     var image = Image()
                                     image.id = entity._id
@@ -169,8 +168,6 @@ class DataSyncWork {
                                     LogUtils.i("账单图片信息已保存 $image")
                                 }
                                 billDao.updateImageCount(response.date.size, serverBill.id)
-                            }
-
                         }
                     }
                 }

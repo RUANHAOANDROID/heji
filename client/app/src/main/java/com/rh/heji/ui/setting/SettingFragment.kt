@@ -16,10 +16,10 @@ class SettingFragment : BaseFragment() {
         settingViewModel = getViewModel(SettingViewModel::class.java)
     }
 
-    override fun initView(view: View) {
-        binding = FragmentSettingBinding.bind(view)
-        binding.inputETC.setOnClickListener { Navigation.findNavController(view).navigate(R.id.nav_input_etc) }
-        binding.exportQianJi.setOnClickListener { Navigation.findNavController(view).navigate(R.id.nav_export) }
+    override fun initView(rootView: View) {
+        binding = FragmentSettingBinding.bind(rootView)
+        binding.inputETC.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_input_etc) }
+        binding.exportQianJi.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_export) }
     }
 
     override fun layoutId(): Int {

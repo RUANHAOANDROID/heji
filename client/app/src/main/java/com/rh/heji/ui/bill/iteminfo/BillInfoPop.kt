@@ -49,7 +49,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
     fun setBillImages(images: List<Image>) {
         if (images.isEmpty()) {
             if (this::imageAdapter.isInitialized) {//判断是否初始化 ::表示作用域
-                imageAdapter?.let {
+                imageAdapter.let {
                     it.setNewInstance(ArrayList())
                     it.notifyDataSetChanged()
                 }
@@ -80,9 +80,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
             deleteTip()
         }
         binding.tvUpdate.setOnClickListener { v: View? ->
-            popClickListener?.let {
-                it.update(bill.id)
-            }
+            popClickListener.update(bill.id)
         }
         //设置圆角背景
         popupImplView.background = XPopupUtils.createDrawable(resources.getColor(R.color._xpopup_light_color, null),

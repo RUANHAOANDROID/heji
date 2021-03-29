@@ -16,12 +16,10 @@ import com.rh.heji.databinding.RegisterFragmentBinding
 class RegisterFragment : BaseFragment() {
 
 
-    private lateinit var viewModel: RegisterViewModel
-    private lateinit var binding: RegisterFragmentBinding
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
+    private val viewModel: RegisterViewModel by lazy {
+        ViewModelProvider(this).get(RegisterViewModel::class.java)
     }
+    private lateinit var binding: RegisterFragmentBinding
 
     override fun layoutId(): Int {
         return R.layout.register_fragment;
@@ -38,11 +36,11 @@ class RegisterFragment : BaseFragment() {
             }
             val code = binding.editInviteCode.text.toString()
             val tel = binding.editTEL.text.toString()
-            val username =binding.editUserName.text.toString()
-            viewModel.register(username,tel, code, password1).observe(viewLifecycleOwner, Observer {
-                var mBundle  = Bundle()
-                mBundle.putSerializable("user",it)
-                Navigation.findNavController(rootView).navigate(R.id.nav_login,mBundle)
+            val username = binding.editUserName.text.toString()
+            viewModel.register(username, tel, code, password1).observe(viewLifecycleOwner, Observer {
+                var mBundle = Bundle()
+                mBundle.putSerializable("user", it)
+                Navigation.findNavController(rootView).navigate(R.id.nav_login, mBundle)
             })
         }
     }

@@ -15,9 +15,9 @@ class DayIncomeNodeProvider : BaseNodeProvider() {
     override val layoutId: Int
         get() = R.layout.item_bill_dayincom
 
-    override fun convert(helper: BaseViewHolder, node: BaseNode) {
+    override fun convert(helper: BaseViewHolder, item: BaseNode) {
         // 数据类型需要自己强转
-        var entity: DayIncomeNode = node as DayIncomeNode
+        var entity: DayIncomeNode = item as DayIncomeNode
         helper.setText(R.id.text1, "${entity.dayIncome.month}月${entity.dayIncome.monthDay}日")
 
         if (entity.dayIncome.weekday is String) {
@@ -38,8 +38,8 @@ class DayBillsNodeProvider : BaseNodeProvider() {
     override val layoutId: Int
         get() = R.layout.item_bill_daylist
 
-    override fun convert(helper: BaseViewHolder, node: BaseNode) {
-        var entity: DayBillsNode = node as DayBillsNode
+    override fun convert(helper: BaseViewHolder, item: BaseNode) {
+        var entity: DayBillsNode = item as DayBillsNode
         var bill = entity.bill
         if (entity.bill.type == -1) {
 

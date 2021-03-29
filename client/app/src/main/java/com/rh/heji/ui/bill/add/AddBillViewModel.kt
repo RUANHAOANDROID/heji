@@ -28,7 +28,6 @@ class AddBillViewModel : BaseViewModel() {
     val bill = Bill()
     var time: String? = null
         get() {
-            field
             if (TextUtils.isEmpty(field)) field = TimeUtils.getNowString()
             return field
         }
@@ -59,7 +58,7 @@ class AddBillViewModel : BaseViewModel() {
         launchIO({
             AppDatabase.getInstance().imageDao().install(images)
             val count = AppDatabase.getInstance().billDao().install(bill)
-            saveLiveData?.postValue(bill)
+            saveLiveData.postValue(bill)
             if (count > 0) {
                 ToastUtils.showShort("已保存: ${bill.getCategory() + money}  ")
             }

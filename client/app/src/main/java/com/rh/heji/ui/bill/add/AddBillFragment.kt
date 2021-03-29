@@ -72,8 +72,8 @@ class AddBillFragment : BaseFragment() {
         return rootView
     }
 
-    override fun initView(view: View) {
-        binding = IncomeFragmentBinding.bind(view)
+    override fun initView(rootView: View) {
+        binding = IncomeFragmentBinding.bind(rootView)
         selectImage()
         selectPerson()
         selectYearAndDay()
@@ -281,9 +281,7 @@ class AddBillFragment : BaseFragment() {
 
     override fun onPause() {
         super.onPause()
-        if (binding != null && billViewModel != null) {
-            billViewModel.keyBoardStack = binding.keyboard.stack
-        }
+        billViewModel.keyBoardStack = binding.keyboard.stack
     }
 
     private fun setImages(selected: List<String>) {

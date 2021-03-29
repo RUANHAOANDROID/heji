@@ -22,14 +22,14 @@ class ExportViewModel : ViewModel() {
 
     }
 
-    fun exportExcel(fileName: String): MediatorLiveData<String> {
+    fun exportExcel( fileName: String): MediatorLiveData<String> {
         viewModelScope.launch(Dispatchers.IO) {
             var response = AppCache.instance.heJiServer.exportBills("0", "0").execute()
             if (response.isSuccessful && response.code() == 200) {
                 val filesDir = App.getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
                 var attachment = response.headers()["Content-Disposition"]
-                var fileName = attachment?.substringAfterLast("attachment; filename=", System.currentTimeMillis().toString() + ".xlsx")
-                val excelFile = File(filesDir, fileName)
+                var subFileName = attachment?.substringAfterLast("attachment; filename=", System.currentTimeMillis().toString() + ".xlsx")
+                val excelFile = File(filesDir, subFileName)
                 try {
                     val sink = excelFile.sink().buffer()
                     response.body()?.source()?.let { sink.writeAll(it) }

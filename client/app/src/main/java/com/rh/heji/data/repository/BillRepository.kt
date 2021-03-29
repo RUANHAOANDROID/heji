@@ -14,6 +14,7 @@ import com.rh.heji.network.response.ImageEntity
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import top.zibin.luban.Luban
 import java.io.File
 
@@ -85,20 +86,20 @@ class BillRepository {
                     }
                 }
                 val fileName = imgFile.name
-                val requestBody = RequestBody.create("image/png".toMediaTypeOrNull(), imgFile)
+                val requestBody = imgFile.asRequestBody("image/png".toMediaTypeOrNull())
                 val part: MultipartBody.Part = MultipartBody.Part.createFormData("file", fileName, requestBody)
                 val time = imgFile.lastModified()
                 val objectId = image.id
                 val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part, objectId, bill_id, time)
-                response.data.let { imgUUID ->
+                response.data.let {
                     image.onlinePath = response.data._id
                     image.md5 = response.data.md5
                     image.id = response.data._id
                     image.synced = Constant.STATUS_SYNCED
-                    LogUtils.d("账单图片上传成功：${image.toString()}")
+                    LogUtils.d("账单图片上传成功：$image")
                     var count = AppDatabase.getInstance().imageDao().updateOnlinePath(image.id, image.onlinePath, image.synced)
                     if (count > 0)
-                        LogUtils.d("图片更新成功：${image.toString()}")
+                        LogUtils.d("图片更新成功：$image")
                 }
 
             }

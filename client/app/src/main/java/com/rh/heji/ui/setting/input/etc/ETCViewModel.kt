@@ -18,6 +18,7 @@ import com.rh.heji.ui.setting.input.etc.HBETCEntity.DataBean.OrderArrBean
 import com.rh.heji.utlis.http.basic.OkHttpConfig
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -42,7 +43,7 @@ class ETCViewModel : BaseViewModel() {
      * @return 类别名称
      */
     private val categoryName: String
-        private get() {
+         get() {
             val categories = AppDatabase.getInstance().categoryDao().queryByCategoryName("过路费")
             val category: Category
             if (categories.size <= 0) {
@@ -108,8 +109,7 @@ class ETCViewModel : BaseViewModel() {
     fun requestHBGSETCList(etcID: String, month: String, carID: String): LiveData<String> {
         val requestURL = "http://www.hbgsetc.com/index.php?/newhome/getMonthBillData"
         //www - url 解码方式
-        val requestBody = RequestBody.create("application/x-www-form-urlencoded".toMediaTypeOrNull(),
-                "cardNo=$etcID&month=$month&vehplate=$carID&flag=0")
+        val requestBody = "cardNo=$etcID&month=$month&vehplate=$carID&flag=0".toRequestBody("application/x-www-form-urlencoded".toMediaTypeOrNull())
         //伪装成浏览器请求
         val request: Request = Request.Builder()
                 .url(requestURL)
@@ -122,33 +122,31 @@ class ETCViewModel : BaseViewModel() {
         OkHttpConfig.getClientBuilder().build().newCall(request).enqueue(object : Callback {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                if (null != response && response.isSuccessful) {
-                    if (response.code == 200) {
-                        if (response.body != null) {
-                            val strBody = response.body!!.string()
-                            try {
-                                val jsonObject = JSONObject(strBody)
-                                val status = jsonObject.getString("status")
-                                if (status == "error") {
-                                    val error = jsonObject.getString("msg")
-                                    ToastUtils.showLong(error)
-                                } else if (status == "OK") {
-                                    val gson = Gson()
-                                    val hbetcEntity = gson.fromJson(strBody, HBETCEntity::class.java)
-                                    if (hbetcEntity != null && hbetcEntity.data != null && hbetcEntity.data.orderArr.size > 0) {
-                                        val data = hbetcEntity.data.orderArr
-                                        data.forEach(Consumer { info: OrderArrBean -> saveToBillDB(info) })
-                                        etcLive.postValue("导入完成")
-                                    } else {
-                                        ToastUtils.showShort("导入失败")
-                                        etcLive.postValue("导入失败")
-                                    }
+                if (response.code == 200) {
+                    if (response.body != null) {
+                        val strBody = response.body!!.string()
+                        try {
+                            val jsonObject = JSONObject(strBody)
+                            val status = jsonObject.getString("status")
+                            if (status == "error") {
+                                val error = jsonObject.getString("msg")
+                                ToastUtils.showLong(error)
+                            } else if (status == "OK") {
+                                val gson = Gson()
+                                val hbetcEntity = gson.fromJson(strBody, HBETCEntity::class.java)
+                                if (hbetcEntity != null && hbetcEntity.data != null && hbetcEntity.data.orderArr.size > 0) {
+                                    val data = hbetcEntity.data.orderArr
+                                    data.forEach(Consumer { info: OrderArrBean -> saveToBillDB(info) })
+                                    etcLive.postValue("导入完成")
+                                } else {
+                                    ToastUtils.showShort("导入失败")
+                                    etcLive.postValue("导入失败")
                                 }
-                            } catch (e: JSONException) {
-                                e.printStackTrace()
-                                ToastUtils.showShort("解析失败")
-                                etcLive.postValue("解析错误")
                             }
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                            ToastUtils.showShort("解析失败")
+                            etcLive.postValue("解析错误")
                         }
                     }
                 } else if (response.code == 404) {
@@ -178,8 +176,7 @@ class ETCViewModel : BaseViewModel() {
         val url = "http://hubeiweixin.u-road.com:80/HuBeiCityAPIServer/index.php/huibeicityserver/loadmonthinfo"
         LogUtils.d("尝试URL2", url)
         //www - url 解码方式
-        val requestBody = RequestBody.create("application/x-www-form-urlencoded".toMediaTypeOrNull(),
-                "caidno=$etcID&month=$month&vehplate=$carID")
+        val requestBody = "caidno=$etcID&month=$month&vehplate=$carID".toRequestBody("application/x-www-form-urlencoded".toMediaTypeOrNull())
         //伪装成浏览器请求
         val request: Request = Request.Builder()
                 .url(url)
@@ -192,24 +189,22 @@ class ETCViewModel : BaseViewModel() {
         OkHttpConfig.getClientBuilder().build().newCall(request).enqueue(object : Callback {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                if (null != response && response.isSuccessful) {
-                    if (response.code == 200) {
-                        if (response.body != null) {
-                            val strBody = response.body!!.string()
-                            try {
-                                val jsonObject = JSONObject(strBody)
-                                val status = jsonObject.getString("status")
-                                if (status == "error") {
-                                    val error = jsonObject.getString("msg")
-                                    ToastUtils.showLong(error)
-                                } else {
-                                    saveToDB(strBody)
-                                }
-                            } catch (e: JSONException) {
-                                e.printStackTrace()
-                                ToastUtils.showShort("解析失败")
-                                etcLive.postValue("解析错误")
+                if (response.code == 200) {
+                    if (response.body != null) {
+                        val strBody = response.body!!.string()
+                        try {
+                            val jsonObject = JSONObject(strBody)
+                            val status = jsonObject.getString("status")
+                            if (status == "error") {
+                                val error = jsonObject.getString("msg")
+                                ToastUtils.showLong(error)
+                            } else {
+                                saveToDB(strBody)
                             }
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                            ToastUtils.showShort("解析失败")
+                            etcLive.postValue("解析错误")
                         }
                     }
                 }

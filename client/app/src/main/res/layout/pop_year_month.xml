@@ -109,22 +109,6 @@
             app:layout_constraintTop_toBottomOf="@+id/y5" />
 
         <TextView
-            android:id="@+id/y11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:padding="8dp"
-            android:tag="11"
-            android:text="十一月"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/y8"
-            app:layout_constraintStart_toStartOf="@+id/y8"
-            app:layout_constraintTop_toBottomOf="@+id/y8" />
-
-        <TextView
             android:id="@+id/y4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -197,6 +181,22 @@
             app:layout_constraintTop_toTopOf="@+id/y11" />
 
         <TextView
+            android:id="@+id/y11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:tag="11"
+            android:text="十一月"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@id/btnYearAll"
+            app:layout_constraintEnd_toEndOf="@+id/y8"
+            app:layout_constraintStart_toStartOf="@+id/y8"
+            app:layout_constraintTop_toBottomOf="@+id/y8" />
+
+        <TextView
             android:id="@+id/y12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -209,5 +209,19 @@
             app:layout_constraintEnd_toEndOf="@+id/y9"
             app:layout_constraintStart_toStartOf="@+id/y9"
             app:layout_constraintTop_toTopOf="@+id/y11" />
+
+        <Button
+            android:id="@+id/btnYearAll"
+            style="@style/Button_Selected_BackgroundWhite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            android:text="全年"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/y12"
+            app:layout_constraintStart_toStartOf="@+id/y10" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

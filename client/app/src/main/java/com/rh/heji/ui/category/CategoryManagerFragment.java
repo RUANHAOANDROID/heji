@@ -102,7 +102,7 @@ public class CategoryManagerFragment extends BaseFragment implements Observer<Li
         super.setUpToolBar();
         getToolBar().setTitle("分类管理");
         getToolBar().setNavigationIcon(blackDrawable());
-        getToolBar().setNavigationOnClickListener(v -> Navigation.findNavController(view).navigateUp());
+        getToolBar().setNavigationOnClickListener(v -> Navigation.findNavController(rootView).navigateUp());
     }
 
     @Override

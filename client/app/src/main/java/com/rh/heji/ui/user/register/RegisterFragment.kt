@@ -27,8 +27,8 @@ class RegisterFragment : BaseFragment() {
         return R.layout.register_fragment;
     }
 
-    override fun initView(view: View?) {
-        binding = RegisterFragmentBinding.bind(view!!)
+    override fun initView(rootView: View) {
+        binding = RegisterFragmentBinding.bind(rootView)
         binding.btnRegister.setOnClickListener {
             val password1 = binding.editPassword.text.toString()
             val password2 = binding.editPassword2.text.toString()
@@ -42,7 +42,7 @@ class RegisterFragment : BaseFragment() {
             viewModel.register(username,tel, code, password1).observe(viewLifecycleOwner, Observer {
                 var mBundle  = Bundle()
                 mBundle.putSerializable("user",it)
-                Navigation.findNavController(view).navigate(R.id.nav_login,mBundle)
+                Navigation.findNavController(rootView).navigate(R.id.nav_login,mBundle)
             })
         }
     }

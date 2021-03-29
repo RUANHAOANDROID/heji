@@ -1,53 +1,67 @@
-package com.rh.heji.ui.report;
+package com.rh.heji.ui.report
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
-import com.rh.heji.R;
-import com.rh.heji.ui.base.BaseFragment;
+import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.blankj.utilcode.util.TimeUtils
+import com.lxj.xpopup.XPopup
+import com.rh.heji.R
+import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.bill.YearSelectPop
+import com.rh.heji.ui.home.BillsHomeFragment
+import java.util.function.Consumer
 
 /**
  * 报告统计页面
  */
-public class ReportFragment extends BaseFragment {
-
-    private ReportViewModel reportViewModel;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        reportViewModel = getViewModel(ReportViewModel.class);
+class ReportFragment : BaseFragment() {
+    private  val toolBarCenterTitle: TextView by lazy {
+        toolBar.findViewById(R.id.toolbar_center_title)
+    }
+    private val reportViewModel: ReportViewModel by lazy {
+        getViewModel(ReportViewModel::class.java)
     }
 
-    @Override
-    protected int layoutId() {
-        return R.layout.fragment_gallery;
+    override fun layoutId(): Int {
+        return R.layout.fragment_gallery
     }
 
-    @Override
-    protected void setUpToolBar() {
-        super.setUpToolBar();
-        showBlack();
-        getToolBar().setTitle("统计");
+    override fun setUpToolBar() {
+        super.setUpToolBar()
+        showBlack()
+        toolBar.title = "统计"
+
     }
 
-    @Override
-    protected void initView(View view) {
-        reportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-
-            }
-        });
+    override fun initView(view: View) {
+        reportViewModel.text.observe(viewLifecycleOwner, { })
+    }
+    /**
+     * 该Menu属于全局所以在这里控制
+     */
+    fun addYearMonthView() {
+        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32), null)
+        toolBarCenterTitle.compoundDrawablePadding = 8
+        val thisYear = reportViewModel.thisYear
+        val thisMonth = reportViewModel.thisMonth
+        val yearMonth = "$thisYear.$thisMonth"
+        toolBarCenterTitle.text = yearMonth
+        toolBarCenterTitle.setOnClickListener(View.OnClickListener { v: View? ->
+            XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
+                    .hasShadowBg(true)
+                    .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                    .asCustom(YearSelectPop(mainActivity) { year: Int, month: Int ->
+                        toolBarCenterTitle.text = "$year.$month"
+                        val fragments = mainActivity.fragments
+                        fragments.forEach(Consumer { fragment: Fragment? ->
+                            if (fragment is BillsHomeFragment) {
+                                fragment.notifyData(year, month)
+                            }
+                        })
+                    }) /*.enableDrag(false)*/
+                    .show()
+        })
     }
 }

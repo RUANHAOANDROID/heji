@@ -31,7 +31,7 @@ class SettingFragment : BaseFragment() {
         toolBar.title = "设置"
         toolBar.navigationIcon = blackDrawable()
         toolBar.setNavigationOnClickListener {
-            Navigation.findNavController(view).navigateUp()
+            Navigation.findNavController(rootView).navigateUp()
         }
     }
 

@@ -1,73 +1,59 @@
-package com.rh.heji.ui.base;
+package com.rh.heji.ui.base
 
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-
-import com.blankj.utilcode.util.LogUtils;
-import com.rh.heji.MainActivity;
-import com.rh.heji.R;
-import com.rh.heji.utlis.Logger;
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import com.rh.heji.MainActivity
+import com.rh.heji.R
+import com.rh.heji.utlis.Logger
 
 /**
  * Date: 2020/8/28
  * Author: 锅得铁
  * #
  */
-public abstract class BaseFragment extends Fragment {
-    public static final String TAG = "BaseFragment";
-    protected View view;
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        if (view != null) {
-            ViewGroup viewGroup = (ViewGroup) view.getParent();
-            if (viewGroup != null)
-                viewGroup.removeView(view);
+abstract class BaseFragment : Fragment() {
+    lateinit var rootView: View
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+        if (!this::rootView.isInitialized) {
+            val viewGroup = rootView.parent as ViewGroup
+            viewGroup?.removeView(rootView)
         } else {
-            view = inflater.inflate(layoutId(), container, false);
-            initView(view);
+            rootView = inflater.inflate(layoutId(), container, false)
+            initView(rootView)
         }
-        setHasOptionsMenu(true);
-        return view;
+        setHasOptionsMenu(true)
+        return rootView
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    override fun onStart() {
+        super.onStart()
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setUpToolBar();
+    override fun onResume() {
+        super.onResume()
+        setUpToolBar()
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     /**
@@ -75,46 +61,47 @@ public abstract class BaseFragment extends Fragment {
      *
      * @return layoutID
      */
-    protected abstract int layoutId();
+    protected abstract fun layoutId(): Int
 
     /**
      * 初始化View
      *
      * @param view
      */
-    protected abstract void initView(View view);
-
-    protected void setUpToolBar() {
+    protected abstract fun initView(view: View)
+    protected open fun setUpToolBar() {
         try {
-            getToolBar().getMenu().clear();
-        } catch (Exception e) {
-           Logger.i(e.getMessage());
+            toolBar.menu.clear()
+        } catch (e: Exception) {
+            Logger.i(e.message)
         }
     }
 
-    protected void showBlack() {
-        getToolBar().setNavigationIcon(blackDrawable());
-        getToolBar().setNavigationOnClickListener(v -> Navigation.findNavController(view).navigateUp());
+    protected fun showBlack() {
+        toolBar.navigationIcon = blackDrawable()
+        toolBar.setNavigationOnClickListener { v: View? -> Navigation.findNavController(rootView).navigateUp() }
     }
 
-    public androidx.appcompat.widget.Toolbar getToolBar() {
-        return view.findViewById(R.id.toolbar);
+    val toolBar: Toolbar
+        get() = rootView.findViewById(R.id.toolbar)
+
+    fun <T : ViewModel?> getViewModel(clazz: Class<T>): T {
+        return ViewModelProvider(this).get(clazz)
     }
 
-    public <T extends ViewModel> T getViewModel(Class<T> clazz) {
-        return new ViewModelProvider(this).get(clazz);
+    fun <T : ViewModel?> getActivityViewModel(clazz: Class<T>): T {
+        return ViewModelProvider(mainActivity).get(clazz)
     }
 
-    public <T extends ViewModel> T getActivityViewModel(Class<T> clazz) {
-        return new ViewModelProvider(getActivity()).get(clazz);
+    val mainActivity: MainActivity
+        get() = activity as MainActivity
+
+    fun blackDrawable(): Drawable {
+        val ico = androidx.appcompat.R.drawable.abc_ic_ab_back_material
+        return resources.getDrawable(ico, mainActivity.theme)
     }
 
-    public MainActivity getMainActivity() {
-        return (MainActivity) getActivity();
-    }
-
-    public Drawable blackDrawable() {
-        int ico = androidx.appcompat.R.drawable.abc_ic_ab_back_material;
-        return getResources().getDrawable(ico, getMainActivity().getTheme());
+    companion object {
+        const val TAG = "BaseFragment"
     }
 }

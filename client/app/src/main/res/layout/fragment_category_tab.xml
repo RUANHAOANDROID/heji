@@ -28,7 +28,7 @@
             android:layout_gravity="center|left"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="16dp"
-            app:srcCompat="@drawable/ic_dialog_close_dark">
+            app:srcCompat="@drawable/ic_baseline_close_24">
         </ImageButton>
     </FrameLayout>
 

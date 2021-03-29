@@ -73,6 +73,7 @@ class ExportFragment : BaseFragment() {
             // the system file picker before your app creates the document.
             putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
         }
+
         startActivityForResult(intent, CREATE_FILE_EXCEL)
     }
 

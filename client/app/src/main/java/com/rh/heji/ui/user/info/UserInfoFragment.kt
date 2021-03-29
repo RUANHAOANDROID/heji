@@ -14,8 +14,8 @@ class UserInfoFragment : BaseFragment() {
         return R.layout.fragment_user_info
     }
 
-    override fun initView(view: View) {
-        binding = FragmentUserInfoBinding.bind(view)
+    override fun initView(rootView: View) {
+        binding = FragmentUserInfoBinding.bind(rootView)
     }
 
     override fun setUpToolBar() {

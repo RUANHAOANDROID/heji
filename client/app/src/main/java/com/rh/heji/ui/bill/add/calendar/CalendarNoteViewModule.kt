@@ -27,10 +27,10 @@ class CalendarNoteViewModule : BaseViewModel() {
     var year: Int = thisYear
     var month: Int = thisMonth
     private val thisYear: Int
-        private get() = java.util.Calendar.getInstance()[java.util.Calendar.YEAR]
+         get() = java.util.Calendar.getInstance()[java.util.Calendar.YEAR]
 
     private val thisMonth: Int
-        private get() = java.util.Calendar.getInstance()[java.util.Calendar.MONTH] + 1
+         get() = java.util.Calendar.getInstance()[java.util.Calendar.MONTH] + 1
 
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({

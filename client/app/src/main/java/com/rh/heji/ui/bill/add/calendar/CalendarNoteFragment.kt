@@ -23,7 +23,6 @@ import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.ui.bill.iteminfo.BillInfoPop
 import com.rh.heji.ui.bill.iteminfo.BillInfoPop.PopClickListener
 import com.rh.heji.widget.CardDecoration
-import kotlinx.android.synthetic.main.fragment_calendar_note.*
 
 class CalendarNoteFragment : BaseFragment(), PopClickListener {
     lateinit var binding: FragmentCalendarNoteBinding
@@ -42,10 +41,10 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         addYearMonthView()
     }
 
-    override fun initView(view: View) {
-        binding = FragmentCalendarNoteBinding.bind(view)
+    override fun initView(rootView: View) {
+        binding = FragmentCalendarNoteBinding.bind(rootView)
 
-        initFab(view)
+        initFab(rootView)
         initCalendarView()
         initAdapter();
     }

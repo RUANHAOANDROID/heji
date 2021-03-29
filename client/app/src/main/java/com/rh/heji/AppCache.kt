@@ -43,7 +43,7 @@ class AppCache {
      *
      * @param currentPhotoPath
      */
-    fun galleryAddPic(currentPhotoPath: String?) {
+    fun galleryAddPic(currentPhotoPath: String) {
         val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
         val f = File(currentPhotoPath)
         val contentUri = Uri.fromFile(f)

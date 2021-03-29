@@ -24,35 +24,30 @@ class LoginFragment : BaseFragment() {
 
     override fun initView(rootView: View) {
         toolBar.title = getString(R.string.login)
-        view?.let { v ->
-            binding = LoginFragmentBinding.bind(v);
-            binding.tvRegister.setOnClickListener {
-                mainActivity.navController.popBackStack()
-                mainActivity.navController.navigate(R.id.nav_register)
-            }
-            binding.btnLogin.setOnClickListener {
-                val username = binding.editUser.text.toString()
-                val password = binding.editPassword.text.toString()
-                viewModel.login(username, password)
-                        .observe(this.viewLifecycleOwner, Observer { token ->
-                            //Navigation.findNavController(view).navigate)
-                            mainActivity.navController.popBackStack()
-                            mainActivity.startSyncDataService()
-                            AppCache.instance.appViewModule.asyncData()
-                            LogUtils.d(token)
-                        })
-            }
+        binding = LoginFragmentBinding.bind(rootView);
+        binding.tvRegister.setOnClickListener {
+            //mainActivity.navController.popBackStack()
+            mainActivity.navController.navigate(R.id.nav_register)
+        }
+        binding.btnLogin.setOnClickListener {
+            val username = binding.editUser.text.toString()
+            val password = binding.editPassword.text.toString()
+            viewModel.login(username, password)
+                    .observe(this.viewLifecycleOwner, Observer { token ->
+                        //Navigation.findNavController(rootView).navigate(R.id.nav_register)
+                        mainActivity.navController.popBackStack()
+                        mainActivity.startSyncDataService()
+                        AppCache.instance.appViewModule.asyncData()
+                        LogUtils.d(token)
+                    })
         }
     }
 
     override fun onResume() {
         super.onResume()
-        //拦截回退直接退出  object : Class 内部类
-        mainActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                mainActivity.finish()
-            }
-        })
+        registerBackPressed{
+            mainActivity.finish()
+        }
         arguments?.let {
             var user: RegisterViewModel.User = it.getSerializable("user") as RegisterViewModel.User
             binding.editUser.setText(user.name)

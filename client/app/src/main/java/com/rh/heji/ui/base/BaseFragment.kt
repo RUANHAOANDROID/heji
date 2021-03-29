@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -22,15 +24,14 @@ import com.rh.heji.utlis.Logger
  */
 abstract class BaseFragment : Fragment() {
     lateinit var rootView: View
+    protected val toolBarCenterTitle: TextView by lazy {
+        toolBar.findViewById(R.id.toolbar_center_title)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        if (!this::rootView.isInitialized) {
-            val viewGroup = rootView.parent as ViewGroup
-            viewGroup?.removeView(rootView)
-        } else {
-            rootView = inflater.inflate(layoutId(), container, false)
-            initView(rootView)
-        }
+        rootView = inflater.inflate(layoutId(), container, false)
+        initView(rootView)
         setHasOptionsMenu(true)
         return rootView
     }
@@ -68,7 +69,7 @@ abstract class BaseFragment : Fragment() {
      *
      * @param view
      */
-    protected abstract fun initView(view: View)
+    protected abstract fun initView(rootView: View)
     protected open fun setUpToolBar() {
         try {
             toolBar.menu.clear()
@@ -79,7 +80,7 @@ abstract class BaseFragment : Fragment() {
 
     protected fun showBlack() {
         toolBar.navigationIcon = blackDrawable()
-        toolBar.setNavigationOnClickListener { v: View? -> Navigation.findNavController(rootView).navigateUp() }
+        toolBar.setNavigationOnClickListener { Navigation.findNavController(rootView).navigateUp() }
     }
 
     val toolBar: Toolbar
@@ -100,6 +101,15 @@ abstract class BaseFragment : Fragment() {
         val ico = androidx.appcompat.R.drawable.abc_ic_ab_back_material
         return resources.getDrawable(ico, mainActivity.theme)
     }
+
+    /**
+     *   拦截回退直接退出  object : Class 内部类指定owner 仅在该Fragment生命周期下有效
+     */
+    fun registerBackPressed(block: () -> Unit) = mainActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            block()
+        }
+    })
 
     companion object {
         const val TAG = "BaseFragment"

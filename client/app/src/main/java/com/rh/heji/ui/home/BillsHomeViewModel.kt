@@ -74,7 +74,7 @@ class BillsHomeViewModel : BaseViewModel() {
     }
 
     private val thisYear: Int
-        private get() = Calendar.getInstance()[Calendar.YEAR]
+         get() = Calendar.getInstance()[Calendar.YEAR]
     private val thisMonth: Int
-        private get() = Calendar.getInstance()[Calendar.MONTH] + 1
+         get() = Calendar.getInstance()[Calendar.MONTH] + 1
 }

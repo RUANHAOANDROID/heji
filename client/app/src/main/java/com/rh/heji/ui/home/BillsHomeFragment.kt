@@ -39,7 +39,6 @@ class BillsHomeFragment : BaseFragment() {
 
     //最后点击时间
     private var lastClickTime = 0L
-    private lateinit var toolBarCenterTitle: TextView
     override fun onAttach(context: Context) {
         super.onAttach(context)
         homeUUID = UUID.randomUUID().toString()
@@ -57,12 +56,12 @@ class BillsHomeFragment : BaseFragment() {
         return rootView
     }
 
-    public override fun initView(view: View) {
-        binding = FragmentBillsHomeBinding.bind(view)
+    public override fun initView(rootView: View) {
+        binding = FragmentBillsHomeBinding.bind(rootView)
         initBillsAdapter()
         binding.fab.setOnClickListener { v: View? ->
             val calendar = Calendar.getInstance() //当前日期
-            Navigation.findNavController(view).navigate(R.id.nav_income, AddBillFragmentArgs.Builder(calendar).build().toBundle())
+            Navigation.findNavController(rootView).navigate(R.id.nav_income, AddBillFragmentArgs.Builder(calendar).build().toBundle())
         }
     }
 
@@ -150,7 +149,7 @@ class BillsHomeFragment : BaseFragment() {
         //binding.homeRecycler.addItemDecoration(new CardViewDecoration(getResources(), 5));
         binding.homeRecycler.addItemDecoration(CardDecoration())
         binding.materialupAppBar.background.alpha = Constants.BACKGROUND_ALPHA
-        adapter!!.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>, view: View?, position: Int ->
+        adapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>, view: View?, position: Int ->
             if (System.currentTimeMillis() - lastClickTime >= FAST_CLICK_DELAY_TIME) {
                 lastClickTime = System.currentTimeMillis()
                 if (adapter.getItem(position) is DayIncomeNode) { //日视图
@@ -167,13 +166,13 @@ class BillsHomeFragment : BaseFragment() {
                 }
             }
         }
-        binding.nestedSccrollView.setOnScrollChangeListener(View.OnScrollChangeListener { v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+        binding.nestedSccrollView.setOnScrollChangeListener { v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
             if (scrollY > oldScrollY) { //向下滑动隐藏
                 binding.fab.hide()
             } else {
                 binding.fab.show()
             }
-        })
+        }
     }
 
     /**
@@ -219,8 +218,8 @@ class BillsHomeFragment : BaseFragment() {
         homeViewModel.year = year
         homeViewModel.month = month
         //homeViewModel.getBills().observe(getMainActivity(), listObserver);
-        homeViewModel.billsNodLiveData.observe(this, Observer<List<BaseNode?>> {
-            baseNodes: List<BaseNode?>? -> adapter?.setNewInstance(baseNodes as MutableList<BaseNode>?)
+        homeViewModel.billsNodLiveData.observe(this, {
+            baseNodes: List<BaseNode> -> adapter.setNewInstance(baseNodes as MutableList<BaseNode>)
         })
         homeViewModel.getBillsData()
         totalIncomeExpense(year, month)
@@ -230,14 +229,13 @@ class BillsHomeFragment : BaseFragment() {
      * 该Menu属于全局所以在这里控制
      */
     fun addYearMonthView() {
-        toolBarCenterTitle = toolBar.findViewById(R.id.toolbar_center_title)
-        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32), null)
+        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32,null), null)
         toolBarCenterTitle.compoundDrawablePadding = 8
         val thisYear = homeViewModel.year
         val thisMonth = homeViewModel.month
         val yearMonth = "$thisYear.$thisMonth"
         toolBarCenterTitle.text = yearMonth
-        toolBarCenterTitle.setOnClickListener(View.OnClickListener { v: View? ->
+        toolBarCenterTitle.setOnClickListener { v: View? ->
             XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
                     .hasShadowBg(true)
                     .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
@@ -251,7 +249,7 @@ class BillsHomeFragment : BaseFragment() {
                         })
                     }) /*.enableDrag(false)*/
                     .show()
-        })
+        }
     }
 
     companion object {

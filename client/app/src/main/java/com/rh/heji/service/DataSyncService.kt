@@ -82,7 +82,7 @@ class DataSyncService : Service() {
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP),
                 0)
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            val notificationBuilder = NotificationCompat.Builder(this)
+            val notificationBuilder = NotificationCompat.Builder(this,CHANNEL_ID)
             notification = notificationBuilder
                     .setSmallIcon(R.drawable.ic_add_image_red_24dp)
                     .setContentTitle(getString(R.string.app_name) + "正在同步数据")

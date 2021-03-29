@@ -47,9 +47,15 @@
         <item name="colorControlHighlight">@color/gray</item>
         <item name="backgroundTint">@color/white</item>
     </style>
-    <!-- fab 灰边 白色-->
+    <!-- fab 白色 圆 波纹-->
     <style name="Selected_BackgroundWhite" >
         <item name="android:background">@color/white</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
+    <!-- Button 灰边 波纹-->
+    <style name="Button_Selected_BackgroundWhite" >
+        <item name="android:background">@drawable/bg_circle_lineback</item>
+        <item name="backgroundTintMode">screen</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 </resources>

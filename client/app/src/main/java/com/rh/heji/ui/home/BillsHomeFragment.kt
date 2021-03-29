@@ -51,10 +51,10 @@ class BillsHomeFragment : BaseFragment() {
         inflater.inflate(R.menu.home, menu)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        view = inflater.inflate(layoutId(), container, false)
-        initView(view)
-        return view
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        rootView = inflater.inflate(layoutId(), container, false)
+        initView(rootView)
+        return rootView
     }
 
     public override fun initView(view: View) {
@@ -78,12 +78,12 @@ class BillsHomeFragment : BaseFragment() {
         }
         toolbar.menu.findItem(R.id.item1).setOnMenuItemClickListener { item: MenuItem? ->
             ToastUtils.showLong("aa")
-            Navigation.findNavController(view).navigate(R.id.nav_calendar_note)
+            Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note)
             false
         }
         toolbar.menu.findItem(R.id.item2).setOnMenuItemClickListener { item: MenuItem? ->
             ToastUtils.showLong("aa")
-            Navigation.findNavController(view).navigate(R.id.nav_gallery)
+            Navigation.findNavController(rootView).navigate(R.id.nav_gallery)
             false
         }
     }
@@ -159,7 +159,7 @@ class BillsHomeFragment : BaseFragment() {
                     val calendar = Calendar.getInstance()
                     calendar[dayIncome.year, dayIncome.month - 1] = dayIncome.monthDay
                     val args = AddBillFragmentArgs.Builder(calendar).build() //选择的日期
-                    Navigation.findNavController(view!!).navigate(R.id.nav_income, args.toBundle())
+                    Navigation.findNavController(rootView).navigate(R.id.nav_income, args.toBundle())
                 } else { //日详细列表ITEM
                     val dayBills = adapter.getItem(position) as DayBillsNode
                     val bill = dayBills.bill
@@ -182,7 +182,7 @@ class BillsHomeFragment : BaseFragment() {
      * @param billTab
      */
     private fun showBillItemPop(billTab: Bill) {
-        val popupView = BillInfoPop(context!!)
+        val popupView = BillInfoPop(mainActivity)
         popupView.popClickListener = object : PopClickListener {
             override fun delete(_id: String) {
                 notifyData(homeViewModel.year, homeViewModel.month)

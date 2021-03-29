@@ -1,19 +1,20 @@
-package com.rh.heji.ui.report;
+package com.rh.heji.ui.report
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import java.util.*
 
-public class ReportViewModel extends ViewModel {
+class ReportViewModel : ViewModel() {
+    private val mText: MutableLiveData<String> = MutableLiveData()
+    val text: LiveData<String>
+        get() = mText
 
-    private MutableLiveData<String> mText;
-
-    public ReportViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is gallery fragment");
+    init {
+        mText.value = "This is gallery fragment"
     }
-
-    public LiveData<String> getText() {
-        return mText;
-    }
+    public val thisYear: Int
+        public get() = Calendar.getInstance()[Calendar.YEAR]
+    public val thisMonth: Int
+        public get() = Calendar.getInstance()[Calendar.MONTH] + 1
 }

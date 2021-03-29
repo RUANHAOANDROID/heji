@@ -32,8 +32,8 @@ class ExportFragment : BaseFragment() {
         super.onAttach(context)
     }
 
-    override fun initView(view: View?) {
-        binding = ExportFragmentBinding.bind(view!!)
+    override fun initView(rootView: View) {
+        binding = ExportFragmentBinding.bind(rootView)
         binding.tvExportFormat.setOnClickListener {
 
             val onSelectListener = OnSelectListener { _, text ->

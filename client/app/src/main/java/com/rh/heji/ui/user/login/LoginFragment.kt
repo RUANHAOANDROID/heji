@@ -22,7 +22,7 @@ class LoginFragment : BaseFragment() {
         return R.layout.login_fragment
     }
 
-    override fun initView(view: View?) {
+    override fun initView(rootView: View) {
         toolBar.title = getString(R.string.login)
         view?.let { v ->
             binding = LoginFragmentBinding.bind(v);

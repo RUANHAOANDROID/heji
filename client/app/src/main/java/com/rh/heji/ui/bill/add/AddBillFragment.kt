@@ -63,13 +63,13 @@ class AddBillFragment : BaseFragment() {
         categoryViewModule = getViewModel(CategoryViewModule::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         /**
          * 不复用View，否则xml fragment不触发生命周期
          */
-        view = inflater.inflate(layoutId(), container, false)
-        initView(view)
-        return view
+        rootView = inflater.inflate(layoutId(), container, false)
+        initView(rootView)
+        return rootView
     }
 
     override fun initView(view: View) {

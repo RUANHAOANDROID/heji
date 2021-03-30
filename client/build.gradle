@@ -37,7 +37,6 @@ ext {
     rxAndroid = 'io.reactivex.rxjava3:rxandroid:3.0.0'
     retrofit ="2.9.0"
     work_version = "2.5.0"
-    javaVersion = JavaVersion.VERSION_1_8
     room_version = "2.2.5"
     compileSdkVersion = 29
     buildToolsVersion = '29.0.2'

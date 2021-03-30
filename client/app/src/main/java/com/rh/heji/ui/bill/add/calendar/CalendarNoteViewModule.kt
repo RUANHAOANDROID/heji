@@ -1,6 +1,5 @@
 package com.rh.heji.ui.bill.add.calendar
 
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -24,13 +23,8 @@ class CalendarNoteViewModule : BaseViewModel() {
     private val billImageLiveData = MutableLiveData<List<Image>>()
 
 
-    var year: Int = thisYear
-    var month: Int = thisMonth
-    private val thisYear: Int
-         get() = java.util.Calendar.getInstance()[java.util.Calendar.YEAR]
-
-    private val thisMonth: Int
-         get() = java.util.Calendar.getInstance()[java.util.Calendar.MONTH] + 1
+    var year: Int = java.util.Calendar.getInstance()[java.util.Calendar.YEAR]
+    var month: Int = java.util.Calendar.getInstance()[java.util.Calendar.MONTH] + 1
 
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({

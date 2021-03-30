@@ -74,6 +74,8 @@ abstract class BaseFragment : Fragment() {
 
     val toolBar: Toolbar
         get() = rootView.findViewById(R.id.toolbar)
+    val centerTitle: TextView
+        get() = rootView.findViewById(R.id.toolbar_center_title)
 
     fun <T : ViewModel?> getViewModel(clazz: Class<T>): T {
         return ViewModelProvider(this).get(clazz)
@@ -106,17 +108,17 @@ abstract class BaseFragment : Fragment() {
     fun showYearMonthTitle(selected: YearSelectPop.OnTabSelected,
                            year: Int = Calendar.getInstance().get(Calendar.YEAR),
                            month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1) {
-        var toolBarCenterTitle = toolBar.findViewById<TextView>(R.id.toolbar_center_title)
-        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null), null)
-        toolBarCenterTitle.compoundDrawablePadding = 8
+        centerTitle.visibility = View.VISIBLE
+        centerTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null), null)
+        centerTitle.compoundDrawablePadding = 8
         val yearMonth = "$year.$month"
-        toolBarCenterTitle.text = yearMonth
-        toolBarCenterTitle.setOnClickListener { v: View? ->
+        centerTitle.text = yearMonth
+        centerTitle.setOnClickListener { v: View? ->
             XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
                     .hasShadowBg(true)
                     .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                     .asCustom(YearSelectPop(mainActivity) { selectYear, selectMonth ->
-                        toolBarCenterTitle.text = "$selectYear.$selectMonth"
+                        centerTitle.text = "$selectYear.$selectMonth"
                         selected.selected(selectYear, selectMonth)
                     }) /*.enableDrag(false)*/
                     .show()

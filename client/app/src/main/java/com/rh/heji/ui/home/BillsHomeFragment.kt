@@ -1,14 +1,12 @@
 package com.rh.heji.ui.home
 
-import android.content.Context
-import android.os.Bundle
-import android.view.*
-import android.widget.TextView
-import androidx.fragment.app.Fragment
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.lxj.xpopup.XPopup
@@ -19,7 +17,6 @@ import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentBillsHomeBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.YearSelectPop
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
@@ -29,31 +26,18 @@ import com.rh.heji.ui.bill.iteminfo.BillInfoPop.PopClickListener
 import com.rh.heji.widget.CardDecoration
 import java.math.BigDecimal
 import java.util.*
-import java.util.function.Consumer
 
 class BillsHomeFragment : BaseFragment() {
     lateinit var binding: FragmentBillsHomeBinding
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     lateinit var adapter: NodeBillsAdapter
-    private var homeUUID: String? = null
 
     //最后点击时间
     private var lastClickTime = 0L
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        homeUUID = UUID.randomUUID().toString()
-        mainActivity.mainViewModel.homeUUID = homeUUID
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.home, menu)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        rootView = inflater.inflate(layoutId(), container, false)
-        initView(rootView)
-        return rootView
     }
 
     public override fun initView(rootView: View) {
@@ -67,7 +51,7 @@ class BillsHomeFragment : BaseFragment() {
 
     override fun setUpToolBar() {
         super.setUpToolBar()
-        showYearMonthTitle({ year, month -> notifyData(year, month) })
+        showYearMonthTitle({ year, month -> notifyData(year, month) },homeViewModel.year,homeViewModel.month)
         val toolbar = toolBar
         toolbar.inflateMenu(R.menu.home)
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
@@ -146,9 +130,8 @@ class BillsHomeFragment : BaseFragment() {
         //binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity(),LinearLayoutManager.HORIZONTAL,false));
         binding.homeRecycler.layoutManager = LinearLayoutManager(mainActivity)
         binding.homeRecycler.adapter = adapter
-        //binding.homeRecycler.addItemDecoration(new CardViewDecoration(getResources(), 5));
         binding.homeRecycler.addItemDecoration(CardDecoration())
-        binding.materialupAppBar.background.alpha = Constants.BACKGROUND_ALPHA
+        //binding.materialupAppBar.background.alpha = Constants.BACKGROUND_ALPHA
         adapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>, view: View?, position: Int ->
             if (System.currentTimeMillis() - lastClickTime >= FAST_CLICK_DELAY_TIME) {
                 lastClickTime = System.currentTimeMillis()
@@ -217,7 +200,6 @@ class BillsHomeFragment : BaseFragment() {
     fun notifyData(year: Int, month: Int) {
         homeViewModel.year = year
         homeViewModel.month = month
-        //homeViewModel.getBills().observe(getMainActivity(), listObserver);
         homeViewModel.billsNodLiveData.observe(this, { baseNodes: List<BaseNode> ->
             adapter.setNewInstance(baseNodes as MutableList<BaseNode>)
         })

@@ -1,9 +1,9 @@
 package com.rh.heji.ui.report
-
 import android.view.View
+import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.R
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.YearSelectPop
+
 
 /**
  * 报告统计页面
@@ -23,7 +23,7 @@ class ReportFragment : BaseFragment() {
         showBlack()
         toolBar.title = "统计"
         showYearMonthTitle({ year, month ->
-
+            ToastUtils.showLong("$year,$month")
         })
     }
 

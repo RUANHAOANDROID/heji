@@ -19,8 +19,8 @@ import java.util.*
 
 class BillsHomeViewModel : BaseViewModel() {
 
-    var year: Int = thisYear //默认为当前时间
-    var month: Int = thisMonth//默认为当前月份
+    var year: Int = Calendar.getInstance()[Calendar.YEAR] //默认为当前时间
+    var month: Int = Calendar.getInstance()[Calendar.MONTH] + 1//默认为当前月份
 
     private val billDao: BillDao = AppDatabase.getInstance().billDao()
     var billImagesLiveData: MediatorLiveData<List<Image>> = MediatorLiveData()
@@ -42,7 +42,7 @@ class BillsHomeViewModel : BaseViewModel() {
                         year = yymmdd[0].toInt(),
                         month = yymmdd[1].toInt(),
                         monthDay = yymmdd[2].toInt(),
-                        weekday = TimeUtils.getChineseWeek(dayIncome.time,TimeUtils.getSafeDateFormat(MyTimeUtils.PATTERN_DAY))
+                        weekday = TimeUtils.getChineseWeek(dayIncome.time, TimeUtils.getSafeDateFormat(MyTimeUtils.PATTERN_DAY))
                 )
                 val dayListNodes = mutableListOf<BaseNode>()
                 billDao.findListByDay(dayIncome.time)?.forEach {
@@ -65,16 +65,11 @@ class BillsHomeViewModel : BaseViewModel() {
         return billImagesLiveData
     }
 
-
     fun getIncomeExpense(year: Int, month: Int): LiveData<Income> {
         val start = MyTimeUtils.firstDayOfMonth(year, month)
         val end = MyTimeUtils.lastDayOfMonth(year, month)
         LogUtils.d("time: ", "$start - $end")
+
         return Transformations.distinctUntilChanged(billDao.sumIncome(start, end))
     }
-
-    private val thisYear: Int
-         get() = Calendar.getInstance()[Calendar.YEAR]
-    private val thisMonth: Int
-         get() = Calendar.getInstance()[Calendar.MONTH] + 1
 }

@@ -13,9 +13,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import com.lxj.xpopup.XPopup
 import com.rh.heji.MainActivity
 import com.rh.heji.R
+import com.rh.heji.ui.bill.YearSelectPop
 import com.rh.heji.utlis.Logger
+import java.util.*
 
 /**
  * Date: 2020/8/28
@@ -24,9 +27,7 @@ import com.rh.heji.utlis.Logger
  */
 abstract class BaseFragment : Fragment() {
     lateinit var rootView: View
-    protected val toolBarCenterTitle: TextView by lazy {
-        toolBar.findViewById(R.id.toolbar_center_title)
-    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
@@ -43,18 +44,6 @@ abstract class BaseFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setUpToolBar()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     /**
@@ -110,6 +99,29 @@ abstract class BaseFragment : Fragment() {
             block()
         }
     })
+
+    /**
+     * 该Menu属于全局所以在这里控制
+     */
+    fun showYearMonthTitle(selected: YearSelectPop.OnTabSelected,
+                           year: Int = Calendar.getInstance().get(Calendar.YEAR),
+                           month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1) {
+        var toolBarCenterTitle = toolBar.findViewById<TextView>(R.id.toolbar_center_title)
+        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null), null)
+        toolBarCenterTitle.compoundDrawablePadding = 8
+        val yearMonth = "$year.$month"
+        toolBarCenterTitle.text = yearMonth
+        toolBarCenterTitle.setOnClickListener { v: View? ->
+            XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
+                    .hasShadowBg(true)
+                    .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                    .asCustom(YearSelectPop(mainActivity) { selectYear, selectMonth ->
+                        toolBarCenterTitle.text = "$selectYear.$selectMonth"
+                        selected.selected(selectYear, selectMonth)
+                    }) /*.enableDrag(false)*/
+                    .show()
+        }
+    }
 
     companion object {
         const val TAG = "BaseFragment"

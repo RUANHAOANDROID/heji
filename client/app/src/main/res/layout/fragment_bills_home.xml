@@ -50,7 +50,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/homeRecycler"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="280dp"
                 android:overScrollMode="never"
                 android:paddingTop="4dp"
                 android:paddingBottom="8dp">

@@ -48,7 +48,7 @@ import java.util.function.Consumer
  */
 class AddBillFragment : BaseFragment() {
     private val billViewModel by lazy { getViewModel(AddBillViewModel::class.java) }
-    lateinit var categoryViewModule: CategoryViewModule
+    val categoryViewModule by lazy { getViewModel(CategoryViewModule::class.java) }
 
     lateinit var binding: IncomeFragmentBinding
     lateinit var categoryTabFragment: CategoryTabFragment
@@ -56,11 +56,6 @@ class AddBillFragment : BaseFragment() {
 
     override fun layoutId(): Int {
         return R.layout.income_fragment
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        categoryViewModule = getViewModel(CategoryViewModule::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

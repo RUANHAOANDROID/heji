@@ -108,21 +108,24 @@ abstract class BaseFragment : Fragment() {
     fun showYearMonthTitle(selected: YearSelectPop.OnTabSelected,
                            year: Int = Calendar.getInstance().get(Calendar.YEAR),
                            month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1) {
-        centerTitle.visibility = View.VISIBLE
-        centerTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null), null)
-        centerTitle.compoundDrawablePadding = 8
-        val yearMonth = "$year.$month"
-        centerTitle.text = yearMonth
-        centerTitle.setOnClickListener { v: View? ->
-            XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
-                    .hasShadowBg(true)
-                    .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                    .asCustom(YearSelectPop(mainActivity) { selectYear, selectMonth ->
-                        centerTitle.text = "$selectYear.$selectMonth"
-                        selected.selected(selectYear, selectMonth)
-                    }) /*.enableDrag(false)*/
-                    .show()
+        rootView.post {
+            centerTitle.visibility = View.VISIBLE
+            centerTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null), null)
+            centerTitle.compoundDrawablePadding = 8
+            val yearMonth = "$year.$month"
+            centerTitle.text = yearMonth
+            centerTitle.setOnClickListener { v: View? ->
+                XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
+                        .hasShadowBg(true)
+                        .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                        .asCustom(YearSelectPop(mainActivity) { selectYear, selectMonth ->
+                            centerTitle.text = "$selectYear.$selectMonth"
+                            selected.selected(selectYear, selectMonth)
+                        }) /*.enableDrag(false)*/
+                        .show()
+            }
         }
+
     }
 
     companion object {

@@ -17,10 +17,6 @@ import java.util.Stack;
 public class Calculation {
     Stack<String> stack = new Stack<>();//输入栈
 
-    public MutableLiveData<String> getResultLiveData() {
-        return resultLiveData;
-    }
-
 
     MutableLiveData<String> resultLiveData = new MutableLiveData();
 

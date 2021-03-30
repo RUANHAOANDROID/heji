@@ -1,30 +1,28 @@
 package com.rh.heji.ui.user.login
 
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppCache
 import com.rh.heji.R
-import com.rh.heji.databinding.LoginFragmentBinding
+import com.rh.heji.databinding.FragmentLoginBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.user.register.RegisterViewModel
 
 class LoginFragment : BaseFragment() {
 
-    lateinit var binding: LoginFragmentBinding;
+    lateinit var binding: FragmentLoginBinding;
     private val viewModel by lazy { ViewModelProvider(this).get(LoginViewModel::class.java) }
 
     override fun layoutId(): Int {
-        return R.layout.login_fragment
+        return R.layout.fragment_login
     }
 
     override fun initView(rootView: View) {
         toolBar.title = getString(R.string.login)
-        binding = LoginFragmentBinding.bind(rootView);
+        binding = FragmentLoginBinding.bind(rootView);
         binding.tvRegister.setOnClickListener {
             //mainActivity.navController.popBackStack()
             mainActivity.navController.navigate(R.id.nav_register)

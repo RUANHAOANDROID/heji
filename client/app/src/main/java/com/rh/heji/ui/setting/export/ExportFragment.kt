@@ -14,10 +14,10 @@ import com.lxj.xpopup.impl.LoadingPopupView
 import com.lxj.xpopup.interfaces.OnSelectListener
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
-import com.rh.heji.databinding.ExportFragmentBinding
+import com.rh.heji.databinding.FragmentExportBinding
 
 class ExportFragment : BaseFragment() {
-    lateinit var binding: ExportFragmentBinding
+    lateinit var binding: FragmentExportBinding
     val list = listOf("EXCEL", "CVS")
 
     //定义静态变量
@@ -33,7 +33,7 @@ class ExportFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding = ExportFragmentBinding.bind(rootView)
+        binding = FragmentExportBinding.bind(rootView)
         binding.tvExportFormat.setOnClickListener {
 
             val onSelectListener = OnSelectListener { _, text ->
@@ -54,7 +54,7 @@ class ExportFragment : BaseFragment() {
     }
 
     override fun layoutId(): Int {
-        return R.layout.export_fragment;
+        return R.layout.fragment_export;
     }
 
     override fun setUpToolBar() {

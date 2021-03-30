@@ -67,7 +67,7 @@ class BillsHomeFragment : BaseFragment() {
 
     override fun setUpToolBar() {
         super.setUpToolBar()
-        addYearMonthView()
+        showYearMonthTitle({ year, month -> notifyData(year, month) })
         val toolbar = toolBar
         toolbar.inflateMenu(R.menu.home)
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
@@ -75,15 +75,15 @@ class BillsHomeFragment : BaseFragment() {
             //展开侧滑菜单
             mainActivity.openDrawer()
         }
-        toolbar.menu.findItem(R.id.item1).setOnMenuItemClickListener { item: MenuItem? ->
-            ToastUtils.showLong("aa")
-            Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note)
-            false
-        }
-        toolbar.menu.findItem(R.id.item2).setOnMenuItemClickListener { item: MenuItem? ->
-            ToastUtils.showLong("aa")
-            Navigation.findNavController(rootView).navigate(R.id.nav_gallery)
-            false
+        toolbar.menu.let { menu ->
+            menu.findItem(R.id.item1).setOnMenuItemClickListener { item: MenuItem? ->
+                Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note)
+                false
+            }
+            menu.findItem(R.id.item2).setOnMenuItemClickListener { item: MenuItem? ->
+                Navigation.findNavController(rootView).navigate(R.id.nav_gallery)
+                false
+            }
         }
     }
 
@@ -223,33 +223,6 @@ class BillsHomeFragment : BaseFragment() {
         })
         homeViewModel.getBillsData()
         totalIncomeExpense(year, month)
-    }
-
-    /**
-     * 该Menu属于全局所以在这里控制
-     */
-    fun addYearMonthView() {
-        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null), null)
-        toolBarCenterTitle.compoundDrawablePadding = 8
-        val thisYear = homeViewModel.year
-        val thisMonth = homeViewModel.month
-        val yearMonth = "$thisYear.$thisMonth"
-        toolBarCenterTitle.text = yearMonth
-        toolBarCenterTitle.setOnClickListener { v: View? ->
-            XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
-                    .hasShadowBg(true)
-                    .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                    .asCustom(YearSelectPop(mainActivity) { year: Int, month: Int ->
-                        toolBarCenterTitle.text = "$year.$month"
-                        val fragments = mainActivity.fragments
-                        fragments.forEach(Consumer { fragment: Fragment? ->
-                            if (fragment is BillsHomeFragment) {
-                                fragment.notifyData(year, month)
-                            }
-                        })
-                    }) /*.enableDrag(false)*/
-                    .show()
-        }
     }
 
     companion object {

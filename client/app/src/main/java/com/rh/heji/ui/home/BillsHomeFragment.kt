@@ -110,7 +110,7 @@ class BillsHomeFragment : BaseFragment() {
             var expenses = "0"
             incomeExpense?.let { data ->
                 data.income?.let {
-                   income =it.toString()
+                    income = it.toString()
                 }
                 data.expenditure?.let {
                     expenses = it.toString()
@@ -218,8 +218,8 @@ class BillsHomeFragment : BaseFragment() {
         homeViewModel.year = year
         homeViewModel.month = month
         //homeViewModel.getBills().observe(getMainActivity(), listObserver);
-        homeViewModel.billsNodLiveData.observe(this, {
-            baseNodes: List<BaseNode> -> adapter.setNewInstance(baseNodes as MutableList<BaseNode>)
+        homeViewModel.billsNodLiveData.observe(this, { baseNodes: List<BaseNode> ->
+            adapter.setNewInstance(baseNodes as MutableList<BaseNode>)
         })
         homeViewModel.getBillsData()
         totalIncomeExpense(year, month)
@@ -229,7 +229,7 @@ class BillsHomeFragment : BaseFragment() {
      * 该Menu属于全局所以在这里控制
      */
     fun addYearMonthView() {
-        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32,null), null)
+        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null), null)
         toolBarCenterTitle.compoundDrawablePadding = 8
         val thisYear = homeViewModel.year
         val thisMonth = homeViewModel.month

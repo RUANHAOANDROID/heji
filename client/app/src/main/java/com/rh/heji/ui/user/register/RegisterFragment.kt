@@ -1,17 +1,14 @@
 package com.rh.heji.ui.user.register
 
-import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import android.view.View
-import androidx.activity.OnBackPressedCallback
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
-import com.rh.heji.databinding.RegisterFragmentBinding
+import com.rh.heji.databinding.FragmentRegisterBinding
 
 class RegisterFragment : BaseFragment() {
 
@@ -19,14 +16,14 @@ class RegisterFragment : BaseFragment() {
     private val viewModel: RegisterViewModel by lazy {
         ViewModelProvider(this).get(RegisterViewModel::class.java)
     }
-    private lateinit var binding: RegisterFragmentBinding
+    private lateinit var binding: FragmentRegisterBinding
 
     override fun layoutId(): Int {
-        return R.layout.register_fragment;
+        return R.layout.fragment_register;
     }
 
     override fun initView(rootView: View) {
-        binding = RegisterFragmentBinding.bind(rootView)
+        binding = FragmentRegisterBinding.bind(rootView)
         binding.btnRegister.setOnClickListener {
             val password1 = binding.editPassword.text.toString()
             val password2 = binding.editPassword2.text.toString()

@@ -1,7 +1,6 @@
 package com.rh.heji.ui.bill.add.calendar
 
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -13,10 +12,8 @@ import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.YearSelectPop
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
@@ -38,7 +35,12 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         super.setUpToolBar()
         //toolBar.title = "日历记账"
         showBlack()
-        addYearMonthView()
+        showYearMonthTitle({ year, month ->
+            binding.calendarView.scrollToCalendar(year, month, 1)
+            viewModel.year = year
+            viewModel.month = month
+        })
+
     }
 
     override fun initView(rootView: View) {
@@ -90,7 +92,7 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         binding.calendarView.setOnMonthChangeListener { year, month -> //月份滑动事件
             viewModel.year = year
             viewModel.month = month
-            setTitleYearMonth(year, month)
+            centerTitle.text= "$year.$month"
             notifyCalendar()
             fabShow()
             notifyBillsList()
@@ -110,9 +112,9 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
     }
 
     private var monthObserver = Observer<Map<String, Calendar>> {
-        if (it.isEmpty()){
+        if (it.isEmpty()) {
             binding.calendarView.clearSchemeDate();
-        }else{
+        } else {
             binding.calendarView.setSchemeDate(it)//更新日历视图
         }
 
@@ -126,36 +128,6 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         else
             binding.todayFab.show()
 
-    }
-
-
-    /**
-     * 该Menu属于全局所以在这里控制
-     */
-    private fun addYearMonthView() {
-        var toolBarCenterTitle = toolBar.findViewById<TextView>(R.id.toolbar_center_title)
-        toolBarCenterTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null), null)
-        toolBarCenterTitle.compoundDrawablePadding = 8
-
-        setTitleYearMonth(viewModel.year, viewModel.month)
-        viewModel.updateYearMonth(viewModel.year, viewModel.month)
-        toolBarCenterTitle.setOnClickListener {
-            XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
-                    .hasShadowBg(true)
-                    .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                    .asCustom(YearSelectPop(mainActivity) { year: Int, month: Int ->
-                        setTitleYearMonth(year, month)
-                        binding.calendarView.scrollToCalendar(year, month, 1)
-                        viewModel.year = year
-                        viewModel.month = month
-                    }) /*.enableDrag(false)*/
-                    .show()
-        }
-    }
-
-    private fun setTitleYearMonth(year: Int, month: Int) {
-        var toolBarCenterTitle = toolBar.findViewById<TextView>(R.id.toolbar_center_title)
-        toolBarCenterTitle.text = "$year.$month"
     }
 
     /**

@@ -23,5 +23,6 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:gravity="center"
         android:textColor="@color/white"
+        android:visibility="invisible"
         android:textSize="@dimen/toolbar_title_size"></TextView>
 </androidx.appcompat.widget.Toolbar>

@@ -28,5 +28,5 @@ class DayIncomeNode(private val dayListNodes: MutableList<BaseNode>, val dayInco
  */
 class DayBillsNode(var bill: Bill) : BaseNode() {
     override val childNode: MutableList<BaseNode>?
-        get() = null
+        get() = null//没有子集
 }

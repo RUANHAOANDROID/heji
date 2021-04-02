@@ -11,8 +11,7 @@
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:subtitleTextColor="@color/white"
     app:titleTextColor="@color/white"
-    tools:ignore="MissingConstraints"
-    tools:showIn="@layout/fragment_bills_home">
+    tools:ignore="MissingConstraints">
 
     <TextView
         android:id="@+id/toolbar_center_title"

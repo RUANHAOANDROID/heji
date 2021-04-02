@@ -7,7 +7,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="title_mineHeight">50dp</dimen>
-    <dimen name="toolbar_title_size">16sp</dimen>
+    <dimen name="toolbar_title_size">18sp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_2">2dp</dimen>
 </resources>

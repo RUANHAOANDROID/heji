@@ -5,15 +5,13 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".ui.home.BillsHomeFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/materialupAppBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:layout_height="wrap_content">
 
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -21,20 +19,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginTop="100dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <include
                 android:id="@+id/total"
+                app:layout_collapseMode="none"
                 layout="@layout/layout_bills_top" />
-
-            <include
-                layout="@layout/app_toolbar_transparent"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"></include>
-
-
+<!--            <FrameLayout-->
+<!--                android:id="@+id/titleBar"-->
+<!--                app:layout_scrollFlags="scroll|enterAlways"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content">-->
+                <include
+                    layout="@layout/app_toolbar_transparent"
+                    android:layout_gravity="top"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"></include>
+<!--            </FrameLayout>-->
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

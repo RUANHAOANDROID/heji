@@ -4,12 +4,12 @@
     android:id="@+id/layoutTotal"
     android:layout_width="match_parent"
     android:layout_height="230dp"
+    android:background="@drawable/test_banner"
     android:gravity="bottom"
     android:orientation="vertical"
     android:paddingStart="@dimen/dp_10"
     android:paddingLeft="@dimen/dp_10"
     android:paddingRight="@dimen/dp_10"
-    android:background="@drawable/test_banner"
     tools:ignore="RtlSymmetry">
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -36,25 +36,40 @@
         android:layout_marginBottom="20dp">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="月支出:&#8194;"
+            style="@style/text_bold_white"
+            tools:ignore="HardcodedText" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvExpenditure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_marginRight="50dp"
+            android:text="0.00"
+            android:textColor="@color/expenditure"
+            style="@style/text_bold_white"
+            tools:ignore="HardcodedText" />
 
-            android:text="月支出"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="月收入:&#8194;"
+            style="@style/text_bold_white"
             tools:ignore="HardcodedText" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvIncome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="月收入"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
+            android:gravity="center"
+            android:text="0.00"
+            android:textColor="@color/income"
+            style="@style/text_bold_white"
             tools:ignore="HardcodedText" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

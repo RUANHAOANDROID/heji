@@ -29,7 +29,7 @@
                 layout="@layout/layout_bills_top" />
 
             <include
-                layout="@layout/app_toolbar_home"
+                layout="@layout/app_toolbar_transparent"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"></include>

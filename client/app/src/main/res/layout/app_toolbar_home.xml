@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:elevation="4dp"
+    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:subtitleTextColor="@color/white"
+    app:titleTextColor="@color/white"
+    tools:ignore="MissingConstraints"
+    tools:showIn="@layout/fragment_bills_home">
+
+    <TextView
+        android:id="@+id/toolbar_center_title"
+        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        android:textSize="@dimen/toolbar_title_size"></TextView>
+</androidx.appcompat.widget.Toolbar>

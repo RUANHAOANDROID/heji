@@ -10,21 +10,29 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.R
+import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.adapter.TYPE_TITLE
 
 class CardDecoration(val padding: Int = 8) : ItemDecoration() {
     private fun drawCardBackground(c: Canvas, parent: RecyclerView) {
+        if (adapterEmpty(parent)) return
         val childCount = parent.childCount
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i) // Item View
             val params = child.layoutParams as RecyclerView.LayoutParams
             val position = params.viewAdapterPosition
             if (parent.adapter!!.getItemViewType(position) == TYPE_TITLE) {
-                child.background = XPopupUtils.createDrawable(ContextCompat.getColor(parent.context,R.color._xpopup_light_color), 15f, 15f, 0f, 0f)
+                child.background = XPopupUtils.createDrawable(ContextCompat.getColor(parent.context, R.color._xpopup_light_color), 15f, 15f, 0f, 0f)
             } else if (isLastInItemList(parent, position) || isLastItem(parent, position)) {
-                child.background = XPopupUtils.createDrawable(ContextCompat.getColor(parent.context,R.color._xpopup_light_color), 0f, 0f, 15f, 15f)
+                child.background = XPopupUtils.createDrawable(ContextCompat.getColor(parent.context, R.color._xpopup_light_color), 0f, 0f, 15f, 15f)
             }
         }
+    }
+
+    private fun adapterEmpty(parent: RecyclerView): Boolean {
+        val adapter: NodeBillsAdapter = parent.adapter as NodeBillsAdapter
+        if (adapter.data.isEmpty() || adapter.data.size <= 0) return true
+        return false
     }
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -33,6 +41,7 @@ class CardDecoration(val padding: Int = 8) : ItemDecoration() {
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        if (adapterEmpty(parent)) return
         val resources = parent.context.resources
         val padding = getPadding(resources)
         val params = view.layoutParams as RecyclerView.LayoutParams

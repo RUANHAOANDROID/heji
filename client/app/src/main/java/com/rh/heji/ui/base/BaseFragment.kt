@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import com.gyf.immersionbar.BarHide
+import com.gyf.immersionbar.ImmersionBar
 import com.lxj.xpopup.XPopup
 import com.rh.heji.MainActivity
 import com.rh.heji.R
@@ -35,6 +37,22 @@ abstract class BaseFragment : Fragment() {
         initView(rootView)
         setHasOptionsMenu(true)
         return rootView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        try {
+            ImmersionBar.with(this)
+                    .titleBar(toolBar)
+                    .autoDarkModeEnable(true)
+                    .transparentStatusBar()
+                    .hideBar(BarHide.FLAG_SHOW_BAR)
+                    .navigationBarColor(R.color.colorPrimary)
+                    .fullScreen(false)
+                    .init();
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onStart() {

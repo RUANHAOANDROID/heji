@@ -3,19 +3,16 @@ package com.rh.heji.ui.home
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.lxj.xpopup.XPopup
-import com.rh.heji.Constants
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentBillsHomeBinding
-import com.rh.heji.databinding.HeaderHomeBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
@@ -26,6 +23,7 @@ import com.rh.heji.ui.bill.iteminfo.BillInfoPop.PopClickListener
 import com.rh.heji.widget.CardDecoration
 import java.math.BigDecimal
 import java.util.*
+
 
 class BillsHomeFragment : BaseFragment() {
 
@@ -111,8 +109,8 @@ class BillsHomeFragment : BaseFragment() {
      * 刷新头部收支
      */
     private fun refreshHeadView() {
-        val income = BigDecimal(  binding.total.tvIncome.text.toString())
-        val expenses = BigDecimal(  binding.total.tvExpenditure.text.toString())
+        val income = BigDecimal(binding.total.tvIncome.text.toString())
+        val expenses = BigDecimal(binding.total.tvExpenditure.text.toString())
         val totalRevenue = income.subtract(expenses)
         if (totalRevenue.toLong() > 0) {
             binding.total.tvSurplus.setTextColor(mainActivity.getColor(R.color.income))

@@ -1,11 +1,10 @@
 package com.rh.heji.ui.home
 
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
@@ -16,6 +15,7 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentBillsHomeBinding
+import com.rh.heji.databinding.HeaderHomeBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
@@ -28,6 +28,7 @@ import java.math.BigDecimal
 import java.util.*
 
 class BillsHomeFragment : BaseFragment() {
+
     lateinit var binding: FragmentBillsHomeBinding
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     lateinit var adapter: NodeBillsAdapter
@@ -43,7 +44,7 @@ class BillsHomeFragment : BaseFragment() {
     public override fun initView(rootView: View) {
         binding = FragmentBillsHomeBinding.bind(rootView)
         initBillsAdapter()
-        binding.fab.setOnClickListener { v: View? ->
+        binding.fab.setOnClickListener { v: View ->
             val calendar = Calendar.getInstance() //当前日期
             Navigation.findNavController(rootView).navigate(R.id.nav_income, AddBillFragmentArgs.Builder(calendar).build().toBundle())
         }
@@ -51,15 +52,14 @@ class BillsHomeFragment : BaseFragment() {
 
     override fun setUpToolBar() {
         super.setUpToolBar()
-        showYearMonthTitle({ year, month -> notifyData(year, month) },homeViewModel.year,homeViewModel.month)
-        val toolbar = toolBar
-        toolbar.inflateMenu(R.menu.home)
-        toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
-        toolbar.setNavigationOnClickListener { v: View? ->
+        showYearMonthTitle({ year, month -> notifyData(year, month) }, homeViewModel.year, homeViewModel.month)
+        toolBar.inflateMenu(R.menu.home)
+        toolBar.navigationIcon = resources.getDrawable(R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
+        toolBar.setNavigationOnClickListener { v: View ->
             //展开侧滑菜单
             mainActivity.openDrawer()
         }
-        toolbar.menu.let { menu ->
+        toolBar.menu.let { menu ->
             menu.findItem(R.id.item1).setOnMenuItemClickListener { item: MenuItem? ->
                 Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note)
                 false
@@ -101,8 +101,8 @@ class BillsHomeFragment : BaseFragment() {
                 }
 
             }
-            binding.homeHeadView.tvTotalExpensesValue.text = expenses
-            binding.homeHeadView.tvTotalIncomeValue.text = income
+            binding.total.tvExpenditure.text = expenses
+            binding.total.tvIncome.text = income
             refreshHeadView()
         })
     }
@@ -111,15 +111,15 @@ class BillsHomeFragment : BaseFragment() {
      * 刷新头部收支
      */
     private fun refreshHeadView() {
-        val income = BigDecimal(binding.homeHeadView.tvTotalIncomeValue.text.toString())
-        val expenses = BigDecimal(binding.homeHeadView.tvTotalExpensesValue.text.toString())
+        val income = BigDecimal(  binding.total.tvIncome.text.toString())
+        val expenses = BigDecimal(  binding.total.tvExpenditure.text.toString())
         val totalRevenue = income.subtract(expenses)
         if (totalRevenue.toLong() > 0) {
-            binding.homeHeadView.tvTotalRevenueValue.setTextColor(mainActivity.getColor(R.color.income))
+            binding.total.tvSurplus.setTextColor(mainActivity.getColor(R.color.income))
         } else {
-            binding.homeHeadView.tvTotalRevenueValue.setTextColor(mainActivity.getColor(R.color.expenditure))
+            binding.total.tvSurplus.setTextColor(mainActivity.getColor(R.color.expenditure))
         }
-        binding.homeHeadView.tvTotalRevenueValue.text = totalRevenue.toString()
+        binding.total.tvSurplus.text = totalRevenue.toString()
     }
 
     /**
@@ -127,11 +127,35 @@ class BillsHomeFragment : BaseFragment() {
      */
     private fun initBillsAdapter() {
         adapter = NodeBillsAdapter()
+        adapter.recyclerView = binding.homeRecycler
         //binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity(),LinearLayoutManager.HORIZONTAL,false));
         binding.homeRecycler.layoutManager = LinearLayoutManager(mainActivity)
         binding.homeRecycler.adapter = adapter
         binding.homeRecycler.addItemDecoration(CardDecoration())
         //binding.materialupAppBar.background.alpha = Constants.BACKGROUND_ALPHA
+        class Diff : ItemCallback<BaseNode>() {
+            override fun areItemsTheSame(oldItem: BaseNode, newItem: BaseNode): Boolean {
+                if (oldItem is DayIncomeNode && newItem is DayIncomeNode) {
+                    return oldItem.dayIncome == newItem.dayIncome
+                }
+                if (oldItem is DayBillsNode && newItem is DayBillsNode) {
+                    val idSame = oldItem.bill.id == newItem.bill.id
+                    val moneySame = oldItem.bill.money == newItem.bill.money
+                    return idSame && moneySame
+                }
+                return false
+            }
+
+            override fun areContentsTheSame(oldItem: BaseNode, newItem: BaseNode): Boolean {
+                if (oldItem is DayBillsNode && newItem is DayBillsNode) {
+                    val moneySame = oldItem.bill.money == newItem.bill.money
+                    val remarkSame = oldItem.bill.remark == newItem.bill.remark
+                    return moneySame && remarkSame
+                }
+                return false
+            }
+        }
+        adapter.setDiffCallback(Diff())
         adapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>, view: View?, position: Int ->
             if (System.currentTimeMillis() - lastClickTime >= FAST_CLICK_DELAY_TIME) {
                 lastClickTime = System.currentTimeMillis()
@@ -156,6 +180,13 @@ class BillsHomeFragment : BaseFragment() {
                 binding.fab.show()
             }
         }
+
+        headView()
+    }
+
+    private fun headView() {
+
+
     }
 
     /**
@@ -200,15 +231,29 @@ class BillsHomeFragment : BaseFragment() {
     fun notifyData(year: Int, month: Int) {
         homeViewModel.year = year
         homeViewModel.month = month
-        homeViewModel.billsNodLiveData.observe(this, { baseNodes: List<BaseNode> ->
-            adapter.setNewInstance(baseNodes as MutableList<BaseNode>)
-        })
+
+        homeViewModel.billsNodLiveData.observe(this, billsObserver)
         homeViewModel.getBillsData()
         totalIncomeExpense(year, month)
+    }
+
+    private val billsObserver = { baseNodes: MutableList<BaseNode> ->
+        if (baseNodes.isNullOrEmpty() || baseNodes.size <= 0) {
+            val view = layoutInflater.inflate(R.layout.layout_empty, null)
+            adapter.setNewInstance(mutableListOf())
+            binding.homeRecycler.minimumHeight =2000
+            adapter.setEmptyView(view)
+            adapter.notifyDataSetChanged()
+        } else {
+            adapter.setDiffNewData(baseNodes)
+        }
+
     }
 
     companion object {
         // 两次点击间隔不能少于1000ms
         private const val FAST_CLICK_DELAY_TIME = 500
     }
+
+
 }

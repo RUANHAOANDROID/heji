@@ -1,6 +1,7 @@
 package com.rh.heji;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,9 +15,11 @@ import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -73,6 +76,32 @@ public class MainActivity extends AppCompatActivity {
             startSyncDataService();
             AppCache.Companion.getInstance().appViewModule.asyncData();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @SuppressLint("WrongConstant")
+            @Override
+            public void handleOnBackPressed() {
+
+                if (navController.getCurrentDestination().getId() == R.id.nav_home) {//主页
+                    if (drawerLayout.isDrawerOpen(Gravity.START)) {
+                        drawerLayout.closeDrawer(Gravity.START);
+                    } else {
+                        finish();
+                    }
+                } else {
+                    if (drawerLayout.isDrawerOpen(Gravity.START)) {
+                        drawerLayout.closeDrawer(Gravity.START);
+                    } else {
+                        navController.popBackStack();
+                    }
+                }
+
+            }
+        });
     }
 
     /**
@@ -277,12 +306,14 @@ public class MainActivity extends AppCompatActivity {
         return mainViewModel;
     }
 
+
     public void openDrawer() {
-        drawerLayout.openDrawer(Gravity.START);
+        drawerLayout.openDrawer(GravityCompat.START);
     }
 
+
     public void closeDrawer() {
-        drawerLayout.closeDrawer(Gravity.START);
+        drawerLayout.closeDrawer(GravityCompat.START);
     }
 
     public void disableDrawer() {

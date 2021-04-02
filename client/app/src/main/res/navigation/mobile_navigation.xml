@@ -91,4 +91,25 @@
         android:name="com.rh.heji.ui.user.info.UserInfoFragment"
         android:label="@string/userinfo"
         tools:layout="@layout/fragment_user_info" />
+
+
+    <fragment
+        android:id="@+id/categoryFragment2"
+        android:name="com.rh.heji.ui.category.CategoryFragment"
+        android:label="CategoryFragment" />
+    <fragment
+        android:id="@+id/bookListFragment"
+        android:name="com.rh.heji.ui.book.BookListFragment"
+        android:label="fragment_book_list_list"
+        tools:layout="@layout/fragment_book_list_list" />
+    <fragment
+        android:id="@+id/nav_banner"
+        android:name="com.rh.heji.ui.setting.banner.BannerFragment"
+        android:label="banner_fragment"
+        tools:layout="@layout/banner_fragment" />
+    <fragment
+        android:id="@+id/nav_category_tab"
+        android:name="com.rh.heji.ui.category.CategoryTabFragment"
+        android:label="CategoryTabFragment" />
+
 </navigation>

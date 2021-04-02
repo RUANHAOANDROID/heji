@@ -48,7 +48,8 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
 
         initFab(rootView)
         initCalendarView()
-        initAdapter();
+        initAdapter()
+        notifyCalendar()
     }
 
     private fun initFab(view: View) {

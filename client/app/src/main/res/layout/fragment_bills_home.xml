@@ -15,7 +15,27 @@
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <include layout="@layout/app_toolbar"></include>
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/mainCollapsing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginTop="100dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <include
+                android:id="@+id/total"
+                layout="@layout/layout_bills_top" />
+
+            <include
+                layout="@layout/app_toolbar_home"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"></include>
+
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
     ​​
@@ -32,26 +52,10 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/mainCollapsing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:expandedTitleMarginEnd="64dp"
-                app:expandedTitleMarginStart="48dp"
-                app:layout_scrollFlags="scroll|snap">
-
-                <include
-                    android:id="@+id/homeHeadView"
-                    layout="@layout/header_home"></include>
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-            ​
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/homeRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="280dp"
                 android:overScrollMode="never"
                 android:paddingTop="4dp"
                 android:paddingBottom="8dp">

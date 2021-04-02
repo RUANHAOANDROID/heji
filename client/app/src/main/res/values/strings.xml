@@ -81,5 +81,6 @@
     <string name="userinfo">个人信息</string>
     <string name="add">添加</string>
     <string name="input_add">输入名称添加一个</string>
+    <string name="item_detail_top_surplus">结余</string>
 
 </resources>

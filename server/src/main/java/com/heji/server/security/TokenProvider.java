@@ -1,24 +1,18 @@
 package com.heji.server.security;
 
-import io.jsonwebtoken.gson.io.GsonSerializer;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
-import org.springframework.stereotype.Component;
-
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.gson.io.GsonSerializer;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -26,7 +20,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.security.Key;
 
 @Slf4j
 @Component

@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:background="@color/colorPrimary"
         android:layout_height="?attr/actionBarSize">
@@ -30,7 +31,7 @@
             android:padding="16dp"
             app:srcCompat="@drawable/ic_baseline_close_24">
         </ImageButton>
-    </FrameLayout>
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpContent"

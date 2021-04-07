@@ -41,16 +41,10 @@ public class CategoryTabFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
     protected void initView(View view) {
         binding = FragmentCategoryTabBinding.bind(view);
         showPager();
-
-        binding.close.setOnClickListener(v -> Navigation.findNavController(view).navigateUp());
+        //binding.close.setOnClickListener(v -> Navigation.findNavController(view).navigateUp());
 
     }
 

@@ -11,30 +11,17 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-            <ImageButton
-                android:id="@+id/close"
-                android:layout_width="wrap_content"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="center|left"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:srcCompat="@drawable/ic_baseline_close_24"></ImageButton>
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab"
-                style="@style/MineCustomTabText"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="center"
-                app:tabGravity="center"
-                app:tabIndicatorColor="@color/white"
-                app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="@color/white"></com.google.android.material.tabs.TabLayout>
-
-        </FrameLayout>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab"
+            style="@style/MineCustomTabText"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center"
+            app:tabGravity="center"
+            app:tabIndicatorColor="@color/white"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/white"></com.google.android.material.tabs.TabLayout>
 
 
     </androidx.appcompat.widget.Toolbar>

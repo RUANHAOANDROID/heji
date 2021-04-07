@@ -47,7 +47,7 @@ abstract class BaseFragment : Fragment() {
                     .autoDarkModeEnable(true)
                     .transparentStatusBar()
                     .hideBar(BarHide.FLAG_SHOW_BAR)
-                    .navigationBarColor(R.color.colorPrimary)
+                    .navigationBarColor(R.color.white)
                     .fullScreen(false)
                     .init();
         } catch (e: Exception) {

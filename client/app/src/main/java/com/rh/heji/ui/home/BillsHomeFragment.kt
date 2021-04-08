@@ -9,6 +9,7 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.lxj.xpopup.XPopup
+import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
@@ -65,8 +66,12 @@ class BillsHomeFragment : BaseFragment() {
         super.onResume()
         val thisYear = homeViewModel.year
         val thisMonth = homeViewModel.month
-        notifyData(thisYear, thisMonth)
+        AppCache.instance.appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(thisYear, thisMonth))
+
     }
+
+    private fun asyncNotifyObserver(thisYear: Int, thisMonth: Int): Observer<Any> =
+            Observer { notifyData(thisYear, thisMonth) }
 
     /**
      * 汇总收支

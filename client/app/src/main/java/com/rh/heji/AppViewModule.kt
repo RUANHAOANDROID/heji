@@ -2,6 +2,7 @@ package com.rh.heji
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.TimeUtils
 import com.rh.heji.data.AppDatabase
@@ -23,6 +24,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     val network: HejiNetwork = HejiNetwork.getInstance()
     private val billRepository = BillRepository()
     private val categoryRepository = CategoryRepository()
+    val asyncLiveData = MediatorLiveData<Any>()
 
     init {
         launchIO({
@@ -67,6 +69,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
             //DataSyncWork 方法执行在IO线程
             dataAsyncWork.asyncBills()
             dataAsyncWork.asyncCategory()
+            asyncLiveData.postValue("OJBK")
         }, {
             it.printStackTrace()
         })

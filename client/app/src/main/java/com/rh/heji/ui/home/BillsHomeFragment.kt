@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.ScreenUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.lxj.xpopup.XPopup
@@ -226,7 +227,7 @@ class BillsHomeFragment : BaseFragment() {
         if (baseNodes.isNullOrEmpty() || baseNodes.size <= 0) {
             val view = layoutInflater.inflate(R.layout.layout_empty, null)
             adapter.setNewInstance(mutableListOf())
-            binding.homeRecycler.minimumHeight = 2000
+            binding.homeRecycler.minimumHeight = ScreenUtils.getScreenHeight()/2
             adapter.setEmptyView(view)
             adapter.notifyDataSetChanged()
         } else {

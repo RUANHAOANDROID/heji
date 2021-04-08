@@ -154,7 +154,7 @@
     <TextView
         android:id="@+id/kSave"
         style="@style/NumberKeyBoardStyle2"
-        android:background="@drawable/keyboard_save_bg"
+        android:background="@drawable/keyboard_save_bg_red"
         android:text="保存"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"

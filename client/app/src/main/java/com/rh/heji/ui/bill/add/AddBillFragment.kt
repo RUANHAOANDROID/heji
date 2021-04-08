@@ -87,7 +87,7 @@ class AddBillFragment : BaseFragment() {
                 }
                 billViewModel.bill.setCategory(categoryName)
                 billViewModel.bill.setType(category.type)
-                changeMoneyTextColor(billType)
+                binding.keyboard.setType(billType)
             }
         })
     }
@@ -200,8 +200,8 @@ class AddBillFragment : BaseFragment() {
     }
 
     private fun changeMoneyTextColor(billType: BillType) {
-        val textColor = if (billType == BillType.EXPENDITURE) android.R.color.holo_red_dark else android.R.color.holo_green_dark
-        binding.tvMoney.setTextColor(resources.getColor(textColor, null))
+        val color = if (billType == BillType.EXPENDITURE) R.color.expenditure else R.color.income
+        binding.tvMoney.setTextColor(resources.getColor(color, null))
     }
 
     private fun saveBill(money: String, category: Category, saveObserver: Observer<Bill>) {

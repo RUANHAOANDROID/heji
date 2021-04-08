@@ -1,6 +1,7 @@
 package com.rh.heji.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,6 +107,16 @@ public class KeyBoardView extends ConstraintLayout {
 
     public String getValue() {
         return defValue;
+    }
+
+
+
+    public void setType(BillType billType) {
+        int color =(billType == BillType.EXPENDITURE )?R.color.expenditure : R.color.income;
+        int drawable =(billType == BillType.EXPENDITURE )?R.drawable.keyboard_save_bg_red : R.drawable.keyboard_save_bg_green;
+        binding.kSave.setBackground(context.getDrawable(drawable));
+        binding.kSave.setTextColor(context.getColor(R.color.white));
+        invalidate();
     }
 
     public interface OnKeyboardListener {

@@ -183,6 +183,7 @@ public class CategoryFragment extends BaseFragment {
     }
 
     public void setCategory() {
+        if (labelAdapter==null) return;
         Category selectCategory = null;
         List<Category> selects = labelAdapter.getData().stream().filter(new Predicate<Category>() {
             @Override

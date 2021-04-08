@@ -34,10 +34,6 @@ class BillsHomeFragment : BaseFragment() {
     //最后点击时间
     private var lastClickTime = 0L
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.home, menu)
-    }
 
     public override fun initView(rootView: View) {
         binding = FragmentBillsHomeBinding.bind(rootView)
@@ -51,22 +47,13 @@ class BillsHomeFragment : BaseFragment() {
     override fun setUpToolBar() {
         super.setUpToolBar()
         showYearMonthTitle({ year, month -> notifyData(year, month) }, homeViewModel.year, homeViewModel.month)
-        toolBar.inflateMenu(R.menu.home)
         toolBar.navigationIcon = resources.getDrawable(R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
         toolBar.setNavigationOnClickListener { v: View ->
             //展开侧滑菜单
             mainActivity.openDrawer()
         }
-        toolBar.menu.let { menu ->
-            menu.findItem(R.id.item1).setOnMenuItemClickListener { item: MenuItem? ->
-                Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note)
-                false
-            }
-            menu.findItem(R.id.item2).setOnMenuItemClickListener { item: MenuItem? ->
-                Navigation.findNavController(rootView).navigate(R.id.nav_gallery)
-                false
-            }
-        }
+        binding.imgCalendar.setOnClickListener {  Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note) }
+        binding.imgTotal.setOnClickListener {  Navigation.findNavController(rootView).navigate(R.id.nav_gallery) }
     }
 
     override fun layoutId(): Int {
@@ -239,7 +226,7 @@ class BillsHomeFragment : BaseFragment() {
         if (baseNodes.isNullOrEmpty() || baseNodes.size <= 0) {
             val view = layoutInflater.inflate(R.layout.layout_empty, null)
             adapter.setNewInstance(mutableListOf())
-            binding.homeRecycler.minimumHeight =2000
+            binding.homeRecycler.minimumHeight = 2000
             adapter.setEmptyView(view)
             adapter.notifyDataSetChanged()
         } else {

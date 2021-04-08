@@ -30,7 +30,6 @@ import java.util.*
 abstract class BaseFragment : Fragment() {
     lateinit var rootView: View
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         rootView = inflater.inflate(layoutId(), container, false)
@@ -51,12 +50,8 @@ abstract class BaseFragment : Fragment() {
                     .fullScreen(false)
                     .init();
         } catch (e: Exception) {
-            e.printStackTrace()
+            Logger.w(e.message)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     override fun onResume() {
@@ -81,7 +76,7 @@ abstract class BaseFragment : Fragment() {
         try {
             toolBar.menu.clear()
         } catch (e: Exception) {
-            Logger.i(e.message)
+            Logger.w(e.message)
         }
     }
 
@@ -144,9 +139,5 @@ abstract class BaseFragment : Fragment() {
             }
         }
 
-    }
-
-    companion object {
-        const val TAG = "BaseFragment"
     }
 }

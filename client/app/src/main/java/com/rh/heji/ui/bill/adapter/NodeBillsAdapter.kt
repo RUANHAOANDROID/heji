@@ -11,6 +11,7 @@ class NodeBillsAdapter() : BaseNodeAdapter() {
     }
 
     override fun getItemType(data: List<BaseNode>, position: Int): Int {
+        if (position < 0) return -1
         val node = data[position]
         if (node is DayIncomeNode) {
             return 0

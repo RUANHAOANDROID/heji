@@ -5,17 +5,14 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import android.view.MenuItem
 import android.view.View
 import android.webkit.*
-import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
 import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentEtcBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.setting.input.etc.ETCViewModel
 import java.util.*
 
 /**
@@ -141,13 +138,6 @@ class ETCFragment : BaseFragment() {
         } else {
             webView.loadUrl("javascript: inputNumber();")
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_input) {
-            requestAlert()
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun requestAlert() {

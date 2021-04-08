@@ -58,15 +58,6 @@ class AddBillFragment : BaseFragment() {
         return R.layout.income_fragment
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        /**
-         * 不复用View，否则xml fragment不触发生命周期
-         */
-        rootView = inflater.inflate(layoutId(), container, false)
-        initView(rootView)
-        return rootView
-    }
-
     override fun initView(rootView: View) {
         binding = IncomeFragmentBinding.bind(rootView)
         selectImage()
@@ -77,6 +68,13 @@ class AddBillFragment : BaseFragment() {
         keyboardListener()
     }
 
+    override fun setUpToolBar() {
+        super.setUpToolBar()
+        categoryTabFragment.toolBar.setNavigationIcon(R.drawable.ic_baseline_close_24)
+        categoryTabFragment.toolBar.setNavigationOnClickListener {
+            mainActivity.navController.popBackStack()
+        }
+    }
     private fun category() {
         categoryTabFragment = childFragmentManager.findFragmentById(R.id.categoryFragment) as CategoryTabFragment
         categoryViewModule.selectCategoryLiveData.observe(viewLifecycleOwner, Observer { category: Category? ->
@@ -234,10 +232,6 @@ class AddBillFragment : BaseFragment() {
             selectImagePou?.setData(data)
         }
         billViewModel.imgUrlsLive.observe(viewLifecycleOwner, imgObserver)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

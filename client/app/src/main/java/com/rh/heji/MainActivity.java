@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             JWTParse.User user = JWTParse.INSTANCE.getUser(token);
             setDrawerLayout(user);
             LogUtils.i(token);
-            startSyncDataService();
+            //startSyncDataService();
             AppCache.Companion.getInstance().appViewModule.asyncData();
         }
     }
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         navHeaderMainBinding.tvNice.setText(user.getAuth().toString());
     }
 
-
+    @Deprecated
     public void startSyncDataService() {
         Intent intent = new Intent(this, DataSyncService.class);
         intent.setAction(DataSyncService.ACTION_START_FOREGROUND_SERVICE);
@@ -219,6 +219,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //stopDataserver();
+    }
+
+    private void stopDataserver() {
         Intent intent = new Intent(this, DataSyncService.class);
         stopService(intent);
     }

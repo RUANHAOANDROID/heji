@@ -21,6 +21,7 @@ import java.util.concurrent.Executors
  * Author: 锅得铁
  * #
  */
+@Deprecated("直接在AppViewModule同步数据")
 class DataSyncService : Service() {
     private var notification: Notification? = null
     private var pendingIntent: PendingIntent? = null

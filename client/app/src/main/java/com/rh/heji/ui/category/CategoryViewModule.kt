@@ -1,7 +1,7 @@
 package com.rh.heji.ui.category
 
 import android.text.TextUtils
-import androidx.lifecycle.LiveData
+
 import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.data.AppDatabase
@@ -31,9 +31,15 @@ class CategoryViewModule : BaseViewModel() {
             selectCategoryLiveData.postValue(value)
         }
     var selectCategoryLiveData = MediatorLiveData<Category>();
+    /**
+     * 获取收入标签
+     *
+     * @return
+     */
 
-    var incomeCategoryLiveData = MediatorLiveData<List<Category>>()
-    var expenditureCategory = MediatorLiveData<List<Category>>()
+    var incomeCategory = MediatorLiveData<MutableList<Category>>()
+
+    var expenditureCategory = MediatorLiveData<MutableList<Category>>()
 
 
     init {
@@ -42,18 +48,9 @@ class CategoryViewModule : BaseViewModel() {
          * source 其他来源的LiveData
          * observer 观察变化
          */
-        incomeCategoryLiveData.addSource(categoryDao.findIncomeOrExpenditure(BillType.INCOME.type())) { incomeCategories -> incomeCategoryLiveData.value = incomeCategories }
-        expenditureCategory.addSource(categoryDao.findIncomeOrExpenditure(BillType.EXPENDITURE.type())) { expenditureCategories: List<Category> -> expenditureCategory.setValue(expenditureCategories) }
+        incomeCategory.addSource(categoryDao.findIncomeOrExpenditure(BillType.INCOME.type())) { incomeCategories -> incomeCategory.value = incomeCategories }
+        expenditureCategory.addSource(categoryDao.findIncomeOrExpenditure(BillType.EXPENDITURE.type())) { expenditureCategories: MutableList<Category> -> expenditureCategory.setValue(expenditureCategories) }
     }
-
-
-    /**
-     * 获取收入标签
-     *
-     * @return
-     */
-    val incomeCategory: LiveData<List<Category>>
-        get() = incomeCategoryLiveData
 
     fun saveCategory(name: String?, type: Int) {
         if (TextUtils.isEmpty(name)) {

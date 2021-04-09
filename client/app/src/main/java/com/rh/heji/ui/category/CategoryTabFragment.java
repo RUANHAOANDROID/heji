@@ -73,9 +73,10 @@ public class CategoryTabFragment extends BaseFragment {
         binding.tab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                fragments[tab.getPosition()].setCategory();
+
                 LogUtils.d("onTabSelected", tab.getPosition());
                 categoryViewModule.setType(BillType.transform(tab.getPosition()));
+                fragments[tab.getPosition()].setCategory();
             }
 
             @Override

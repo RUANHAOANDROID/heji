@@ -1,201 +1,170 @@
-package com.rh.heji.ui.category;
+package com.rh.heji.ui.category
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.GridLayoutManager;
-
-import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.rh.heji.ui.base.BaseFragment;
-import com.rh.heji.R;
-import com.rh.heji.data.BillType;
-import com.rh.heji.data.db.Category;
-import com.rh.heji.databinding.FragmentCategoryContentBinding;
-import com.rh.heji.ui.bill.add.AddBillFragment;
-import com.rh.heji.ui.category.adapter.CategoryAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Bundle
+import android.view.View
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.listener.OnItemClickListener
+import com.rh.heji.R
+import com.rh.heji.data.BillType
+import com.rh.heji.data.db.Category
+import com.rh.heji.databinding.FragmentCategoryContentBinding
+import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.bill.add.AddBillFragment
+import com.rh.heji.ui.category.adapter.CategoryAdapter
+import java.util.*
+import java.util.function.Consumer
+import java.util.stream.Collectors
 
 /**
  * Date: 2020/10/11
  * Author: 锅得铁
  * # 收入支出标签
  */
-public class CategoryFragment extends BaseFragment {
-    private FragmentCategoryContentBinding binding;
-    private CategoryAdapter labelAdapter;
-    public static final String KEY_TYPE = "TYPE";
-    private int thisType;
-    private BillType tabType;
-    private CategoryViewModule categoryViewModule;
+class CategoryFragment : BaseFragment() {
+    private lateinit var binding: FragmentCategoryContentBinding
+    private lateinit var labelAdapter: CategoryAdapter
+    private var thisType = 0
+    private var tabType: BillType? = null
 
-    /**
-     * 收\支
-     *
-     * @param ieType Income : Expenditure
-     * @return
-     */
-    public static CategoryFragment newInstance(int ieType) {
-        CategoryFragment ieCategoryFragment = new CategoryFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_TYPE, ieType);
-        ieCategoryFragment.setArguments(bundle);
-        return ieCategoryFragment;
-    }
+    private lateinit var categoryViewModule: CategoryViewModule
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    Observer<List<Category>> labelObserver = categories -> {
-        Category selectCategory = categoryViewModule.getSelectCategory();
+    var labelObserver = Observer { categories: MutableList<Category> ->
+        val selectCategory = categoryViewModule.selectCategory
         if (null != selectCategory) {
-            categories.stream().forEach(category -> {
-                boolean isSelected = category.getCategory().equals(selectCategory.getCategory())
-                        && category.getType() == selectCategory.getType();
+            categories.stream().forEach { category: Category ->
+                val isSelected = category.category == selectCategory.category && category.type == selectCategory.type
                 if (isSelected) {
-                    category.selected = true;
+                    category.selected = true
                 }
-            });
+            }
         }
-        labelAdapter.setNewInstance(categories);
-        addCategoryFooterView(labelAdapter);
-        defSelected();
-    };
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        AddBillFragment addBillFragment = (AddBillFragment) getParentFragment().getParentFragment();
-        CategoryTabFragment tabFragment = (CategoryTabFragment) getParentFragment();
-        categoryViewModule = addBillFragment.getCategoryViewModule();
-        tabType =categoryViewModule.getType();
-        thisType = getArguments().getInt(KEY_TYPE);
+        labelAdapter.setNewInstance(categories)
+        addCategoryFooterView(labelAdapter)
+        defSelected()
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getCategoryData();
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    protected void initView(View view) {
-        binding = FragmentCategoryContentBinding.bind(view);
-        initCategory(new ArrayList<>());
-        getCategoryData();
-    }
-
-    private void getCategoryData() {
-        if (thisType == BillType.INCOME.type()) {
-            categoryViewModule.getIncomeCategory().observe(getViewLifecycleOwner(), labelObserver);
-        } else {
-            categoryViewModule.getExpenditureCategory().observe(getViewLifecycleOwner(), labelObserver);
+    @SuppressLint("UseRequireInsteadOfGet")
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        categoryViewModule = (parentFragment!!.parentFragment as AddBillFragment).categoryViewModule
+        arguments?.let {
+            tabType = categoryViewModule.type
+            thisType = it.getInt(KEY_TYPE)
         }
-
     }
+
+    override fun initView(view: View) {
+        binding = FragmentCategoryContentBinding.bind(view)
+        initCategory(ArrayList())
+        registerLabelObserver()
+    }
+
+    private fun registerLabelObserver() {
+        categoryViewModule.let {
+            var categoryLiveData = if (thisType == BillType.INCOME.type()) it.incomeCategory else it.expenditureCategory
+            categoryLiveData.observe(this, labelObserver)
+            categoryLiveData.value?.let { data ->
+                if (data.size > 0) labelAdapter.setNewInstance(data)
+            }
+        }
+    }
+
 
     //点击事件
-    OnItemClickListener onItemClickListener = (adapter, view, position) -> {
-        Category category = labelAdapter.getItem(position);//当前点击的
-        if (category.getCategory().equals(CategoryAdapter.SETTING)) {//设置
-            CategoryManagerFragmentArgs args = new CategoryManagerFragmentArgs
-                    .Builder()
-                    .setIeType(thisType).build();
-            Navigation.findNavController(view).navigate(R.id.nav_category_manager, args.toBundle());
-            return;
+    private var onItemClickListener = OnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int ->
+        val category = labelAdapter.getItem(position) //当前点击的
+        if (category.category == CategoryAdapter.SETTING) { //设置
+            val args = CategoryManagerFragmentArgs.Builder()
+                    .setIeType(thisType).build()
+            mainActivity.navController.navigate(R.id.nav_category_manager, args.toBundle())
         }
-        category.selected = !category.selected;//反选
+        category.selected = !category.selected //反选
         //使其他置为为选中状态
-        labelAdapter.getData().forEach(i -> {
-            if (!i.getCategory().equals(category.getCategory())) {
-                i.selected = false;
+        labelAdapter.data.forEach(Consumer { i: Category ->
+            if (i.category != category.category) {
+                i.selected = false
             }
-        });
-        labelAdapter.notifyDataSetChanged();
-        categoryViewModule.setSelectCategory(category);
-    };
-
-    @Override
-    protected int layoutId() {
-        return R.layout.fragment_category_content;
+        })
+        labelAdapter.notifyDataSetChanged()
+        categoryViewModule.selectCategory = category
     }
 
-    private void initCategory(List<Category> categories) {
-        labelAdapter = new CategoryAdapter(categories);
-        binding.categoryRecycler.setLayoutManager(new GridLayoutManager(getMainActivity(), 6));
-        binding.categoryRecycler.setAdapter(labelAdapter);
+    override fun layoutId(): Int {
+        return R.layout.fragment_category_content
+    }
 
-        labelAdapter.setOnItemClickListener(onItemClickListener);
-        addCategoryFooterView(labelAdapter);//尾部添加设置按钮
+    private fun initCategory(categories: MutableList<Category>) {
+        labelAdapter = CategoryAdapter(categories)
+        binding.categoryRecycler.layoutManager = GridLayoutManager(mainActivity, 6)
+        binding.categoryRecycler.adapter = labelAdapter
+        labelAdapter.setOnItemClickListener(onItemClickListener)
+        addCategoryFooterView(labelAdapter) //尾部添加设置按钮
     }
 
     /**
      * 默认第一个为选中
      */
-    private void defSelected() {
-        if (!labelAdapter.getData().isEmpty() && labelAdapter.getData().size() > 0) {
-            long count = labelAdapter.getData().stream().filter(category -> category.selected).count();
+    private fun defSelected() {
+        if (labelAdapter.data.isNotEmpty() && labelAdapter.data.size > 0) {
+            val count = labelAdapter.data.stream().filter { category: Category -> category.selected }.count()
             if (count <= 0) {
-                Category firstItem = labelAdapter.getData().stream().findFirst().get();
-                if (!firstItem.getCategory().equals("管理")) {
-                    firstItem.selected = true;
-                    labelAdapter.notifyDataSetChanged();
-                    if (!isHidden()&&thisType ==tabType.type()) {
-                        categoryViewModule.setSelectCategory(firstItem);
+                val firstItem = labelAdapter.data.stream().findFirst().get()
+                if (firstItem.category != "管理") {
+                    firstItem.selected = true
+                    labelAdapter.notifyDataSetChanged()
+                    if (!isHidden && thisType == tabType!!.type()) {
+                        categoryViewModule.selectCategory = firstItem
                     }
-
                 }
             }
         }
     }
 
-    private void addCategoryFooterView(CategoryAdapter labelAdapter) {
-        if (labelAdapter.getData() != null && labelAdapter.getData().size() > 0) {
-            Category lastItem = labelAdapter.getData().get(labelAdapter.getItemCount() - 1);
-            if (!lastItem.getCategory().equals(CategoryAdapter.SETTING)) {
-                addSettingItem(labelAdapter);
+    private fun addCategoryFooterView(labelAdapter: CategoryAdapter) {
+        if (labelAdapter.data != null && labelAdapter.data.size > 0) {
+            val lastItem = labelAdapter.data[labelAdapter.itemCount - 1]
+            if (lastItem.category != CategoryAdapter.SETTING) {
+                addSettingItem(labelAdapter)
             }
         } else {
-            addSettingItem(labelAdapter);
+            addSettingItem(labelAdapter)
         }
-        labelAdapter.notifyDataSetChanged();
+        labelAdapter.notifyDataSetChanged()
     }
 
-    private void addSettingItem(CategoryAdapter labelAdapter) {
-        Category category = new Category(CategoryAdapter.SETTING, 0, thisType);
-        labelAdapter.addData(labelAdapter.getItemCount(), category);
+    private fun addSettingItem(labelAdapter: CategoryAdapter) {
+        val category = Category(CategoryAdapter.SETTING, 0, thisType)
+        labelAdapter.addData(labelAdapter.itemCount, category)
     }
 
-    public void setCategory() {
-        if (labelAdapter==null) return;
-        Category selectCategory = null;
-        List<Category> selects = labelAdapter.getData().stream().filter(new Predicate<Category>() {
-            @Override
-            public boolean test(Category category) {
-                return category.selected;
-            }
-        }).collect(Collectors.toList());
-        if (selects.size() <= 0) {
-            selectCategory = labelAdapter.getData().stream().findFirst().get();
-        } else {
-            selectCategory = selects.stream().findFirst().get();
+    fun setCategory() {
+        if (!this::labelAdapter.isInitialized || labelAdapter == null) return
+        var selectCategory: Category?
+        val selects = labelAdapter.data.stream().filter { category: Category -> category.selected }.collect(Collectors.toList())
+        selectCategory = if (selects.size <= 0) labelAdapter.data.stream().findFirst().get() else selects.stream().findFirst().get()
+        categoryViewModule.selectCategory = selectCategory
+    }
+
+    companion object {
+        const val KEY_TYPE = "TYPE"
+
+        /**
+         * 收\支
+         *
+         * @param ieType Income : Expenditure
+         * @return
+         */
+        @JvmStatic
+        fun newInstance(ieType: Int): CategoryFragment {
+            val ieCategoryFragment = CategoryFragment()
+            val bundle = Bundle()
+            bundle.putInt(KEY_TYPE, ieType)
+            ieCategoryFragment.arguments = bundle
+            return ieCategoryFragment
         }
-        categoryViewModule.setSelectCategory(selectCategory);
     }
 }

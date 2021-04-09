@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ScreenUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
+import com.google.android.material.appbar.AppBarLayout
+import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
 import com.rh.heji.R
@@ -44,6 +46,27 @@ class BillsHomeFragment : BaseFragment() {
             val calendar = Calendar.getInstance() //当前日期
             Navigation.findNavController(rootView).navigate(R.id.nav_income, AddBillFragmentArgs.Builder(calendar).build().toBundle())
         }
+        initSwipeRefreshLayout()
+        AppCache.instance.appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(homeViewModel.year, homeViewModel.month))
+    }
+
+    private fun initSwipeRefreshLayout() {
+        toolBar.post {
+            binding.refreshLayout.setProgressViewOffset(true, toolBar.top, toolBar.bottom)//设置缩放，起始位置，最终位置
+            //设置bar头部折叠监听
+            binding.materialupAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+                val isFullyShow = verticalOffset >= 0
+                    binding.refreshLayout.isEnabled = isFullyShow
+            })
+            binding.refreshLayout.setOnRefreshListener {
+                binding.refreshLayout.isRefreshing =false
+                notifyData(homeViewModel.year,homeViewModel.month)
+            }
+            //设置刷新提示View颜色（在最后）
+            binding.refreshLayout.setColorSchemeResources(R.color.colorPrimary)
+        }
+        //binding.refreshLayout.setDistanceToTriggerSync(toolBar.height*2)
+
     }
 
     override fun setUpToolBar() {
@@ -54,20 +77,12 @@ class BillsHomeFragment : BaseFragment() {
             //展开侧滑菜单
             mainActivity.openDrawer()
         }
-        binding.imgCalendar.setOnClickListener {  Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note) }
-        binding.imgTotal.setOnClickListener {  Navigation.findNavController(rootView).navigate(R.id.nav_gallery) }
+        binding.imgCalendar.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note) }
+        binding.imgTotal.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_gallery) }
     }
 
     override fun layoutId(): Int {
         return R.layout.fragment_bills_home
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val thisYear = homeViewModel.year
-        val thisMonth = homeViewModel.month
-        AppCache.instance.appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(thisYear, thisMonth))
-
     }
 
     private fun asyncNotifyObserver(thisYear: Int, thisMonth: Int): Observer<Any> =
@@ -92,9 +107,14 @@ class BillsHomeFragment : BaseFragment() {
                 }
 
             }
-            binding.total.tvExpenditure.text = expenses
-            binding.total.tvIncome.text = income
-            refreshHeadView()
+            if (income == "0" && expenses == "0") {
+                binding.total.layoutTotal.visibility = View.GONE
+            } else {
+                binding.total.layoutTotal.visibility = View.VISIBLE
+                binding.total.tvExpenditure.text = expenses
+                binding.total.tvIncome.text = income
+                refreshHeadView()
+            }
         })
     }
 
@@ -230,15 +250,15 @@ class BillsHomeFragment : BaseFragment() {
 
     private val billsObserver = { baseNodes: MutableList<BaseNode> ->
         if (baseNodes.isNullOrEmpty() || baseNodes.size <= 0) {
-            val view = layoutInflater.inflate(R.layout.layout_empty, null)
+            val emptyView = layoutInflater.inflate(R.layout.layout_empty, null)
             adapter.setNewInstance(mutableListOf())
-            binding.homeRecycler.minimumHeight = ScreenUtils.getScreenHeight()/2
-            adapter.setEmptyView(view)
+            binding.homeRecycler.minimumHeight = ScreenUtils.getScreenHeight() - toolBar.height - navigationBarHeight//占满一屏
+            adapter.setEmptyView(emptyView)
             adapter.notifyDataSetChanged()
         } else {
             adapter.setDiffNewData(baseNodes)
         }
-
+        binding.refreshLayout.isRefreshing=false
     }
 
     companion object {

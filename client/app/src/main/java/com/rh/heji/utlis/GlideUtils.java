@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;
+import com.rh.heji.App;
 
 import java.io.File;
 @GlideModule
@@ -18,7 +19,7 @@ public class GlideUtils extends AppGlideModule {
     public static void loadImageFile(Context context, String pathName, ImageView imgView) {
         // 加载本地图片
         File file = new File(pathName);
-        Glide.with(context).load(file).into(imgView);
+        Glide.with(App.getContext()).load(file).into(imgView);
     }
 
     public static void loadImageRes(Context context, int resource, ImageView imgView) {

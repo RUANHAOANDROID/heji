@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.rh.heji.AppCache;
 import com.rh.heji.R;
 import com.rh.heji.databinding.ItemPopSelectTicketImageBinding;
 import com.rh.heji.utlis.GlideUtils;
@@ -35,7 +36,7 @@ public class TicketPhotoAdapter extends BaseQuickAdapter<String, BaseViewHolder>
             binding.imgTicket.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_add_image_red_32dp));
             binding.imgDelete.setVisibility(View.INVISIBLE);
         } else {
-            GlideUtils.loadImageFile(getContext(), item, binding.imgTicket);
+            GlideUtils.loadImageFile(AppCache.Companion.getInstance().getContext(), item, binding.imgTicket);
             binding.imgDelete.setVisibility(View.VISIBLE);
         }
 

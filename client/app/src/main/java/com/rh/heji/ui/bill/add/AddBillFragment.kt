@@ -77,7 +77,7 @@ class AddBillFragment : BaseFragment() {
     }
     private fun category() {
         categoryTabFragment = childFragmentManager.findFragmentById(R.id.categoryFragment) as CategoryTabFragment
-        categoryViewModule.selectCategoryLiveData.observe(viewLifecycleOwner, Observer { category: Category? ->
+        categoryViewModule.selectCategoryLiveData.observe(this, Observer { category: Category? ->
             if (null != category) {
                 val billType = BillType.transform(category.type)
                 changeMoneyTextColor(billType)
@@ -156,7 +156,7 @@ class AddBillFragment : BaseFragment() {
      * 选择经手人
      */
     private fun selectPerson() {
-        billViewModel.dealersLiveDatabase.observe(viewLifecycleOwner, Observer { names ->
+        billViewModel.dealersLiveDatabase.observe(this, Observer { names ->
             //经手人名单
             if (names.size > 0) {
                 binding.tvUserLabel.text = "经手人:" + names[0] //默认经手人
@@ -231,7 +231,7 @@ class AddBillFragment : BaseFragment() {
             binding.imgTicket.text = "图片(x" + data.size + ")"
             selectImagePou?.setData(data)
         }
-        billViewModel.imgUrlsLive.observe(viewLifecycleOwner, imgObserver)
+        billViewModel.imgUrlsLive.observe(this, imgObserver)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

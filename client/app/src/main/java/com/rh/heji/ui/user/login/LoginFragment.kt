@@ -9,6 +9,7 @@ import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentLoginBinding
 import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.user.register.RegisterUser
 import com.rh.heji.ui.user.register.RegisterViewModel
 
 class LoginFragment : BaseFragment() {
@@ -47,8 +48,8 @@ class LoginFragment : BaseFragment() {
             mainActivity.finish()
         }
         arguments?.let {
-            var user: RegisterViewModel.User = it.getSerializable("user") as RegisterViewModel.User
-            binding.editUser.setText(user.name)
+            var user: RegisterUser = it.getSerializable("user") as RegisterUser
+            binding.editUser.setText(user.tel)
             binding.editPassword.setText(user.password)
             ToastUtils.showLong(user.name)
         }

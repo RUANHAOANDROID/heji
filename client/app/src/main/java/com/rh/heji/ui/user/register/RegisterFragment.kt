@@ -34,9 +34,9 @@ class RegisterFragment : BaseFragment() {
             val code = binding.editInviteCode.text.toString()
             val tel = binding.editTEL.text.toString()
             val username = binding.editUserName.text.toString()
-            viewModel.register(username, tel, code, password1).observe(viewLifecycleOwner, Observer {
+            viewModel.register(username, tel, code, password1).observe(viewLifecycleOwner, { user ->
                 var mBundle = Bundle()
-                mBundle.putSerializable("user", it)
+                mBundle.putSerializable("user", user)
                 Navigation.findNavController(rootView).navigate(R.id.nav_login, mBundle)
             })
         }

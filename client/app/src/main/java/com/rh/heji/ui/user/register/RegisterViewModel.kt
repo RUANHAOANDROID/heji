@@ -5,18 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.ToastUtils
+import com.rh.heji.App
 import com.rh.heji.AppCache
+import com.rh.heji.network.HejiNetwork
+import com.rh.heji.ui.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.Serializable
 
-class RegisterViewModel : ViewModel() {
-    lateinit var tel: String;
-    lateinit var code: String;
-    lateinit var password: String;
-    lateinit var password1: String;
-    val registerLiveData = MutableLiveData<User>()
+class RegisterViewModel : BaseViewModel() {
+    lateinit var tel: String
+    lateinit var code: String
+    lateinit var password: String
+    lateinit var password1: String
+    val registerLiveData = MutableLiveData<RegisterUser>()
 
     /**
      * 再次确认密码
@@ -25,32 +28,24 @@ class RegisterViewModel : ViewModel() {
         return password == password1;
     }
 
-    fun register(username: String, tel: String, code: String, password: String): LiveData<User> {
-        var user = User()
-        user.name = username
-        user.tel = tel
-        user.password = password
-        user.code = code
-        viewModelScope.launch() {
-            withContext(Dispatchers.IO) {
-                var response = AppCache.instance.heJiServer.register(user).execute();
-                if (response.isSuccessful) {
-                    if (response.code() == 200) {
-                        ToastUtils.showLong(response.body()?.data?.name)
-                        registerLiveData.postValue(user)
-                    }
-                }
-            }
-        }
+    fun register(username: String, tel: String, code: String, password: String): LiveData<RegisterUser> {
+        var user = RegisterUser(
+                name = username,
+                tel = tel,
+                password = password,
+                code = code)
 
-
+        launch({
+            var response = HejiNetwork.getInstance().register(user)
+            registerLiveData.postValue(response.data)
+        }, {})
         return registerLiveData;
     }
 
-    class User : Serializable {
-        var name: String? = null
-        var password: String? = null
-        var tel: String? = null
-        var code: String? = null
-    }
+
 }
+
+data class RegisterUser(var name: String,
+                var password: String,
+                var tel: String,
+                var code: String):Serializable

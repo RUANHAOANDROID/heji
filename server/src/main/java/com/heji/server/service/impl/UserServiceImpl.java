@@ -61,7 +61,8 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
     @Override
     public void register(MUser mUser) {
         String code = mUser.getCode();//邀请码
-        boolean exists = mVerificationService.existsCode(code);//邀请码存在
+        //boolean exists = mVerificationService.existsCode(code);//邀请码存在
+        boolean exists = true;
         if (exists) {
             MUser mUser0 = findByTel(mUser.getTel());
             if (null != mUser0) {
@@ -92,6 +93,7 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
     @Override
     public String login(String username, String password) {
         MUser user0 = mUserRepository.findMUserByTel(username);
+        if (null == user0) throw new NotFindException("用户不存在");
         boolean success = bCryptPasswordEncoder.matches(password, user0.getPassword());
         UsernamePasswordAuthenticationToken authentication2 = new UsernamePasswordAuthenticationToken(
                 username,//电话号码

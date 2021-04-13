@@ -1,10 +1,9 @@
 package com.rh.heji.network
 
-import com.rh.heji.data.db.Bill
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.network.response.ImageEntity
-import com.rh.heji.ui.user.register.RegisterViewModel
+import com.rh.heji.ui.user.register.RegisterUser
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -17,7 +16,7 @@ import retrofit2.http.*
  */
 interface HeJiServer {
     @POST("user/register")
-    fun register(@Body user: Any?): Call<BaseResponse<RegisterViewModel.User>>
+    fun register(@Body user: Any?): Call<BaseResponse<RegisterUser>>
 
     @POST("user/login")
     fun login(@Query("username") username: String, @Query("password") password: String): Call<BaseResponse<String>>

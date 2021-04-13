@@ -3,6 +3,7 @@ package com.rh.heji.network
 import com.rh.heji.AppCache
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
+import com.rh.heji.ui.user.register.RegisterUser
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,6 +16,7 @@ import kotlin.coroutines.suspendCoroutine
 class HejiNetwork {
     private val hejiServer = AppCache.instance.heJiServer
 
+    suspend fun register(registerUser:RegisterUser) = hejiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) = hejiServer.login(username, password).await()
 
     suspend fun billPush(billEntity: BillEntity) = hejiServer.saveBill(billEntity).await()

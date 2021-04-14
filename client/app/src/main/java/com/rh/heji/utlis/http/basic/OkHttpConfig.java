@@ -1,8 +1,6 @@
 package com.rh.heji.utlis.http.basic;
 
-import android.content.Intent;
 import android.text.TextUtils;
-
 
 import com.rh.heji.AppCache;
 import com.rh.heji.BuildConfig;

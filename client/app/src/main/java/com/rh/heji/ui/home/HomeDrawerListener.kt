@@ -1,10 +1,8 @@
 package com.rh.heji.ui.home
 
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
-import com.rh.heji.AppCache
 import com.rh.heji.MainActivity
 
 class HomeDrawerListener(private val mainActivity: MainActivity, var listener: DrawerSlideListener) : DrawerListener {

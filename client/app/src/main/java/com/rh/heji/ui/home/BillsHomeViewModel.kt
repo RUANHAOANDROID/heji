@@ -35,7 +35,7 @@ class BillsHomeViewModel : BaseViewModel() {
             var monthEveryDayIncome = billDao.findEveryDayIncome(start, end)
             var listDayNodes = mutableListOf<BaseNode>()
             monthEveryDayIncome?.forEach { dayIncome ->
-                var yymmdd = dayIncome.time!!.split("-");
+                var yymmdd = dayIncome.time!!.split("-")
                 var incomeNode = DayIncome(
                         expected = dayIncome.expenditure.toString(),
                         income = dayIncome.income.toString(),

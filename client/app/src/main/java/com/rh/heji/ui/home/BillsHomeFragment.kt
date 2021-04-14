@@ -52,7 +52,7 @@ class BillsHomeFragment : BaseFragment() {
 
     private fun initSwipeRefreshLayout() {
         toolBar.post {
-            binding.refreshLayout.setProgressViewOffset(true, toolBar.top, toolBar.bottom)//设置缩放，起始位置，最终位置
+            binding.refreshLayout.setProgressViewOffset(true, 0, 180)//设置缩放，起始位置，最终位置
             //设置bar头部折叠监听
             binding.materialupAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
                 val isFullyShow = verticalOffset >= 0

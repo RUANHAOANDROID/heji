@@ -10,7 +10,6 @@ import com.rh.heji.R
 import com.rh.heji.databinding.FragmentLoginBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.user.register.RegisterUser
-import com.rh.heji.ui.user.register.RegisterViewModel
 
 class LoginFragment : BaseFragment() {
 

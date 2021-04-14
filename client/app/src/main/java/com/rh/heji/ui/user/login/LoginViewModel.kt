@@ -2,6 +2,7 @@ package com.rh.heji.ui.user.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppCache
 import com.rh.heji.network.HejiNetwork
@@ -16,6 +17,7 @@ class LoginViewModel : BaseViewModel() {
             loginLiveData.value = token
             AppCache.instance.saveToken(token)
             ToastUtils.showLong(requestBody.data)
+            LogUtils.w(token)
         }, {
             ToastUtils.showLong("登陆错误:${it.message}")
         })

@@ -119,7 +119,7 @@ class ETCViewModel : BaseViewModel() {
                 .addHeader("X-Requested-With", "XMLHttpRequest")
                 .post(requestBody)
                 .build()
-        OkHttpConfig.getClientBuilder().build().newCall(request).enqueue(object : Callback {
+        OkHttpConfig.clientBuilder.build().newCall(request).enqueue(object : Callback {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
@@ -186,7 +186,7 @@ class ETCViewModel : BaseViewModel() {
                 .addHeader("X-Requested-With", "XMLHttpRequest")
                 .post(requestBody)
                 .build()
-        OkHttpConfig.getClientBuilder().build().newCall(request).enqueue(object : Callback {
+        OkHttpConfig.clientBuilder.build().newCall(request).enqueue(object : Callback {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {

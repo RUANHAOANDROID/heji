@@ -1,9 +1,14 @@
 package com.rh.heji
 
+import android.Manifest
 import android.app.Application
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
+import com.blankj.utilcode.util.CrashUtils
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Category
@@ -29,6 +34,10 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     init {
         launchIO({
             fakeData()
+            LogUtils.getConfig().globalTag = "TAG"
+            if (ActivityCompat.checkSelfPermission(AppCache.instance.context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                CrashUtils.init(AppCache.instance.storage("Crash"))
+            }
         }, {
             it.printStackTrace()
         })
@@ -40,8 +49,8 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     }
 
     fun billDelete(_id: String) {
-        AppDatabase.getInstance().billDao().preDelete(_id)
         launchIO({
+            AppDatabase.getInstance().billDao().preDelete(_id)
             billRepository.deleteBill(_id)
         })
 

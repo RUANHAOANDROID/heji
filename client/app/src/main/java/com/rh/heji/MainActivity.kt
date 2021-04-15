@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.text.TextUtils
 import android.util.Log
 import android.view.*
@@ -16,6 +17,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavController.OnDestinationChangedListener
 import androidx.navigation.NavDestination
@@ -32,11 +34,11 @@ import com.permissionx.guolindev.request.ExplainScope
 import com.permissionx.guolindev.request.ForwardScope
 import com.rh.heji.AppCache.Companion.instance
 import com.rh.heji.databinding.NavHeaderMainBinding
-import com.rh.heji.service.DataSyncService
 import com.rh.heji.ui.home.DrawerSlideListener
 import com.rh.heji.ui.home.HomeDrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.JWTParse.getUser
+import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
 
 class MainActivity : AppCompatActivity() {
@@ -45,21 +47,37 @@ class MainActivity : AppCompatActivity() {
     val mainViewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
     private lateinit var navHeaderMainBinding: NavHeaderMainBinding
     private lateinit var navigationView: NavigationView
+    fun permitDiskReads(func: () -> Any): Any {
+        if (BuildConfig.DEBUG) {
+            val oldThreadPolicy = StrictMode.getThreadPolicy()
+            StrictMode.setThreadPolicy(
+                    StrictMode.ThreadPolicy.Builder(oldThreadPolicy)
+                            .permitDiskReads().build())
+            val anyValue = func()
+            StrictMode.setThreadPolicy(oldThreadPolicy)
+
+            return anyValue
+        } else {
+            return func()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        permitDiskReads { super.onCreate(savedInstanceState) }//StrictMode policy violation; ~duration=127 ms: android.os.strictmode.DiskReadViolation by XiaoMi
         checkPermissions { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? -> Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show() }
         setContentView(R.layout.activity_main)
         initDrawerLayout()
-        val token = instance.token
-        if (TextUtils.isEmpty(token)) {
-            navController .navigate(R.id.nav_login)
-        } else {
-            val user = getUser(token)
-            setDrawerLayout(user)
-            LogUtils.i(token)
-            //startSyncDataService();
-            instance.appViewModule.asyncData()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val token = instance.token.get()
+            withContext(Dispatchers.Main) {
+                if (TextUtils.isEmpty(token)) {
+                    navController.navigate(R.id.nav_login)
+                } else {
+                    val user = getUser(token)
+                    setDrawerLayout(user)
+                    instance.appViewModule.asyncData()
+                }
+            }
         }
     }
 
@@ -68,17 +86,17 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             @SuppressLint("WrongConstant")
             override fun handleOnBackPressed() {
-                if (navController .currentDestination?.id == R.id.nav_home) { //主页
-                    if (drawerLayout .isDrawerOpen(Gravity.START)) {
-                        drawerLayout .closeDrawer(Gravity.START)
+                if (navController.currentDestination?.id == R.id.nav_home) { //主页
+                    if (drawerLayout.isDrawerOpen(Gravity.START)) {
+                        drawerLayout.closeDrawer(Gravity.START)
                     } else {
                         finish()
                     }
                 } else {
-                    if (drawerLayout .isDrawerOpen(Gravity.START)) {
-                        drawerLayout .closeDrawer(Gravity.START)
+                    if (drawerLayout.isDrawerOpen(Gravity.START)) {
+                        drawerLayout.closeDrawer(Gravity.START)
                     } else {
-                        navController .popBackStack()
+                        navController.popBackStack()
                     }
                 }
             }
@@ -101,7 +119,7 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.getMenu()
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener { item: MenuItem? ->
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                instance.deleteToken()
+                runBlocking (Dispatchers.IO){ instance.token.delete() }
                 finish()
             }.show()
             false
@@ -115,23 +133,23 @@ class MainActivity : AppCompatActivity() {
         navHeaderMainBinding = NavHeaderMainBinding.bind(navHeaderView)
         navHeaderView.setOnClickListener { v: View? ->
             ToastUtils.showLong("")
-            navController .navigate(R.id.nav_user_info)
+            navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
     }
 
     private fun navigationDrawerController() {
-        navigationView .setNavigationItemSelectedListener { item: MenuItem ->
+        navigationView.setNavigationItemSelectedListener { item: MenuItem ->
             val handled = item.isChecked //已选中
-            val parent = navigationView .parent
+            val parent = navigationView.parent
             if (parent is DrawerLayout) {
-                parent.closeDrawer(navigationView )
+                parent.closeDrawer(navigationView)
             }
             if (!handled) {
-                NavigationUI.onNavDestinationSelected(item, navController )
-                if (navController .currentDestination?.id != R.id.nav_home) navController .popBackStack()
+                NavigationUI.onNavDestinationSelected(item, navController)
+                if (navController.currentDestination?.id != R.id.nav_home) navController.popBackStack()
                 try {
-                    navController .navigate(item.itemId)
+                    navController.navigate(item.itemId)
                     return@setNavigationItemSelectedListener true
                 } catch (e: IllegalArgumentException) {
                     return@setNavigationItemSelectedListener false
@@ -140,13 +158,13 @@ class MainActivity : AppCompatActivity() {
             true
         }
         val weakReference = WeakReference(navigationView)
-        navController .addOnDestinationChangedListener(
+        navController.addOnDestinationChangedListener(
                 object : OnDestinationChangedListener {
                     override fun onDestinationChanged(controller: NavController,
                                                       destination: NavDestination, arguments: Bundle?) {
                         val view = weakReference.get()
                         if (view == null) {
-                            navController .removeOnDestinationChangedListener(this)
+                            navController.removeOnDestinationChangedListener(this)
                             return
                         }
                         val menu = view.menu
@@ -171,35 +189,14 @@ class MainActivity : AppCompatActivity() {
                         } else if (itemLabel == report) {
                         } else if (itemLabel == setting) {
                         }
-                        LogUtils.i("onDestinationChanged:", destination.label)
+                        LogUtils.i( destination.label)
                     }
                 })
     }
 
     private fun setDrawerLayout(user: JWTParse.User) {
-        navHeaderMainBinding .tvTitle.text = user.username
-        navHeaderMainBinding .tvNice.text = user.auth.toString()
-    }
-
-    @Deprecated("")
-    fun startSyncDataService() {
-        val intent = Intent(this, DataSyncService::class.java)
-        intent.action = DataSyncService.ACTION_START_FOREGROUND_SERVICE
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent) //启动前台服务
-        } else {
-            startService(intent)
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //stopDataserver();
-    }
-
-    private fun stopDataserver() {
-        val intent = Intent(this, DataSyncService::class.java)
-        stopService(intent)
+        navHeaderMainBinding.tvTitle.text = user.username
+        navHeaderMainBinding.tvNice.text = user.auth.toString()
     }
 
     fun checkPermissions(requestCallback: RequestCallback) {
@@ -269,18 +266,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openDrawer() {
-        drawerLayout .openDrawer(GravityCompat.START)
+        drawerLayout.openDrawer(GravityCompat.START)
     }
 
     fun closeDrawer() {
-        drawerLayout .closeDrawer(GravityCompat.START)
+        drawerLayout.closeDrawer(GravityCompat.START)
     }
 
     fun disableDrawer() {
-        drawerLayout .setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
     fun enableDrawer() {
-        drawerLayout .setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 }

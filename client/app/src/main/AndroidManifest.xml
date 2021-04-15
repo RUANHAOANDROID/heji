@@ -43,7 +43,6 @@
             </intent-filter>
 
         </activity>
-        <service android:name=".service.DataSyncService"></service>
 
         <!--适配华为（huawei）刘海屏-->
         <meta-data

@@ -31,9 +31,11 @@
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <include
+            <ViewStub
                 android:id="@+id/total"
-                layout="@layout/layout_bills_top"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout="@layout/layout_bills_top"
                 app:layout_collapseMode="none" />
 
             <androidx.appcompat.widget.Toolbar

@@ -2,6 +2,7 @@ package com.rh.heji.data.repository
 
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.App
+import com.rh.heji.AppCache
 import com.rh.heji.Constants
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
@@ -80,7 +81,7 @@ class BillRepository {
                 LogUtils.i("图片大小", length)
                 if (length > Constants.FILE_LENGTH_1M * 2) { //图片超过设定值则压缩
                     LogUtils.i("图片大小超过2M,压缩图片", Constants.FILE_LENGTH_1M * 2)
-                    val fileList = Luban.with(App.getContext()).load(imgFile).get()
+                    val fileList = Luban.with(AppCache.instance.context).load(imgFile).get()
                     if (!fileList.isEmpty() && fileList.size > 0) {
                         imgFile = fileList[0]
                     }

@@ -41,13 +41,15 @@ class BillsHomeFragment : BaseFragment() {
 
     public override fun initView(rootView: View) {
         binding = FragmentBillsHomeBinding.bind(rootView)
-        initBillsAdapter()
-        binding.fab.setOnClickListener { v: View ->
-            val calendar = Calendar.getInstance() //当前日期
-            Navigation.findNavController(rootView).navigate(R.id.nav_income, AddBillFragmentArgs.Builder(calendar).build().toBundle())
+        rootView.post {
+            initBillsAdapter()
+            binding.fab.setOnClickListener { v: View ->
+                val calendar = Calendar.getInstance() //当前日期
+                Navigation.findNavController(rootView).navigate(R.id.nav_income, AddBillFragmentArgs.Builder(calendar).build().toBundle())
+            }
+            initSwipeRefreshLayout()
+            AppCache.instance.appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(homeViewModel.year, homeViewModel.month))
         }
-        initSwipeRefreshLayout()
-        AppCache.instance.appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(homeViewModel.year, homeViewModel.month))
     }
 
     private fun initSwipeRefreshLayout() {
@@ -56,11 +58,11 @@ class BillsHomeFragment : BaseFragment() {
             //设置bar头部折叠监听
             binding.materialupAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
                 val isFullyShow = verticalOffset >= 0
-                    binding.refreshLayout.isEnabled = isFullyShow
+                binding.refreshLayout.isEnabled = isFullyShow
             })
             binding.refreshLayout.setOnRefreshListener {
-                binding.refreshLayout.isRefreshing =false
-                notifyData(homeViewModel.year,homeViewModel.month)
+                binding.refreshLayout.isRefreshing = false
+                notifyData(homeViewModel.year, homeViewModel.month)
             }
             //设置刷新提示View颜色（在最后）
             binding.refreshLayout.setColorSchemeResources(R.color.colorPrimary)
@@ -71,14 +73,17 @@ class BillsHomeFragment : BaseFragment() {
 
     override fun setUpToolBar() {
         super.setUpToolBar()
-        showYearMonthTitle({ year, month -> notifyData(year, month) }, homeViewModel.year, homeViewModel.month)
-        toolBar.navigationIcon = resources.getDrawable(R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
-        toolBar.setNavigationOnClickListener { v: View ->
-            //展开侧滑菜单
-            mainActivity.openDrawer()
+        toolBar.post {
+            showYearMonthTitle({ year, month -> notifyData(year, month) }, homeViewModel.year, homeViewModel.month)
+            toolBar.navigationIcon = resources.getDrawable(R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
+            toolBar.setNavigationOnClickListener { v: View ->
+                //展开侧滑菜单
+                mainActivity.openDrawer()
+            }
+            binding.imgCalendar.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note) }
+            binding.imgTotal.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_gallery) }
         }
-        binding.imgCalendar.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note) }
-        binding.imgTotal.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_gallery) }
+
     }
 
     override fun layoutId(): Int {
@@ -184,10 +189,10 @@ class BillsHomeFragment : BaseFragment() {
                 }
             }
         }
-        binding.nestedSccrollView.setOnScrollChangeListener { v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+        binding.homeRecycler.setOnScrollChangeListener { v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
             if (scrollY > oldScrollY) { //向下滑动隐藏
                 binding.fab.hide()
-            } else {
+            } else {//向上滑动显示
                 binding.fab.show()
             }
         }
@@ -258,7 +263,8 @@ class BillsHomeFragment : BaseFragment() {
         } else {
             adapter.setDiffNewData(baseNodes)
         }
-        binding.refreshLayout.isRefreshing=false
+        binding.refreshLayout.isRefreshing = false
+        rootView.invalidate()//homeRecycler底部显示未全屏，刷一下
     }
 
     companion object {

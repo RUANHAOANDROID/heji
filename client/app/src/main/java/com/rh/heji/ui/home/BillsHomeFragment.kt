@@ -1,10 +1,15 @@
 package com.rh.heji.ui.home
 
+import android.os.Bundle
 import android.view.*
+import android.widget.TextView
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
@@ -17,6 +22,7 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentBillsHomeBinding
+import com.rh.heji.databinding.LayoutBillsTopBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
@@ -29,11 +35,14 @@ import java.math.BigDecimal
 import java.util.*
 
 
-class BillsHomeFragment : BaseFragment() {
+class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
 
     lateinit var binding: FragmentBillsHomeBinding
+    lateinit var subLayoutBillsTopBinding: LayoutBillsTopBinding
+
+    //lateinit var subBinding: LayoutBillsTopBinding
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
-    lateinit var adapter: NodeBillsAdapter
+    val adapter: NodeBillsAdapter by lazy { NodeBillsAdapter() }
 
     //最后点击时间
     private var lastClickTime = 0L
@@ -50,6 +59,7 @@ class BillsHomeFragment : BaseFragment() {
             initSwipeRefreshLayout()
             AppCache.instance.appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(homeViewModel.year, homeViewModel.month))
         }
+        binding.total.setOnInflateListener(this)//提前设置避免多次设置
     }
 
     private fun initSwipeRefreshLayout() {
@@ -100,7 +110,9 @@ class BillsHomeFragment : BaseFragment() {
      * @param month 月
      */
     private fun totalIncomeExpense(year: Int, month: Int) {
+
         homeViewModel.getIncomeExpense(year, month).observe(mainActivity, Observer { incomeExpense: Income? ->
+
             var income = "0"
             var expenses = "0"
             incomeExpense?.let { data ->
@@ -112,37 +124,40 @@ class BillsHomeFragment : BaseFragment() {
                 }
 
             }
+
             if (income == "0" && expenses == "0") {
-                binding.total.layoutTotal.visibility = View.GONE
+                binding.total.visibility = View.GONE
             } else {
-                binding.total.layoutTotal.visibility = View.VISIBLE
-                binding.total.tvExpenditure.text = expenses
-                binding.total.tvIncome.text = income
-                refreshHeadView()
+                binding.total.visibility = View.VISIBLE
+                notifyTotalLayout(expenses, income)
             }
         })
     }
 
-    /**
-     * 刷新头部收支
-     */
-    private fun refreshHeadView() {
-        val income = BigDecimal(binding.total.tvIncome.text.toString())
-        val expenses = BigDecimal(binding.total.tvExpenditure.text.toString())
-        val totalRevenue = income.subtract(expenses)
-        if (totalRevenue.toLong() > 0) {
-            binding.total.tvSurplus.setTextColor(mainActivity.getColor(R.color.income))
-        } else {
-            binding.total.tvSurplus.setTextColor(mainActivity.getColor(R.color.expenditure))
+    private fun notifyTotalLayout(expenses: String, income: String) {
+        if (this::subLayoutBillsTopBinding.isInitialized) {
+            val tvSurplus = subLayoutBillsTopBinding.tvSurplus
+            val tvExpenditure = subLayoutBillsTopBinding.tvExpenditure
+            val tvIncome = subLayoutBillsTopBinding.tvIncome
+
+            tvExpenditure.text = expenses
+            tvIncome.text = income
+            val income1 = BigDecimal(tvIncome.text.toString())
+            val expenses1 = BigDecimal(tvExpenditure.text.toString())
+            val totalRevenue = income1.subtract(expenses1)
+            if (totalRevenue.toLong() > 0) {
+                tvSurplus.setTextColor(mainActivity.getColor(R.color.income))
+            } else {
+                tvSurplus.setTextColor(mainActivity.getColor(R.color.expenditure))
+            }
+            tvSurplus.text = totalRevenue.toString()
         }
-        binding.total.tvSurplus.text = totalRevenue.toString()
     }
 
     /**
      * 初始化账单列表适配器
      */
     private fun initBillsAdapter() {
-        adapter = NodeBillsAdapter()
         adapter.recyclerView = binding.homeRecycler
         //binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity(),LinearLayoutManager.HORIZONTAL,false));
         binding.homeRecycler.layoutManager = LinearLayoutManager(mainActivity)
@@ -198,6 +213,7 @@ class BillsHomeFragment : BaseFragment() {
         }
 
         headView()
+        notifyData(homeViewModel.year, homeViewModel.month)
     }
 
     private fun headView() {
@@ -261,6 +277,7 @@ class BillsHomeFragment : BaseFragment() {
             adapter.setEmptyView(emptyView)
             adapter.notifyDataSetChanged()
         } else {
+            binding.total.visibility = View.VISIBLE
             adapter.setDiffNewData(baseNodes)
         }
         binding.refreshLayout.isRefreshing = false
@@ -270,6 +287,10 @@ class BillsHomeFragment : BaseFragment() {
     companion object {
         // 两次点击间隔不能少于1000ms
         private const val FAST_CLICK_DELAY_TIME = 500
+    }
+
+    override fun onInflate(stub: ViewStub, inflated: View) {
+        subLayoutBillsTopBinding = LayoutBillsTopBinding.bind(inflated)
     }
 
 

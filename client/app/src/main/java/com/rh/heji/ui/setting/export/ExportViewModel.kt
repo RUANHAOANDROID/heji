@@ -26,7 +26,7 @@ class ExportViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             var response = AppCache.instance.heJiServer.exportBills("0", "0").execute()
             if (response.isSuccessful && response.code() == 200) {
-                val filesDir = App.getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+                val filesDir = AppCache.instance.context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
                 var attachment = response.headers()["Content-Disposition"]
                 var subFileName = attachment?.substringAfterLast("attachment; filename=", System.currentTimeMillis().toString() + ".xlsx")
                 val excelFile = File(filesDir, subFileName)

@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
 import com.rh.heji.App
+import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.BillDao
@@ -102,7 +103,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         if (expenditure != "0") {
             val expenditureScheme = Calendar.Scheme()
             expenditureScheme.type = -1
-            expenditureScheme.shcemeColor = App.getContext().getColor(R.color.expenditure)
+            expenditureScheme.shcemeColor = AppCache.instance.context.getColor(R.color.expenditure)
             expenditureScheme.obj = "-$expenditure"
             calendar.addScheme(expenditureScheme)
         }
@@ -110,7 +111,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         if (income != "0") {
             val incomeScheme = Calendar.Scheme()
             incomeScheme.type = 1
-            incomeScheme.shcemeColor = App.getContext().getColor(R.color.income)
+            incomeScheme.shcemeColor = AppCache.instance.context.getColor(R.color.income)
             incomeScheme.obj = "+$income"
             calendar.addScheme(incomeScheme)
         }

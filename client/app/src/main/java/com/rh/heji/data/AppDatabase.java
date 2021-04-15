@@ -12,6 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import com.rh.heji.App;
+import com.rh.heji.AppCache;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.BillDao;
 import com.rh.heji.data.db.Category;
@@ -52,7 +53,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     //默认数据库名称
                     String dbName = "heji.db";
-                    Context context = App.getContext();
+                    Context context = AppCache.Companion.getInstance().getContext();
                     INSTANCE = Room.databaseBuilder(context,
                             AppDatabase.class, dbName)
                             .fallbackToDestructiveMigration()//暴力丢弃强插升级

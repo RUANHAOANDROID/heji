@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
+import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
 import com.google.gson.GsonBuilder
@@ -15,8 +16,7 @@ import com.rh.heji.ui.user.JWTParse.getUser
 import com.rh.heji.ui.user.UserInfo
 import com.rh.heji.utlis.http.basic.ServiceCreator
 import com.tencent.mmkv.MMKV
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import java.io.*
 import java.nio.charset.StandardCharsets
 import kotlin.coroutines.CoroutineContext
@@ -27,10 +27,12 @@ import kotlin.coroutines.CoroutineContext
  * #与APP同在
  */
 class AppCache {
-    var context: Context? = null
-    val heJiServer :HeJiServer by lazy {  ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer }
+    val app: App by lazy { context as App }
+    lateinit var context: Context
+    val token by lazy { Token(context) }
+    val heJiServer: HeJiServer by lazy { ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer }
     lateinit var appViewModule: AppViewModule
-    val database:AppDatabase by lazy { AppDatabase.getInstance() }
+    val database: AppDatabase by lazy { AppDatabase.getInstance() }
     val kvStorage = MMKV.defaultMMKV()
     fun onInit(app: Application) {
         context = app
@@ -48,13 +50,33 @@ class AppCache {
         val f = File(currentPhotoPath)
         val contentUri = Uri.fromFile(f)
         mediaScanIntent.data = contentUri
-        context!!.sendBroadcast(mediaScanIntent)
+        context.sendBroadcast(mediaScanIntent)
     }
 
+    fun storage(path: String?): String {
+        val headDir = context.getExternalFilesDir(path)
+        if (!headDir!!.exists()) headDir.mkdir()
+        return headDir.path
+    }
+
+
+    companion object {
+        val instance = AppCache()
+
+        @JvmStatic
+        fun init(app: Application) {
+            instance.onInit(app)
+        }
+    }
+
+
+}
+
+class Token(val context: Context) {
     // Error occurred when opening raw file for reading.
-    val token: String
+    private val token: String
         get() {
-            val tokenFile = File(context!!.filesDir, "TokenFile")
+            val tokenFile = File(context.filesDir, "TokenFile")
             var token = ""
             if (tokenFile.exists()) {
                 try {
@@ -82,14 +104,14 @@ class AppCache {
             return String(EncodeUtils.base64Decode(token))
         }
 
-    fun saveToken(token: String?) {
-        //token = EncodeUtils.base64Encode(token);
+    suspend fun get() = token
+    suspend fun save(token: String?) {
         val fileName = "TokenFile"
-        val file = File(context!!.filesDir.absolutePath)
+        val file = File(context.filesDir.absolutePath)
         val tokenFile = File(file, fileName)
         FileUtils.createFileByDeleteOldFile(tokenFile)
         try {
-            context!!.openFileOutput(fileName, Context.MODE_PRIVATE).use { fos -> fos.write(EncodeUtils.base64Encode(token)) }
+            context.openFileOutput(fileName, Context.MODE_PRIVATE).use { fos -> fos.write(EncodeUtils.base64Encode(token)) }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {
@@ -97,24 +119,14 @@ class AppCache {
         }
     }
 
-    fun deleteToken() {
+    suspend fun delete() {
         val fileName = "TokenFile"
-        val file = File(context!!.filesDir.absolutePath)
+        val file = File(context.filesDir.absolutePath)
         val tokenFile = File(file, fileName)
         FileUtils.delete(tokenFile)
     }
 
     val isLogin: Boolean
         get() = !TextUtils.isEmpty(token)
-
-    companion object {
-        val instance = AppCache()
-
-        @JvmStatic
-        fun init(app: Application) {
-            instance.onInit(app)
-        }
-    }
-
 
 }

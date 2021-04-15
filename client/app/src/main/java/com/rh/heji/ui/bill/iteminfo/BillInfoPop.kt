@@ -3,6 +3,7 @@ package com.rh.heji.ui.bill.iteminfo
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.TimeUtils
@@ -14,6 +15,7 @@ import com.lxj.xpopup.core.ImageViewerPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.AppCache.Companion.instance
 import com.rh.heji.BuildConfig
+import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.converters.DateConverters
@@ -22,7 +24,12 @@ import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.PopBilliInfoBinding
 import com.rh.heji.ui.bill.img.ImageLoader
+import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.JWTParse.getUser
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.function.Function
 import java.util.stream.Collectors
@@ -122,17 +129,24 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
     private fun deleteTip() {
         XPopup.Builder(context).asConfirm("删除提示", "确认删除该条账单吗？"
         ) {
-            val (username) = getUser(instance.token)
-            val createUser = bill.createUser
-            if (createUser == null || bill.createUser == username) {
-                instance.appViewModule.billDelete(bill.getId())
-                popClickListener.let {
-                    it.delete(bill.getId())
+            val mainActivity = context as MainActivity
+            mainActivity.lifecycleScope.launch(Dispatchers.Default) {
+                val user = getUser(instance.token.get())
+                if (bill.createUser == null || bill.createUser == user.username) {
+                    instance.appViewModule.billDelete(bill.getId())
+                    popClickListener.let {
+                        mainActivity.runOnUiThread {
+                            it.delete(bill.getId())
+                            dismiss()
+                        }
+
+                    }
+                } else {
+                    ToastUtils.showLong("只有账单创建人有权删除该账单")
                 }
-            } else {
-                ToastUtils.showLong("只有账单创建人有权删除该账单")
+
             }
-            dismiss()
+
         }.show()
     }
 

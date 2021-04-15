@@ -38,9 +38,7 @@ import java.util.*
 class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
 
     lateinit var binding: FragmentBillsHomeBinding
-    lateinit var subLayoutBillsTopBinding: LayoutBillsTopBinding
-
-    //lateinit var subBinding: LayoutBillsTopBinding
+    lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     val adapter: NodeBillsAdapter by lazy { NodeBillsAdapter() }
 
@@ -135,10 +133,10 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
     }
 
     private fun notifyTotalLayout(expenses: String, income: String) {
-        if (this::subLayoutBillsTopBinding.isInitialized) {
-            val tvSurplus = subLayoutBillsTopBinding.tvSurplus
-            val tvExpenditure = subLayoutBillsTopBinding.tvExpenditure
-            val tvIncome = subLayoutBillsTopBinding.tvIncome
+        if (this::subTotalLayoutBinding.isInitialized) {
+            val tvSurplus = subTotalLayoutBinding.tvSurplus
+            val tvExpenditure = subTotalLayoutBinding.tvExpenditure
+            val tvIncome = subTotalLayoutBinding.tvIncome
 
             tvExpenditure.text = expenses
             tvIncome.text = income
@@ -290,7 +288,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
     }
 
     override fun onInflate(stub: ViewStub, inflated: View) {
-        subLayoutBillsTopBinding = LayoutBillsTopBinding.bind(inflated)
+        subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)
     }
 
 

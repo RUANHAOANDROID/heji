@@ -40,7 +40,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
     lateinit var binding: FragmentBillsHomeBinding
     lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
-    val adapter: NodeBillsAdapter by lazy { NodeBillsAdapter() }
+    val adapter: NodeBillsAdapter by lazy { NodeBillsAdapter()  }
 
     //最后点击时间
     private var lastClickTime = 0L
@@ -278,6 +278,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             binding.total.visibility = View.VISIBLE
             adapter.setDiffNewData(baseNodes)
         }
+        //adapter.loadMoreModule.loadMoreEnd()//单月不分页，直接显示没有跟多
         binding.refreshLayout.isRefreshing = false
     }
 

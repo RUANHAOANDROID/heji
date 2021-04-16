@@ -3,7 +3,6 @@ package com.rh.heji
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.text.TextUtils
@@ -33,6 +32,7 @@ import com.permissionx.guolindev.callback.RequestCallback
 import com.permissionx.guolindev.request.ExplainScope
 import com.permissionx.guolindev.request.ForwardScope
 import com.rh.heji.AppCache.Companion.instance
+import com.rh.heji.databinding.ActivityMainBinding
 import com.rh.heji.databinding.NavHeaderMainBinding
 import com.rh.heji.ui.home.DrawerSlideListener
 import com.rh.heji.ui.home.HomeDrawerListener
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController private set
     private lateinit var drawerLayout: DrawerLayout
     val mainViewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
-    private lateinit var navHeaderMainBinding: NavHeaderMainBinding
+    private lateinit var navHeaderMainBinding: NavHeaderMainBinding//侧拉头像
     private lateinit var navigationView: NavigationView
     fun permitDiskReads(func: () -> Any): Any {
         if (BuildConfig.DEBUG) {
@@ -109,9 +109,10 @@ class MainActivity : AppCompatActivity() {
     private fun initDrawerLayout() {
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
+        val navHostFragmentRootView: View = findViewById(R.id.nav_host_fragment)
         drawerLayout.addDrawerListener(HomeDrawerListener(this, object : DrawerSlideListener {
             override fun offset(left: Int, top: Int, right: Int, bottom: Int) {
-                fragments[0].view?.layout(left, top, right, bottom)
+                navHostFragmentRootView.layout(left, top, right, bottom)
                 Log.i("offset", "offset: left=" + left + "right=" + right + "bottom=" + bottom)
             }
         }))
@@ -119,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.getMenu()
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener { item: MenuItem? ->
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                runBlocking (Dispatchers.IO){ instance.token.delete() }
+                runBlocking(Dispatchers.IO) { instance.token.delete() }
                 finish()
             }.show()
             false
@@ -189,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                         } else if (itemLabel == report) {
                         } else if (itemLabel == setting) {
                         }
-                        LogUtils.i( destination.label)
+                        LogUtils.i(destination.label)
                     }
                 })
     }

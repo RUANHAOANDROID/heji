@@ -279,7 +279,6 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             adapter.setDiffNewData(baseNodes)
         }
         binding.refreshLayout.isRefreshing = false
-        rootView.invalidate()//homeRecycler底部显示未全屏，刷一下
     }
 
     companion object {

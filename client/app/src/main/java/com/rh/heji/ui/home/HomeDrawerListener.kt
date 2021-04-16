@@ -3,6 +3,7 @@ package com.rh.heji.ui.home
 import android.util.DisplayMetrics
 import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
+import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.rh.heji.MainActivity
 
 class HomeDrawerListener(private val mainActivity: MainActivity, var listener: DrawerSlideListener) : DrawerListener {
@@ -10,10 +11,11 @@ class HomeDrawerListener(private val mainActivity: MainActivity, var listener: D
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
         val displayMetrics = DisplayMetrics()
         mainActivity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        listener.offset(drawerView.right,
-                0,
+        listener.offset(
+                drawerView.right,
+                drawerView.top,
                 (displayMetrics.widthPixels + displayMetrics.widthPixels * slideOffset).toInt(),
-                displayMetrics.heightPixels)
+                drawerView.bottom)
     }
 
     override fun onDrawerOpened(drawerView: View) {}

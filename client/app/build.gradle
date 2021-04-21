@@ -165,8 +165,8 @@ dependencies {
     implementation 'com.tencent:mmkv-static:1.2.7'
     //图表统计
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
     //---Toolbaer 工具
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
     // fragment快速实现（可选）
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
     // kotlin扩展（可选）

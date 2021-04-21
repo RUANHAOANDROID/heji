@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = '1.4.31'
-    ext.nav_version = "2.3.4"
+    ext.nav_version = "2.3.5"
     repositories {
         google()
         jcenter()
@@ -31,7 +31,7 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 ext {
-    nav_version = "2.3.4"
+    nav_version = "2.3.5"
     lifecycle_version ="2.3.0"
     rxJava = 'io.reactivex.rxjava3:rxjava:3.0.0'
     rxAndroid = 'io.reactivex.rxjava3:rxandroid:3.0.0'

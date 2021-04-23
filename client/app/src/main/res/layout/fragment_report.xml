@@ -16,7 +16,8 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedSccrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
@@ -34,7 +35,6 @@
                 android:background="@drawable/bg_circle_white10"
                 android:minHeight="120dp"
                 android:padding="8dp"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintTop_toTopOf="parent"
@@ -175,7 +175,7 @@
                 android:padding="8dp">
 
                 <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/lc_analysis_chart"
+                    android:id="@+id/lineChart"
                     android:layout_width="match_parent"
                     android:layout_height="230dp"
                     android:layout_marginTop="25dp"
@@ -197,9 +197,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/dia_btn_back_circle"
-                    app:layout_constraintEnd_toEndOf="@+id/lc_analysis_chart"
-                    app:layout_constraintStart_toStartOf="@+id/lc_analysis_chart"
-                    app:layout_constraintTop_toBottomOf="@+id/lc_analysis_chart">
+                    app:layout_constraintEnd_toEndOf="@+id/lineChart"
+                    app:layout_constraintStart_toStartOf="@+id/lineChart"
+                    app:layout_constraintTop_toBottomOf="@+id/lineChart">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_select_consume"

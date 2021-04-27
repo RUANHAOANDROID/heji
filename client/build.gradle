@@ -32,7 +32,7 @@ task clean(type: Delete) {
 }
 ext {
     nav_version = "2.3.5"
-    lifecycle_version ="2.3.0"
+    lifecycle_version ="2.3.1"
     rxJava = 'io.reactivex.rxjava3:rxjava:3.0.0'
     rxAndroid = 'io.reactivex.rxjava3:rxandroid:3.0.0'
     retrofit ="2.9.0"

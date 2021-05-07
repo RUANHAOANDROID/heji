@@ -4,10 +4,11 @@ import android.graphics.Color
 import android.view.View
 import com.blankj.utilcode.util.ToastUtils
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.rh.heji.R
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentReportBinding
@@ -23,6 +24,7 @@ import java.math.BigDecimal
 class ReportFragment : BaseFragment() {
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     lateinit var binding: FragmentReportBinding
+
     private val reportViewModel: ReportViewModel by lazy {
         getViewModel(ReportViewModel::class.java)
     }
@@ -62,62 +64,58 @@ class ReportFragment : BaseFragment() {
         binding = FragmentReportBinding.bind(rootView)
         reportViewModel.text.observe(viewLifecycleOwner, { })
         homeViewModel.getIncomeExpense(homeViewModel.year, homeViewModel.month).observe(this, incomeExpenditureObserver)
+        lineChart()
+        setInConsume()
+    }
+
+    private fun pieClassify() {
 
     }
 
-    private val pieClassify: (any: Any) -> Unit = {
+    private fun lineChart() {
+        binding.lineChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry, h: Highlight) {
+            }
 
-    }
-    private val lineChart: (any: Any) -> Unit = {
-        binding.lineChart
-        val xAxisInConsume: XAxis = binding.lineChart.xAxis
-        xAxisInConsume.setDrawAxisLine(true)
-        xAxisInConsume.setDrawGridLines(false)
-        xAxisInConsume.axisMinimum = 0f
-        xAxisInConsume.textSize = 13f
-        xAxisInConsume.position = XAxis.XAxisPosition.BOTTOM
-        xAxisInConsume.axisLineColor = Color.parseColor("#93A8B1")
-        xAxisInConsume.textColor = Color.parseColor("#566974")
-        val left: YAxis = binding.lineChart.axisLeft
-        left.axisMinimum = 0f
-        binding.lineChart.axisRight.isEnabled = false
-        left.setDrawGridLines(false)
-        left.axisLineColor = Color.parseColor("#93A8B1")
-        left.textColor = Color.parseColor("#566974")
-        binding.lineChart.legend.isEnabled = false
-        binding.lineChart.description.isEnabled = false
-        binding.lineChart.extraBottomOffset = 5f
+            override fun onNothingSelected() {
+            }
+        });
+        binding.lineChart.setDrawGridBackground(false)
         binding.lineChart.setTouchEnabled(false)
+        val xAxis: XAxis = binding.lineChart.xAxis
+        xAxis.position =XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawAxisLine(true)
+        xAxis.setDrawGridLines(false)
+        xAxis.axisMinimum = 0f
+        xAxis.textSize = 13f
+        xAxis.axisLineColor = Color.parseColor("#93A8B1")
+        xAxis.textColor = Color.parseColor("#566974")
+        xAxis.mLabelWidth
+        xAxis.granularity = 1f
+        xAxis.valueFormatter =DateFormater()
+
     }
+
     private val lists: MutableList<MutableList<Entry>>? = null
     private val times: List<String>? = null
+
     /**
      * 设置
      */
     private fun setInConsume() {
-        val xAxisInConsume =binding.lineChart.xAxis
-        val   yVals = MutableList
-        var set1: LineDataSet? = LineDataSet(,"")
-        var set2: LineDataSet? = null
-        var size = 0
-        set1!!.setDrawCircleHole(false)
-        set1.setCircleColor(Color.RED)
-        set1.circleRadius = 2f
-        set1.color = Color.RED
-        set1.setDrawValues(false)
-        set1.setDrawFilled(true)
-        set1.fillColor = Color.RED
-        set1.fillAlpha = 50
-        set2!!.setDrawCircleHole(false)
-        set2.setCircleColor(Color.GREEN)
-        set2.circleRadius = 2f
-        set2.color = Color.GREEN
-        set2.setDrawValues(false)
-        set2.setDrawFilled(true)
-        set2.fillColor = Color.GREEN
-        set2.fillAlpha = 50
-        val data = LineData(set1, set2)
+        val xAxisInConsume = binding.lineChart.xAxis
+        val list = mutableListOf(
+                Entry(1f, 1f),
+                Entry(2f, 4f),
+                Entry(3f, 5f),
+                Entry(4f, 6f),
+                Entry(5f, 8f))
+
+        var set1 = LineDataSet(list, "收入")
+
+        val data = LineData(set1)
         binding.lineChart.data = data
         binding.lineChart.invalidate()
     }
+
 }

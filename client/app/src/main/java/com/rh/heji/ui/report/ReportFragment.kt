@@ -132,7 +132,7 @@ class ReportFragment : BaseFragment() {
         val chart = binding.pieChartCategory
         chart.setUsePercentValues(true)
         chart.getDescription().setEnabled(false)
-        chart.setExtraOffsets(5f, 10f, 5f, 5f)
+        chart.setExtraOffsets(20f, 20f, 20f, 20f)
 
         chart.setDragDecelerationFrictionCoef(0.95f)
 
@@ -144,9 +144,8 @@ class ReportFragment : BaseFragment() {
 
         chart.setTransparentCircleColor(Color.WHITE)
         chart.setTransparentCircleAlpha(110)
-
-        chart.setHoleRadius(58f)
-        chart.setTransparentCircleRadius(61f)
+        chart.setHoleRadius(30f)
+        chart.setTransparentCircleRadius(35f)
 
         chart.setDrawCenterText(true)
 
@@ -255,6 +254,14 @@ class ReportFragment : BaseFragment() {
         //data.setValueTypeface(tfLight)
         binding.pieChartCategory.setData(data)
 
+        //设置描述的位置
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setValueLinePart1Length(0.5f);//设置描述连接线长度
+        dataSet.valueLineColor =mainActivity.getColor(R.color.colorPrimary)
+        dataSet.setValueTextColors(colors)
+        //设置数据的位置
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setValueLinePart2Length(0.5f);//设置数据连接线长度
         // undo all highlights
 
         // undo all highlights

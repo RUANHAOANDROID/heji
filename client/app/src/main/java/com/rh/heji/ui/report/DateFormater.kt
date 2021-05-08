@@ -14,7 +14,8 @@ class DateFormater : ValueFormatter() {
     }
 
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-        return year[value.toInt()]
+        return year[value.toInt()-1]
     }
+
 
 }

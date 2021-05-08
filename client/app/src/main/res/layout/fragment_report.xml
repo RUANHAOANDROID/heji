@@ -16,7 +16,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedSccrollView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -265,9 +265,10 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pie_analysis_chart"
+                    android:id="@+id/pieChartCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="500dp"
                     android:layout_marginTop="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -280,7 +281,7 @@
                     android:background="@android:color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pie_analysis_chart" />
+                    app:layout_constraintTop_toBottomOf="@+id/pieChartCategory" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -288,7 +289,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:background="@drawable/bg_circle_white10"
-                android:minHeight="120dp"
+                android:minHeight="280dp"
                 android:padding="8dp">
 
                 <TextView

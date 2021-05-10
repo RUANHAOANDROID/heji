@@ -11,8 +11,10 @@ import androidx.room.Update;
 
 import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.converters.MoneyConverters;
+import com.rh.heji.data.db.query.CategoryPercentage;
 import com.rh.heji.data.db.query.Income;
 import com.rh.heji.data.db.query.IncomeTime;
+import com.rh.heji.data.db.query.IncomeTimeSurplus;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -78,6 +80,7 @@ public interface BillDao {
 
     /**
      * 根据时间区间查
+     *
      * @param start 起始时间
      * @param end   结束时间
      * @return 账单列表
@@ -131,6 +134,46 @@ public interface BillDao {
 
     @Query("SELECT * FROM bill WHERE  sync_status==:syncStatus")
     List<Bill> findBillsByStatus(int syncStatus);
+
+    /**
+     * 根据月份查询账单
+     *
+     * @param date
+     * @return
+     */
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date")
+    List<Bill> findBillMonthList(String date);
+
+    //---------------统计----------------//
+
+    /**
+     * 根据月份查询账单
+     *
+     * @param date
+     * @return
+     */
+//    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ," +
+//            "sum(case  when  type=1 then money else 0 end)as income ," +
+//            "date(bill_time) as time " +
+//            "from bill  where sync_status!=-1 AND strftime('%Y-%m',bill_time) ==:date group by date(bill_time) ")
+//    List<IncomeTimeSurplus> reportMonthList(String date);
+
+    /**
+     * 查询全年月份账单
+     *
+     * @param date
+     * @return
+     */
+//    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ," +
+//            "sum(case  when  type=1 then money else 0 end)as income ," +
+//            "strftime('%Y-%m',bill_time) as time ,avg(money) as surplus " +
+//            "from bill  where sync_status!=-1 AND strftime('%Y',bill_time) ==:date group by strftime('%Y-%m',bill_time) ")
+//    List<IncomeTimeSurplus> reportYearList(String date);
+    @TypeConverters(MoneyConverters.class)
+    @Query("select category as category,sum(money)as money," +
+            "round(sum(money)*100.0 / (select sum(money)  from bill where type =:type and strftime('%Y-%m',bill_time) ==:date),2)as percentage " +
+            "from bill where type =:type and strftime('%Y-%m',bill_time) ==:date group by category")
+    List<CategoryPercentage> reportCategory(int type, String date);
 
     /**
      * @param bill

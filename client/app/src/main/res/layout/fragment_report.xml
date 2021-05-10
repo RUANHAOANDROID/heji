@@ -242,7 +242,7 @@
                         android:paddingTop="3dp"
                         android:paddingRight="10dp"
                         android:paddingBottom="3dp"
-                        android:text="收支"
+                        android:text="全部"
                         android:textSize="13sp" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -275,7 +275,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_analysis_classify"
+                    android:id="@+id/recyclerCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/white"
@@ -293,7 +293,7 @@
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/tvBaobiao"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="月报表"
@@ -302,7 +302,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerBottomBills"
+                    android:id="@+id/recyclerBaobiao"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/white" />

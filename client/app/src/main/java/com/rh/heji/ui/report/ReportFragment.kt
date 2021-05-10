@@ -7,12 +7,14 @@ import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
 import com.rh.heji.R
+import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.ui.base.BaseFragment
@@ -27,12 +29,8 @@ import java.util.*
  */
 class ReportFragment : BaseFragment() {
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
+    val reportViewModel: ReportViewModel by lazy { getViewModel(ReportViewModel::class.java) }
     lateinit var binding: FragmentReportBinding
-
-    private val reportViewModel: ReportViewModel by lazy {
-        getViewModel(ReportViewModel::class.java)
-    }
-
 
     override fun layoutId(): Int {
         return R.layout.fragment_report
@@ -45,6 +43,14 @@ class ReportFragment : BaseFragment() {
         showYearMonthTitle({ year, month ->
             ToastUtils.showLong("$year,$month")
         })
+    }
+
+    fun switch(date: String, isYear: Boolean) {
+        if (isYear) {
+
+        } else {
+
+        }
     }
 
     /**
@@ -93,7 +99,7 @@ class ReportFragment : BaseFragment() {
         xAxis.textColor = Color.parseColor("#566974")
         xAxis.mLabelWidth
         xAxis.granularity = 1f
-        xAxis.valueFormatter = DateFormater()
+        xAxis.valueFormatter = LargeValueFormatter()
         xAxis.labelCount = 11//强制显示X
         xAxis.labelRotationAngle = 30f
         binding.lineChart.axisRight.isEnabled = false
@@ -132,7 +138,7 @@ class ReportFragment : BaseFragment() {
         val chart = binding.pieChartCategory
         chart.setUsePercentValues(true)
         chart.getDescription().setEnabled(false)
-        chart.setExtraOffsets(20f, 20f, 20f, 20f)
+        chart.setExtraOffsets(30f, 10f, 30f, 10f)
 
         chart.setDragDecelerationFrictionCoef(0.95f)
 
@@ -192,8 +198,9 @@ class ReportFragment : BaseFragment() {
         chart.setEntryLabelColor(Color.WHITE)
         //chart.setEntryLabelTypeface(tfRegular)
         chart.setEntryLabelTextSize(12f)
-        setCategoryData("test",0f,4,5f)
+        setCategoryData("test", 0f, 4, 5f)
     }
+
     protected val months = arrayOf(
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
     )
@@ -204,7 +211,8 @@ class ReportFragment : BaseFragment() {
             "Party Q", "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X",
             "Party Y", "Party Z"
     )
-    fun setCategoryData(category: String, pa: Float, count: Int=4, range: Float=8f) {
+
+    fun setCategoryData(category: String, pa: Float, count: Int = 4, range: Float = 8f) {
         val entries = ArrayList<PieEntry>()
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
@@ -212,11 +220,16 @@ class ReportFragment : BaseFragment() {
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
         // the chart.
-        for (i in 0 until count) {
-            entries.add(PieEntry((Math.random() * range + range / 5).toFloat() ,
-                    parties[i % parties.size]))
-        }
-
+//
+//        for (i in 0 until count) {
+//            entries.add(PieEntry((Math.random() * range + range / 5).toFloat(),
+//                    parties[i % parties.size]))
+//        }
+        reportViewModel.categoryProportion().observe(this, androidx.lifecycle.Observer {
+            it.forEach {
+                entries.add(it)
+            }
+        })
         val dataSet = PieDataSet(entries, "类别")
 
         dataSet.setDrawIcons(false)
@@ -257,7 +270,7 @@ class ReportFragment : BaseFragment() {
         //设置描述的位置
         dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         dataSet.setValueLinePart1Length(0.5f);//设置描述连接线长度
-        dataSet.valueLineColor =mainActivity.getColor(R.color.colorPrimary)
+        dataSet.valueLineColor = mainActivity.getColor(R.color.colorPrimary)
         dataSet.setValueTextColors(colors)
         //设置数据的位置
         dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
@@ -268,5 +281,9 @@ class ReportFragment : BaseFragment() {
         binding.pieChartCategory.highlightValues(null)
 
         binding.pieChartCategory.invalidate()
+    }
+
+    fun ininBaobiao() {
+        binding.tvBaobiao.text = "月报表"
     }
 }

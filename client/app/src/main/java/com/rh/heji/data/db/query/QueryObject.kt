@@ -19,3 +19,27 @@ data class IncomeTime(
         var expenditure: BigDecimal?,
         var time: String?
 )
+
+/**
+ * 收入|支出|结余|时间
+ */
+data class IncomeTimeSurplus(
+        var income: BigDecimal?,
+        var expenditure: BigDecimal?,
+        var surplus: BigDecimal?,
+        var time: String?
+)
+
+/**
+ * 分类所占比例
+ * 收入|支出|占比
+ */
+data class CategoryPercentage(var category: String?,
+                              var money: BigDecimal?,
+                              var percentage: Float)
+
+/**
+ * 平均收入支出
+ */
+data class AvgIE(var income: BigDecimal?, var expenditure: BigDecimal?)
+

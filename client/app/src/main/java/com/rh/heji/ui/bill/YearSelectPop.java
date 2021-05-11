@@ -35,8 +35,9 @@ public class YearSelectPop extends CenterPopupView implements View.OnClickListen
     int earliestYear = 2016;
     private PopYearMonthBinding binding;
     private int selectYear;
+    private boolean showAllYear;
 
-    public YearSelectPop(@NonNull Context context, OnTabSelected onTabSelected) {
+    public YearSelectPop(@NonNull Context context, OnTabSelected onTabSelected, boolean showAllYear) {
         super(context);
         this.onTabSelected = onTabSelected;
         Calendar calendar = Calendar.getInstance();
@@ -44,6 +45,7 @@ public class YearSelectPop extends CenterPopupView implements View.OnClickListen
         for (int i = calendar.get(Calendar.YEAR); i >= earliestYear; i--) {
             years.add(i);
         }
+        this.showAllYear = showAllYear;
         LogUtils.i(years);
     }
 
@@ -64,6 +66,15 @@ public class YearSelectPop extends CenterPopupView implements View.OnClickListen
         binding.y10.setOnClickListener(this);
         binding.y11.setOnClickListener(this);
         binding.y12.setOnClickListener(this);
+        binding.btnYearAll.setOnClickListener(v -> {
+            onTabSelected.selected(selectYear, 0);
+            dismiss();
+        });
+        if (showAllYear) {
+            binding.btnYearAll.setVisibility(View.VISIBLE);
+        } else {
+            binding.btnYearAll.setVisibility(View.GONE);
+        }
         initYearsTab();
     }
 

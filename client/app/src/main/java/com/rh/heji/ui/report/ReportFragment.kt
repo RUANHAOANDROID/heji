@@ -1,12 +1,15 @@
 package com.rh.heji.ui.report
 
 import android.graphics.Color
+import android.text.SpannableString
 import android.view.View
-import com.blankj.utilcode.util.ToastUtils
+import android.widget.TextView
+import com.blankj.utilcode.util.TimeUtils
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
@@ -15,13 +18,17 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.converters.DateConverters
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.home.BillsHomeViewModel
 import com.rh.heji.utlis.MyTimeUtils
+import com.rh.heji.utlis.YearMonth
 import java.math.BigDecimal
 import java.util.*
+import java.util.stream.Collectors
 
 
 /**
@@ -31,6 +38,10 @@ class ReportFragment : BaseFragment() {
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     val reportViewModel: ReportViewModel by lazy { getViewModel(ReportViewModel::class.java) }
     lateinit var binding: FragmentReportBinding
+    override fun onStart() {
+        super.onStart()
+        reportViewModel.yearMonth = YearMonth(homeViewModel.year, homeViewModel.month)
+    }
 
     override fun layoutId(): Int {
         return R.layout.fragment_report
@@ -41,16 +52,14 @@ class ReportFragment : BaseFragment() {
         showBlack()
         toolBar.title = "统计"
         showYearMonthTitle({ year, month ->
-            ToastUtils.showLong("$year,$month")
-        })
-    }
 
-    fun switch(date: String, isYear: Boolean) {
-        if (isYear) {
+            if (month == 0) {//全年
 
-        } else {
+            } else {//单月
+                reportViewModel.yearMonth = YearMonth(year, month)
+            }
 
-        }
+        }, showAllYear = true)
     }
 
     /**
@@ -88,10 +97,21 @@ class ReportFragment : BaseFragment() {
             }
         });
         binding.lineChart.setDrawGridBackground(false)
-        binding.lineChart.setTouchEnabled(false)
+        binding.lineChart.setTouchEnabled(true)
+        var markerView:MarkerView=object:MarkerView(mainActivity, R.layout.marker_linechart){
+            val markerContext =findViewById<TextView>(R.id.tvContext)
+            override fun refreshContent(e: Entry, highlight: Highlight?) {
+                super.refreshContent(e, highlight)
+
+                markerContext.text=SpannableString("${e.x.toInt()}日\n${e.data}:${e.y}")
+            }
+        }
+        markerView.chartView =binding.lineChart
+        binding.lineChart.marker =markerView
+
         val xAxis: XAxis = binding.lineChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawAxisLine(true)
+        xAxis.setDrawAxisLine(false)
         xAxis.setDrawGridLines(false)
         //xAxis.axisMinimum = 1f
         xAxis.textSize = 12f
@@ -99,10 +119,13 @@ class ReportFragment : BaseFragment() {
         xAxis.textColor = Color.parseColor("#566974")
         xAxis.mLabelWidth
         xAxis.granularity = 1f
-        xAxis.valueFormatter = LargeValueFormatter()
-        xAxis.labelCount = 11//强制显示X
+        //xAxis.valueFormatter = LargeValueFormatter()
+        //xAxis.labelCount = 11//强制显示X 不设置则缩
         xAxis.labelRotationAngle = 30f
         binding.lineChart.axisRight.isEnabled = false
+
+        binding.lineChart.axisLeft.valueFormatter = LargeValueFormatter()
+        binding.lineChart.xAxis.valueFormatter =IndexAxisValueFormatter()
     }
 
     private val lists: MutableList<MutableList<Entry>>? = null
@@ -115,19 +138,26 @@ class ReportFragment : BaseFragment() {
         val xAxisInConsume = binding.lineChart.xAxis
         val list = mutableListOf(
                 Entry(1f, 134f),
-                Entry(2f, 212f),
-                Entry(3f, 34f),
+                Entry(2f, 2120f),
+                Entry(3f, 340f),
                 Entry(4f, 4567f),
                 Entry(5f, 5123f),
-                Entry(6f, 64f),
+                Entry(6f, 640f),
                 Entry(7f, 756f),
-                Entry(8f, 8f),
-                Entry(9f, 97f),
+                Entry(8f, 80f),
+                Entry(9f, 9007f),
                 Entry(10f, 1860f),
                 Entry(11f, 11211f),
                 Entry(12f, 11211f))
+        list.clear()
+        var entrys =AppDatabase.getInstance().billDao().findBillMonthList(reportViewModel.yearMonth.toString()).stream().map {
+            val day =DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2].toFloat()
+            var type =if (it.type==-1) "支出" else "收入"
+            return@map Entry(day, it.money.toFloat(), type)
+        }.collect(Collectors.toList())
 
-        var set1 = LineDataSet(list, "收入")
+
+        var set1 = LineDataSet(entrys, "收入")
 
         val data = LineData(set1)
         binding.lineChart.data = data
@@ -138,7 +168,7 @@ class ReportFragment : BaseFragment() {
         val chart = binding.pieChartCategory
         chart.setUsePercentValues(true)
         chart.getDescription().setEnabled(false)
-        chart.setExtraOffsets(30f, 10f, 30f, 10f)
+        chart.setExtraOffsets(5f, 5f, 5f, 5f)
 
         chart.setDragDecelerationFrictionCoef(0.95f)
 
@@ -150,9 +180,9 @@ class ReportFragment : BaseFragment() {
 
         chart.setTransparentCircleColor(Color.WHITE)
         chart.setTransparentCircleAlpha(110)
-        chart.setHoleRadius(30f)
-        chart.setTransparentCircleRadius(35f)
-
+        chart.setHoleRadius(50f)
+        chart.setTransparentCircleRadius(55f)
+        chart.centerText ="收/支比例"
         chart.setDrawCenterText(true)
 
         chart.setRotationAngle(0f)
@@ -172,6 +202,9 @@ class ReportFragment : BaseFragment() {
         // add a selection listener
         chart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
+                val pieEntry = e as PieEntry
+                chart.centerText = SpannableString("${pieEntry.label}\n${pieEntry.data}")
+
             }
 
             override fun onNothingSelected() {
@@ -183,14 +216,14 @@ class ReportFragment : BaseFragment() {
         // chart.spin(2000, 0, 360);
 
         // chart.spin(2000, 0, 360);
-        val l: Legend = chart.getLegend()
-        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-        l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-        l.orientation = Legend.LegendOrientation.VERTICAL
-        l.setDrawInside(false)
-        l.xEntrySpace = 7f
-        l.yEntrySpace = 0f
-        l.yOffset = 0f
+//        val l: Legend = chart.getLegend()
+//        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+//        l.orientation = Legend.LegendOrientation.HORIZONTAL
+//        l.setDrawInside(false)
+//        l.xEntrySpace = 7f
+//        l.yEntrySpace = 0f
+//        l.yOffset = 0f
 
         // entry label styling
 
@@ -198,7 +231,16 @@ class ReportFragment : BaseFragment() {
         chart.setEntryLabelColor(Color.WHITE)
         //chart.setEntryLabelTypeface(tfRegular)
         chart.setEntryLabelTextSize(12f)
-        setCategoryData("test", 0f, 4, 5f)
+        chart.setUsePercentValues(true)
+        chart.setDrawEntryLabels(true)
+        reportViewModel.categoryProportion(reportViewModel.yearMonth).observe(this, androidx.lifecycle.Observer {
+            val entries = ArrayList<PieEntry>()
+            it.forEach {
+                entries.add(it)
+            }
+            setCategoryData(entries)
+        })
+        chart.invalidate()
     }
 
     protected val months = arrayOf(
@@ -212,8 +254,8 @@ class ReportFragment : BaseFragment() {
             "Party Y", "Party Z"
     )
 
-    fun setCategoryData(category: String, pa: Float, count: Int = 4, range: Float = 8f) {
-        val entries = ArrayList<PieEntry>()
+    fun setCategoryData(entries: ArrayList<PieEntry>) {
+
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
         // the chart.
@@ -225,12 +267,8 @@ class ReportFragment : BaseFragment() {
 //            entries.add(PieEntry((Math.random() * range + range / 5).toFloat(),
 //                    parties[i % parties.size]))
 //        }
-        reportViewModel.categoryProportion().observe(this, androidx.lifecycle.Observer {
-            it.forEach {
-                entries.add(it)
-            }
-        })
-        val dataSet = PieDataSet(entries, "类别")
+
+        val dataSet = PieDataSet(entries, " ")
 
         dataSet.setDrawIcons(false)
 
@@ -261,7 +299,7 @@ class ReportFragment : BaseFragment() {
 
         //dataSet.setSelectionShift(0f);
         val data = PieData(dataSet)
-        data.setValueFormatter(PercentFormatter())
+        data.setValueFormatter(PercentFormatter(binding.pieChartCategory))
         data.setValueTextSize(11f)
         data.setValueTextColor(Color.WHITE)
         //data.setValueTypeface(tfLight)
@@ -270,7 +308,7 @@ class ReportFragment : BaseFragment() {
         //设置描述的位置
         dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         dataSet.setValueLinePart1Length(0.5f);//设置描述连接线长度
-        dataSet.valueLineColor = mainActivity.getColor(R.color.colorPrimary)
+        //dataSet.valueLineColor = mainActivity.getColor(R.color.colorPrimary)
         dataSet.setValueTextColors(colors)
         //设置数据的位置
         dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);

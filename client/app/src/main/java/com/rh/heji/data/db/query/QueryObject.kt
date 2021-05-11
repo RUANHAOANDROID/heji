@@ -1,5 +1,7 @@
 package com.rh.heji.data.db.query
 
+import androidx.room.TypeConverters
+import com.rh.heji.data.converters.MoneyConverters
 import java.math.BigDecimal
 
 //注意:数据类没办法集成open 因为没法实现equals

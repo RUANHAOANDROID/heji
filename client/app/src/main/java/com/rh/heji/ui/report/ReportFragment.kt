@@ -26,6 +26,7 @@ import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.home.BillsHomeViewModel
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
+import org.w3c.dom.Entity
 import java.math.BigDecimal
 import java.util.*
 import java.util.stream.Collectors
@@ -98,16 +99,16 @@ class ReportFragment : BaseFragment() {
         });
         binding.lineChart.setDrawGridBackground(false)
         binding.lineChart.setTouchEnabled(true)
-        var markerView:MarkerView=object:MarkerView(mainActivity, R.layout.marker_linechart){
-            val markerContext =findViewById<TextView>(R.id.tvContext)
+        var markerView: MarkerView = object : MarkerView(mainActivity, R.layout.marker_linechart) {
+            val markerContext = findViewById<TextView>(R.id.tvContext)
             override fun refreshContent(e: Entry, highlight: Highlight?) {
                 super.refreshContent(e, highlight)
 
-                markerContext.text=SpannableString("${e.x.toInt()}日\n${e.data}:${e.y}")
+                markerContext.text = SpannableString("${e.x.toInt()}日\n${e.data}:${e.y}")
             }
         }
-        markerView.chartView =binding.lineChart
-        binding.lineChart.marker =markerView
+        markerView.chartView = binding.lineChart
+        binding.lineChart.marker = markerView
 
         val xAxis: XAxis = binding.lineChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -125,7 +126,7 @@ class ReportFragment : BaseFragment() {
         binding.lineChart.axisRight.isEnabled = false
 
         binding.lineChart.axisLeft.valueFormatter = LargeValueFormatter()
-        binding.lineChart.xAxis.valueFormatter =IndexAxisValueFormatter()
+        binding.lineChart.xAxis.valueFormatter = IndexAxisValueFormatter()
     }
 
     private val lists: MutableList<MutableList<Entry>>? = null
@@ -136,26 +137,19 @@ class ReportFragment : BaseFragment() {
      */
     private fun setInConsume() {
         val xAxisInConsume = binding.lineChart.xAxis
-        val list = mutableListOf(
-                Entry(1f, 134f),
-                Entry(2f, 2120f),
-                Entry(3f, 340f),
-                Entry(4f, 4567f),
-                Entry(5f, 5123f),
-                Entry(6f, 640f),
-                Entry(7f, 756f),
-                Entry(8f, 80f),
-                Entry(9f, 9007f),
-                Entry(10f, 1860f),
-                Entry(11f, 11211f),
-                Entry(12f, 11211f))
+        var dayCount = MyTimeUtils.getMonthLastDay(reportViewModel.yearMonth.year, reportViewModel.yearMonth.month)
+        val list = mutableListOf<Entry>()
+        val dayMap = mutableMapOf<Int,Entry>()
+        for (day in 0..dayCount) {
+            dayMap.replace(day,Entry(0f,0f))
+        }
         list.clear()
-        var entrys =AppDatabase.getInstance().billDao().findBillMonthList(reportViewModel.yearMonth.toString()).stream().map {
-            val day =DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2].toFloat()
-            var type =if (it.type==-1) "支出" else "收入"
+        var entrys = AppDatabase.getInstance().billDao().findBillMonthList(reportViewModel.yearMonth.toString()).stream().map {
+            val day = DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2].toFloat()
+            var type = if (it.type == -1) "支出" else "收入"
+            dayMap.replace(day.toInt(),Entry(day, it.money.toFloat(), type))
             return@map Entry(day, it.money.toFloat(), type)
         }.collect(Collectors.toList())
-
 
         var set1 = LineDataSet(entrys, "收入")
 
@@ -182,7 +176,7 @@ class ReportFragment : BaseFragment() {
         chart.setTransparentCircleAlpha(110)
         chart.setHoleRadius(50f)
         chart.setTransparentCircleRadius(55f)
-        chart.centerText ="收/支比例"
+        chart.centerText = "收/支比例"
         chart.setDrawCenterText(true)
 
         chart.setRotationAngle(0f)

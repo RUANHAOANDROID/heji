@@ -1,6 +1,6 @@
-package com.rh.heji.ui.user;
+package com.rh.heji.ui.user
 
-public class Authority {
-    String book_id;
-    String authority;
+class Authority {
+    var book_id: String? = null
+    var authority: String? = null
 }

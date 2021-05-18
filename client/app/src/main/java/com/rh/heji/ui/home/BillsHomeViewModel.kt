@@ -45,7 +45,7 @@ class BillsHomeViewModel : BaseViewModel() {
                         weekday = TimeUtils.getChineseWeek(dayIncome.time, TimeUtils.getSafeDateFormat(MyTimeUtils.PATTERN_DAY))
                 )
                 val dayListNodes = mutableListOf<BaseNode>()
-                billDao.findListByDay(dayIncome.time)?.forEach {
+                billDao.findByDay(dayIncome.time)?.forEach {
                     dayListNodes.add(DayBillsNode(it))
                 }
                 var dayItemNode = DayIncomeNode(dayListNodes, incomeNode)

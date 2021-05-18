@@ -100,7 +100,7 @@ class DataSyncWork {
     }
 
     private suspend fun billDelete() {
-        val deleteBills = billDao.findBillsByStatus(Constant.STATUS_DELETE)
+        val deleteBills = billDao.findByStatus(Constant.STATUS_DELETE)
         deleteBills?.let {
             if (it.isNotEmpty() && it.size > 0) {
                 it.forEach { bill ->
@@ -114,7 +114,7 @@ class DataSyncWork {
     }
 
     private suspend fun billsUpdate() {
-        val updateBills = billDao.findBillsByStatus(Constant.STATUS_UPDATE)
+        val updateBills = billDao.findByStatus(Constant.STATUS_UPDATE)
         updateBills?.let {
             if (it.isNotEmpty() && it.size > 0) {
                 it.forEach { bill ->
@@ -130,7 +130,7 @@ class DataSyncWork {
     }
 
     private suspend fun billsPush() {
-        val pushBills = billDao.findBillsByStatus(Constant.STATUS_NOT_SYNC)
+        val pushBills = billDao.findByStatus(Constant.STATUS_NOT_SYNC)
 
         pushBills?.let {
             if (it.isNotEmpty() && it.size > 0) {
@@ -148,9 +148,9 @@ class DataSyncWork {
             data?.let { serverBills ->
                 if (serverBills.isNotEmpty()) {
                     serverBills.forEach { serverBill ->
-                        val localBill = billDao.findByID(serverBill.id)//本地的
+                        val existCount = billDao.countById(serverBill.id)//本地的
 
-                        if (localBill.isEmpty()) {//不存在直接存入
+                        if (existCount ==0) {//不存在直接存入
                             billDao.install(serverBill.toBill())
                         }
                         var imagesId = serverBill.images//云图片

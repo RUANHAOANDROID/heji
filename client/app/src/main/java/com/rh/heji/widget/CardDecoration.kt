@@ -16,6 +16,9 @@ import com.rh.heji.R
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.adapter.TYPE_TITLE
 
+/**
+ * 账单按日期ItemDecoration
+ */
 class CardDecoration(val padding: Int = 8) : ItemDecoration() {
     private fun drawCardBackground(c: Canvas, parent: RecyclerView) {
         if (adapterEmpty(parent)) return

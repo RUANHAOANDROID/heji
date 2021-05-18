@@ -55,7 +55,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         LogUtils.i(calendar.toString())
         launchIO({
             val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
-            val dayBills = billDao.findListByDay(dateTime)
+            val dayBills = billDao.findByDay(dateTime)
             dayBills?.let {
                 var expenditure = "0"
                 var income = "0"

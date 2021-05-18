@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.text.SpannableString
 import android.view.View
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.TimeUtils
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.MarkerView
@@ -18,6 +19,7 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.utils.MPPointF
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.query.Income
@@ -36,8 +38,11 @@ import java.util.stream.Collectors
  * 报告统计页面
  */
 class ReportFragment : BaseFragment() {
-    val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
-    val reportViewModel: ReportViewModel by lazy { getViewModel(ReportViewModel::class.java) }
+    private val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
+    private val reportViewModel: ReportViewModel by lazy { getViewModel(ReportViewModel::class.java) }
+    private val categoryTotalAdapter :CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
+    val monthYearBillsAdapter :CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
+
     lateinit var binding: FragmentReportBinding
     override fun onStart() {
         super.onStart()
@@ -144,7 +149,7 @@ class ReportFragment : BaseFragment() {
             dayMap.replace(day,Entry(0f,0f))
         }
         list.clear()
-        var entrys = AppDatabase.getInstance().billDao().findBillMonthList(reportViewModel.yearMonth.toString()).stream().map {
+        var entrys = AppDatabase.getInstance().billDao().findByMonth(reportViewModel.yearMonth.toString()).stream().map {
             val day = DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2].toFloat()
             var type = if (it.type == -1) "支出" else "收入"
             dayMap.replace(day.toInt(),Entry(day, it.money.toFloat(), type))
@@ -161,29 +166,29 @@ class ReportFragment : BaseFragment() {
     fun initPieChartCategory() {
         val chart = binding.pieChartCategory
         chart.setUsePercentValues(true)
-        chart.getDescription().setEnabled(false)
+        chart.description.isEnabled = false
         chart.setExtraOffsets(5f, 5f, 5f, 5f)
 
-        chart.setDragDecelerationFrictionCoef(0.95f)
+        chart.dragDecelerationFrictionCoef = 0.95f
 
         //chart.setCenterTextTypeface(tfLight)
         //chart.setCenterText(generateCenterSpannableText())
 
-        chart.setDrawHoleEnabled(true)
+        chart.isDrawHoleEnabled = true
         chart.setHoleColor(Color.WHITE)
 
         chart.setTransparentCircleColor(Color.WHITE)
         chart.setTransparentCircleAlpha(110)
-        chart.setHoleRadius(50f)
-        chart.setTransparentCircleRadius(55f)
+        chart.holeRadius = 50f
+        chart.transparentCircleRadius = 55f
         chart.centerText = "收/支比例"
         chart.setDrawCenterText(true)
 
-        chart.setRotationAngle(0f)
+        chart.rotationAngle = 0f
         // enable rotation of the chart by touch
         // enable rotation of the chart by touch
-        chart.setRotationEnabled(true)
-        chart.setHighlightPerTapEnabled(true)
+        chart.isRotationEnabled = true
+        chart.isHighlightPerTapEnabled = true
 
         // chart.setUnit(" €");
         // chart.setDrawUnitsInChart(true);
@@ -233,20 +238,12 @@ class ReportFragment : BaseFragment() {
                 entries.add(it)
             }
             setCategoryData(entries)
+            updateCategoryListView(entries)
         })
         chart.invalidate()
     }
 
-    protected val months = arrayOf(
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
-    )
 
-    protected val parties = arrayOf(
-            "Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G", "Party H",
-            "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P",
-            "Party Q", "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X",
-            "Party Y", "Party Z"
-    )
 
     fun setCategoryData(entries: ArrayList<PieEntry>) {
 
@@ -300,13 +297,13 @@ class ReportFragment : BaseFragment() {
         binding.pieChartCategory.setData(data)
 
         //设置描述的位置
-        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        dataSet.setValueLinePart1Length(0.5f);//设置描述连接线长度
+        dataSet.xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE;
+        dataSet.valueLinePart1Length = 0.5f;//设置描述连接线长度
         //dataSet.valueLineColor = mainActivity.getColor(R.color.colorPrimary)
         dataSet.setValueTextColors(colors)
         //设置数据的位置
-        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        dataSet.setValueLinePart2Length(0.5f);//设置数据连接线长度
+        dataSet.yValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE;
+        dataSet.valueLinePart2Length = 0.5f;//设置数据连接线长度
         // undo all highlights
 
         // undo all highlights
@@ -315,6 +312,18 @@ class ReportFragment : BaseFragment() {
         binding.pieChartCategory.invalidate()
     }
 
+    fun updateCategoryListView(entries: ArrayList<PieEntry>){
+        binding.recyclerCategory.layoutManager =LinearLayoutManager(activity)
+        binding.recyclerCategory.adapter=categoryTotalAdapter
+        var data=AppDatabase.getInstance().billDao().findByMonthGroupByCategory("2021-05",BillType.EXPENDITURE.type())
+        categoryTotalAdapter.setNewInstance(entries)
+    }
+    fun updateMonthYearBillListView(){
+        binding.recyclerBaobiao.layoutManager =LinearLayoutManager(activity)
+        binding.recyclerBaobiao.adapter=monthYearBillsAdapter
+        //var data =AppDatabase.getInstance().billDao().findByStatus()
+        //monthYearBillsAdapter.setNewInstance(data);
+    }
     fun ininBaobiao() {
         binding.tvBaobiao.text = "月报表"
     }

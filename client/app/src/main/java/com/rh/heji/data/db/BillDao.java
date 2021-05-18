@@ -54,10 +54,10 @@ public interface BillDao {
      */
     @TypeConverters({MoneyConverters.class, DateConverters.class})
     @Query("select bill_id from bill where datetime(bill_time) =:time and money =:money and remark=:remark")
-    List<String> findBill(Date time, BigDecimal money, String remark);
+    List<String> findIds(Date time, BigDecimal money, String remark);
 
-    @Query("select * from bill where bill_id =:id")
-    List<Bill> findByID(String id);
+    @Query("select count(*)  from bill where bill_id =:id")
+    int countById(String id);
 
     /**
      * @param syncStatus 同步状态
@@ -66,17 +66,6 @@ public interface BillDao {
     @Query("SELECT bill_id FROM bill WHERE sync_status =:syncStatus")
     LiveData<List<String>> observeSyncStatus(int syncStatus);
 
-    /**
-     * 根据时间区间查
-     * Flowable的被观察对象使用Consumer观察员
-     *
-     * @param start 起始时间
-     * @param end   结束时间
-     * @return 账单列表
-     */
-
-    @Query("SELECT * FROM bill WHERE (date(bill_time) BETWEEN :start AND :end ) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
-    LiveData<List<Bill>> findBillsFollowableByTime(String start, String end);
 
     /**
      * 根据时间区间查
@@ -86,7 +75,7 @@ public interface BillDao {
      * @return 账单列表
      */
     @Query("SELECT * FROM bill WHERE (date(bill_time) BETWEEN :start AND :end ) AND (sync_status !=" + Constant.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
-    List<Bill> findListBetweenTime(String start, String end);
+    List<Bill> findBetweenTime(String start, String end);
 
     /**
      * 查询有账单的日子,日子去重
@@ -99,7 +88,8 @@ public interface BillDao {
     List<String> findHaveBillDays(String start, String end);
 
     @Query("SELECT * FROM bill WHERE date(bill_time) =:time AND sync_status!=-1")
-    List<Bill> findListByDay(String time);
+    List<Bill> findByDay(String time);
+
 
     /**
      * 时间内收入、支出
@@ -133,7 +123,7 @@ public interface BillDao {
     List<BillWithImage> findNotSyncBillWhitImage();
 
     @Query("SELECT * FROM bill WHERE  sync_status==:syncStatus")
-    List<Bill> findBillsByStatus(int syncStatus);
+    List<Bill> findByStatus(int syncStatus);
 
     /**
      * 根据月份查询账单
@@ -142,7 +132,15 @@ public interface BillDao {
      * @return
      */
     @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND sync_status!=" + Constant.STATUS_DELETE+" group by date(bill_time)")
-    List<Bill> findBillMonthList(String date);
+    List<Bill> findByMonth(String date);
+    /**
+     * 根据月份查询账单
+     *
+     * @param date
+     * @return
+     */
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND type =:type AND sync_status!=" + Constant.STATUS_DELETE+" group by category")
+    List<Bill> findByMonthGroupByCategory(String date,int type);
 
     //---------------统计----------------//
 

@@ -84,7 +84,7 @@ class ETCViewModel : BaseViewModel() {
                 /**
                  * 如果不存在才插入
                  */
-                val bills = AppDatabase.getInstance().billDao().findBill(bill.billTime, bill.getMoney(), bill.getRemark())
+                val bills = AppDatabase.getInstance().billDao().findIds(bill.billTime, bill.getMoney(), bill.getRemark())
                 if (bills.size <= 0) {
                     AppDatabase.getInstance().billDao().install(bill)
                     LogUtils.d("导入ETC账单：", bill)
@@ -235,7 +235,7 @@ class ETCViewModel : BaseViewModel() {
         /**
          * 如果不存在才插入(插入时必须保持格式一致)
          */
-        val bills = AppDatabase.getInstance().billDao().findBill(bill.billTime, bill.getMoney(), bill.getRemark())
+        val bills = AppDatabase.getInstance().billDao().findIds(bill.billTime, bill.getMoney(), bill.getRemark())
         if (bills.size <= 0) {
             AppDatabase.getInstance().billDao().install(bill)
             LogUtils.d("导入ETC账单：", bill)

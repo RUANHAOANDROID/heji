@@ -133,6 +133,15 @@ public interface BillDao {
      */
     @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND sync_status!=" + Constant.STATUS_DELETE+" group by date(bill_time)")
     List<Bill> findByMonth(String date);
+
+    /**
+     * 根据月份查询账单
+     *
+     * @param date
+     * @return
+     */
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND type=:type AND sync_status!=" + Constant.STATUS_DELETE+" group by date(bill_time)")
+    List<Bill> findByMonthGroupByDay(String date,int type);
     /**
      * 根据月份查询账单
      *
@@ -143,6 +152,24 @@ public interface BillDao {
     List<Bill> findByMonthGroupByCategory(String date,int type);
 
     //---------------统计----------------//
+
+
+    @TypeConverters(MoneyConverters.class)
+    @Query("select strftime('%m-%d',bill_time) as time ," +
+            "sum(case when type =-1 then money else 0 end) as expenditure ," +
+            " sum(case when type =1 then money else 0 end) as income ,"+
+            " sum(case when type =1 then money else 0 end) - sum(case when type =-1 then money else 0 end) as surplus"+
+            " from bill where strftime('%Y-%m',bill_time) =:yearMonth group by strftime('%Y-%m-%d',bill_time)")
+    List<IncomeTimeSurplus> listIncomeExpSurplusByMonth(String yearMonth);
+
+
+    @TypeConverters(MoneyConverters.class)
+    @Query("select strftime('%Y-%m',bill_time) as time ," +
+            " sum(case when type =-1 then money else 0 end) as expenditure ," +
+            " sum(case when type =1 then money else 0 end) as income ," +
+            " sum(case when type =1 then money else 0 end) - sum(case when type =-1 then money else 0 end) as surplus"+
+            " from bill where strftime('%Y',bill_time) =:year group by strftime('%Y-%m',bill_time)")
+    List<IncomeTimeSurplus> listIncomeExpSurplusByYear(String year);
 
     /**
      * 根据月份查询账单

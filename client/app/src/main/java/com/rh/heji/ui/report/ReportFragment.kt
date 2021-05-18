@@ -41,7 +41,7 @@ class ReportFragment : BaseFragment() {
     private val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     private val reportViewModel: ReportViewModel by lazy { getViewModel(ReportViewModel::class.java) }
     private val categoryTotalAdapter :CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
-    val monthYearBillsAdapter :CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
+    val monthYearBillsAdapter :MonthYearBillAdapter = MonthYearBillAdapter(mutableListOf())
 
     lateinit var binding: FragmentReportBinding
     override fun onStart() {
@@ -239,6 +239,7 @@ class ReportFragment : BaseFragment() {
             }
             setCategoryData(entries)
             updateCategoryListView(entries)
+            updateMonthYearBillListView()
         })
         chart.invalidate()
     }
@@ -321,8 +322,8 @@ class ReportFragment : BaseFragment() {
     fun updateMonthYearBillListView(){
         binding.recyclerBaobiao.layoutManager =LinearLayoutManager(activity)
         binding.recyclerBaobiao.adapter=monthYearBillsAdapter
-        //var data =AppDatabase.getInstance().billDao().findByStatus()
-        //monthYearBillsAdapter.setNewInstance(data);
+        var data =AppDatabase.getInstance().billDao().listIncomeExpSurplusByMonth("2021-05")
+        monthYearBillsAdapter.setNewInstance(data);
     }
     fun ininBaobiao() {
         binding.tvBaobiao.text = "月报表"

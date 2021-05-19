@@ -1,13 +1,15 @@
 package com.rh.heji.ui.report
 
+import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Color
+import android.graphics.Rect
 import android.text.SpannableString
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.TimeUtils
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
@@ -23,14 +25,13 @@ import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
-import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.home.BillsHomeViewModel
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
-import org.w3c.dom.Entity
+import com.rh.heji.widget.DividerItemDecorator
 import java.math.BigDecimal
 import java.util.*
 import java.util.stream.Collectors
@@ -322,12 +323,13 @@ class ReportFragment : BaseFragment() {
         categoryTotalAdapter.setNewInstance(entries)
     }
     fun updateMonthYearBillListView(){
-        binding.recyclerBaobiao.layoutManager =LinearLayoutManager(activity)
+        val linearLayoutManager = LinearLayoutManager(activity)
+        linearLayoutManager.isSmoothScrollbarEnabled = true
+        binding.recyclerBaobiao.layoutManager = linearLayoutManager
         binding.recyclerBaobiao.adapter=monthYearBillsAdapter
-        val dividerItemDecoration =
-            DividerItemDecoration(binding.recyclerBaobiao.context, LinearLayout.VERTICAL)
-        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.inset_recyclerview_divider,mainActivity.theme))
-        binding.recyclerBaobiao.addItemDecoration(dividerItemDecoration)
+        binding.recyclerBaobiao.setHasFixedSize(true);
+        binding.recyclerBaobiao.isNestedScrollingEnabled = false;
+        binding.recyclerBaobiao.addItemDecoration(DividerItemDecorator(resources.getDrawable(R.drawable.inset_recyclerview_divider,mainActivity.theme)))
         var data =AppDatabase.getInstance().billDao().listIncomeExpSurplusByMonth("2021-05")
         monthYearBillsAdapter.setNewInstance(data);
     }

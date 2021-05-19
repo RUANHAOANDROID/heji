@@ -3,14 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:minHeight="50dp">
 
     <ImageView
         android:id="@+id/imgCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="30dp"
+        android:layout_marginStart="8dp"
+        android:maxWidth="45dp"
+        android:maxHeight="45dp"
         android:minWidth="30dp"
+        android:minHeight="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,23 +25,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Category"
         android:textColor="@color/black"
-        app:layout_constraintStart_toEndOf="@+id/imgCategory"
-        app:layout_constraintTop_toTopOf="@+id/imgCategory" />
+        app:layout_constraintBottom_toTopOf="@+id/progressBarCategory"
+        app:layout_constraintStart_toEndOf="@+id/imgCategory" />
 
     <ProgressBar
         android:id="@+id/progressBarCategory"
-        style="?android:attr/progressBarStyleHorizontal"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:progressDrawable="@drawable/progress_blue"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="4dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imgCategory"
+        android:max="100"
+        android:progress="50"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgCategory" />
+        app:layout_constraintStart_toEndOf="@+id/imgCategory"
+        app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
     <TextView
         android:id="@+id/tvCategoryPercentage"
@@ -45,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="50%"
+        app:layout_constraintBottom_toBottomOf="@+id/tvCategory"
         app:layout_constraintStart_toEndOf="@+id/tvCategory"
         app:layout_constraintTop_toTopOf="@+id/tvCategory" />
 
@@ -54,6 +62,14 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="+10000"
+        app:layout_constraintBottom_toBottomOf="@+id/tvCategoryPercentage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvCategoryPercentage" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 </androidx.constraintlayout.widget.ConstraintLayout>

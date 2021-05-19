@@ -1,35 +1,55 @@
-package com.rh.heji.utlis;
+package com.rh.heji.utlis
 
-import android.graphics.Color;
-
-import java.util.Random;
+import android.graphics.Color
+import com.github.mikephil.charting.utils.ColorTemplate
+import java.util.*
 
 /**
  * Date: 2020/9/16
  * Author: 锅得铁
  * #
  */
-public class ColorUtils {
-    public static int randomColor() {
+object ColorUtils {
+    fun randomColor(): Int {
         //随机种子
-        final Random mRandom = new Random(System.currentTimeMillis());
-
-        final int baseRed = Color.red(randomBaseColor());
-        final int baseGreen = Color.green(randomBaseColor());
-        final int baseBlue = Color.blue(randomBaseColor());
-        final int red = (baseRed + mRandom.nextInt(256)) / 2;
-        final int green = (baseGreen + mRandom.nextInt(256)) / 2;
-        final int blue = (baseBlue + mRandom.nextInt(256)) / 2;
-        return Color.rgb(red, green, blue);
+        val mRandom = Random(System.currentTimeMillis())
+        val baseRed = Color.red(randomBaseColor())
+        val baseGreen = Color.green(randomBaseColor())
+        val baseBlue = Color.blue(randomBaseColor())
+        val red = (baseRed + mRandom.nextInt(256)) / 2
+        val green = (baseGreen + mRandom.nextInt(256)) / 2
+        val blue = (baseBlue + mRandom.nextInt(256)) / 2
+        return Color.rgb(red, green, blue)
     }
 
-    public static int randomBaseColor() {
+    fun randomBaseColor(): Int {
         //随机种子
-        final Random mRandom = new Random(System.currentTimeMillis());
-
-        int[] baseColos = new int[]{Color.BLUE, Color.RED, Color.YELLOW, Color.YELLOW, Color.GREEN};
+        val mRandom = Random(System.currentTimeMillis())
+        val baseColos = intArrayOf(
+            Color.BLUE,
+            Color.RED,
+            Color.YELLOW,
+            Color.YELLOW,
+            Color.GREEN
+        )
         // 基础色
-        int baseColor = baseColos[mRandom.nextInt(baseColos.length)];
-        return baseColor;
+        return baseColos[mRandom.nextInt(baseColos.size)]
+    }
+
+    fun groupColors(): ArrayList<Int> {
+        // add a lot of colors
+        val colors = ArrayList<Int>()
+
+        for (c in ColorTemplate.VORDIPLOM_COLORS) colors.add(c)
+
+        for (c in ColorTemplate.JOYFUL_COLORS) colors.add(c)
+
+        for (c in ColorTemplate.COLORFUL_COLORS) colors.add(c)
+
+        for (c in ColorTemplate.LIBERTY_COLORS) colors.add(c)
+
+        for (c in ColorTemplate.PASTEL_COLORS) colors.add(c)
+        colors.add(ColorTemplate.getHoloBlue())
+        return colors
     }
 }

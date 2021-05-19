@@ -19,6 +19,8 @@
     <color name="income_bf">#A899cc00</color>
     <color name="app_text_color_light">#93A8B1</color>
     <color name="app_text_color_dark">#566974</color>
+
+    <color name="textRemark">#BCBCBC</color>
     <!-- Gray
         ＃F5F5F5
         ＃EEEEEE

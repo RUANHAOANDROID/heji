@@ -5,7 +5,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.rh.heji.R
 import com.rh.heji.data.db.query.IncomeTimeSurplus
 import com.rh.heji.databinding.ItemMonthYearBillBinding
-import java.math.BigDecimal
 
 /**
  *Date: 2021/5/18

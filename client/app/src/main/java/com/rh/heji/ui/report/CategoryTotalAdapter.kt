@@ -7,7 +7,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.rh.heji.R
 import com.rh.heji.databinding.ItemCategoryTotalBinding
 import com.rh.heji.utlis.ColorUtils
-import com.rh.heji.utlis.textdraw.ColorGenerator
 import com.rh.heji.utlis.textdraw.TextDrawable
 
 

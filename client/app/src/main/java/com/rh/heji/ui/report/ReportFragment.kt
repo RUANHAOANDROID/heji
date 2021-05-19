@@ -3,7 +3,9 @@ package com.rh.heji.ui.report
 import android.graphics.Color
 import android.text.SpannableString
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.TimeUtils
 import com.github.mikephil.charting.animation.Easing
@@ -41,7 +43,7 @@ class ReportFragment : BaseFragment() {
     private val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     private val reportViewModel: ReportViewModel by lazy { getViewModel(ReportViewModel::class.java) }
     private val categoryTotalAdapter :CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
-    val monthYearBillsAdapter :MonthYearBillAdapter = MonthYearBillAdapter(mutableListOf())
+    private val monthYearBillsAdapter :MonthYearBillAdapter = MonthYearBillAdapter(mutableListOf())
 
     lateinit var binding: FragmentReportBinding
     override fun onStart() {
@@ -322,6 +324,10 @@ class ReportFragment : BaseFragment() {
     fun updateMonthYearBillListView(){
         binding.recyclerBaobiao.layoutManager =LinearLayoutManager(activity)
         binding.recyclerBaobiao.adapter=monthYearBillsAdapter
+        val dividerItemDecoration =
+            DividerItemDecoration(binding.recyclerBaobiao.context, LinearLayout.VERTICAL)
+        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.inset_recyclerview_divider,mainActivity.theme))
+        binding.recyclerBaobiao.addItemDecoration(dividerItemDecoration)
         var data =AppDatabase.getInstance().billDao().listIncomeExpSurplusByMonth("2021-05")
         monthYearBillsAdapter.setNewInstance(data);
     }

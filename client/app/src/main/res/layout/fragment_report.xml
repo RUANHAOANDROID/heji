@@ -8,9 +8,7 @@
 
     <include layout="@layout/app_toolbar"></include>
 
-    <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedSccrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -166,6 +164,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+
                 android:background="@drawable/bg_circle_white10"
                 android:minHeight="120dp"
                 android:padding="8dp">
@@ -249,6 +248,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/bg_circle_white10"
                 android:minHeight="120dp"
+
                 android:padding="8dp">
 
                 <TextView
@@ -294,6 +294,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="月报表"
+                    android:paddingTop="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -302,10 +303,44 @@
                     android:id="@+id/recyclerBaobiao"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:background="@android:color/white"
                     android:nestedScrollingEnabled="false"
-                    tools:ignore="MissingConstraints" />
+                    app:layout_constraintTop_toBottomOf="@+id/layoutTotalList"
+                    tools:ignore="MissingConstraints"
+                    tools:layout_editor_absoluteX="8dp" />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:paddingTop="4dp"
+                    android:text="日均支出：123&#8194;收入：111"
+                    app:layout_constraintEnd_toEndOf="@+id/tvBaobiao"
+                    app:layout_constraintStart_toStartOf="@+id/tvBaobiao"
+                    app:layout_constraintTop_toBottomOf="@+id/tvBaobiao" />
+
+                <View
+                    android:id="@+id/line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1sp"
+                    android:background="@drawable/inset_recyclerview_divider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/layoutTotalList">
+
+                </View>
+
+                <include
+                    android:id="@+id/layoutTotalList"
+                    layout="@layout/item_month_year_bill"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

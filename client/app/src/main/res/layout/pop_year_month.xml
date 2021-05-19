@@ -216,7 +216,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:visibility="gone"
+
             android:text="全年"
             android:textColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"

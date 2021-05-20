@@ -127,9 +127,9 @@ class ReportFragment : BaseFragment() {
         var markerView: MarkerView = object : MarkerView(mainActivity, R.layout.marker_linechart) {
             val markerContext = findViewById<TextView>(R.id.tvContext)
             override fun refreshContent(e: Entry, highlight: Highlight?) {
+                val spannableString = SpannableString("${e.x.toInt()}日\n${e.data}:${e.y}")
+                markerContext.text = spannableString
                 super.refreshContent(e, highlight)
-
-                markerContext.text = SpannableString("${e.x.toInt()}日\n${e.data}:${e.y}")
             }
         }
         markerView.chartView = binding.lineChart

@@ -19,10 +19,10 @@ import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.home.BillsHomeViewModel
 import com.rh.heji.utlis.ColorUtils
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
@@ -36,15 +36,19 @@ import java.util.stream.Collectors
  * 报告统计页面
  */
 class ReportFragment : BaseFragment() {
-    private val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
+    //private val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     private val reportViewModel: ReportViewModel by lazy { getViewModel(ReportViewModel::class.java) }
     private val categoryTotalAdapter: CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
     private val monthYearBillsAdapter: MonthYearBillAdapter = MonthYearBillAdapter(mutableListOf())
 
     lateinit var binding: FragmentReportBinding
+
+    val colors = ColorUtils.groupColors()
+
     override fun onStart() {
         super.onStart()
-        reportViewModel.yearMonth = YearMonth(homeViewModel.year, homeViewModel.month)
+        reportViewModel.yearMonth =
+            YearMonth(reportViewModel.yearMonth.year, reportViewModel.yearMonth.month)
     }
 
     override fun layoutId(): Int {
@@ -58,7 +62,7 @@ class ReportFragment : BaseFragment() {
         showYearMonthTitle({ year, month ->
 
             if (month == 0) {//全年
-
+                reportViewModel.allYear = year
             } else {//单月
                 reportViewModel.yearMonth = YearMonth(year, month)
             }
@@ -67,7 +71,7 @@ class ReportFragment : BaseFragment() {
     }
 
     /**
-     * 收入/支出 预览
+     * 收入/支出 预览 Observer
      */
     private val incomeExpenditureObserver: (t: Income) -> Unit = {
         it?.let { income ->
@@ -77,7 +81,10 @@ class ReportFragment : BaseFragment() {
             binding.tvExpenditureValue.text = income.expenditure.toString()
             val jieYu = income.income!!.minus(income.expenditure!!)//结余
             binding.tvJieYuValue.text = jieYu.toString()
-            val dayCount = MyTimeUtils.lastDayOfMonth(homeViewModel.year, homeViewModel.month)
+            val dayCount = MyTimeUtils.lastDayOfMonth(
+                reportViewModel.yearMonth.year,
+                reportViewModel.yearMonth.month
+            )
                 .split("-")[2].toInt()//月份天数
             binding.tvDayAVGValue.text =
                 jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN)?.toString()//平均值
@@ -85,16 +92,28 @@ class ReportFragment : BaseFragment() {
 
     }
 
+    /**
+     *  view start
+     */
     override fun initView(rootView: View) {
         binding = FragmentReportBinding.bind(rootView)
-        reportViewModel.text.observe(viewLifecycleOwner, { })
-        homeViewModel.getIncomeExpense(homeViewModel.year, homeViewModel.month)
-            .observe(this, incomeExpenditureObserver)
+        incomeExpenditureInfo()
         lineChart()
-        setInConsume()
+        reportViewModel.everyNodeIncomeExpenditure.observe(this, {
+            setLineChartNodes(it)
+        })
+
         initPieChartCategory()
+        updateMonthYearBillListView()
     }
 
+    private fun incomeExpenditureInfo() {
+        reportViewModel.incomeExpenditure.observe(this, incomeExpenditureObserver)
+    }
+
+    /**
+     * init line chart
+     */
     private fun lineChart() {
         binding.lineChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry, h: Highlight) {
@@ -135,13 +154,10 @@ class ReportFragment : BaseFragment() {
         binding.lineChart.xAxis.valueFormatter = IndexAxisValueFormatter()
     }
 
-    private val lists: MutableList<MutableList<Entry>>? = null
-    private val times: List<String>? = null
-
     /**
-     * 设置
+     * 设置 折线图节点数据
      */
-    private fun setInConsume() {
+    private fun setLineChartNodes(bills: List<Bill>) {
         val xAxisInConsume = binding.lineChart.xAxis
         var dayCount = MyTimeUtils.getMonthLastDay(
             reportViewModel.yearMonth.year,
@@ -153,24 +169,25 @@ class ReportFragment : BaseFragment() {
             dayMap.replace(day, Entry(0f, 0f))
         }
         list.clear()
-        var entrys =
-            AppDatabase.getInstance().billDao().findByMonth(reportViewModel.yearMonth.toString())
-                .stream().map {
-                    val day =
-                        DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2].toFloat()
-                    var type = if (it.type == -1) "支出" else "收入"
-                    dayMap.replace(day.toInt(), Entry(day, it.money.toFloat(), type))
-                    return@map Entry(day, it.money.toFloat(), type)
-                }.collect(Collectors.toList())
+        var entries = bills.stream().map {
+            val day =
+                DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2].toFloat()
+            var type = if (it.type == -1) "支出" else "收入"
+            dayMap.replace(day.toInt(), Entry(day, it.money.toFloat(), type))
+            return@map Entry(day, it.money.toFloat(), type)
+        }.collect(Collectors.toList())
 
-        var set1 = LineDataSet(entrys, "收入")
+        var set1 = LineDataSet(entries, "收入")
 
         val data = LineData(set1)
         binding.lineChart.data = data
         binding.lineChart.invalidate()
     }
 
-    fun initPieChartCategory() {
+    /**
+     * 初始化 饼状图统计
+     */
+    private fun initPieChartCategory() {
         val chart = binding.pieChartCategory
         chart.setUsePercentValues(true)
         chart.description.isEnabled = false
@@ -217,29 +234,14 @@ class ReportFragment : BaseFragment() {
             }
         })
 
-
         chart.animateY(1400, Easing.EaseInOutQuad)
-        // chart.spin(2000, 0, 360);
-
-        // chart.spin(2000, 0, 360);
-//        val l: Legend = chart.getLegend()
-//        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
-//        l.orientation = Legend.LegendOrientation.HORIZONTAL
-//        l.setDrawInside(false)
-//        l.xEntrySpace = 7f
-//        l.yEntrySpace = 0f
-//        l.yOffset = 0f
-
-        // entry label styling
-
         // entry label styling
         chart.setEntryLabelColor(Color.WHITE)
         //chart.setEntryLabelTypeface(tfRegular)
         chart.setEntryLabelTextSize(12f)
         chart.setUsePercentValues(true)
         chart.setDrawEntryLabels(true)
-        reportViewModel.categoryProportion(reportViewModel.yearMonth)
+        reportViewModel.categoryProportion
             .observe(this, {
                 val entries = ArrayList<PieEntry>()
                 it.forEach {
@@ -247,13 +249,12 @@ class ReportFragment : BaseFragment() {
                 }
                 setCategoryData(entries)
                 updateCategoryListView(entries)
-                updateMonthYearBillListView()
             })
         chart.invalidate()
     }
 
-    val colors = ColorUtils.groupColors()
-    fun setCategoryData(entries: ArrayList<PieEntry>) {
+
+    private fun setCategoryData(entries: ArrayList<PieEntry>) {
 
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
@@ -302,12 +303,9 @@ class ReportFragment : BaseFragment() {
     }
 
 
-
     private fun updateCategoryListView(entries: ArrayList<PieEntry>) {
         binding.recyclerCategory.layoutManager = LinearLayoutManager(activity)
         binding.recyclerCategory.adapter = categoryTotalAdapter
-        var data = AppDatabase.getInstance().billDao()
-            .findByMonthGroupByCategory("2021-05", BillType.EXPENDITURE.type())
         categoryTotalAdapter.setNewInstance(entries)
     }
 
@@ -326,13 +324,15 @@ class ReportFragment : BaseFragment() {
                 )
             )
         )
-        var data = AppDatabase.getInstance().billDao().listIncomeExpSurplusByMonth("2021-05")
-        monthYearBillsAdapter.setNewInstance(data);
-        billTotalListLayout("2021-05", false)
+        reportViewModel.reportBillsList.observe(this, {
+            monthYearBillsAdapter.setNewInstance(it);
+        })
+        billTotalListLayout()
     }
 
-    private fun billTotalListLayout(date: String, isYear: Boolean = false) {
-        if (isYear) {
+    private fun billTotalListLayout() {
+        val year = reportViewModel.isAllYear
+        if (year) {
             binding.layoutTotalList.tvDate.text = "月份"
         }
         val textColor = resources.getColor(

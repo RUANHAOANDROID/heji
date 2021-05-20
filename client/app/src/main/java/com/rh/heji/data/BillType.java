@@ -8,7 +8,8 @@ package com.rh.heji.data;
 public enum BillType {
 
     INCOME(+1, "收入"),
-    EXPENDITURE(-1, "支出");
+    EXPENDITURE(-1, "支出"),
+    ALL(0, "收支");
     private int type;
     private String text;
 
@@ -32,8 +33,11 @@ public enum BillType {
     public static BillType transform(int type) {
         if (type == BillType.INCOME.type()) {
             return BillType.INCOME;
-        } else {
+        }
+        if (type == BillType.EXPENDITURE.type()) {
             return BillType.EXPENDITURE;
+        } else {
+            return BillType.ALL;
         }
     }
 
@@ -43,6 +47,6 @@ public enum BillType {
         } else if (text.equals(BillType.EXPENDITURE.text())) {
             return BillType.EXPENDITURE;
         }
-        return null;
+        return BillType.ALL;
     }
 }

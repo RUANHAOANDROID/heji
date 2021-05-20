@@ -20,13 +20,15 @@ class CategoryTotalAdapter(
 ) :
     BaseQuickAdapter<PieEntry, BaseViewHolder>(layoutResId = R.layout.item_category_total, data) {
     val colors = ColorUtils.groupColors()
-    private lateinit var itemBinding: ItemCategoryTotalBinding;
+    private lateinit var itemBinding: ItemCategoryTotalBinding
     private val percentFormatter: PercentFormatter = PercentFormatter()
     override fun convert(holder: BaseViewHolder, item: PieEntry) {
         itemBinding = ItemCategoryTotalBinding.bind(holder.itemView)
+
         val textIconColor = colors[holder.layoutPosition]
         val textIconDrawable = TextDrawable.builder()
             .buildRound(item.label.substring(0, 1), textIconColor)
+
         itemBinding.imgCategory.setImageDrawable(textIconDrawable)
         itemBinding.tvCategory.text = item.label
         itemBinding.tvCategoryIncome.text = item.data.toString()

@@ -82,7 +82,7 @@ class BillRepository {
                 if (length > Constants.FILE_LENGTH_1M * 2) { //图片超过设定值则压缩
                     LogUtils.i("图片大小超过2M,压缩图片", Constants.FILE_LENGTH_1M * 2)
                     val fileList = Luban.with(AppCache.instance.context).load(imgFile).get()
-                    if (!fileList.isEmpty() && fileList.size > 0) {
+                    if (fileList.isNotEmpty() && fileList.size > 0) {
                         imgFile = fileList[0]
                     }
                 }

@@ -23,7 +23,7 @@ import kotlinx.coroutines.coroutineScope
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        MMKV.initialize(this)
+        MMKV.initialize("RUANHAO")
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
@@ -35,7 +35,7 @@ class App : Application() {
                     .detectLeakedSqlLiteObjects()
                     .detectLeakedClosableObjects()
                     .penaltyLog()
-                    .penaltyDeath()
+                    //.penaltyDeath()
                     .build())
         }
 
@@ -49,6 +49,7 @@ class App : Application() {
     private fun startCount() {
         val key = "start"
         val startCount = AppCache.instance.kvStorage!!.decodeInt(key, 0)
+        LogUtils.d(startCount)
         AppCache.instance.kvStorage.encode(key, startCount + 1)
     }
 

@@ -6,6 +6,6 @@ import java.math.BigDecimal
  * 收入支出
  */
 data class Income(
-    var income: BigDecimal = BigDecimal.ZERO,
-    var expenditure: BigDecimal = BigDecimal.ZERO
+    var income: BigDecimal? = BigDecimal.ZERO,
+    var expenditure: BigDecimal? = BigDecimal.ZERO
 )

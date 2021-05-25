@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -8,6 +8,29 @@
         <item name="colorControlNormal">@color/white</item>
         <item name="actionMenuTextColor">@color/white</item>
         <item name="android:windowBackground">@color/colorBackground</item>
+        <!-- New MaterialComponents attributes. -->
+<!--        <item name="colorPrimaryVariant">@color/my_app_primary_variant_color</item>-->
+<!--        <item name="colorSecondaryVariant">@color/my_app_secondary_variant_color</item>-->
+<!--        <item name="colorSurface">@color/my_app_surface_color</item>-->
+<!--        <item name="colorOnPrimary">@color/my_app_color_on_primary</item>-->
+<!--        <item name="colorOnSecondary">@color/my_app_color_on_secondary</item>-->
+<!--        <item name="colorOnBackground">@color/my_app_color_on_background</item>-->
+<!--        <item name="colorOnError">@color/my_app_color_on_error</item>-->
+<!--        <item name="colorOnSurface">@color/my_app_color_on_surface</item>-->
+        <item name="scrimBackground">@color/mtrl_scrim_color</item>
+        <item name="textAppearanceHeadline1">@style/TextAppearance.MaterialComponents.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.MaterialComponents.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.MaterialComponents.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.MaterialComponents.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.MaterialComponents.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.MaterialComponents.Headline6</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.MaterialComponents.Subtitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.MaterialComponents.Subtitle2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.MaterialComponents.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.MaterialComponents.Caption</item>
+        <item name="textAppearanceButton">@style/TextAppearance.MaterialComponents.Button</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.MaterialComponents.Overline</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -48,16 +71,31 @@
         <item name="android:background">@color/white</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
-    <!-- Button 灰边 波纹-->
+    <!-- Button 灰边 白底 波纹-->
     <style name="Button_Selected_BackgroundWhite">
         <item name="android:background">@drawable/bg_circle_lineback</item>
         <item name="backgroundTintMode">screen</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
+    <!-- Button 灰边 蓝底 波纹-->
+    <style name="Button_Selected_BackgroundBlue">
+        <item name="android:background">@drawable/btn_shape_blue_bg</item>
+        <item name="backgroundTintMode">screen</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
     <style name="text_bold_white">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="EditScreenTextInputLayoutStyle" parent="AppTheme">
+        <item name="colorControlNormal">@color/colorPrimary</item>
+<!--        <item name="colorControlActivated">@color/textInputLayout</item>-->
+<!--        <item name="colorControlHighlight">@color/textInputLayout</item>-->
+<!--        <item name="colorAccent">@color/textInputLayout</item>-->
+<!--        <item name="android:textColorHint">@color/textInputLayout</item>-->
+        <item name="android:padding">8dp</item>
     </style>
 </resources>

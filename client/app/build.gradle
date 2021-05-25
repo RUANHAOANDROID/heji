@@ -21,7 +21,7 @@ android {
     defaultConfig {
         applicationId "com.rh.heji"
         minSdkVersion 24
-        targetSdkVersion 27
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
@@ -72,21 +72,21 @@ android {
             dimension "network"
             applicationId "com.ruanhao.heji_test"
             buildConfigField 'String', 'HTTP_URL', LOCALHOST;
-            resValue "string", "app_name", "合计开发版"
+            resValue "string", "app_name", "合記开发版"
         }
 
         hjserver {
             dimension "network"
             applicationId "com.ruanhao.heji"
             buildConfigField 'String', 'HTTP_URL', HJSERVER;
-            resValue "string", "app_name", "合计"
+            resValue "string", "app_name", "合記"
         }
 
         temporary {
             dimension "network"
             applicationId "com.ruanhao.heji_test"
             buildConfigField 'String', 'HTTP_URL', TEMPORARY_NETWORK;
-            resValue "string", "app_name", "合计测试版"
+            resValue "string", "app_name", "合記测试版"
         }
     }
 }

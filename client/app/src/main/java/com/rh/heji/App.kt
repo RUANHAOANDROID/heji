@@ -23,7 +23,7 @@ import kotlinx.coroutines.coroutineScope
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        MMKV.initialize("RUANHAO")
+        MMKV.initialize(this)
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()

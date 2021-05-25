@@ -84,5 +84,9 @@
     <string name="item_detail_top_surplus">结余</string>
     <string name="name">姓名</string>
     <string name="code">邀请码</string>
+    <string name="tel">手机号</string>
+    <string name="password">密码</string>
+    <string name="retrieve_password">找回密码</string>
+    <string name="again_password">再次输入确认密码</string>
 
 </resources>

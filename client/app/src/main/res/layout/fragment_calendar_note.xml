@@ -80,6 +80,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:tint="@color/white"
         app:srcCompat="@drawable/ic_baseline_add_32" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -93,5 +94,7 @@
         android:layout_marginBottom="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:backgroundTint="@color/white"
+        app:tint="@color/colorPrimary"
         app:srcCompat="@drawable/ic_today_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

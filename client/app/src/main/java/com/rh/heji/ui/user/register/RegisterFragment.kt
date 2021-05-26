@@ -19,7 +19,7 @@ class RegisterFragment : BaseFragment() {
     private lateinit var binding: FragmentRegisterBinding
 
     override fun layoutId(): Int {
-        return R.layout.fragment_register;
+        return R.layout.fragment_register
     }
 
     override fun initView(rootView: View) {
@@ -45,5 +45,6 @@ class RegisterFragment : BaseFragment() {
 
     override fun setUpToolBar() {
         super.setUpToolBar()
+        toolBar.title = getString(R.string.register)
     }
 }

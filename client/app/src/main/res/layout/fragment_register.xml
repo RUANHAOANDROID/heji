@@ -7,7 +7,6 @@
     tools:context=".ui.user.register.RegisterFragment">
 
     <include
-        android:id="@+id/include"
         layout="@layout/app_toolbar"></include>
 
     <LinearLayout
@@ -15,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:ignore="MissingConstraints">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -25,7 +24,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editUserName"
-                android:layout_width="280dp"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableRight="@drawable/ic_user_blue_24dp"
@@ -45,7 +44,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTEL"
-                android:layout_width="280dp"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableRight="@drawable/ic_baseline_phone_24"
@@ -63,7 +62,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editPassword"
-                android:layout_width="280dp"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableRight="@drawable/ic_baseline_lock_24"
@@ -80,7 +79,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editPassword2"
-                android:layout_width="280dp"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableRight="@drawable/ic_baseline_lock_24"
@@ -97,7 +96,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editInviteCode"
-                android:layout_width="280dp"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableRight="@drawable/ic_baseline_code_24"

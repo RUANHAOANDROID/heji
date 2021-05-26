@@ -4,7 +4,7 @@
     android:id="@+id/layoutTotal"
     android:layout_width="match_parent"
     android:layout_height="230dp"
-    android:background="@drawable/test_banner"
+    android:background="@drawable/banner_tree"
     android:gravity="bottom"
     android:orientation="vertical"
     android:paddingStart="@dimen/dp_10"

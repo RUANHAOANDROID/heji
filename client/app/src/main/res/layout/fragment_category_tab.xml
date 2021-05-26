@@ -18,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="center"
+            android:background="@drawable/transparent"
             app:tabGravity="center"
             app:tabIndicatorColor="@color/white"
             app:tabSelectedTextColor="@color/white"

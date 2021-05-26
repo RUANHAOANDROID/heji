@@ -68,8 +68,6 @@ public class CategoryTabFragment extends BaseFragment {
         binding.vpContent.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tab));
         binding.tab.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(binding.vpContent));
         binding.tab.getTabAt(0).select();
-        //binding.tab.getTabAt(0).setIcon(R.drawable.ic_route_blue_32dp);
-        //binding.tab.getTabAt(1).setIcon(R.drawable.ic_point_red_32dp);
         binding.tab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

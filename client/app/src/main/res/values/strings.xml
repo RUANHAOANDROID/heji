@@ -1,6 +1,4 @@
 <resources>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">设置</string>
     <string name="action_background">换背景</string>
@@ -77,7 +75,6 @@
     <string name="book">帐簿</string>
     <string name="user_id">用户ID</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="userinfo">个人信息</string>
     <string name="add">添加</string>
     <string name="input_add">输入名称添加一个</string>

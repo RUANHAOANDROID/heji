@@ -23,14 +23,14 @@ class CategoryTabFragment : BaseFragment() {
     private val tabTitles = arrayOf(BillType.EXPENDITURE.text(), BillType.INCOME.text())
     lateinit var binding: FragmentCategoryTabBinding
     val fragments = arrayOf(
-        newInstance(BillType.EXPENDITURE.type()),
-        newInstance(BillType.INCOME.type())
+        newInstance(BillType.EXPENDITURE),
+        newInstance(BillType.INCOME)
     )
     lateinit var categoryViewModule: CategoryViewModule
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val addBillFragment = parentFragment as AddBillFragment?
-        categoryViewModule = addBillFragment!!.categoryViewModule
+        val addBillFragment = parentFragment as AddBillFragment
+        categoryViewModule = addBillFragment.categoryViewModule
     }
 
     override fun initView(view: View) {
@@ -50,11 +50,11 @@ class CategoryTabFragment : BaseFragment() {
             tabTitles.toList()
         )
         binding.vpContent.adapter = pagerAdapter
-        binding.tab.setupWithViewPager(binding!!.vpContent)
+        binding.tab.setupWithViewPager(binding.vpContent)
 
         //TabLayout+ViewPager联动
-        binding.vpContent.addOnPageChangeListener(TabLayoutOnPageChangeListener(binding!!.tab))
-        binding.tab.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding!!.vpContent))
+        binding.vpContent.addOnPageChangeListener(TabLayoutOnPageChangeListener(binding.tab))
+        binding.tab.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.vpContent))
         binding.tab.getTabAt(0)!!.select()
         binding.tab.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {

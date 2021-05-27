@@ -20,7 +20,7 @@ import com.rh.heji.ui.base.BaseViewModel
  * # 分类
  */
 class CategoryViewModule : BaseViewModel() {
-
+    private val categoryDao by lazy{ AppDatabase.getInstance().categoryDao()}
     var type: BillType = BillType.EXPENDITURE
         set(value) {
             field = value
@@ -33,25 +33,22 @@ class CategoryViewModule : BaseViewModel() {
         return typeLiveData
     }
 
-    private val categoryDao: CategoryDao = AppDatabase.getInstance().categoryDao()
-    private val deleteLiveData = MediatorLiveData<Boolean>()
 
     var selectCategory = Category(ObjectId().toString())
         set(value) {
+            if (value.category =="管理") return
             field = value//field 为type本身 (field领域)
             selectCategoryLiveData.postValue(value)
         }
-    val selectCategoryLiveData = MediatorLiveData<Category>();
+    private val selectCategoryLiveData = MediatorLiveData<Category>()
 
-    /**
-     * 获取收入标签
-     *
-     * @return
-     */
+    fun getSelectCategory(): LiveData<Category> {
+        return selectCategoryLiveData
+    }
 
-    var incomeCategory = MediatorLiveData<MutableList<Category>>()
+    val incomeCategory by lazy { MediatorLiveData<MutableList<Category>>() }
 
-    var expenditureCategory = MediatorLiveData<MutableList<Category>>()
+    val expenditureCategory by lazy { MediatorLiveData<MutableList<Category>>() }
 
 
     init {
@@ -60,10 +57,15 @@ class CategoryViewModule : BaseViewModel() {
          * source 其他来源的LiveData
          * observer 观察变化
          */
-        incomeCategory.addSource(categoryDao.findIncomeOrExpenditure(BillType.INCOME.type())) { incomeCategories ->
+        incomeCategory.addSource(
+            categoryDao.findIncomeOrExpenditure(BillType.INCOME.type())
+        ) { incomeCategories ->
             incomeCategory.value = incomeCategories
         }
-        expenditureCategory.addSource(categoryDao.findIncomeOrExpenditure(BillType.EXPENDITURE.type())) { expenditureCategories: MutableList<Category> ->
+        expenditureCategory.addSource(
+            categoryDao
+                .findIncomeOrExpenditure(BillType.EXPENDITURE.type())
+        ) { expenditureCategories: MutableList<Category> ->
             expenditureCategory.setValue(
                 expenditureCategories
             )
@@ -81,26 +83,25 @@ class CategoryViewModule : BaseViewModel() {
             category.category = name!!
             category.level = 0
             category.synced = Constant.STATUS_NOT_SYNC
-            val categories = AppDatabase.getInstance().categoryDao().findByNameAndType(name, type)
+            val categories = categoryDao.findByNameAndType(name, type)
             if (categories != null && categories.size > 0) {
                 val _id = categories[0]._id
                 category._id = _id
-                AppDatabase.getInstance().categoryDao().update(category)
+                categoryDao.update(category)
             }
-            AppDatabase.getInstance().categoryDao().insert(category)
+            categoryDao.insert(category)
+            ToastUtils.showShort("保存成功")
         }, {})
-        ToastUtils.showShort("保存成功")
     }
 
+    private val deleteLiveData = MediatorLiveData<Boolean>()
+    fun deleteCategory(category: Category): LiveData<Boolean> {
 
-    fun deleteCategory(category: Category): MediatorLiveData<Boolean> {
         launchIO({
             category.synced = Constant.STATUS_DELETE
-            AppDatabase.getInstance().categoryDao().update(category)
+            categoryDao.update(category)
             deleteLiveData.postValue(true)
         }, {})
-//        notifyItemChanged(getItemPosition(category))
-
         return deleteLiveData
     }
 

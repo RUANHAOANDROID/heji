@@ -82,7 +82,7 @@ class AddBillFragment : BaseFragment() {
         categoryViewModule.getCategoryType().observe(this, {
             binding.keyboard.setType(it)
         })
-        categoryViewModule.selectCategoryLiveData.observe(this, Observer { category: Category? ->
+        categoryViewModule.getSelectCategory().observe(this, { category: Category? ->
             if (null != category) {
                 val billType = BillType.transform(category.type)
                 changeMoneyTextColor(billType)

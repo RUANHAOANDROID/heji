@@ -1,4 +1,4 @@
- package com.rh.heji.ui.category
+package com.rh.heji.ui.category
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -22,13 +22,14 @@ import java.util.stream.Collectors
 /**
  * Date: 2020/10/11
  * Author: 锅得铁
- * # 收入支出标签
+ * # 收入/支出标签 复用该Fragment
  */
 class CategoryFragment : BaseFragment() {
     private lateinit var binding: FragmentCategoryContentBinding
     private lateinit var labelAdapter: CategoryAdapter
-    private var thisType = 0
-    private var tabType: BillType? = null
+
+    //类型 支出 或 收入
+    lateinit var type: BillType
 
     private lateinit var categoryViewModule: CategoryViewModule
 
@@ -36,7 +37,8 @@ class CategoryFragment : BaseFragment() {
         val selectCategory = categoryViewModule.selectCategory
         if (null != selectCategory) {
             categories.stream().forEach { category: Category ->
-                val isSelected = category.category == selectCategory.category && category.type == selectCategory.type
+                val isSelected =
+                    category.category == selectCategory.category && category.type == selectCategory.type
                 if (isSelected) {
                     category.selected = true
                 }
@@ -52,8 +54,7 @@ class CategoryFragment : BaseFragment() {
         super.onAttach(context)
         categoryViewModule = (parentFragment!!.parentFragment as AddBillFragment).categoryViewModule
         arguments?.let {
-            tabType = categoryViewModule.type
-            thisType = it.getInt(KEY_TYPE)
+            type = CategoryFragmentArgs.fromBundle(it).type
         }
     }
 
@@ -65,7 +66,8 @@ class CategoryFragment : BaseFragment() {
 
     private fun registerLabelObserver() {
         categoryViewModule.let {
-            var categoryLiveData = if (thisType == BillType.INCOME.type()) it.incomeCategory else it.expenditureCategory
+            var categoryLiveData =
+                if (type == BillType.INCOME) it.incomeCategory else it.expenditureCategory
             categoryLiveData.observe(this, labelObserver)
             categoryLiveData.value?.let { data ->
                 if (data.size > 0) labelAdapter.setNewInstance(data)
@@ -75,23 +77,24 @@ class CategoryFragment : BaseFragment() {
 
 
     //Item点击事件
-    private var onItemClickListener = OnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int ->
-        val category = labelAdapter.getItem(position) //当前点击的
-        if (category.category == CategoryAdapter.SETTING) { //设置
-            val args = CategoryManagerFragmentArgs.Builder()
-                    .setIeType(thisType).build()
-            mainActivity.navController.navigate(R.id.nav_category_manager, args.toBundle())
-        }
-        category.selected = !category.selected //反选
-        //使其他置为为选中状态
-        labelAdapter.data.forEach(Consumer { i: Category ->
-            if (i.category != category.category) {
-                i.selected = false
+    private var onItemClickListener =
+        OnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int ->
+            val category = labelAdapter.getItem(position) //当前点击的
+            if (category.category == CategoryAdapter.SETTING) { //设置
+                val args = CategoryManagerFragmentArgs.Builder()
+                    .setIeType(type.type()).build()
+                mainActivity.navController.navigate(R.id.nav_category_manager, args.toBundle())
             }
-        })
-        labelAdapter.notifyDataSetChanged()
-        categoryViewModule.selectCategory = category
-    }
+            category.selected = !category.selected //反选
+            //使其他置为为选中状态
+            labelAdapter.data.forEach(Consumer { i: Category ->
+                if (i.category != category.category) {
+                    i.selected = false
+                }
+            })
+            labelAdapter.notifyDataSetChanged()
+            categoryViewModule.selectCategory = category
+        }
 
     override fun layoutId(): Int {
         return R.layout.fragment_category_content
@@ -110,13 +113,15 @@ class CategoryFragment : BaseFragment() {
      */
     private fun defSelected() {
         if (labelAdapter.data.isNotEmpty() && labelAdapter.data.size > 0) {
-            val count = labelAdapter.data.stream().filter { category: Category -> category.selected }.count()
+            val count =
+                labelAdapter.data.stream().filter { category: Category -> category.selected }
+                    .count()
             if (count <= 0) {
                 val firstItem = labelAdapter.data.stream().findFirst().get()
                 if (firstItem.category != "管理") {
                     firstItem.selected = true
                     labelAdapter.notifyDataSetChanged()
-                    if (!isHidden && thisType == tabType!!.type()) {
+                    if (!isHidden && type == categoryViewModule.type) {
                         categoryViewModule.selectCategory = firstItem
                     }
                 }
@@ -137,15 +142,17 @@ class CategoryFragment : BaseFragment() {
     }
 
     private fun addSettingItem(labelAdapter: CategoryAdapter) {
-        val category = Category(CategoryAdapter.SETTING, 0, thisType)
+        val category = Category(CategoryAdapter.SETTING, 0, type.type())
         labelAdapter.addData(labelAdapter.itemCount, category)
     }
 
     fun setCategory() {
         if (!this::labelAdapter.isInitialized || labelAdapter == null) return
         var selectCategory: Category?
-        val selects = labelAdapter.data.stream().filter { category: Category -> category.selected }.collect(Collectors.toList())
-        selectCategory = if (selects.size <= 0) labelAdapter.data.stream().findFirst().get() else selects.stream().findFirst().get()
+        val selects = labelAdapter.data.stream().filter { category: Category -> category.selected }
+            .collect(Collectors.toList())
+        selectCategory = if (selects.size <= 0) labelAdapter.data.stream().findFirst()
+            .get() else selects.stream().findFirst().get()
         categoryViewModule.selectCategory = selectCategory
     }
 
@@ -159,12 +166,16 @@ class CategoryFragment : BaseFragment() {
          * @return
          */
         @JvmStatic
-        fun newInstance(ieType: Int): CategoryFragment {
-            val ieCategoryFragment = CategoryFragment()
-            val bundle = Bundle()
-            bundle.putInt(KEY_TYPE, ieType)
-            ieCategoryFragment.arguments = bundle
-            return ieCategoryFragment
+        fun newInstance(type: BillType): CategoryFragment {
+            val categoryFragment = CategoryFragment()
+//            val bundle = Bundle()
+//            bundle.putBundle(
+//                KEY_TYPE,
+//                CategoryFragmentArgs.Builder().setType(type).build().toBundle()
+//            )
+            categoryFragment.arguments =
+                CategoryFragmentArgs.Builder().setType(type).build().toBundle()
+            return categoryFragment
         }
     }
 }

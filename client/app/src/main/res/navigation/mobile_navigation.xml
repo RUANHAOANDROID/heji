@@ -125,6 +125,10 @@
         <action
             android:id="@+id/action_categoryFragment_to_nav_category_manager"
             app:destination="@id/nav_category_manager" />
+        <argument
+            android:name="type"
+            app:argType="com.rh.heji.data.BillType"
+            android:defaultValue="EXPENDITURE" />
     </fragment>
     <fragment
         android:id="@+id/nav_book"

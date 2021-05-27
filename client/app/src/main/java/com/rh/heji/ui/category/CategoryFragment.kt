@@ -32,7 +32,7 @@ class CategoryFragment : BaseFragment() {
 
     private lateinit var categoryViewModule: CategoryViewModule
 
-    var labelObserver = Observer { categories: MutableList<Category> ->
+    private var labelObserver = Observer { categories: MutableList<Category> ->
         val selectCategory = categoryViewModule.selectCategory
         if (null != selectCategory) {
             categories.stream().forEach { category: Category ->
@@ -74,7 +74,7 @@ class CategoryFragment : BaseFragment() {
     }
 
 
-    //点击事件
+    //Item点击事件
     private var onItemClickListener = OnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int ->
         val category = labelAdapter.getItem(position) //当前点击的
         if (category.category == CategoryAdapter.SETTING) { //设置

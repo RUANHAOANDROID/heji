@@ -37,6 +37,7 @@ class RegisterFragment : BaseFragment() {
             viewModel.register(username, tel, code, password1).observe(viewLifecycleOwner, { user ->
                 var mBundle = Bundle()
                 mBundle.putSerializable("user", user)
+                Navigation.findNavController(rootView).popBackStack()
                 Navigation.findNavController(rootView).navigate(R.id.nav_login, mBundle)
             })
         }

@@ -32,8 +32,8 @@ class LoginFragment : BaseFragment() {
             val password = binding.editPassword.text.toString()
             viewModel.login(username, password)
                     .observe(this.viewLifecycleOwner, Observer { token ->
-                        //Navigation.findNavController(rootView).navigate(R.id.nav_register)
                         mainActivity.navController.popBackStack()
+                        mainActivity.navController.navigate(R.id.nav_home)
                         AppCache.instance.appViewModule.asyncData()
                         LogUtils.d(token)
                     })

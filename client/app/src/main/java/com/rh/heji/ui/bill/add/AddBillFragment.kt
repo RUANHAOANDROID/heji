@@ -51,7 +51,7 @@ class AddBillFragment : BaseFragment() {
     val categoryViewModule by lazy { getViewModel(CategoryViewModule::class.java) }
 
     lateinit var binding: IncomeFragmentBinding
-    lateinit var categoryTabFragment: CategoryTabFragment
+    private lateinit var categoryTabFragment: CategoryTabFragment
     var selectImagePou: SelectImagePop? = null//图片弹窗
 
     override fun layoutId(): Int {
@@ -75,8 +75,13 @@ class AddBillFragment : BaseFragment() {
             mainActivity.navController.popBackStack()
         }
     }
+
     private fun category() {
-        categoryTabFragment = childFragmentManager.findFragmentById(R.id.categoryFragment) as CategoryTabFragment
+        categoryTabFragment =
+            childFragmentManager.findFragmentById(R.id.categoryFragment) as CategoryTabFragment
+        categoryViewModule.getCategoryType().observe(this, {
+            binding.keyboard.setType(it)
+        })
         categoryViewModule.selectCategoryLiveData.observe(this, Observer { category: Category? ->
             if (null != category) {
                 val billType = BillType.transform(category.type)
@@ -109,14 +114,24 @@ class AddBillFragment : BaseFragment() {
         val nowTime = billViewModel.time
         binding.tvBillTime.text = nowTime
         binding.tvBillTime.setOnClickListener {
-            val onDateSetListener = OnDateSetListener { datePicker: DatePicker?, year: Int, month: Int, dayOfMonth: Int ->
-                val selectCalendar = Calendar.getInstance()
-                selectCalendar[year, month] = dayOfMonth
-                val yearTime = TimeUtils.date2String(selectCalendar.time, "yyyy-MM-dd") + " 00:00" //未选时自动补全
-                setNoteTime(yearTime)
-                selectHourAndMinute(yearTime)
-            }
-            val dialog = DatePickerDialog(mainActivity, onDateSetListener, calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH])
+            val onDateSetListener =
+                OnDateSetListener { datePicker: DatePicker?, year: Int, month: Int, dayOfMonth: Int ->
+                    val selectCalendar = Calendar.getInstance()
+                    selectCalendar[year, month] = dayOfMonth
+                    val yearTime = TimeUtils.date2String(
+                        selectCalendar.time,
+                        "yyyy-MM-dd"
+                    ) + " 00:00" //未选时自动补全
+                    setNoteTime(yearTime)
+                    selectHourAndMinute(yearTime)
+                }
+            val dialog = DatePickerDialog(
+                mainActivity,
+                onDateSetListener,
+                calendar[Calendar.YEAR],
+                calendar[Calendar.MONTH],
+                calendar[Calendar.DAY_OF_MONTH]
+            )
             dialog.setOnDateSetListener(onDateSetListener)
             dialog.show()
         }
@@ -128,15 +143,16 @@ class AddBillFragment : BaseFragment() {
      * @param yearTime 年份-月份
      */
     private fun selectHourAndMinute(yearTime: String) {
-        val onTimeSetListener = OnTimeSetListener { timePicker: TimePicker?, hourOfDay: Int, minute: Int ->
-            if (hourOfDay == 0 && minute == 0) return@OnTimeSetListener
-            val calendar2 = Calendar.getInstance()
-            calendar2.time = TimeUtils.string2Date(yearTime, "yyyy-MM-dd HH:mm")
-            calendar2[Calendar.HOUR_OF_DAY] = hourOfDay
-            calendar2[Calendar.MINUTE] = minute
-            val dayTime = TimeUtils.date2String(calendar2.time, "yyyy-MM-dd HH:mm")
-            setNoteTime(dayTime)
-        }
+        val onTimeSetListener =
+            OnTimeSetListener { timePicker: TimePicker?, hourOfDay: Int, minute: Int ->
+                if (hourOfDay == 0 && minute == 0) return@OnTimeSetListener
+                val calendar2 = Calendar.getInstance()
+                calendar2.time = TimeUtils.string2Date(yearTime, "yyyy-MM-dd HH:mm")
+                calendar2[Calendar.HOUR_OF_DAY] = hourOfDay
+                calendar2[Calendar.MINUTE] = minute
+                val dayTime = TimeUtils.date2String(calendar2.time, "yyyy-MM-dd HH:mm")
+                setNoteTime(dayTime)
+            }
         val timePickerDialog = TimePickerDialog(mainActivity, onTimeSetListener, 0, 0, true)
         timePickerDialog.show()
     }
@@ -164,13 +180,14 @@ class AddBillFragment : BaseFragment() {
             }
             binding.tvUserLabel.setOnClickListener {
                 XPopup.Builder(context)
-                        .maxHeight(binding.keyboard.height)
-                        .asBottomList("请选择经手人", names.toTypedArray()
-                        ) { position: Int, text: String ->
-                            binding.tvUserLabel.text = "经手人:$text"
-                            billViewModel.bill.setDealer(text)
-                        }
-                        .show()
+                    .maxHeight(binding.keyboard.height)
+                    .asBottomList(
+                        "请选择经手人", names.toTypedArray()
+                    ) { position: Int, text: String ->
+                        binding.tvUserLabel.text = "经手人:$text"
+                        billViewModel.bill.setDealer(text)
+                    }
+                    .show()
             }
         })
 
@@ -193,7 +210,10 @@ class AddBillFragment : BaseFragment() {
 
             override fun saveAgain(result: String) {
                 ToastUtils.showLong(result)
-                saveBill(result, categoryViewModule.selectCategory, Observer { bill: Bill? -> instance.appViewModule.billPush(BillEntity(bill)) })
+                saveBill(
+                    result,
+                    categoryViewModule.selectCategory,
+                    Observer { bill: Bill? -> instance.appViewModule.billPush(BillEntity(bill)) })
                 clear()
             }
         })
@@ -221,10 +241,12 @@ class AddBillFragment : BaseFragment() {
         binding.imgTicket.setOnClickListener {
             if (selectImagePou == null) selectImagePou = SelectImagePop(mainActivity, mainActivity)
             XPopup.Builder(mainActivity)
-                    .asCustom(selectImagePou)
-                    .show()
+                .asCustom(selectImagePou)
+                .show()
             //selectImagePou.getLayoutParams().height = binding.keyboard.getRoot().getHeight();
-            selectImagePou?.setDeleteClickListener { data: List<String> -> billViewModel.imgUrls = data as MutableList<String> }
+            selectImagePou?.setDeleteClickListener { data: List<String> ->
+                billViewModel.imgUrls = data as MutableList<String>
+            }
             selectImagePou?.setData(ArrayList())
         }
         val imgObserver = Observer { data: List<String?> ->

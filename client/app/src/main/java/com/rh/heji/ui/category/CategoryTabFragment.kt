@@ -1,92 +1,81 @@
-package com.rh.heji.ui.category;
+package com.rh.heji.ui.category
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
-
-import com.blankj.utilcode.util.LogUtils;
-import com.google.android.material.tabs.TabLayout;
-import com.rh.heji.ui.base.BaseFragment;
-import com.rh.heji.R;
-import com.rh.heji.data.BillType;
-import com.rh.heji.databinding.FragmentCategoryTabBinding;
-import com.rh.heji.ui.bill.add.AddBillFragment;
-import com.rh.heji.ui.base.FragmentViewPagerAdapter;
-
-import java.util.Arrays;
+import android.content.Context
+import android.view.View
+import com.blankj.utilcode.util.LogUtils
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
+import com.rh.heji.R
+import com.rh.heji.data.BillType
+import com.rh.heji.databinding.FragmentCategoryTabBinding
+import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.base.FragmentViewPagerAdapter
+import com.rh.heji.ui.bill.add.AddBillFragment
+import com.rh.heji.ui.category.CategoryFragment.Companion.newInstance
 
 /**
  * Date: 2020/10/11
  * Author: 锅得铁
  * #标签TAB
  */
-public class CategoryTabFragment extends BaseFragment {
-    public final String[] TAB_TITLES = {BillType.EXPENDITURE.text(), BillType.INCOME.text()};
-    FragmentCategoryTabBinding binding;
-    private BillType type = BillType.EXPENDITURE;
-    public CategoryFragment[] fragments;
-    CategoryViewModule categoryViewModule;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        AddBillFragment addBillFragment = (AddBillFragment) getParentFragment();
-        categoryViewModule = addBillFragment.getCategoryViewModule();
+class CategoryTabFragment : BaseFragment() {
+    private val tabTitles = arrayOf(BillType.EXPENDITURE.text(), BillType.INCOME.text())
+    lateinit var binding: FragmentCategoryTabBinding
+    val fragments = arrayOf(
+        newInstance(BillType.EXPENDITURE.type()),
+        newInstance(BillType.INCOME.type())
+    )
+    lateinit var categoryViewModule: CategoryViewModule
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val addBillFragment = parentFragment as AddBillFragment?
+        categoryViewModule = addBillFragment!!.categoryViewModule
     }
 
-    @Override
-    protected void initView(View view) {
-        binding = FragmentCategoryTabBinding.bind(view);
-        showPager();
-        //binding.close.setOnClickListener(v -> Navigation.findNavController(view).navigateUp());
-
+    override fun initView(view: View) {
+        binding = FragmentCategoryTabBinding.bind(view)
+        showPager()
     }
 
-    @Override
-    protected int layoutId() {
-        return R.layout.fragment_category_tab;
+    override fun layoutId(): Int {
+        return R.layout.fragment_category_tab
     }
 
+    private fun showPager() {
 
-    private void showPager() {
-
-        fragments = new CategoryFragment[]{
-                CategoryFragment.newInstance(BillType.EXPENDITURE.type()),
-                CategoryFragment.newInstance(BillType.INCOME.type()),
-        };
-        FragmentViewPagerAdapter pagerAdapter = new FragmentViewPagerAdapter(getChildFragmentManager(), Arrays.asList(fragments), Arrays.asList(TAB_TITLES));
-        binding.vpContent.setAdapter(pagerAdapter);
-        binding.tab.setupWithViewPager(binding.vpContent);
+        val pagerAdapter = FragmentViewPagerAdapter(
+            childFragmentManager,
+            fragments.toList(),
+            tabTitles.toList()
+        )
+        binding.vpContent.adapter = pagerAdapter
+        binding.tab.setupWithViewPager(binding!!.vpContent)
 
         //TabLayout+ViewPager联动
-        binding.vpContent.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(binding.tab));
-        binding.tab.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(binding.vpContent));
-        binding.tab.getTabAt(0).select();
-        binding.tab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-                LogUtils.d("onTabSelected", tab.getPosition());
-                categoryViewModule.setType(BillType.transform(tab.getPosition()));
-                fragments[tab.getPosition()].setCategory();
+        binding.vpContent.addOnPageChangeListener(TabLayoutOnPageChangeListener(binding!!.tab))
+        binding.tab.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding!!.vpContent))
+        binding.tab.getTabAt(0)!!.select()
+        binding.tab.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                LogUtils.d("onTabSelected", tab.position)
+                categoryViewModule.type = BillType.transform(tab.position)
+                fragments[tab.position].setCategory()
             }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                LogUtils.d("onTabUnselected", tab.getPosition());
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                LogUtils.d("onTabUnselected", tab.position)
             }
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                LogUtils.d("onTabReselected", tab.getPosition());
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                LogUtils.d("onTabReselected", tab.position)
             }
-        });
+        })
+        categoryViewModule.getCategoryType().observe(this, {
+            binding.tab.getTabAt(if (it.type() == 1) 1 else 0)?.let { tab ->
+                if (!tab.isSelected)
+                    tab.select()
+            }
+        })
     }
-
 }

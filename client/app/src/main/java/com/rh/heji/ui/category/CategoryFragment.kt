@@ -2,7 +2,6 @@ package com.rh.heji.ui.category
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -168,11 +167,6 @@ class CategoryFragment : BaseFragment() {
         @JvmStatic
         fun newInstance(type: BillType): CategoryFragment {
             val categoryFragment = CategoryFragment()
-//            val bundle = Bundle()
-//            bundle.putBundle(
-//                KEY_TYPE,
-//                CategoryFragmentArgs.Builder().setType(type).build().toBundle()
-//            )
             categoryFragment.arguments =
                 CategoryFragmentArgs.Builder().setType(type).build().toBundle()
             return categoryFragment

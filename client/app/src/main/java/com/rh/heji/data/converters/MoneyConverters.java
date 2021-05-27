@@ -1,5 +1,6 @@
 package com.rh.heji.data.converters;
 
+import androidx.room.Ignore;
 import androidx.room.TypeConverter;
 
 import java.math.BigDecimal;
@@ -12,7 +13,8 @@ import java.math.BigDecimal;
 public class MoneyConverters {
     @TypeConverter
     public static BigDecimal fromLong(Long value) {
-        BigDecimal bigDecimal = value == null ? null : new BigDecimal(value).divide(new BigDecimal(100));
+        BigDecimal bigDecimal = value == null ? null : new BigDecimal(value).divide(new BigDecimal(100))
+                .divide(BigDecimal.ONE, 2, BigDecimal.ROUND_DOWN);//两位小数 整数补00
         return bigDecimal;
     }
 

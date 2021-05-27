@@ -74,20 +74,35 @@ class ReportFragment : BaseFragment() {
      * 收入/支出 预览 Observer
      */
     private val incomeExpenditureObserver: (t: Income) -> Unit = {
-        it?.let { income ->
-            if (income.expenditure == null) income.expenditure = BigDecimal("0")
-            if (income.income == null) income.income = BigDecimal("0")
-            binding.tvIncomeValue.text = income.income.toString()
-            binding.tvExpenditureValue.text = income.expenditure.toString()
-            val jieYu = income.income!!.minus(income.expenditure!!)//结余
+        it?.let { money ->
+            binding.tvIncomeValue.text = money.income.toString()
+            binding.tvExpenditureValue.text = money.expenditure.toString()
+            val jieYu = money.income!!.minus(money.expenditure!!)//结余
             binding.tvJieYuValue.text = jieYu.toString()
             val dayCount = MyTimeUtils.lastDayOfMonth(
                 reportViewModel.yearMonth.year,
                 reportViewModel.yearMonth.month
             )
                 .split("-")[2].toInt()//月份天数
-            binding.tvDayAVGValue.text =
-                jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN)?.toString()//平均值
+            binding.tvDayAVGValue.text = jieYu.toPlainString()
+
+            //----列表标题年/月平均值
+            var avg ="0.00"
+            avg = if (reportViewModel.isAllYear) {
+                var month12 = BigDecimal(12)
+                "月均支出：${money.expenditure!!.divide(month12,2,BigDecimal.ROUND_DOWN)}  收入：${money.expenditure!!.div(month12)}"
+            }else{
+                val monthDayCount = BigDecimal(
+                    MyTimeUtils.getMonthLastDay(
+                        reportViewModel.yearMonth.year,
+                        reportViewModel.yearMonth.month
+                    )
+                )
+                "日均支出：${money.expenditure!!.divide(monthDayCount,2,BigDecimal.ROUND_DOWN)}  收入：${money.income!!.div(
+                    monthDayCount
+                )}"
+            }
+            binding.tvYearMonthAVG.text = SpannableString.valueOf(avg)
         }
 
     }
@@ -310,6 +325,7 @@ class ReportFragment : BaseFragment() {
     }
 
     private fun updateMonthYearBillListView() {
+
         val linearLayoutManager = LinearLayoutManager(activity)
         linearLayoutManager.isSmoothScrollbarEnabled = true
         binding.recyclerBaobiao.layoutManager = linearLayoutManager

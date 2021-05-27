@@ -1,15 +1,13 @@
 package com.rh.heji.ui.home
 
-import android.os.Bundle
-import android.view.*
-import android.widget.TextView
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
+import android.annotation.SuppressLint
+import android.view.View
+import android.view.ViewStub
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
@@ -38,7 +36,7 @@ import java.util.*
 class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
 
     lateinit var binding: FragmentBillsHomeBinding
-    lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
+    private lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     val adapter: NodeBillsAdapter by lazy { NodeBillsAdapter()  }
 
@@ -50,7 +48,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         binding = FragmentBillsHomeBinding.bind(rootView)
         rootView.post {
             initBillsAdapter()
-            binding.fab.setOnClickListener { v: View ->
+            binding.fab.setOnClickListener {
                 val calendar = Calendar.getInstance() //当前日期
                 Navigation.findNavController(rootView).navigate(R.id.nav_income, AddBillFragmentArgs.Builder(calendar).build().toBundle())
             }
@@ -64,7 +62,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         toolBar.post {
             binding.refreshLayout.setProgressViewOffset(true, 0, 180)//设置缩放，起始位置，最终位置
             //设置bar头部折叠监听
-            binding.materialupAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            binding.materialupAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                 val isFullyShow = verticalOffset >= 0
                 binding.refreshLayout.isEnabled = isFullyShow
             })
@@ -83,8 +81,8 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         super.setUpToolBar()
         toolBar.post {
             showYearMonthTitle({ year, month -> notifyData(year, month) }, homeViewModel.year, homeViewModel.month)
-            toolBar.navigationIcon = resources.getDrawable(R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
-            toolBar.setNavigationOnClickListener { v: View ->
+            toolBar.navigationIcon = ResourcesCompat.getDrawable(resources,R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
+            toolBar.setNavigationOnClickListener {
                 //展开侧滑菜单
                 mainActivity.openDrawer()
             }
@@ -109,7 +107,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
      */
     private fun totalIncomeExpense(year: Int, month: Int) {
 
-        homeViewModel.getIncomeExpense(year, month).observe(mainActivity, Observer { incomeExpense: Income? ->
+        homeViewModel.getIncomeExpense(year, month).observe(mainActivity, { incomeExpense: Income? ->
 
             var income = "0"
             var expenses = "0"
@@ -148,7 +146,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             } else {
                 tvSurplus.setTextColor(mainActivity.getColor(R.color.expenditure))
             }
-            tvSurplus.text = totalRevenue.toString()
+            tvSurplus.text = totalRevenue.toPlainString()
         }
     }
 
@@ -161,7 +159,6 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         binding.homeRecycler.layoutManager = LinearLayoutManager(mainActivity)
         binding.homeRecycler.adapter = adapter
         binding.homeRecycler.addItemDecoration(CardDecoration())
-        //binding.materialupAppBar.background.alpha = Constants.BACKGROUND_ALPHA
         class Diff : ItemCallback<BaseNode>() {
             override fun areItemsTheSame(oldItem: BaseNode, newItem: BaseNode): Boolean {
                 if (oldItem is DayIncomeNode && newItem is DayIncomeNode) {
@@ -185,7 +182,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             }
         }
         adapter.setDiffCallback(Diff())
-        adapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>, view: View?, position: Int ->
+        adapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>, _: View?, position: Int ->
             if (System.currentTimeMillis() - lastClickTime >= FAST_CLICK_DELAY_TIME) {
                 lastClickTime = System.currentTimeMillis()
                 if (adapter.getItem(position) is DayIncomeNode) { //日视图
@@ -202,7 +199,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
                 }
             }
         }
-        binding.homeRecycler.setOnScrollChangeListener { v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+        binding.homeRecycler.setOnScrollChangeListener { _: View?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
             if (scrollY > oldScrollY) { //向下滑动隐藏
                 binding.fab.hide()
             } else {//向上滑动显示
@@ -243,7 +240,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             popupView.bill = billTab //账单信息
             popupView.setBillImages(ArrayList()) //首先把图片重置
             if (billTab.imgCount > 0) {
-                homeViewModel.getBillImages(billTab.getId()).observe(viewLifecycleOwner, Observer<List<Image>> { images: List<Image> ->
+                homeViewModel.getBillImages(billTab.getId()).observe(viewLifecycleOwner, { images: List<Image> ->
                     popupView.setBillImages(images)
                 }
                 )
@@ -267,6 +264,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         totalIncomeExpense(year, month)
     }
 
+    @SuppressLint("InflateParams")
     private val billsObserver = { baseNodes: MutableList<BaseNode> ->
         if (baseNodes.isNullOrEmpty() || baseNodes.size <= 0) {
             val emptyView = layoutInflater.inflate(R.layout.layout_empty, null)

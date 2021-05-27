@@ -40,6 +40,8 @@ import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.JWTParse.getUser
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController private set
@@ -47,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     val mainViewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
     private lateinit var navHeaderMainBinding: NavHeaderMainBinding//侧拉头像
     private lateinit var navigationView: NavigationView
-    fun permitDiskReads(func: () -> Any): Any {
+    private fun permitDiskReads(func: () -> Any): Any {
         if (BuildConfig.DEBUG) {
             val oldThreadPolicy = StrictMode.getThreadPolicy()
             StrictMode.setThreadPolicy(

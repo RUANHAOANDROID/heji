@@ -3,6 +3,7 @@ package com.rh.heji.ui.home
 import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewStub
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -142,9 +143,9 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             val expenses1 = BigDecimal(tvExpenditure.text.toString())
             val totalRevenue = income1.subtract(expenses1)
             if (totalRevenue.toLong() > 0) {
-                tvSurplus.setTextColor(mainActivity.getColor(R.color.income))
+                tvSurplus.setTextColor(ContextCompat.getColor(tvSurplus.context,R.color.income))
             } else {
-                tvSurplus.setTextColor(mainActivity.getColor(R.color.expenditure))
+                tvSurplus.setTextColor(ContextCompat.getColor(tvSurplus.context,R.color.expenditure))
             }
             tvSurplus.text = totalRevenue.toPlainString()
         }

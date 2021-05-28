@@ -23,4 +23,9 @@ public class MoneyConverters {
         Long longValue = bigDecimal.multiply(new BigDecimal(100)).longValue();
         return longValue;
     }
+
+    @Ignore
+    public static BigDecimal ZERO_00() {
+        return BigDecimal.ZERO.divide(BigDecimal.ONE, 2, BigDecimal.ROUND_DOWN);
+    }
 }

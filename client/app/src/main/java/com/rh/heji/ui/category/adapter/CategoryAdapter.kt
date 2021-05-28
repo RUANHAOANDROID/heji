@@ -6,6 +6,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.rh.heji.R
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.ItemCategoryBinding
+import com.rh.heji.utlis.ColorUtils
 import com.rh.heji.utlis.textdraw.ColorGenerator
 import com.rh.heji.utlis.textdraw.TextDrawable
 
@@ -19,6 +20,7 @@ open class CategoryAdapter(data: MutableList<Category>) : BaseQuickAdapter<Categ
     override fun convert(holder: BaseViewHolder, label: Category) {
         itemBinding = ItemCategoryBinding.bind(holder.itemView)
         val bgColor = context.getColor(if (label.selected) R.color.category_ico_selected else R.color.category_ico)
+//        val bgColor =if (!label.selected) ColorUtils.groupColors()[holder.adapterPosition] else context.getColor( R.color.category_ico)
         if (TextUtils.isEmpty(label.category)) return
         val drawable = TextDrawable.builder().buildRound(label.category.substring(0, 1), bgColor)
         itemBinding.roundImageView.setImageDrawable(drawable)

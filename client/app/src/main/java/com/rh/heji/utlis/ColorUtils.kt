@@ -36,6 +36,9 @@ object ColorUtils {
         return baseColos[mRandom.nextInt(baseColos.size)]
     }
 
+    /**
+     * 25个
+     */
     fun groupColors(): ArrayList<Int> {
         // add a lot of colors
         val colors = ArrayList<Int>()

@@ -115,11 +115,10 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(HomeDrawerListener(this, object : DrawerSlideListener {
             override fun offset(left: Int, top: Int, right: Int, bottom: Int) {
                 navHostFragmentRootView.layout(left, top, right, bottom)
-                Log.i("offset", "offset: left=" + left + "right=" + right + "bottom=" + bottom)
             }
         }))
         //Logout Menu
-        val navMenu = navigationView.getMenu()
+        val navMenu = navigationView.menu
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener { item: MenuItem? ->
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
                 runBlocking(Dispatchers.IO) { instance.token.delete() }

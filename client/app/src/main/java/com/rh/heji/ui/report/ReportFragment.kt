@@ -19,6 +19,7 @@ import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
+import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentReportBinding
@@ -75,6 +76,8 @@ class ReportFragment : BaseFragment() {
      */
     private val incomeExpenditureObserver: (t: Income) -> Unit = {
         it?.let { money ->
+            if (money.income==null) money.income = MoneyConverters.ZERO_00()
+            if (money.expenditure == null) money.expenditure = MoneyConverters.ZERO_00()
             binding.tvIncomeValue.text = money.income.toString()
             binding.tvExpenditureValue.text = money.expenditure.toString()
             val jieYu = money.income!!.minus(money.expenditure!!)//结余
@@ -87,20 +90,28 @@ class ReportFragment : BaseFragment() {
             binding.tvDayAVGValue.text = jieYu.toPlainString()
 
             //----列表标题年/月平均值
-            var avg ="0.00"
+            var avg = "0.00"
             avg = if (reportViewModel.isAllYear) {
                 var month12 = BigDecimal(12)
-                "月均支出：${money.expenditure!!.divide(month12,2,BigDecimal.ROUND_DOWN)}  收入：${money.expenditure!!.div(month12)}"
-            }else{
+                "月均支出：${
+                    money.expenditure!!.divide(
+                        month12,
+                        2,
+                        BigDecimal.ROUND_DOWN
+                    )
+                }  收入：${money.expenditure!!.div(month12)}"
+            } else {
                 val monthDayCount = BigDecimal(
                     MyTimeUtils.getMonthLastDay(
                         reportViewModel.yearMonth.year,
                         reportViewModel.yearMonth.month
                     )
                 )
-                "日均支出：${money.expenditure!!.divide(monthDayCount,2,BigDecimal.ROUND_DOWN)}  收入：${money.income!!.div(
-                    monthDayCount
-                )}"
+                "日均支出：${money.expenditure!!.divide(monthDayCount, 2, BigDecimal.ROUND_DOWN)}  收入：${
+                    money.income!!.div(
+                        monthDayCount
+                    )
+                }"
             }
             binding.tvYearMonthAVG.text = SpannableString.valueOf(avg)
         }

@@ -19,6 +19,8 @@ import com.rh.heji.data.db.Category;
 import com.rh.heji.data.db.CategoryDao;
 import com.rh.heji.data.db.Dealer;
 import com.rh.heji.data.db.DealerDao;
+import com.rh.heji.data.db.ErrorLog;
+import com.rh.heji.data.db.ErrorLogDao;
 import com.rh.heji.data.db.ImageDao;
 import com.rh.heji.data.db.Image;
 
@@ -33,7 +35,8 @@ import com.rh.heji.data.db.Image;
                 Bill.class,
                 Category.class,
                 Dealer.class,
-                Image.class
+                Image.class,
+                ErrorLog.class
         },
         version = 1)
 public abstract class AppDatabase extends RoomDatabase {
@@ -46,6 +49,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CategoryDao categoryDao();
 
     public abstract DealerDao dealerDao();
+
+    public abstract ErrorLogDao errorLogDao();
 
     public static AppDatabase getInstance() {
         if (INSTANCE == null) {

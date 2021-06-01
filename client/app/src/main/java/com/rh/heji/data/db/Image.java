@@ -14,7 +14,12 @@ import java.util.Objects;
  * Author: 锅得铁
  * #
  */
-@Entity(tableName = Image.TAB_NAME)
+@Entity(tableName = Image.TAB_NAME, foreignKeys = @ForeignKey(entity = Bill.class,
+        parentColumns = "bill_id",
+        childColumns = "_bid",
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE
+))
 public class Image {
 
     public static final String TAB_NAME = "bill_img";
@@ -28,9 +33,8 @@ public class Image {
     String _id;
 
 
-    @ForeignKey(entity = Bill.class, parentColumns = "bill_id", childColumns = "_bid", onDelete = ForeignKey.CASCADE)
     @NonNull
-    @ColumnInfo(name = COLUMN_ID)
+    @ColumnInfo(name = COLUMN_ID,index = true)
     String bill_id;
 
     String md5;

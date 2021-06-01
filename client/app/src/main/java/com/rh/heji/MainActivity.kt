@@ -39,6 +39,7 @@ import com.rh.heji.ui.home.HomeDrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.JWTParse.getUser
 import kotlinx.coroutines.*
+import java.lang.NullPointerException
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -53,8 +54,9 @@ class MainActivity : AppCompatActivity() {
         if (BuildConfig.DEBUG) {
             val oldThreadPolicy = StrictMode.getThreadPolicy()
             StrictMode.setThreadPolicy(
-                    StrictMode.ThreadPolicy.Builder(oldThreadPolicy)
-                            .permitDiskReads().build())
+                StrictMode.ThreadPolicy.Builder(oldThreadPolicy)
+                    .permitDiskReads().build()
+            )
             val anyValue = func()
             StrictMode.setThreadPolicy(oldThreadPolicy)
 
@@ -66,7 +68,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         permitDiskReads { super.onCreate(savedInstanceState) }//StrictMode policy violation; ~duration=127 ms: android.os.strictmode.DiskReadViolation by XiaoMi
-        checkPermissions { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? -> Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show() }
+        checkPermissions { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
+            //初始化一些需要权限的功能
+            AppCache.instance.appViewModule.initCarshTool()
+            Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
+        }
         setContentView(R.layout.activity_main)
         initDrawerLayout()
         lifecycleScope.launch(Dispatchers.IO) {
@@ -88,6 +94,7 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             @SuppressLint("WrongConstant")
             override fun handleOnBackPressed() {
+                throw NullPointerException("Z哈")
                 if (navController.currentDestination?.id == R.id.nav_home) { //主页
                     if (drawerLayout.isDrawerOpen(Gravity.START)) {
                         drawerLayout.closeDrawer(Gravity.START)
@@ -161,39 +168,41 @@ class MainActivity : AppCompatActivity() {
         }
         val weakReference = WeakReference(navigationView)
         navController.addOnDestinationChangedListener(
-                object : OnDestinationChangedListener {
-                    override fun onDestinationChanged(controller: NavController,
-                                                      destination: NavDestination, arguments: Bundle?) {
-                        val view = weakReference.get()
-                        if (view == null) {
-                            navController.removeOnDestinationChangedListener(this)
-                            return
-                        }
-                        val menu = view.menu
-                        var h = 0
-                        val size = menu.size()
-                        while (h < size) {
-                            val item = menu.getItem(h)
-                            var currentDestination: NavDestination = destination
-                            while (currentDestination.id != item.itemId && currentDestination.parent != null) {
-                                currentDestination = currentDestination.parent!!
-                            }
-                            val isChecked = currentDestination.id == item.itemId
-                            item.isChecked = isChecked
-                            h++
-                        }
-                        val home = resources.getString(R.string.menu_home)
-                        val report = resources.getString(R.string.menu_report)
-                        val setting = resources.getString(R.string.menu_setting)
-                        val itemLabel = destination.label.toString()
-                        if (itemLabel == home) {
-                            title = "记账"
-                        } else if (itemLabel == report) {
-                        } else if (itemLabel == setting) {
-                        }
-                        LogUtils.i(destination.label)
+            object : OnDestinationChangedListener {
+                override fun onDestinationChanged(
+                    controller: NavController,
+                    destination: NavDestination, arguments: Bundle?
+                ) {
+                    val view = weakReference.get()
+                    if (view == null) {
+                        navController.removeOnDestinationChangedListener(this)
+                        return
                     }
-                })
+                    val menu = view.menu
+                    var h = 0
+                    val size = menu.size()
+                    while (h < size) {
+                        val item = menu.getItem(h)
+                        var currentDestination: NavDestination = destination
+                        while (currentDestination.id != item.itemId && currentDestination.parent != null) {
+                            currentDestination = currentDestination.parent!!
+                        }
+                        val isChecked = currentDestination.id == item.itemId
+                        item.isChecked = isChecked
+                        h++
+                    }
+                    val home = resources.getString(R.string.menu_home)
+                    val report = resources.getString(R.string.menu_report)
+                    val setting = resources.getString(R.string.menu_setting)
+                    val itemLabel = destination.label.toString()
+                    if (itemLabel == home) {
+                        title = "记账"
+                    } else if (itemLabel == report) {
+                    } else if (itemLabel == setting) {
+                    }
+                    LogUtils.i(destination.label)
+                }
+            })
     }
 
     private fun setDrawerLayout(user: JWTParse.User) {
@@ -203,19 +212,32 @@ class MainActivity : AppCompatActivity() {
 
     fun checkPermissions(requestCallback: RequestCallback) {
         PermissionX.init(this).permissions(
-                Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.ACCESS_NETWORK_STATE,
-                Manifest.permission.INTERNET
+            Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.INTERNET
         ).explainReasonBeforeRequest()
-                .onExplainRequestReason { scope: ExplainScope, deniedList: List<String?>? ->
-                    scope.showRequestReasonDialog(
-                            deniedList,
-                            "为了正常使用你必须同意以下权限:",
-                            "我已明白")
-                }
-                .onForwardToSettings { scope: ForwardScope, deniedList: List<String?>? -> scope.showForwardToSettingsDialog(deniedList, "您需要去应用程序设置当中手动开启权限", "我已明白") }
-                .request { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? -> requestCallback.onResult(allGranted, grantedList, deniedList) }
+            .onExplainRequestReason { scope: ExplainScope, deniedList: List<String?>? ->
+                scope.showRequestReasonDialog(
+                    deniedList,
+                    "为了正常使用你必须同意以下权限:",
+                    "我已明白"
+                )
+            }
+            .onForwardToSettings { scope: ForwardScope, deniedList: List<String?>? ->
+                scope.showForwardToSettingsDialog(
+                    deniedList,
+                    "您需要去应用程序设置当中手动开启权限",
+                    "我已明白"
+                )
+            }
+            .request { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
+                requestCallback.onResult(
+                    allGranted,
+                    grantedList,
+                    deniedList
+                )
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -252,7 +274,8 @@ class MainActivity : AppCompatActivity() {
 
     val fragments: List<Fragment>
         get() {
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             return navHostFragment.childFragmentManager.fragments
         }
 

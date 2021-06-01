@@ -14,6 +14,7 @@ import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.Dealer
+import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.data.repository.CategoryRepository
@@ -21,6 +22,7 @@ import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.service.work.DataSyncWork
+import com.rh.heji.utlis.CrashInfo
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,12 +37,29 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         launchIO({
             fakeData()
             LogUtils.getConfig().globalTag = "TAG"
-            if (ActivityCompat.checkSelfPermission(AppCache.instance.context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                CrashUtils.init(AppCache.instance.storage("Crash"))
-            }
+            initCarshTool()
         }, {
             it.printStackTrace()
         })
+    }
+
+     fun initCarshTool() {
+        if (ActivityCompat.checkSelfPermission(
+                AppCache.instance.context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            CrashUtils.init(AppCache.instance.storage("Crash"), object:CrashInfo(){
+                override fun onCrash(crashInfo: CrashUtils.CrashInfo) {
+                    super.onCrash(crashInfo)
+                    launchIO({
+                            var errorLog =ErrorLog()
+                            errorLog.extra =crashInfo.toString()
+                             AppDatabase.getInstance().errorLogDao().install(errorLog)
+                    },{})
+                }
+            })
+        }
     }
 
     fun billPush(billEntity: BillEntity) {
@@ -89,7 +108,10 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         super.onCleared()
     }
 
-    private fun launchIO(block: suspend () -> Unit, error: suspend (Throwable) -> Unit = { it.printStackTrace() }) = viewModelScope.launch(Dispatchers.IO) {
+    private fun launchIO(
+        block: suspend () -> Unit,
+        error: suspend (Throwable) -> Unit = { it.printStackTrace() }
+    ) = viewModelScope.launch(Dispatchers.IO) {
         try {
             block()
         } catch (e: Throwable) {
@@ -98,7 +120,10 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun launch(block: suspend () -> Unit, error: suspend (Throwable) -> Unit = { it.printStackTrace() }) = viewModelScope.launch() {
+    private fun launch(
+        block: suspend () -> Unit,
+        error: suspend (Throwable) -> Unit = { it.printStackTrace() }
+    ) = viewModelScope.launch() {
         try {
             block()
         } catch (e: Throwable) {

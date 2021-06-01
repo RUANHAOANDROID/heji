@@ -79,7 +79,7 @@ public class ImageController {
             throw new NotFindBillException("账单不存在");
         String md5 = MD5Util.getMD5(imageFile.getInputStream());
         MBillImage image = new MBillImage().set_id(_id);
-        String fileName = TimeUtils.millis2String(time) + imageFile.getOriginalFilename();
+        String fileName =imageFile.getOriginalFilename();
         image.setFilename(fileName);
         image.setExt(".jpg");
         image.setData(imageFile.getBytes());

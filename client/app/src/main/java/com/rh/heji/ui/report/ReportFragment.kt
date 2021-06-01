@@ -16,8 +16,6 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.MPPointF
 import com.rh.heji.R
-import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
@@ -87,7 +85,7 @@ class ReportFragment : BaseFragment() {
                 reportViewModel.yearMonth.month
             )
                 .split("-")[2].toInt()//月份天数
-            binding.tvDayAVGValue.text = jieYu.toPlainString()
+            binding.tvDayAVGValue.text = jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
 
             //----列表标题年/月平均值
             var avg = "0.00"

@@ -9,15 +9,9 @@
     </tr>
     
     <tr>
-        <td>
-           <img src="https://user-images.githubusercontent.com/10151414/120281860-0e204b80-c2ec-11eb-8d8d-a1e0fd04bab3.jpeg" width="480" height="800" /> 
-        </td>
-        
-        <td>
-            <img src="https://user-images.githubusercontent.com/10151414/120281866-0fea0f00-c2ec-11eb-9c93-f2172c3c76eb.jpeg" width="480" height="800" />
-        </td>
-        
-    
+        <td><img src="https://user-images.githubusercontent.com/10151414/120281860-0e204b80-c2ec-11eb-8d8d-a1e0fd04bab3.jpeg" width="480" height="800" /></td>
+        <td> <img src="https://user-images.githubusercontent.com/10151414/120281866-0fea0f00-c2ec-11eb-9c93-f2172c3c76eb.jpeg" width="480" height="800" /></td>
+        <td><img src="https://user-images.githubusercontent.com/10151414/120281869-111b3c00-c2ec-11eb-9454-2330cca7897a.jpeg" width="480" height="800" /></td>
     </tr>
 </table>
 

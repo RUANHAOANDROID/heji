@@ -1,6 +1,6 @@
 package com.heji.server.service.impl;
 
-import com.heji.server.data.mongo.Authority;
+import com.heji.server.data.mongo.MAuthority;
 import com.heji.server.data.mongo.BaseMongoTemplate;
 import com.heji.server.data.mongo.MUser;
 import com.heji.server.data.mongo.repository.MUserRepository;
@@ -71,9 +71,9 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
             String password = bCryptPasswordEncoder.encode(mUser.getPassword());//加密
             mUser.setPassword(password);//存入
 
-            List<Authority> authorities = new ArrayList<>();
-            authorities.add(new Authority().setAuthority(Authority.USER));
-            authorities.add(new Authority().setAuthority(Authority.ADMIN));
+            List<MAuthority> authorities = new ArrayList<>();
+            authorities.add(new MAuthority().setAuthority(MAuthority.USER));
+            authorities.add(new MAuthority().setAuthority(MAuthority.ADMIN));
             mUser.setAuthority(authorities);
 
             MUser newUser = mUserRepository.save(mUser);

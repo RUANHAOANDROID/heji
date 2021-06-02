@@ -24,7 +24,7 @@ public class MUser {
     String password;
     String tel;
     String email;
-    List<Authority> authority;//角色权限
+    List<MAuthority> authority;//角色权限
     @Ignore
     String code;//邀请码
 

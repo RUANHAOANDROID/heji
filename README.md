@@ -104,7 +104,7 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MMVP模式
 这是第一次写较完整的后端代码，服务端使用Java Springboot框架，数据库采用MongoDB，目前打包为jar程序直接运行
 
 ### 技术集
-*   SpringBoot 框架权健痛
+*   SpringBoot 基础框架
 *   MongoDB 数据存储
 *   JWT  Json web Token 用户鉴权
 *   gson  数据的格式化

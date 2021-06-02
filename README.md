@@ -39,6 +39,8 @@
 
 #### 账单导入支持：
 
+* ETC 
+
 * EXCEL
 * CVS
 
@@ -108,5 +110,4 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MMVP模式
 *   gson  数据的格式化
 *   Easyexcel Excel导入导出操作
 *   Lombok 减少样板代码
-
 

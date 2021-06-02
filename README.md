@@ -32,37 +32,27 @@
 
 * 运营账本（目前单一账本，多用户同时记账，非自身记账不可删除）
 
-### 账单
+#### 账单
 1. 账单分为收入\支出
+   
+
 2. 账单属性
-   * 账单类别
-   * 金额
-   * 时间
-   * 票据图片
-   * 备注信息
+
+   > 账单类别|金额|时间|票据图片|备注信息
+
 3. 账单查重功能
-  
+
    > 通过账单时间\金额\票据MD5值判断是否存在重复记录
+
 4. 账单导入
+
+   >  导入支持 支付宝、微信、ETC 、EXCEL、CVS、钱迹 
+
 5. 账单导出
 
-#### 账单导入支持：
+   > 导出支持 EXCEL、CVS、钱迹
 
-* ETC 
-* EXCEL
-* CVS
-* 钱迹 
-* 微信
-* 支付宝
-#### 账单导出支持：
-
-* EXCEL
-* CVS
-* 钱迹 
-
-
-
-### 统计
+#### 统计
 1. 支出人员支出占比
    * 起始资金占比
    * 月支出占比
@@ -108,7 +98,7 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MMVP模式
     </tr>
 </table>
 
-### 技术集
+### 技术栈
 *   基于AndroidX,使用Java + kotlin 混合开发
 *   OkHttp + retrofit 网络请求
 *   navigation Fragment导航
@@ -127,7 +117,7 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MMVP模式
 
 ## 服务端
 服务端使用Java Springboot框架，数据库采用MongoDB，目前打包为jar程序直接运行
-### 技术集
+### 技术栈
 *   SpringBoot 基础框架
 *   MongoDB 数据存储
 *   JWT  Json web Token 用户鉴权

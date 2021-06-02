@@ -80,8 +80,8 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MMVP模式
         <td><img src="https://user-images.githubusercontent.com/10151414/120281869-111b3c00-c2ec-11eb-9454-2330cca7897a.jpeg" width="500" height="800" /></td>
     </tr>
 </table>
-### 技术集
 
+### 技术集
 *   基于AndroidX,使用Java + kotlin 混合开发
 *   OkHttp + retrofit 网络请求
 *   navigation Fragment导航

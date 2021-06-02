@@ -111,4 +111,4 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MMVP模式
 *   Easyexcel Excel导入导出操作
 *   Lombok 减少样板代码
 
-后端使用了SpringBoot框架，数据库方面使用MongoDB，
+

@@ -1,6 +1,12 @@
 # 合计
 合伙记账
 
+注：该项目为练手项目仅仅用做学习和非商业化目的，UI方面参考了钱迹，我本身也是钱迹的超级终身VIP。
+
+Android端使用最新的Androidx,JitPack组件，语言方面为JAVA + Kotelin 混合开发。
+
+后端使用了SpringBoot框架，数据库方面使用MongoDB，
+
 <table>
     <tr>
         <td><img src="https://user-images.githubusercontent.com/10151414/120281819-02348980-c2ec-11eb-9171-4a32c1609fd5.jpeg" width="500" height="800" /></td>

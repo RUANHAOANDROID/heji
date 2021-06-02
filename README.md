@@ -71,7 +71,7 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MMVP模式
 
 <table>
     <tr>
-        <td><img src="https://user-images.githubusercontent.com/10151414/120281819-02348980-c2ec-11eb-9171-4a32c1609fd5.jpeg" width="500" height="600" /></td>
+        <td><img src="https://user-images.githubusercontent.com/10151414/120281819-02348980-c2ec-11eb-9171-4a32c1609fd5.jpeg" alt="hello" style="zoom:67%;"/></td>
         <td><img src="https://user-images.githubusercontent.com/10151414/120281838-0791d400-c2ec-11eb-8ad4-1601b4de1694.jpeg" width="500" height="600" /></td>
     </tr>
     <tr>

@@ -128,34 +128,71 @@ authority | List<MAuthority> | 权限（关联权限集）
 
 #### 权限（MAuthority） 
 列名| 类型| 说 明 
------------- | :-----------:|:----------: 
+:----------- | :-----------:|:----------: 
 _id| ObjectID | ObjectID 
 authority| String | 权限 
 book_id| String | 账本ID（关联账本集） 
 
 #### 账本（MBook）
 列名| 类型| 说 明 
------------- | :-----------:|:----------: 
+:----------- | :-----------:|:----------: 
+_id| ObjectID | 自增ID 
+book_name| String | 账本名称 
+createUser| String | 创建人 
+cover| byte[] | 封面图片 
 
 #### 账单（MBill）
+
+
 列名| 类型| 说 明 
------------- | :-----------:|:----------: 
+:----------- | :-----------:|:----------: 
+_id| ObjectID | 自增ID 
+book_id| String | 所属账本ID 
+money| Double | 货币 
+category| String | 账单收支类型 
+type| Integer | 收入/支出 
+dealer| String | 经手人 
+createUser| String | 创建人 
+remark| String | 备注 
+images| String[] | 图片集（关联账单图片） 
+time| String | 账单日期（用户选择的日期） 
+create_time| long | 创建时间 
+update_time| long | 更新时间 
 
 #### 账单备份（MBillBackup）
-列名| 类型| 说 明 
------------- | :-----------:|:----------: 
 
-#### 账单备份（MBillImage）
+> 同账单
+
+#### 账单票据图片（MBillImage）
 列名| 类型| 说 明 
 ------------ | :-----------:|:----------: 
+_id| ObjectID | 自增ID 
+bill_id| String | 所属账单ID 
+filename| String | 文件名 
+length| Long | 文件长度 
+md5| String | MD5 
+upload_time| Long | 上传时间 
+ext| String | 后缀名 
+isGridFS| Boolean | 是否分片 
+data| byte[] | 二进制图片 
 
 #### 账单类型（MCategory）
 列名| 类型| 说 明 
 ------------ | :-----------:|:----------: 
+_id| ObjectID | 自增ID 
+book_id| String | 所属账本ID 
+type| Integer | 支出/收入 
+name| String | 标签名 
+level| Integer | 多级标签所属等级 
+index| Integer | 排序顺序 
 
 #### 客户端错误日志（MErrorLog）
 列名| 类型| 说 明 
 ------------ | :-----------:|:----------: 
+_id| ObjectID | 自增ID 
+deviceModel| String | 设备型号 
+tel| String | 电话号 
+contents| String | 日志内容 
 
 待补充...
 

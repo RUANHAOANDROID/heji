@@ -120,7 +120,7 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MMVP模式
 #### 用户（MUser）
 列名| 类型| 说 明 
 ------------ | :-----------:|:----------: 
-_id | ObjectID| ObjectID 
+_id | ObjectID| 自增ID 
 name | String | 用户名 
 password | String | 密码 
 tel | String | 电话号码 
@@ -129,7 +129,7 @@ authority | List<MAuthority> | 权限（关联权限集）
 #### 权限（MAuthority） 
 列名| 类型| 说 明 
 :----------- | :-----------:|:----------: 
-_id| ObjectID | ObjectID 
+_id| ObjectID | 自增ID 
 authority| String | 权限 
 book_id| String | 账本ID（关联账本集） 
 

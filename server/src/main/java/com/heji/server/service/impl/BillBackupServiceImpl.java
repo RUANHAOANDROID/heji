@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service("BillBackupService")
-public class BillBackupServerImpl extends BaseMongoTemplate implements BillBackupServer {
+public class BillBackupServiceImpl extends BaseMongoTemplate implements BillBackupServer {
     final MBillBackupRepository backupRepository;
 
-    public BillBackupServerImpl(MBillBackupRepository backupRepository) {
+    public BillBackupServiceImpl(MBillBackupRepository backupRepository) {
         this.backupRepository = backupRepository;
     }
 

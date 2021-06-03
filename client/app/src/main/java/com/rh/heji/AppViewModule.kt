@@ -9,10 +9,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.CrashUtils
 import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Category
-import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.Dealer
 import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.data.db.mongo.ObjectId
@@ -22,6 +20,7 @@ import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.service.work.DataSyncWork
+import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.CrashInfo
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +31,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     private val billRepository = BillRepository()
     private val categoryRepository = CategoryRepository()
     val asyncLiveData = MediatorLiveData<Any>()
-
+    val user:JWTParse.User by lazy { JWTParse.getUser(AppCache.instance.token.tokenString) }
     init {
         launchIO({
             fakeData()
@@ -53,9 +52,9 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
                 override fun onCrash(crashInfo: CrashUtils.CrashInfo) {
                     super.onCrash(crashInfo)
                     launchIO({
-                            var errorLog =ErrorLog()
-                            errorLog.extra =crashInfo.toString()
-                             AppDatabase.getInstance().errorLogDao().install(errorLog)
+                        errorLog?.let {
+                            HejiNetwork.getInstance().logUpload(it)
+                        }
                     },{})
                 }
             })

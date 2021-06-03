@@ -1,6 +1,7 @@
 package com.rh.heji.network
 
 import com.rh.heji.AppCache
+import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterUser
@@ -29,6 +30,8 @@ class HejiNetwork {
     suspend fun categoryPush(category: CategoryEntity) = hejiServer.addCategory(category).await()
     suspend fun categoryDelete(_id: String) = hejiServer.deleteCategoryById(_id).await()
     suspend fun categoryPull(_id: String = "0") = hejiServer.getCategories(_id).await()
+    suspend fun logUpload(errorLog: ErrorLog) = hejiServer.logUpload(errorLog).await()
+
 
 
     private suspend fun <T> Call<T>.await(): T {

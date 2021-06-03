@@ -1,5 +1,6 @@
 package com.rh.heji.network
 
+import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.network.response.ImageEntity
@@ -88,4 +89,7 @@ interface HeJiServer {
     @Streaming
     @GET("image/{imageId}")
     fun getImage(@Path("imageId") _id: String): Call<ResponseBody>
+
+    @POST("log/upload")
+    fun logUpload(@Body errorLog: ErrorLog):Call<BaseResponse<String>>
 }

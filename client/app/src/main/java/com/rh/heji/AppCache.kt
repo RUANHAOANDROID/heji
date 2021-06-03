@@ -4,22 +4,13 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.text.TextUtils
-import androidx.lifecycle.viewModelScope
-import com.blankj.utilcode.util.EncodeUtils
-import com.blankj.utilcode.util.FileUtils
-import com.google.gson.GsonBuilder
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.network.HeJiServer
+import com.rh.heji.security.Token
 import com.rh.heji.ui.user.JWTParse
-import com.rh.heji.ui.user.JWTParse.getUser
-import com.rh.heji.ui.user.UserInfo
 import com.rh.heji.utlis.http.basic.ServiceCreator
 import com.tencent.mmkv.MMKV
-import kotlinx.coroutines.*
 import java.io.*
-import java.nio.charset.StandardCharsets
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Date: 2020/11/18
@@ -30,7 +21,10 @@ class AppCache {
     val app: App by lazy { context as App }
     lateinit var context: Context
     val token by lazy { Token(context) }
-    val heJiServer: HeJiServer by lazy { ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer }
+    val user by lazy { JWTParse.getUser(token.tokenString) }
+    val heJiServer: HeJiServer by lazy {
+        ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer
+    }
     lateinit var appViewModule: AppViewModule
     val database: AppDatabase by lazy { AppDatabase.getInstance() }
     val kvStorage = MMKV.defaultMMKV()
@@ -72,61 +66,3 @@ class AppCache {
 
 }
 
-class Token(val context: Context) {
-    // Error occurred when opening raw file for reading.
-    private val token: String
-        get() {
-            val tokenFile = File(context.filesDir, "TokenFile")
-            var token = ""
-            if (tokenFile.exists()) {
-                try {
-                    val inputStream = FileInputStream(tokenFile)
-                    val inputStreamReader = InputStreamReader(inputStream, StandardCharsets.UTF_8)
-                    val stringBuilder = StringBuilder()
-                    try {
-                        BufferedReader(inputStreamReader).use { reader ->
-                            var line = reader.readLine()
-                            while (line != null) {
-                                stringBuilder.append(line)
-                                line = reader.readLine()
-                            }
-                        }
-                    } catch (e: IOException) {
-                        // Error occurred when opening raw file for reading.
-                        e.printStackTrace()
-                    } finally {
-                        token = stringBuilder.toString()
-                    }
-                } catch (e: FileNotFoundException) {
-                    e.printStackTrace()
-                }
-            }
-            return String(EncodeUtils.base64Decode(token))
-        }
-
-    suspend fun get() = token
-    suspend fun save(token: String?) {
-        val fileName = "TokenFile"
-        val file = File(context.filesDir.absolutePath)
-        val tokenFile = File(file, fileName)
-        FileUtils.createFileByDeleteOldFile(tokenFile)
-        try {
-            context.openFileOutput(fileName, Context.MODE_PRIVATE).use { fos -> fos.write(EncodeUtils.base64Encode(token)) }
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    suspend fun delete() {
-        val fileName = "TokenFile"
-        val file = File(context.filesDir.absolutePath)
-        val tokenFile = File(file, fileName)
-        FileUtils.delete(tokenFile)
-    }
-
-    val isLogin: Boolean
-        get() = !TextUtils.isEmpty(token)
-
-}

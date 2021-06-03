@@ -174,7 +174,7 @@ md5| String | MD5
 upload_time| Long | 上传时间 
 ext| String | 后缀名 
 isGridFS| Boolean | 是否分片 
-data| byte[] | 二进制图片 
+data| Binary | 二进制图片 
 
 #### 账单类型（MCategory）
 列名| 类型| 说 明 
@@ -203,4 +203,3 @@ contents| String | 日志内容
 *   gson  数据的格式化
 *   Easyexcel Excel导入导出操作
 *   Lombok 减少样板代码
-

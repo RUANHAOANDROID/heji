@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initDrawerLayout()
         lifecycleScope.launch(Dispatchers.IO) {
-            val token = instance.token.get()
+            val token = instance.token.tokenString
             withContext(Dispatchers.Main) {
                 if (TextUtils.isEmpty(token)) {
                     navController.navigate(R.id.nav_login)

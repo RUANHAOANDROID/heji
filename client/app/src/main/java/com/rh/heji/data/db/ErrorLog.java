@@ -1,11 +1,14 @@
 package com.rh.heji.data.db;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 import com.rh.heji.data.db.mongo.ObjectId;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Date: 2021/3/2
@@ -14,88 +17,59 @@ import com.rh.heji.data.db.mongo.ObjectId;
  */
 @Entity(tableName = "error_log")
 public class ErrorLog {
-    String objectId;
 
-    @PrimaryKey
-    @SerializedName("code")
-    private int code;
+    @PrimaryKey()
+    @NonNull
+    String _id;
 
-    @SerializedName("extra")
-    private String extra;
-
-    @SerializedName("message")
-    private String message;
-
-    @SerializedName("time")
-    private long time;
+    @SerializedName("timeOfCrash")
+    private long timeOfCrash;
 
     @SerializedName("uid")
     private String userid;
 
-    @SerializedName("model")
-    private String model;
+    private String deviceModel;
 
-    @SerializedName("sdkVersionName")
     private String sdkVersionName;
 
-    @SerializedName("sdkVersionCode")
     private String sdkVersionCode;
+    private String appVersionName;
+    private String appVersionCode;
+    private boolean isTablet;
 
-    @SerializedName("isTablet")
-    private String isTablet;
+    private boolean isEmulator;
 
-    @SerializedName("isEmulator")
-    private String isEmulator;
-
-    @SerializedName("uniqueDeviceId")
     private String uniqueDeviceId;
 
-    @SerializedName("networkType")
     private String networkType;
 
+    public String throwable;
+
     public ErrorLog() {
+        this(new ObjectId());
     }
 
     @Ignore
     public ErrorLog(ObjectId objectId) {
-        this.objectId = objectId.toString();
-        this.time = System.currentTimeMillis();
+        this._id = objectId.toString();
+        this.timeOfCrash = System.currentTimeMillis();
     }
 
-    public String getObjectId() {
-        return objectId;
+    @NonNull
+    public String get_id() {
+        return _id;
     }
 
-    public int getCode() {
-        return code;
+    public void set_id(@NonNull String _id) {
+        this._id = _id;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public long getTimeOfCrash() {
+        return timeOfCrash;
     }
 
-    public String getExtra() {
-        return extra;
-    }
-
-    public void setExtra(String extra) {
-        this.extra = extra;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
+    public void setTimeOfCrash(long timeOfCrash) {
+        this.timeOfCrash = timeOfCrash;
     }
 
     public String getUserid() {
@@ -106,12 +80,12 @@ public class ErrorLog {
         this.userid = userid;
     }
 
-    public String getModel() {
-        return model;
+    public String getDeviceModel() {
+        return deviceModel;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public void setDeviceModel(String deviceModel) {
+        this.deviceModel = deviceModel;
     }
 
     public String getSdkVersionName() {
@@ -130,20 +104,36 @@ public class ErrorLog {
         this.sdkVersionCode = sdkVersionCode;
     }
 
-    public String getIsTablet() {
+    public String getAppVersionName() {
+        return appVersionName;
+    }
+
+    public void setAppVersionName(String appVersionName) {
+        this.appVersionName = appVersionName;
+    }
+
+    public String getAppVersionCode() {
+        return appVersionCode;
+    }
+
+    public void setAppVersionCode(String appVersionCode) {
+        this.appVersionCode = appVersionCode;
+    }
+
+    public boolean isTablet() {
         return isTablet;
     }
 
-    public void setIsTablet(String isTablet) {
-        this.isTablet = isTablet;
+    public void setTablet(boolean tablet) {
+        isTablet = tablet;
     }
 
-    public String getIsEmulator() {
+    public boolean isEmulator() {
         return isEmulator;
     }
 
-    public void setIsEmulator(String isEmulator) {
-        this.isEmulator = isEmulator;
+    public void setEmulator(boolean emulator) {
+        isEmulator = emulator;
     }
 
     public String getUniqueDeviceId() {
@@ -160,5 +150,13 @@ public class ErrorLog {
 
     public void setNetworkType(String networkType) {
         this.networkType = networkType;
+    }
+
+    public String getCrashContent() {
+        return throwable;
+    }
+
+    public void setCrashContent(String crashContent) {
+        this.throwable = crashContent;
     }
 }

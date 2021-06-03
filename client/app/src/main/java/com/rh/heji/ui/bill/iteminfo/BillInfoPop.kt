@@ -17,19 +17,14 @@ import com.rh.heji.AppCache.Companion.instance
 import com.rh.heji.BuildConfig
 import com.rh.heji.MainActivity
 import com.rh.heji.R
-import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.PopBilliInfoBinding
 import com.rh.heji.ui.bill.img.ImageLoader
-import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.JWTParse.getUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.function.Function
 import java.util.stream.Collectors
@@ -131,7 +126,7 @@ class BillInfoPop(context: Context) : BottomPopupView(context) {
         ) {
             val mainActivity = context as MainActivity
             mainActivity.lifecycleScope.launch(Dispatchers.Default) {
-                val user = getUser(instance.token.get())
+                val user = getUser(instance.token.tokenString)
                 if (bill.createUser == null || bill.createUser == user.username) {
                     instance.appViewModule.billDelete(bill.getId())
                     popClickListener.let {

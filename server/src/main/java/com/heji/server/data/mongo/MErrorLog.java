@@ -19,6 +19,7 @@ public class MErrorLog {
     String _id;
     String deviceModel;
     String tel;
+    String contents;
 
 
 }

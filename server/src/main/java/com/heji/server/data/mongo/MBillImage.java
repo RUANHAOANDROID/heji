@@ -42,7 +42,6 @@ public class MBillImage implements Serializable {
     // 是否GridFS保存
     private Boolean isGridFS;
     // isGridFS=true  gridFs文件ID false:文档文件ID
-    private Object fileId;
     //二进制文件
     private byte[] data;
 }

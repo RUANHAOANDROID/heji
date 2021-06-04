@@ -75,7 +75,7 @@
 
 ## Client Android
 
-Android client 采用单Activity 多Fragment 项目结构偏向于MMVP模式
+Android client 采用单Activity 多Fragment 项目结构偏向于MVVM模式
 
 ### UI
 

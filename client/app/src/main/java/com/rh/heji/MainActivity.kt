@@ -33,7 +33,7 @@ import com.permissionx.guolindev.request.ExplainScope
 import com.permissionx.guolindev.request.ForwardScope
 import com.rh.heji.AppCache.Companion.instance
 import com.rh.heji.databinding.ActivityMainBinding
-import com.rh.heji.databinding.NavHeaderMainBinding
+import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.ui.home.DrawerSlideListener
 import com.rh.heji.ui.home.HomeDrawerListener
 import com.rh.heji.ui.user.JWTParse
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController private set
     private lateinit var drawerLayout: DrawerLayout
     val mainViewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
-    private lateinit var navHeaderMainBinding: NavHeaderMainBinding//侧拉头像
+    private lateinit var navHeaderMainBinding: HeaderMainNavBinding//侧拉头像
     private lateinit var navigationView: NavigationView
     private fun permitDiskReads(func: () -> Any): Any {
         if (BuildConfig.DEBUG) {
@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         //自定义控制
         navigationDrawerController()
         val navHeaderView = navigationView.getHeaderView(0)
-        navHeaderMainBinding = NavHeaderMainBinding.bind(navHeaderView)
+        navHeaderMainBinding = HeaderMainNavBinding.bind(navHeaderView)
         navHeaderView.setOnClickListener { v: View? ->
             ToastUtils.showLong("")
             navController.navigate(R.id.nav_user_info)

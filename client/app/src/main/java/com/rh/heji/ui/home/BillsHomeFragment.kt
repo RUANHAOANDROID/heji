@@ -247,7 +247,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
                 )
             }
         }
-        popupView.show()
+
     }
 
     /**

@@ -4,7 +4,11 @@ import android.graphics.Color
 import android.text.SpannableString
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.ScreenUtils
+import com.blankj.utilcode.util.ToastUtils
+import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
@@ -15,13 +19,17 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.MPPointF
+import com.lxj.xpopup.XPopup
 import com.rh.heji.R
+import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.report.pop.BottomListPop
 import com.rh.heji.utlis.ColorUtils
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
@@ -326,21 +334,42 @@ class ReportFragment : BaseFragment() {
         binding.pieChartCategory.invalidate()
     }
 
-
+    /**
+     * 分类列表
+     */
     private fun updateCategoryListView(entries: ArrayList<PieEntry>) {
-        binding.recyclerCategory.layoutManager = LinearLayoutManager(activity)
+        binding.recyclerCategory.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerCategory.adapter = categoryTotalAdapter
         categoryTotalAdapter.setNewInstance(entries)
+        categoryTotalAdapter.setOnItemClickListener( OnItemClickListener { adapter, view, position ->
+            val categoryItem:PieEntry = adapter.getItem(position) as PieEntry
+            val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(categoryItem.label,reportViewModel.yearMonth.toString(),BillType.EXPENDITURE.type())
+            XPopup.fixLongClick(view)
+            val data= mutableListOf<String>("a","b")
+            for (i in 1..100){
+                data.add(i.toString())
+            }
+            val bottomListPop = BottomListPop(context = mainActivity, data = bills)
+            XPopup.Builder(mainActivity)
+                .maxHeight(ScreenUtils.getScreenHeight() -toolBar.bottom)
+               // .asBottomList("",data.toTypedArray(),null)
+                .asCustom(bottomListPop)
+                .show()
+            ToastUtils.showShort("a")
+        })
     }
 
+    /**
+     * 年|月 账单报表
+     */
     private fun updateMonthYearBillListView() {
 
         val linearLayoutManager = LinearLayoutManager(activity)
         linearLayoutManager.isSmoothScrollbarEnabled = true
         binding.recyclerBaobiao.layoutManager = linearLayoutManager
         binding.recyclerBaobiao.adapter = monthYearBillsAdapter
-        binding.recyclerBaobiao.setHasFixedSize(true);
-        binding.recyclerBaobiao.isNestedScrollingEnabled = false;
+        binding.recyclerBaobiao.setHasFixedSize(true)
+        binding.recyclerBaobiao.isNestedScrollingEnabled = false
         binding.recyclerBaobiao.addItemDecoration(
             DividerItemDecorator(
                 resources.getDrawable(
@@ -350,7 +379,7 @@ class ReportFragment : BaseFragment() {
             )
         )
         reportViewModel.reportBillsList.observe(this, {
-            monthYearBillsAdapter.setNewInstance(it);
+            monthYearBillsAdapter.setNewInstance(it)
         })
         billTotalListLayout()
     }

@@ -30,7 +30,7 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface BillDao {
     String REDELETE = "sync_status!=" + Constant.STATUS_DELETE;
-
+    String YEAR ="strftime('%Y-%m',${})";
     @Update(onConflict = REPLACE)
     int update(Bill bill);
 
@@ -154,7 +154,14 @@ public interface BillDao {
      */
     @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND type =:type AND sync_status!=" + Constant.STATUS_DELETE+" group by category")
     List<Bill> findByMonthGroupByCategory(String date,int type);
-
+    /**
+     * 根据Category月份查询账单
+     *
+     * @param date
+     * @return
+     */
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND category=:category AND type =:type AND sync_status!=" + Constant.STATUS_DELETE)
+    List<Bill> findByCategoryAndMonth(String category,String date,int type);
     //---------------统计----------------//
 
 

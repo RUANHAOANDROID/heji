@@ -183,7 +183,7 @@ class ReportFragment : BaseFragment() {
      */
     private fun setLineChartNodes(bills: List<Bill>) {
         val xAxisInConsume = binding.lineChart.xAxis
-        var dayCount = MyTimeUtils.getMonthLastDay(
+        val dayCount = MyTimeUtils.getMonthLastDay(
             reportViewModel.yearMonth.year,
             reportViewModel.yearMonth.month
         )
@@ -193,15 +193,15 @@ class ReportFragment : BaseFragment() {
             dayMap.replace(day, Entry(0f, 0f))
         }
         list.clear()
-        var entries = bills.stream().map {
+        val entries = bills.stream().map {
             val day =
                 DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2].toFloat()
-            var type = if (it.type == -1) "支出" else "收入"
+            val type = if (it.type == -1) "支出" else "收入"
             dayMap.replace(day.toInt(), Entry(day, it.money.toFloat(), type))
             return@map Entry(day, it.money.toFloat(), type)
         }.collect(Collectors.toList())
 
-        var set1 = LineDataSet(entries, "收入")
+        val set1 = LineDataSet(entries, "收入")
 
         val data = LineData(set1)
         binding.lineChart.data = data

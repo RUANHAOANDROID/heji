@@ -25,7 +25,8 @@ class CategoryTotalAdapter(
     override fun convert(holder: BaseViewHolder, item: PieEntry) {
         itemBinding = ItemCategoryTotalBinding.bind(holder.itemView)
 
-        val textIconColor = colors[holder.layoutPosition]
+        val position =if(holder.layoutPosition<colors.size) holder.layoutPosition else holder.layoutPosition/colors.size
+        val textIconColor = colors[position]
         val textIconDrawable = TextDrawable.builder()
             .buildRound(item.label.substring(0, 1), textIconColor)
 

@@ -11,7 +11,7 @@ import android.view.View;
 /**
  * Date: 2021/3/2
  * Author: 锅得铁
- * #
+ * # 圆 点
  */
 public class CircleView extends View {
     private int b = Color.RED;

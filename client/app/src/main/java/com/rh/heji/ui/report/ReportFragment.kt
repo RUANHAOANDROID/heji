@@ -5,8 +5,10 @@ import android.text.SpannableString
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ScreenUtils
+import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.github.mikephil.charting.animation.Easing
@@ -19,6 +21,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.MPPointF
+import com.gyf.immersionbar.NotchUtils
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
@@ -344,15 +347,9 @@ class ReportFragment : BaseFragment() {
         categoryTotalAdapter.setOnItemClickListener( OnItemClickListener { adapter, view, position ->
             val categoryItem:PieEntry = adapter.getItem(position) as PieEntry
             val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(categoryItem.label,reportViewModel.yearMonth.toString(),BillType.EXPENDITURE.type())
-            XPopup.fixLongClick(view)
-            val data= mutableListOf<String>("a","b")
-            for (i in 1..100){
-                data.add(i.toString())
-            }
-            val bottomListPop = BottomListPop(context = mainActivity, data = bills)
-            XPopup.Builder(mainActivity)
-                .maxHeight(ScreenUtils.getScreenHeight() -toolBar.bottom)
-               // .asBottomList("",data.toTypedArray(),null)
+            val bottomListPop = BottomListPop(context = requireContext(), data = bills)
+            XPopup.Builder(requireContext())
+                .maxHeight(rootView.height -toolBar.height)//与最大高度与toolbar对齐
                 .asCustom(bottomListPop)
                 .show()
             ToastUtils.showShort("a")

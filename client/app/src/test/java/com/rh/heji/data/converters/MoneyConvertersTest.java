@@ -28,5 +28,6 @@ public class MoneyConvertersTest extends TestCase {
     }
 
     public void testZERO_00() {
+        assertEquals("0.00",MoneyConverters.ZERO_00().toPlainString());
     }
 }

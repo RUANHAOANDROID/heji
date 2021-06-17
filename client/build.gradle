@@ -38,7 +38,7 @@ ext {
     retrofit ="2.9.0"
     work_version = "2.5.0"
     compileSdkVersion = 29
-    buildToolsVersion = '30.0.2'
+    buildToolsVersion = '29'
     minSdk = 21
     targetSDKVersion = 28
     room_version = "2.3.0"

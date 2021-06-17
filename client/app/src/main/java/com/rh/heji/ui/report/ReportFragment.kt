@@ -23,6 +23,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.MPPointF
 import com.gyf.immersionbar.NotchUtils
 import com.lxj.xpopup.XPopup
+import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
@@ -30,6 +31,7 @@ import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.query.Income
+import com.rh.heji.data.db.query.IncomeTimeSurplus
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.report.pop.BottomListPop
@@ -140,6 +142,9 @@ class ReportFragment : BaseFragment() {
 
         initPieChartCategory()
         updateMonthYearBillListView()
+        AppCache.instance.appViewModule.deleteObservable.observe(this, {
+            reportViewModel.refreshData(BillType.EXPENDITURE.type())
+        })
     }
 
     private fun incomeExpenditureInfo() {
@@ -353,7 +358,6 @@ class ReportFragment : BaseFragment() {
                 .maxHeight(rootView.height -toolBar.height)//与最大高度与toolbar对齐
                 .asCustom(bottomListPop)
                 .show()
-            ToastUtils.showShort("a")
         })
     }
 
@@ -379,6 +383,17 @@ class ReportFragment : BaseFragment() {
         reportViewModel.reportBillsList.observe(this, {
             monthYearBillsAdapter.setNewInstance(it)
         })
+        monthYearBillsAdapter.setOnItemClickListener { adapter, view, position ->
+            val itemEntity :IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
+            val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
+            val bills = AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
+            val bottomListPop = BottomListPop(context = requireContext(), data = bills)
+            bottomListPop.titleView.text = "$yearMonthDay (${bills.size}条)"
+            XPopup.Builder(requireContext())
+                .maxHeight(rootView.height -toolBar.height)//与最大高度与toolbar对齐
+                .asCustom(bottomListPop)
+                .show()
+        }
         billTotalListLayout()
     }
 

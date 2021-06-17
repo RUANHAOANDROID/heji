@@ -8,7 +8,7 @@ import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.widget.CircleView
 
-class ReportBillsAdapter(layoutResId: Int, data: MutableList<Bill>?) :
+class ReportBillsAdapter(layoutResId: Int, data: MutableList<Bill>) :
     BaseQuickAdapter<Bill, BaseViewHolder>(layoutResId, data) {
     override fun convert(holder: BaseViewHolder, item: Bill) {
         var bill = item

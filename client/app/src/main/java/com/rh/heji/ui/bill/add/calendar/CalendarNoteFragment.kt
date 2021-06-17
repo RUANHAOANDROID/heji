@@ -1,7 +1,6 @@
 package com.rh.heji.ui.bill.add.calendar
 
 import android.view.View
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,10 +17,10 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.ui.bill.iteminfo.BillInfoPop
-import com.rh.heji.ui.bill.iteminfo.BillInfoPop.PopClickListener
+import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
 import com.rh.heji.widget.CardDecoration
 
-class CalendarNoteFragment : BaseFragment(), PopClickListener {
+class CalendarNoteFragment : BaseFragment() {
     lateinit var binding: FragmentCalendarNoteBinding
     private val viewModel by lazy { getViewModel(CalendarNoteViewModule::class.java) }
     var adapter: NodeBillsAdapter? = null
@@ -93,7 +92,7 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
         binding.calendarView.setOnMonthChangeListener { year, month -> //月份滑动事件
             viewModel.year = year
             viewModel.month = month
-            centerTitle.text= "$year.$month"
+            centerTitle.text = "$year.$month"
             notifyCalendar()
             fabShow()
             notifyBillsList()
@@ -123,7 +122,8 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
     }
 
     private fun fabShow() {
-        val thisMonth = android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.MONTH) + 1;
+        val thisMonth =
+            android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.MONTH) + 1;
         if (viewModel.month == thisMonth)
             binding.todayFab.hide()
         else
@@ -139,11 +139,11 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
     private fun showBillItemPop(bill: Bill) {
         val popupView = BillInfoPop(mainActivity)
         XPopup.Builder(mainActivity) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
-                //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
-                //.hasBlurBg(true)//模糊默认false
-                //.hasShadowBg(true)//默认true
-                .asCustom(popupView) /*.enableDrag(false)*/
-                .show()
+            //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+            //.hasBlurBg(true)//模糊默认false
+            //.hasShadowBg(true)//默认true
+            .asCustom(popupView) /*.enableDrag(false)*/
+            .show()
         popupView.post {
             popupView.bill = bill //账单信息
             popupView.setBillImages(ArrayList()) //首先把图片重置
@@ -156,17 +156,18 @@ class CalendarNoteFragment : BaseFragment(), PopClickListener {
             }
         }
 
-        popupView.popClickListener = this
+        popupView.popClickListener = object : BillPopClickListenerImpl() {
+            override fun delete(_id: String) {
+                notifyCalendar()
+            }
+
+            override fun update(_id: String) {
+                notifyCalendar()
+            }
+        }
         popupView.show()
     }
 
-    override fun delete(_id: String) {
-        notifyCalendar()
-    }
-
-    override fun update(_id: String) {
-        notifyCalendar()
-    }
 
     private fun notifyBillsList() {
         binding.calendarView.post {

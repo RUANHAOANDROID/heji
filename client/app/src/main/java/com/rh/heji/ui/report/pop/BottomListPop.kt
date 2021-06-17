@@ -7,8 +7,10 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.ScreenUtils
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
+import com.lxj.xpopup.widget.VerticalRecyclerView
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.databinding.LayoutBillsBinding
@@ -28,7 +30,7 @@ class BottomListPop(
         addInnerContent()
     }
     var adapter = ReportBillsAdapter(layoutResId, data)
-    lateinit var recyclerView: RecyclerView
+    lateinit var recyclerView: VerticalRecyclerView
     override fun getImplLayoutId(): Int {
         return R.layout.layout_bills
     }
@@ -45,27 +47,20 @@ class BottomListPop(
     override fun onCreate() {
         super.onCreate()
         recyclerView = findViewById(R.id.recycler)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(
-                outRect: Rect,
-                view: View,
-                parent: RecyclerView,
-                state: RecyclerView.State
-            ) {
-                left = 8
-                bottom = 8
-                right = 8
-                top = 8
-                super.getItemOffsets(outRect, view, parent, state)
-            }
-        })
         //设置圆角背景
         popupImplView.background = XPopupUtils.createDrawable(
             ContextCompat.getColor(context, R.color._xpopup_light_color),
             popupInfo.borderRadius, popupInfo.borderRadius, 0f, 0f
         )
+        recyclerView.adapter = adapter
+    }
+
+//    override fun getMaxHeight(): Int {
+//        return ScreenUtils.getAppScreenHeight()
+//    }
+    //动态高度
+    override fun getPopupHeight(): Int {
+        return super.getPopupHeight()
     }
 }
 

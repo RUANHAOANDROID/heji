@@ -1,7 +1,6 @@
-package com.unistrong.mapoffline.utils.matisse
+package com.rh.heji.utlis.matisse
 
 import android.app.Activity
-import android.content.Context
 import android.content.pm.ActivityInfo
 import androidx.fragment.app.FragmentActivity
 import com.matisse.Matisse
@@ -10,7 +9,6 @@ import com.matisse.MimeTypeManager
 import com.matisse.entity.CaptureStrategy
 import com.matisse.entity.ConstValue
 import com.rh.heji.R
-import com.rh.heji.utlis.Logger
 import java.util.*
 
 

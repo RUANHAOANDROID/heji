@@ -1,44 +1,34 @@
-package com.rh.heji.ui.bill.add.adapter;
+package com.rh.heji.ui.bill.add.adapter
 
-import android.view.View;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.rh.heji.AppCache;
-import com.rh.heji.R;
-import com.rh.heji.databinding.ItemPopSelectTicketImageBinding;
-import com.rh.heji.utlis.GlideUtils;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
+import android.view.View
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.rh.heji.AppCache.Companion.instance
+import com.rh.heji.R
+import com.rh.heji.databinding.ItemPopSelectTicketImageBinding
+import com.rh.heji.utlis.GlideUtils
+import java.util.*
 
 /**
  * Date: 2020/9/16
  * Author: 锅得铁
  * #
  */
-public class TicketPhotoAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
-
-
-    private ItemPopSelectTicketImageBinding binding;
-
-    public TicketPhotoAdapter() {
-        super(R.layout.item_pop_select_ticket_image, new ArrayList<String>());
-        addChildClickViewIds(R.id.imgDelete);
+class TicketPhotoAdapter :
+    BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_pop_select_ticket_image, ArrayList()) {
+    private lateinit var binding: ItemPopSelectTicketImageBinding
+    override fun convert(viewHolder: BaseViewHolder, item: String) {
+        binding = ItemPopSelectTicketImageBinding.bind(viewHolder.itemView)
+        if (item == "+") {
+            binding.imgTicket.setImageDrawable(context.resources.getDrawable(R.drawable.ic_add_image_red_32dp))
+            binding.imgDelete.visibility = View.INVISIBLE
+        } else {
+            GlideUtils.loadImageFile(instance.context, item, binding.imgTicket)
+            binding.imgDelete.visibility = View.VISIBLE
+        }
     }
 
-    @Override
-    protected void convert(@NotNull BaseViewHolder viewHolder, String item) {
-         binding = ItemPopSelectTicketImageBinding.bind(viewHolder.itemView);
-
-        if (item.equals("+")) {
-            binding.imgTicket.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_add_image_red_32dp));
-            binding.imgDelete.setVisibility(View.INVISIBLE);
-        } else {
-            GlideUtils.loadImageFile(AppCache.Companion.getInstance().getContext(), item, binding.imgTicket);
-            binding.imgDelete.setVisibility(View.VISIBLE);
-        }
-
+    init {
+        addChildClickViewIds(R.id.imgDelete)
     }
 }

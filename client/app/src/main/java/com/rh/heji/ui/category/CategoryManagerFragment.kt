@@ -1,122 +1,88 @@
-package com.rh.heji.ui.category;
+package com.rh.heji.ui.category
 
-import android.content.Context;
-import android.text.TextUtils;
-import android.view.MenuItem;
-import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import com.blankj.utilcode.util.KeyboardUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemChildClickListener;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.rh.heji.data.db.Constant;
-import com.rh.heji.data.db.mongo.ObjectId;
-import com.rh.heji.ui.base.BaseFragment;
-import com.rh.heji.R;
-import com.rh.heji.data.AppDatabase;
-import com.rh.heji.data.BillType;
-import com.rh.heji.data.db.Category;
-import com.rh.heji.databinding.FragmentCategoryManagerBinding;
-import com.rh.heji.ui.bill.add.AddBillFragmentArgs;
-import com.rh.heji.ui.category.adapter.CategoryManagerAdapter;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Calendar;
-import java.util.List;
+import android.view.View
+import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.KeyboardUtils
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.rh.heji.R
+import com.rh.heji.data.BillType
+import com.rh.heji.data.db.Category
+import com.rh.heji.databinding.FragmentCategoryManagerBinding
+import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.category.adapter.CategoryManagerAdapter
 
 /**
  * Date: 2020/10/10
  * Author: 锅得铁
  * # 类别标签管理
  */
-public class CategoryManagerFragment extends BaseFragment implements Observer<List<Category>> {
-    FragmentCategoryManagerBinding binding;
-    private CategoryManagerAdapter adapter;
-    private CategoryViewModule categoryViewModule;
-    CategoryManagerFragmentArgs args;
+class CategoryManagerFragment : BaseFragment(){
+    lateinit var binding: FragmentCategoryManagerBinding
+    private lateinit var adapter: CategoryManagerAdapter
+    private val categoryViewModule: CategoryViewModule by lazy { getViewModel(CategoryViewModule::class.java) }
+    private var args: CategoryManagerFragmentArgs? =null
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        categoryViewModule = getViewModel(CategoryViewModule.class);
+    override fun onDetach() {
+        super.onDetach()
+        mainActivity.hideInput()
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        getMainActivity().hideInput();
-    }
+    override fun initView(view: View) {
+        binding = FragmentCategoryManagerBinding.bind(view)
+        args = com.rh.heji.ui.category.CategoryManagerFragmentArgs.fromBundle(arguments!!)
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void initView(View view) {
-        binding = FragmentCategoryManagerBinding.bind(view);
-        args = CategoryManagerFragmentArgs.fromBundle(getArguments());
-
-        binding.btnAdd.setOnClickListener(v -> {
-            String name = binding.editCategoryValue.getText().toString().trim();
-            categoryViewModule.saveCategory(name, args.getIeType());
-            KeyboardUtils.hideSoftInput(view);//隐藏键盘
-            binding.editCategoryValue.setText("");
-            binding.editCategoryValue.clearFocus();//清除聚焦
-
-        });
-
-        binding.categoryRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new CategoryManagerAdapter() {
-            @Override
-            protected void convert(@NotNull BaseViewHolder holder, Category category) {
-                super.convert(holder, category);
-                itemBinding.btnDelete.setOnClickListener(v -> categoryViewModule.deleteCategory(category).observe(CategoryManagerFragment.this, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean aBoolean) {
-                        if (aBoolean) {
-                            adapter.notifyItemChanged(getItemPosition(category));
-                        }
-                    }
-                }));
+        binding.btnAdd.setOnClickListener { v: View? ->
+            val name = binding.editCategoryValue.text.toString().trim { it <= ' ' }
+            categoryViewModule.saveCategory(name, args!!.ieType)
+            KeyboardUtils.hideSoftInput(view) //隐藏键盘
+            binding.editCategoryValue.setText("")
+            binding.editCategoryValue.clearFocus() //清除聚焦
+        }
+        binding.categoryRecycler.layoutManager = LinearLayoutManager(context)
+        adapter = object : CategoryManagerAdapter() {
+            override fun convert(holder: BaseViewHolder, category: Category) {
+                super.convert(holder, category)
+                itemBinding.btnDelete.setOnClickListener { v: View? ->
+                    categoryViewModule.deleteCategory(category)
+                        .observe(this@CategoryManagerFragment, Observer { aBoolean ->
+                            if (aBoolean) {
+                                adapter.notifyItemChanged(getItemPosition(category))
+                            }
+                        })
+                }
             }
-        };
+        }
 
-        if (args.getIeType() == BillType.INCOME.type())
-            categoryViewModule.getIncomeCategory().observe(getViewLifecycleOwner(), this);
-        else
-            categoryViewModule.getExpenditureCategory().observe(getViewLifecycleOwner(), this);
-        binding.categoryRecycler.setAdapter(adapter);
+        if (args!!.ieType == BillType.INCOME.type()) categoryViewModule.incomeCategory.observe(
+            viewLifecycleOwner, categoryObserver
+        ) else categoryViewModule.expenditureCategory.observe(
+            viewLifecycleOwner, categoryObserver
+        )
+        binding.categoryRecycler.adapter = adapter
+    }
+
+    private val categoryObserver: (t: MutableList<Category>) -> Unit = {
+        adapter.setNewInstance(it)
+    }
+
+    override fun setUpToolBar() {
+        super.setUpToolBar()
+        toolBar.let {
+            it.title = "分类管理"
+            it.navigationIcon = blackDrawable()
+            it.setNavigationOnClickListener { v: View? ->
+                Navigation.findNavController(rootView).navigateUp()
+            }
+        }
 
     }
 
-    @Override
-    protected void setUpToolBar() {
-        super.setUpToolBar();
-        getToolBar().setTitle("分类管理");
-        getToolBar().setNavigationIcon(blackDrawable());
-        getToolBar().setNavigationOnClickListener(v -> Navigation.findNavController(rootView).navigateUp());
+    override fun layoutId(): Int {
+        return R.layout.fragment_category_manager
     }
 
-    @Override
-    protected int layoutId() {
-        return R.layout.fragment_category_manager;
-    }
+    private fun alertDeleteTip(label: Category) {}
 
-    private void alertDeleteTip(Category label) {
-
-    }
-
-
-    @Override
-    public void onChanged(List<Category> categories) {
-        adapter.setNewInstance(categories);
-    }
 }

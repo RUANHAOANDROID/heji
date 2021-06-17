@@ -17,7 +17,7 @@ import com.matisse.entity.ConstValue;
 import com.rh.heji.MainActivity;
 import com.rh.heji.R;
 import com.rh.heji.ui.bill.add.adapter.TicketPhotoAdapter;
-import com.unistrong.mapoffline.utils.matisse.MatisseUtils;
+import com.rh.heji.utlis.matisse.MatisseUtils;
 
 import java.util.ArrayList;
 import java.util.List;

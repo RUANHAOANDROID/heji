@@ -1,52 +1,44 @@
-package com.rh.heji.data;
+package com.rh.heji.data
 
 /**
  * Date: 2020/11/20
  * Author: 锅得铁
  * #
  */
-public enum BillType {
+enum class BillType(private val type: Int, private val text: String) {
+    INCOME(+1, "收入"), EXPENDITURE(-1, "支出"), ALL(0, "收支");
 
-    INCOME(+1, "收入"),
-    EXPENDITURE(-1, "支出"),
-    ALL(0, "收支");
-    private int type;
-    private String text;
-
-    BillType(int type, String text) {
-        this.type = type;
-        this.text = text;
+    fun type(): Int {
+        return type
     }
 
-    public int type() {
-        return type;
+    fun text(): String {
+        return text
     }
 
-    public String text() {
-        return text;
+    fun typeString(): String {
+        return type.toString()
     }
 
-    public String typeString() {
-        return String.valueOf(type);
-    }
-
-    public static BillType transform(int type) {
-        if (type == BillType.INCOME.type()) {
-            return BillType.INCOME;
+    companion object {
+        fun transform(type: Int): BillType {
+            if (type == INCOME.type()) {
+                return INCOME
+            }
+            return if (type == EXPENDITURE.type()) {
+                EXPENDITURE
+            } else {
+                ALL
+            }
         }
-        if (type == BillType.EXPENDITURE.type()) {
-            return BillType.EXPENDITURE;
-        } else {
-            return BillType.ALL;
-        }
-    }
 
-    public static BillType transform(String text) {
-        if (text.equals(BillType.INCOME.text())) {
-            return BillType.INCOME;
-        } else if (text.equals(BillType.EXPENDITURE.text())) {
-            return BillType.EXPENDITURE;
+        fun transform(text: String): BillType {
+            if (text == INCOME.text()) {
+                return INCOME
+            } else if (text == EXPENDITURE.text()) {
+                return EXPENDITURE
+            }
+            return ALL
         }
-        return BillType.ALL;
     }
 }

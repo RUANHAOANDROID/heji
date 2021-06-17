@@ -225,11 +225,11 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
     private fun showBillItemPop(billTab: Bill) {
         val popupView = BillInfoPop(context=mainActivity)
         popupView.popClickListener = object : BillPopClickListenerImpl() {
-            override fun delete(_id: String) {
+            override fun delete(bill: Bill) {
                 notifyData(homeViewModel.year, homeViewModel.month)
             }
 
-            override fun update(_id: String) {}
+            override fun update(bill: Bill) {}
         }
         XPopup.Builder(context) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
                 //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个

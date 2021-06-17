@@ -27,6 +27,7 @@ import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
+import com.rh.heji.data.CRUD
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
@@ -86,8 +87,9 @@ class ReportFragment : BaseFragment() {
      * 收入/支出 预览 Observer
      */
     private val incomeExpenditureObserver: (t: Income) -> Unit = {
+
         it?.let { money ->
-            if (money.income==null) money.income = MoneyConverters.ZERO_00()
+            if (money.income == null) money.income = MoneyConverters.ZERO_00()
             if (money.expenditure == null) money.expenditure = MoneyConverters.ZERO_00()
             binding.tvIncomeValue.text = money.income.toString()
             binding.tvExpenditureValue.text = money.expenditure.toString()
@@ -98,7 +100,10 @@ class ReportFragment : BaseFragment() {
                 reportViewModel.yearMonth.month
             )
                 .split("-")[2].toInt()//月份天数
-            binding.tvDayAVGValue.text = jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
+            binding.tvDayAVGValue.text =
+                jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
+
+            showEmptyView()
 
             //----列表标题年/月平均值
             var avg = "0.00"
@@ -129,6 +134,16 @@ class ReportFragment : BaseFragment() {
 
     }
 
+    private fun showEmptyView() {
+        if (binding.tvDayAVGValue.text.equals("0.00")) {
+            binding.emptyStub.visibility = View.VISIBLE
+            binding.nestedSccrollView.visibility = View.GONE
+        } else {
+            binding.emptyStub.visibility = View.GONE
+            binding.nestedSccrollView.visibility = View.VISIBLE
+        }
+    }
+
     /**
      *  view start
      */
@@ -142,9 +157,14 @@ class ReportFragment : BaseFragment() {
 
         initPieChartCategory()
         updateMonthYearBillListView()
-        AppCache.instance.appViewModule.deleteObservable.observe(this, {
-            reportViewModel.refreshData(BillType.EXPENDITURE.type())
+        AppCache.instance.appViewModule.dbObservable.observe(this, {
+            if (it.entity is Bill) {
+                reportViewModel.refreshData(BillType.EXPENDITURE.type())
+            }
         })
+        binding.emptyStub.setOnInflateListener { stub, inflated ->
+
+        }
     }
 
     private fun incomeExpenditureInfo() {
@@ -190,7 +210,7 @@ class ReportFragment : BaseFragment() {
         xAxis.labelRotationAngle = 30f
         binding.lineChart.axisRight.isEnabled = false
 
-        binding.lineChart.axisLeft.valueFormatter = LargeValueFormatter()
+       binding.lineChart.axisLeft.valueFormatter = LargeValueFormatter()
         binding.lineChart.xAxis.valueFormatter = IndexAxisValueFormatter()
     }
 
@@ -349,13 +369,17 @@ class ReportFragment : BaseFragment() {
         binding.recyclerCategory.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerCategory.adapter = categoryTotalAdapter
         categoryTotalAdapter.setNewInstance(entries)
-        categoryTotalAdapter.setOnItemClickListener( OnItemClickListener { adapter, view, position ->
-            val categoryItem:PieEntry = adapter.getItem(position) as PieEntry
-            val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(categoryItem.label,reportViewModel.yearMonth.toString(),BillType.EXPENDITURE.type())
+        categoryTotalAdapter.setOnItemClickListener(OnItemClickListener { adapter, view, position ->
+            val categoryItem: PieEntry = adapter.getItem(position) as PieEntry
+            val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(
+                categoryItem.label,
+                reportViewModel.yearMonth.toString(),
+                BillType.EXPENDITURE.type()
+            )
             val bottomListPop = BottomListPop(context = requireContext(), data = bills)
-            bottomListPop.titleView.text = categoryItem.label+"(${bills.size}条)"
+            bottomListPop.titleView.text = categoryItem.label + "(${bills.size}条)"
             XPopup.Builder(requireContext())
-                .maxHeight(rootView.height -toolBar.height)//与最大高度与toolbar对齐
+                .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
                 .asCustom(bottomListPop)
                 .show()
         })
@@ -384,13 +408,13 @@ class ReportFragment : BaseFragment() {
             monthYearBillsAdapter.setNewInstance(it)
         })
         monthYearBillsAdapter.setOnItemClickListener { adapter, view, position ->
-            val itemEntity :IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
+            val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
             val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
             val bills = AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
             val bottomListPop = BottomListPop(context = requireContext(), data = bills)
             bottomListPop.titleView.text = "$yearMonthDay (${bills.size}条)"
             XPopup.Builder(requireContext())
-                .maxHeight(rootView.height -toolBar.height)//与最大高度与toolbar对齐
+                .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
                 .asCustom(bottomListPop)
                 .show()
         }

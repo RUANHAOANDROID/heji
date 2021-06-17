@@ -157,11 +157,11 @@ class CalendarNoteFragment : BaseFragment() {
         }
 
         popupView.popClickListener = object : BillPopClickListenerImpl() {
-            override fun delete(_id: String) {
+            override fun delete(bill: Bill) {
                 notifyCalendar()
             }
 
-            override fun update(_id: String) {
+            override fun update(bill: Bill) {
                 notifyCalendar()
             }
         }

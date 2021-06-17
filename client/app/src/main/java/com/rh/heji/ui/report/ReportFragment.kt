@@ -348,6 +348,7 @@ class ReportFragment : BaseFragment() {
             val categoryItem:PieEntry = adapter.getItem(position) as PieEntry
             val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(categoryItem.label,reportViewModel.yearMonth.toString(),BillType.EXPENDITURE.type())
             val bottomListPop = BottomListPop(context = requireContext(), data = bills)
+            bottomListPop.titleView.text = categoryItem.label+"(${bills.size}条)"
             XPopup.Builder(requireContext())
                 .maxHeight(rootView.height -toolBar.height)//与最大高度与toolbar对齐
                 .asCustom(bottomListPop)

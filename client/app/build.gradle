@@ -100,8 +100,8 @@ dependencies {
     implementation "androidx.annotation:annotation:$rootProject.annotation"
     implementation "androidx.recyclerview:recyclerview:$recyclerview"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -114,7 +114,7 @@ dependencies {
     // (work Java only)
     implementation "androidx.work:work-runtime:$rootProject.work_version"
 
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.6'
     //RxJava
     implementation rootProject.ext.rxJava
     implementation rootProject.ext.rxAndroid
@@ -137,7 +137,7 @@ dependencies {
     //kotlin
     implementation "androidx.core:core-ktx:1.5.0"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     //Lifecycles only (without ViewModel or LiveData)
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha01"

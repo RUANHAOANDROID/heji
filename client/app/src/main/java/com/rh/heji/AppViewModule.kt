@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.CrashUtils
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.Dealer
 import com.rh.heji.data.db.ErrorLog
@@ -31,7 +32,9 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     private val billRepository = BillRepository()
     private val categoryRepository = CategoryRepository()
     val asyncLiveData = MediatorLiveData<Any>()
-    val user:JWTParse.User by lazy { JWTParse.getUser(AppCache.instance.token.tokenString) }
+    val user: JWTParse.User by lazy { JWTParse.getUser(AppCache.instance.token.tokenString) }
+    val deleteObservable = MediatorLiveData<Bill>()
+
     init {
         launchIO({
             fakeData()
@@ -42,20 +45,20 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         })
     }
 
-     fun initCarshTool() {
+    fun initCarshTool() {
         if (ActivityCompat.checkSelfPermission(
                 AppCache.instance.context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            CrashUtils.init(AppCache.instance.storage("Crash"), object:CrashInfo(){
+            CrashUtils.init(AppCache.instance.storage("Crash"), object : CrashInfo() {
                 override fun onCrash(crashInfo: CrashUtils.CrashInfo) {
                     super.onCrash(crashInfo)
                     launchIO({
                         errorLog?.let {
                             HejiNetwork.getInstance().logUpload(it)
                         }
-                    },{})
+                    }, {})
                 }
             })
         }
@@ -66,10 +69,11 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
 
     }
 
-    fun billDelete(_id: String) {
+    fun billDelete(bill: Bill) {
         launchIO({
-            AppDatabase.getInstance().billDao().preDelete(_id)
-            billRepository.deleteBill(_id)
+            AppDatabase.getInstance().billDao().preDelete(bill.getId())
+            deleteObservable.postValue(bill)
+            billRepository.deleteBill(bill.getId())
         })
 
     }

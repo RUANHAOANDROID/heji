@@ -13,13 +13,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import com.blankj.utilcode.util.LogUtils
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import com.lxj.xpopup.XPopup
 import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.ui.bill.YearSelectPop
-import com.rh.heji.utlis.Logger
 import java.util.*
 
 /**
@@ -50,7 +50,7 @@ abstract class BaseFragment : Fragment() {
                     .fullScreen(false)
                     .init();
         } catch (e: Exception) {
-            Logger.w(e.message)
+            LogUtils.w(e.message)
         }
     }
 
@@ -76,7 +76,7 @@ abstract class BaseFragment : Fragment() {
         try {
             toolBar.menu.clear()
         } catch (e: Exception) {
-            Logger.w(e.message)
+            LogUtils.w(e.message)
         }
     }
 

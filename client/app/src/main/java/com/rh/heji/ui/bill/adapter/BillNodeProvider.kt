@@ -41,9 +41,6 @@ class DayBillsNodeProvider : BaseNodeProvider() {
     override fun convert(helper: BaseViewHolder, item: BaseNode) {
         var entity: DayBillsNode = item as DayBillsNode
         var bill = entity.bill
-        if (entity.bill.type == -1) {
-
-        }
         var incomeColor = if (bill.type == -1) context.getColor(R.color.expenditure) else context.getColor(R.color.income)
 
         helper.getView<CircleView>(R.id.circleView).setColor(incomeColor)

@@ -4,7 +4,13 @@ import android.graphics.Color
 import android.text.SpannableString
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.ScreenUtils
+import com.blankj.utilcode.util.SizeUtils
+import com.blankj.utilcode.util.ToastUtils
+import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
@@ -15,13 +21,21 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.MPPointF
+import com.gyf.immersionbar.NotchUtils
+import com.lxj.xpopup.XPopup
+import com.rh.heji.AppCache
 import com.rh.heji.R
+import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.BillType
+import com.rh.heji.data.CRUD
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.query.Income
+import com.rh.heji.data.db.query.IncomeTimeSurplus
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.report.pop.BottomListPop
 import com.rh.heji.utlis.ColorUtils
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
@@ -73,8 +87,9 @@ class ReportFragment : BaseFragment() {
      * 收入/支出 预览 Observer
      */
     private val incomeExpenditureObserver: (t: Income) -> Unit = {
+
         it?.let { money ->
-            if (money.income==null) money.income = MoneyConverters.ZERO_00()
+            if (money.income == null) money.income = MoneyConverters.ZERO_00()
             if (money.expenditure == null) money.expenditure = MoneyConverters.ZERO_00()
             binding.tvIncomeValue.text = money.income.toString()
             binding.tvExpenditureValue.text = money.expenditure.toString()
@@ -85,7 +100,10 @@ class ReportFragment : BaseFragment() {
                 reportViewModel.yearMonth.month
             )
                 .split("-")[2].toInt()//月份天数
-            binding.tvDayAVGValue.text = jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
+            binding.tvDayAVGValue.text =
+                jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
+
+            showEmptyView()
 
             //----列表标题年/月平均值
             var avg = "0.00"
@@ -116,6 +134,16 @@ class ReportFragment : BaseFragment() {
 
     }
 
+    private fun showEmptyView() {
+        if (binding.tvDayAVGValue.text.equals("0.00")) {
+            binding.emptyStub.visibility = View.VISIBLE
+            binding.nestedSccrollView.visibility = View.GONE
+        } else {
+            binding.emptyStub.visibility = View.GONE
+            binding.nestedSccrollView.visibility = View.VISIBLE
+        }
+    }
+
     /**
      *  view start
      */
@@ -129,6 +157,14 @@ class ReportFragment : BaseFragment() {
 
         initPieChartCategory()
         updateMonthYearBillListView()
+        AppCache.instance.appViewModule.dbObservable.observe(this, {
+            if (it.entity is Bill) {
+                reportViewModel.refreshData(BillType.EXPENDITURE.type())
+            }
+        })
+        binding.emptyStub.setOnInflateListener { stub, inflated ->
+
+        }
     }
 
     private fun incomeExpenditureInfo() {
@@ -174,7 +210,7 @@ class ReportFragment : BaseFragment() {
         xAxis.labelRotationAngle = 30f
         binding.lineChart.axisRight.isEnabled = false
 
-        binding.lineChart.axisLeft.valueFormatter = LargeValueFormatter()
+       binding.lineChart.axisLeft.valueFormatter = LargeValueFormatter()
         binding.lineChart.xAxis.valueFormatter = IndexAxisValueFormatter()
     }
 
@@ -183,7 +219,7 @@ class ReportFragment : BaseFragment() {
      */
     private fun setLineChartNodes(bills: List<Bill>) {
         val xAxisInConsume = binding.lineChart.xAxis
-        var dayCount = MyTimeUtils.getMonthLastDay(
+        val dayCount = MyTimeUtils.getMonthLastDay(
             reportViewModel.yearMonth.year,
             reportViewModel.yearMonth.month
         )
@@ -193,15 +229,15 @@ class ReportFragment : BaseFragment() {
             dayMap.replace(day, Entry(0f, 0f))
         }
         list.clear()
-        var entries = bills.stream().map {
+        val entries = bills.stream().map {
             val day =
                 DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2].toFloat()
-            var type = if (it.type == -1) "支出" else "收入"
+            val type = if (it.type == -1) "支出" else "收入"
             dayMap.replace(day.toInt(), Entry(day, it.money.toFloat(), type))
             return@map Entry(day, it.money.toFloat(), type)
         }.collect(Collectors.toList())
 
-        var set1 = LineDataSet(entries, "收入")
+        val set1 = LineDataSet(entries, "收入")
 
         val data = LineData(set1)
         binding.lineChart.data = data
@@ -326,21 +362,40 @@ class ReportFragment : BaseFragment() {
         binding.pieChartCategory.invalidate()
     }
 
-
+    /**
+     * 分类列表
+     */
     private fun updateCategoryListView(entries: ArrayList<PieEntry>) {
-        binding.recyclerCategory.layoutManager = LinearLayoutManager(activity)
+        binding.recyclerCategory.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerCategory.adapter = categoryTotalAdapter
         categoryTotalAdapter.setNewInstance(entries)
+        categoryTotalAdapter.setOnItemClickListener(OnItemClickListener { adapter, view, position ->
+            val categoryItem: PieEntry = adapter.getItem(position) as PieEntry
+            val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(
+                categoryItem.label,
+                reportViewModel.yearMonth.toString(),
+                BillType.EXPENDITURE.type()
+            )
+            val bottomListPop = BottomListPop(context = requireContext(), data = bills)
+            bottomListPop.titleView.text = categoryItem.label + "(${bills.size}条)"
+            XPopup.Builder(requireContext())
+                .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
+                .asCustom(bottomListPop)
+                .show()
+        })
     }
 
+    /**
+     * 年|月 账单报表
+     */
     private fun updateMonthYearBillListView() {
 
         val linearLayoutManager = LinearLayoutManager(activity)
         linearLayoutManager.isSmoothScrollbarEnabled = true
         binding.recyclerBaobiao.layoutManager = linearLayoutManager
         binding.recyclerBaobiao.adapter = monthYearBillsAdapter
-        binding.recyclerBaobiao.setHasFixedSize(true);
-        binding.recyclerBaobiao.isNestedScrollingEnabled = false;
+        binding.recyclerBaobiao.setHasFixedSize(true)
+        binding.recyclerBaobiao.isNestedScrollingEnabled = false
         binding.recyclerBaobiao.addItemDecoration(
             DividerItemDecorator(
                 resources.getDrawable(
@@ -350,8 +405,19 @@ class ReportFragment : BaseFragment() {
             )
         )
         reportViewModel.reportBillsList.observe(this, {
-            monthYearBillsAdapter.setNewInstance(it);
+            monthYearBillsAdapter.setNewInstance(it)
         })
+        monthYearBillsAdapter.setOnItemClickListener { adapter, view, position ->
+            val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
+            val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
+            val bills = AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
+            val bottomListPop = BottomListPop(context = requireContext(), data = bills)
+            bottomListPop.titleView.text = "$yearMonthDay (${bills.size}条)"
+            XPopup.Builder(requireContext())
+                .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
+                .asCustom(bottomListPop)
+                .show()
+        }
         billTotalListLayout()
     }
 

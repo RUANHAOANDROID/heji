@@ -8,6 +8,12 @@
 
     <include layout="@layout/app_toolbar"></include>
 
+    <ViewStub
+        android:id="@+id/emptyStub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/layout_empty" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedSccrollView"
         android:layout_width="match_parent"

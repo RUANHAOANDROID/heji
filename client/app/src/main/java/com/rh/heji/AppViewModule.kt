@@ -7,12 +7,15 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.room.Entity
 import com.blankj.utilcode.util.CrashUtils
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.CRUD
+import com.rh.heji.data.DBObservable
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.Dealer
-import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.data.repository.CategoryRepository
@@ -22,7 +25,6 @@ import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.service.work.DataSyncWork
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.CrashInfo
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -31,7 +33,9 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     private val billRepository = BillRepository()
     private val categoryRepository = CategoryRepository()
     val asyncLiveData = MediatorLiveData<Any>()
-    val user:JWTParse.User by lazy { JWTParse.getUser(AppCache.instance.token.tokenString) }
+    val user: JWTParse.User by lazy { JWTParse.getUser(AppCache.instance.token.tokenString) }
+    val dbObservable = MediatorLiveData<DBObservable>()
+
     init {
         launchIO({
             fakeData()
@@ -42,20 +46,20 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         })
     }
 
-     fun initCarshTool() {
+    fun initCarshTool() {
         if (ActivityCompat.checkSelfPermission(
                 AppCache.instance.context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            CrashUtils.init(AppCache.instance.storage("Crash"), object:CrashInfo(){
+            CrashUtils.init(AppCache.instance.storage("Crash"), object : CrashInfo() {
                 override fun onCrash(crashInfo: CrashUtils.CrashInfo) {
                     super.onCrash(crashInfo)
                     launchIO({
                         errorLog?.let {
                             HejiNetwork.getInstance().logUpload(it)
                         }
-                    },{})
+                    }, {})
                 }
             })
         }
@@ -66,10 +70,11 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
 
     }
 
-    fun billDelete(_id: String) {
+    fun billDelete(bill: Bill) {
         launchIO({
-            AppDatabase.getInstance().billDao().preDelete(_id)
-            billRepository.deleteBill(_id)
+            AppDatabase.getInstance().billDao().preDelete(bill.getId())
+            dbObservable.postValue(DBObservable(CRUD.DELETE,bill))
+            billRepository.deleteBill(bill.getId())
         })
 
     }

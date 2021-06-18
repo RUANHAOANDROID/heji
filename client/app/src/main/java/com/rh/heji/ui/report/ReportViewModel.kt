@@ -76,6 +76,13 @@ class ReportViewModel : BaseViewModel() {
             LogUtils.d(value)
         }
 
+     fun refreshData(type: Int) {
+        monthIncomeExpenditure()
+        monthEveryNodeIncomeExpenditure()
+        monthCategoryProportion()
+        monthReportList()
+    }
+
     private fun monthIncomeExpenditure() {
         launchIO({
             val monthIncomeExpenditureData =

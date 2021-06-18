@@ -30,7 +30,7 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface BillDao {
     String REDELETE = "sync_status!=" + Constant.STATUS_DELETE;
-
+    String YEAR ="strftime('%Y-%m',${})";
     @Update(onConflict = REPLACE)
     int update(Bill bill);
 
@@ -144,6 +144,15 @@ public interface BillDao {
      * @param date
      * @return
      */
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m-%d',bill_time) ==:date AND sync_status!=" + Constant.STATUS_DELETE+" AND type=:type order by date(bill_time)")
+    List<Bill> findByDay(String date,int type);
+
+    /**
+     * 根据月份查询账单
+     *
+     * @param date
+     * @return
+     */
     @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND type=:type AND sync_status!=" + Constant.STATUS_DELETE+" group by date(bill_time)")
     List<Bill> findByMonthGroupByDay(String date,int type);
     /**
@@ -154,7 +163,14 @@ public interface BillDao {
      */
     @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND type =:type AND sync_status!=" + Constant.STATUS_DELETE+" group by category")
     List<Bill> findByMonthGroupByCategory(String date,int type);
-
+    /**
+     * 根据Category月份查询账单
+     *
+     * @param date
+     * @return
+     */
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND category=:category AND type =:type AND sync_status!=" + Constant.STATUS_DELETE)
+    List<Bill> findByCategoryAndMonth(String category,String date,int type);
     //---------------统计----------------//
 
 
@@ -163,7 +179,7 @@ public interface BillDao {
             "sum(case when type =-1 then money else 0 end) as expenditure ," +
             " sum(case when type =1 then money else 0 end) as income ,"+
             " sum(case when type =1 then money else 0 end) - sum(case when type =-1 then money else 0 end) as surplus"+
-            " from bill where strftime('%Y-%m',bill_time) =:yearMonth group by strftime('%Y-%m-%d',bill_time)")
+            " from bill where strftime('%Y-%m',bill_time) =:yearMonth and sync_status!=-1 group by strftime('%Y-%m-%d',bill_time)")
     List<IncomeTimeSurplus> listIncomeExpSurplusByMonth(String yearMonth);
 
 
@@ -172,7 +188,7 @@ public interface BillDao {
             " sum(case when type =-1 then money else 0 end) as expenditure ," +
             " sum(case when type =1 then money else 0 end) as income ," +
             " sum(case when type =1 then money else 0 end) - sum(case when type =-1 then money else 0 end) as surplus"+
-            " from bill where strftime('%Y',bill_time) =:year group by strftime('%Y-%m',bill_time)")
+            " from bill where strftime('%Y',bill_time) =:year and sync_status!=-1 group by strftime('%Y-%m',bill_time)")
     List<IncomeTimeSurplus> listIncomeExpSurplusByYear(String year);
 
     /**
@@ -201,7 +217,7 @@ public interface BillDao {
     @TypeConverters(MoneyConverters.class)
     @Query("select category as category,sum(money)as money," +
             "round(sum(money)*100.0 / (select sum(money)  from bill where type =:type and strftime('%Y-%m',bill_time) ==:date),2)as percentage " +
-            "from bill where type =:type and sync_status!=-1 and strftime('%Y-%m',bill_time) ==:date group by category")
+            "from bill where type =:type and sync_status!=-1 and strftime('%Y-%m',bill_time) ==:date group by category order by money desc")
     List<CategoryPercentage> reportCategory(int type, String date);
 
     /**

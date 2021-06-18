@@ -21,6 +21,7 @@
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- 在sdcard中创建/删除文件的权限 -->
+    <!--requestLegacyExternalStorage 10避免开启沙箱模式 -->
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -31,6 +32,7 @@
         android:maxAspectRatio="2.4"
         android:hardwareAccelerated="true"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"

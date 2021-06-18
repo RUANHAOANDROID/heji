@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.gson.Gson
+import com.rh.heji.AppCache
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
@@ -93,6 +94,7 @@ class ETCViewModel : BaseViewModel() {
                 }
             })
             etcLive.postValue("导入完成")
+            AppCache.instance.appViewModule.asyncData()
         } else {
             ToastUtils.showShort("导入失败")
             etcLive.postValue("导入失败")
@@ -134,7 +136,7 @@ class ETCViewModel : BaseViewModel() {
                             } else if (status == "OK") {
                                 val gson = Gson()
                                 val hbetcEntity = gson.fromJson(strBody, HBETCEntity::class.java)
-                                if (hbetcEntity != null && hbetcEntity.data != null && hbetcEntity.data.orderArr.size > 0) {
+                                if (hbetcEntity?.data != null && hbetcEntity.data.orderArr.size > 0) {
                                     val data = hbetcEntity.data.orderArr
                                     data.forEach(Consumer { info: OrderArrBean -> saveToBillDB(info) })
                                     etcLive.postValue("导入完成")

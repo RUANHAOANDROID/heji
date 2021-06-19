@@ -48,7 +48,7 @@ class AddBillViewModel : BaseViewModel() {
         bill.billTime = TimeUtils.string2Date(time)
         //
         val images = imgUrls.stream().map { s: String? ->
-            val image = Image(ObjectId().toString(), billId)
+            val image = Image( billId)
             image.localPath = s
             image
         }.collect(Collectors.toList())
@@ -56,8 +56,8 @@ class AddBillViewModel : BaseViewModel() {
         bill.setType(category.type)
         bill.setCategory(category.category)
         launchIO({
-            AppDatabase.getInstance().imageDao().install(images)
             val count = AppDatabase.getInstance().billDao().install(bill)
+            AppDatabase.getInstance().imageDao().install(images)
             saveLiveData.postValue(bill)
             if (count > 0) {
                 ToastUtils.showShort("已保存: ${bill.getCategory() + money}  ")

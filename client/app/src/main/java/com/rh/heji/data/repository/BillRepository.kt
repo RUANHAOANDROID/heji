@@ -91,9 +91,9 @@ class BillRepository {
                 val part: MultipartBody.Part = MultipartBody.Part.createFormData("file", fileName, requestBody)
                 val time = imgFile.lastModified()
                 val objectId = image.id
-                val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part, objectId, bill_id, time)
+                val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part, objectId.toString(), bill_id, time)
                 response.data.let {
-                    image.onlinePath = response.data._id
+                    image.onlinePath = response.data._id.toString()
                     image.md5 = response.data.md5
                     image.id = response.data._id
                     image.synced = Constant.STATUS_SYNCED

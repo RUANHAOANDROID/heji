@@ -160,7 +160,7 @@ class DataSyncWork {
                                     var image = Image()
                                     image.id = entity._id
                                     image.md5 = entity.md5
-                                    image.onlinePath = entity._id
+                                    image.onlinePath = entity._id.toString()
                                     image.ext = entity.ext
                                     image.billImageID = serverBill.id
                                     image.synced = Constant.STATUS_SYNCED

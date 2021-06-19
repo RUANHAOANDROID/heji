@@ -29,8 +29,8 @@ public class Image {
     public static final String COLUMN_STATUS = "sync_status";
 
     @NonNull
-    @PrimaryKey()
-    String _id;
+    @PrimaryKey(autoGenerate = true)
+    Long _id;
 
 
     @NonNull
@@ -54,16 +54,15 @@ public class Image {
     }
 
     @Ignore
-    public Image(String _id, String bill_id) {
-        this._id = _id;
+    public Image(String bill_id) {
         this.bill_id = bill_id;
     }
 
-    public String getId() {
+    public Long getId() {
         return _id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this._id = id;
     }
 

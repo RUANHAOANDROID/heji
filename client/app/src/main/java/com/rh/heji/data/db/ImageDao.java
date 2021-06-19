@@ -22,7 +22,7 @@ public interface ImageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void install(Image ticket);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = Image.class,onConflict = OnConflictStrategy.REPLACE)
     void install(List<Image> ticket);
 
     @Delete
@@ -37,7 +37,7 @@ public interface ImageDao {
 
     @Transaction
     @Query("update bill_img set img_online_path=:onlinePath, sync_status=:status  where _id =:imgId")
-    int updateOnlinePath(String imgId, String onlinePath, int status);
+    int updateOnlinePath(Long imgId, String onlinePath, int status);
 
     @Query("select * from bill_img where img_online_path=:path")
     List<Image> findByOnLinePath(String path);

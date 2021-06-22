@@ -17,7 +17,7 @@ android {
         }
     }
     compileSdkVersion project.compileSdkVersion
-    buildToolsVersion project.buildToolsVersion
+    //buildToolsVersion project.buildToolsVersion
     defaultConfig {
         applicationId "com.rh.heji"
         minSdkVersion 24

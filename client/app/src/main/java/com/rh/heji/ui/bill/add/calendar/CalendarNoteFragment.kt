@@ -138,6 +138,16 @@ class CalendarNoteFragment : BaseFragment() {
      */
     private fun showBillItemPop(bill: Bill) {
         val popupView = BillInfoPop(mainActivity)
+        popupView.popClickListener = object : BillPopClickListenerImpl() {
+            override fun delete(bill: Bill) {
+                super.delete(bill)
+                notifyCalendar()
+            }
+
+            override fun update(bill: Bill) {
+                notifyCalendar()
+            }
+        }
         XPopup.Builder(mainActivity) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
             //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
             //.hasBlurBg(true)//模糊默认false
@@ -156,15 +166,6 @@ class CalendarNoteFragment : BaseFragment() {
             }
         }
 
-        popupView.popClickListener = object : BillPopClickListenerImpl() {
-            override fun delete(bill: Bill) {
-                notifyCalendar()
-            }
-
-            override fun update(bill: Bill) {
-                notifyCalendar()
-            }
-        }
         popupView.show()
     }
 

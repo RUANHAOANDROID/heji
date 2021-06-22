@@ -4,12 +4,7 @@ import android.graphics.Color
 import android.text.SpannableString
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ScreenUtils
-import com.blankj.utilcode.util.SizeUtils
-import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.MarkerView
@@ -21,7 +16,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.MPPointF
-import com.gyf.immersionbar.NotchUtils
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
 import com.rh.heji.R

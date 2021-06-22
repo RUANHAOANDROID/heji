@@ -226,6 +226,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         val popupView = BillInfoPop(context=mainActivity)
         popupView.popClickListener = object : BillPopClickListenerImpl() {
             override fun delete(bill: Bill) {
+                super.delete(bill)
                 notifyData(homeViewModel.year, homeViewModel.month)
             }
 

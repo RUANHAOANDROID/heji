@@ -24,13 +24,13 @@ class BillsHomeViewModel : BaseViewModel() {
         Calendar.getInstance()[Calendar.MONTH] + 1//默认为当前月份
     )
     private val billDao: BillDao = AppDatabase.getInstance().billDao()
-    var billImagesLiveData: MediatorLiveData<List<Image>> = MediatorLiveData()
+    private val billImagesLiveData: MediatorLiveData<List<Image>> = MediatorLiveData()
 
-    val billsNodLiveData = MediatorLiveData<MutableList<BaseNode>>()
+    private val billsNodLiveData = MediatorLiveData<MutableList<BaseNode>>()
 
-    fun getBillsData() {
+    fun getBillsData():LiveData<MutableList<BaseNode>> {
         launchIO({
-            LogUtils.d("Select YearMonth:${selectYearMonth}")
+
             var monthEveryDayIncome = billDao.findEveryDayIncomeByMonth(selectYearMonth.toString())
             var listDayNodes = mutableListOf<BaseNode>()
             monthEveryDayIncome?.forEach { dayIncome ->
@@ -50,12 +50,13 @@ class BillsHomeViewModel : BaseViewModel() {
                 var dayItemNode = DayIncomeNode(dayListNodes, incomeNode)
                 listDayNodes.add(dayItemNode)
             }
+            LogUtils.d("Select YearMonth:${selectYearMonth}${listDayNodes}")
             billsNodLiveData.postValue(listDayNodes)
         }, {})
-
+        return billsNodLiveData
     }
 
-    fun getBillImages(billId: String): MediatorLiveData<List<Image>> {
+    fun getBillImages(billId: String): LiveData<List<Image>> {
         launchIO({
             billImagesLiveData.postValue(AppDatabase.getInstance().imageDao().findByBillId(billId))
         }, {
@@ -64,11 +65,8 @@ class BillsHomeViewModel : BaseViewModel() {
         return billImagesLiveData
     }
 
-    fun getIncomeExpense(year: Int, month: Int): LiveData<Income> {
-        val start = MyTimeUtils.firstDayOfMonth(year, month)
-        val end = MyTimeUtils.lastDayOfMonth(year, month)
-        LogUtils.d("Between by time: $start - $end")
-
-        return Transformations.distinctUntilChanged(billDao.sumIncome(start, end))
+    fun getIncomeExpense(): LiveData<Income> {
+        LogUtils.d("Between by time:$selectYearMonth")
+        return Transformations.distinctUntilChanged(billDao.sumIncome(selectYearMonth.toString()))
     }
 }

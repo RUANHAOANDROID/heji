@@ -114,9 +114,9 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
      * @param year  年
      * @param month 月
      */
-    private fun totalIncomeExpense(year: Int, month: Int) {
+    private fun totalIncomeExpense() {
 
-        homeViewModel.getIncomeExpense(year, month).observe(mainActivity, { incomeExpense: Income? ->
+        homeViewModel.getIncomeExpense().observe(mainActivity, { incomeExpense: Income? ->
 
             var income = "0"
             var expenses = "0"
@@ -267,19 +267,18 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
      */
     fun notifyData(year: Int, month: Int) {
         homeViewModel.selectYearMonth =YearMonth(year,month)
-        homeViewModel.billsNodLiveData.observe(this, billsObserver)
-        homeViewModel.getBillsData()
-        totalIncomeExpense(year, month)
+        homeViewModel.getBillsData().observe(this, billsObserver)
+        totalIncomeExpense()
     }
+    private val emptyView: View by lazy {  layoutInflater.inflate(R.layout.layout_empty, null)}
 
     @SuppressLint("InflateParams")
     private val billsObserver = { baseNodes: MutableList<BaseNode> ->
         if (baseNodes.isNullOrEmpty() || baseNodes.size <= 0) {
-            val emptyView = layoutInflater.inflate(R.layout.layout_empty, null)
-            adapter.setNewInstance(mutableListOf())
-            binding.homeRecycler.minimumHeight = ScreenUtils.getScreenHeight() - toolBar.height - navigationBarHeight//占满一屏
+            adapter.setDiffNewData(mutableListOf())//设置DiffCallback使用setDiffNewData避免setList
+            binding.homeRecycler.minimumHeight = getRootViewHeight()//占满一屏
+            //adapter.notifyDataSetChanged()
             adapter.setEmptyView(emptyView)
-            adapter.notifyDataSetChanged()
         } else {
             binding.total.visibility = View.VISIBLE
             adapter.setDiffNewData(baseNodes)

@@ -31,6 +31,7 @@
         android:maxAspectRatio="2.4"
         android:hardwareAccelerated="true"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"

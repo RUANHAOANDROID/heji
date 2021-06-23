@@ -374,7 +374,7 @@ class ReportFragment : BaseFragment() {
                 reportViewModel.yearMonth.toString(),
                 BillType.EXPENDITURE.type()
             )
-            val bottomListPop = BottomListPop(context = requireContext(), data = bills)
+            val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
             bottomListPop.titleView.text = categoryItem.label + "(${bills.size}条)"
             XPopup.Builder(requireContext())
                 .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
@@ -409,7 +409,7 @@ class ReportFragment : BaseFragment() {
             val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
             val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
             val bills = AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
-            val bottomListPop = BottomListPop(context = requireContext(), data = bills)
+            val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
             bottomListPop.titleView.text = "$yearMonthDay (${bills.size}条)"
             XPopup.Builder(requireContext())
                 .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐

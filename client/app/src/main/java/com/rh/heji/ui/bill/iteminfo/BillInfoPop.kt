@@ -39,10 +39,11 @@ import kotlin.String as String
  * #
  */
 class BillInfoPop(
-    context: Context,
+    val activity: MainActivity,
     val bill: Bill,
     var popClickListener: BillPopClickListenerImpl = BillPopClickListenerImpl(),
-) : BottomPopupView(context), Observer<List<Image>> {
+) : BottomPopupView(activity), Observer<List<Image>> {
+    private val imageObservable by lazy { activity.mainViewModel.getBillImages(billId = bill.getId()) }
     fun setBill() {
         binding.tvMonney.text = bill.getMoney().toString()
         binding.tvType.text = bill.getCategory()
@@ -52,7 +53,7 @@ class BillInfoPop(
     }
 
     lateinit var binding: PopBilliInfoBinding
-    private  var imageAdapter = ImageAdapter()
+    private var imageAdapter = ImageAdapter()
 
     override fun getImplLayoutId(): Int {
         return R.layout.pop_billi_info
@@ -74,6 +75,9 @@ class BillInfoPop(
         )
         setBill()
         initBillImageList()//初始化列表和适配器
+        if (bill.imgCount>0){
+            imageObservable.observeForever(this)
+        }
     }
 
     private fun initBillImageList() {
@@ -137,7 +141,7 @@ class BillInfoPop(
     }
 
     override fun onChanged(images: List<Image>) {
-        if (images.isEmpty())return
+        if (images.isEmpty()) return
         //服务器返回的是图片的ID、需要加上前缀
         val imagePaths = images.stream().map { image: Image ->
             val onlinePath = image.onlinePath
@@ -150,7 +154,12 @@ class BillInfoPop(
         imageAdapter.setNewInstance(imagePaths)
     }
 
-
+    override fun onDismiss() {
+        super.onDismiss()
+        if (bill.imgCount>0){
+            imageObservable.removeObserver(this)
+        }
+    }
 }
 
 /**

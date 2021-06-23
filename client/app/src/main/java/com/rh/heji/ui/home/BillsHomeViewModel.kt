@@ -30,16 +30,8 @@ class BillsHomeViewModel : BaseViewModel() {
 
     fun getBillsData() {
         launchIO({
-            val start = MyTimeUtils.firstDayOfMonth(
-               selectYearMonth.year ,
-                selectYearMonth.month
-            )
-            val end = MyTimeUtils.lastDayOfMonth(
-                selectYearMonth.year ,
-                selectYearMonth.month
-            )
-            LogUtils.d("Time between:$start - $end")
-            var monthEveryDayIncome = billDao.findEveryDayIncome(start, end)
+            LogUtils.d("Select YearMonth:${selectYearMonth}")
+            var monthEveryDayIncome = billDao.findEveryDayIncomeByMonth(selectYearMonth.toString())
             var listDayNodes = mutableListOf<BaseNode>()
             monthEveryDayIncome?.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")

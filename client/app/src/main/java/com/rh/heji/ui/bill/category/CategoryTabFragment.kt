@@ -1,4 +1,4 @@
-package com.rh.heji.ui.category
+package com.rh.heji.ui.bill.category
 
 import android.content.Context
 import android.view.View
@@ -12,7 +12,7 @@ import com.rh.heji.databinding.FragmentCategoryTabBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.FragmentViewPagerAdapter
 import com.rh.heji.ui.bill.add.AddBillFragment
-import com.rh.heji.ui.category.CategoryFragment.Companion.newInstance
+import com.rh.heji.ui.bill.category.CategoryFragment.Companion.newInstance
 
 /**
  * Date: 2020/10/11

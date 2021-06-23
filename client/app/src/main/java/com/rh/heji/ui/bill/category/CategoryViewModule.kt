@@ -1,4 +1,4 @@
-package com.rh.heji.ui.category
+package com.rh.heji.ui.bill.category
 
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
@@ -8,10 +8,8 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
-import com.rh.heji.data.db.CategoryDao
 import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.data.repository.CategoryRepository
 import com.rh.heji.ui.base.BaseViewModel
 
 /**

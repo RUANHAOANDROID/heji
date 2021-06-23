@@ -1,4 +1,4 @@
-package com.rh.heji.ui.category
+package com.rh.heji.ui.bill.category
 
 import android.view.View
 import androidx.lifecycle.Observer
@@ -11,7 +11,7 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryManagerBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.category.adapter.CategoryManagerAdapter
+import com.rh.heji.ui.bill.category.adapter.CategoryManagerAdapter
 
 /**
  * Date: 2020/10/10
@@ -31,7 +31,7 @@ class CategoryManagerFragment : BaseFragment(){
 
     override fun initView(view: View) {
         binding = FragmentCategoryManagerBinding.bind(view)
-        args = com.rh.heji.ui.category.CategoryManagerFragmentArgs.fromBundle(arguments!!)
+        args = com.rh.heji.ui.bill.category.CategoryManagerFragmentArgs.fromBundle(arguments!!)
 
         binding.btnAdd.setOnClickListener { v: View? ->
             val name = binding.editCategoryValue.text.toString().trim { it <= ' ' }

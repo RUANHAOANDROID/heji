@@ -1,11 +1,10 @@
-package com.rh.heji.ui.bill.add.calendar
+package com.rh.heji.ui.bill.calendar
 
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
-import com.rh.heji.App
 import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
@@ -15,7 +14,6 @@ import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
-import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
 
 class CalendarNoteViewModule : BaseViewModel() {

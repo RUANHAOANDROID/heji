@@ -35,7 +35,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_category_manager"
-        android:name="com.rh.heji.ui.category.CategoryManagerFragment"
+        android:name="com.rh.heji.ui.bill.category.CategoryManagerFragment"
         android:label="@string/category_manager"
         tools:layout="@layout/fragment_category_manager">
         <argument
@@ -104,7 +104,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_calendar_note"
-        android:name="com.rh.heji.ui.bill.add.calendar.CalendarNoteFragment"
+        android:name="com.rh.heji.ui.bill.calendar.CalendarNoteFragment"
         android:label="日历记账"
         tools:layout="@layout/fragment_calendar_note"></fragment>
     <fragment
@@ -120,7 +120,7 @@
 
     <fragment
         android:id="@+id/_category"
-        android:name="com.rh.heji.ui.category.CategoryFragment"
+        android:name="com.rh.heji.ui.bill.category.CategoryFragment"
         android:label="CategoryFragment"
         tools:layout="@layout/fragment_category_content">
         <action
@@ -143,7 +143,7 @@
         tools:layout="@layout/banner_fragment" />
     <fragment
         android:id="@+id/_category_tab"
-        android:name="com.rh.heji.ui.category.CategoryTabFragment"
+        android:name="com.rh.heji.ui.bill.category.CategoryTabFragment"
         android:label="CategoryTabFragment"
         tools:layout="@layout/fragment_category_tab">
         <action

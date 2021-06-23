@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.add.calendar
+package com.rh.heji.ui.bill.calendar
 
 import android.content.Context
 import android.view.View

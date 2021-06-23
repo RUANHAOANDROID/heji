@@ -29,6 +29,7 @@ import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.ui.bill.iteminfo.BillInfoPop
 import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
+import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
 import java.math.BigDecimal
 import java.util.*
@@ -54,7 +55,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
                 Navigation.findNavController(rootView).navigate(R.id.nav_income, AddBillFragmentArgs.Builder(calendar).build().toBundle())
             }
             initSwipeRefreshLayout()
-            AppCache.instance.appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(homeViewModel.year, homeViewModel.month))
+            AppCache.instance.appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month))
         }
         binding.total.setOnInflateListener(this)//提前设置避免多次设置
     }
@@ -69,7 +70,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             })
             binding.refreshLayout.setOnRefreshListener {
                 binding.refreshLayout.isRefreshing = false
-                notifyData(homeViewModel.year, homeViewModel.month)
+                notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
             }
             //设置刷新提示View颜色（在最后）
             binding.refreshLayout.setColorSchemeResources(R.color.colorPrimary)
@@ -81,14 +82,21 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
     override fun setUpToolBar() {
         super.setUpToolBar()
         toolBar.post {
-            showYearMonthTitle({ year, month -> notifyData(year, month) }, homeViewModel.year, homeViewModel.month)
+            showYearMonthTitle(
+                { year, month ->
+                    notifyData(year, month)
+                    mainActivity.mainViewModel.globalYearMonth = YearMonth(year, month)
+                },
+                homeViewModel.selectYearMonth.year, //默认为当前时间,
+                homeViewModel.selectYearMonth.month//默认为当前月份
+            )
             toolBar.navigationIcon = ResourcesCompat.getDrawable(resources,R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
             toolBar.setNavigationOnClickListener {
                 //展开侧滑菜单
                 mainActivity.openDrawer()
             }
             binding.imgCalendar.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note) }
-            binding.imgTotal.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_gallery) }
+            binding.imgTotal.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_report) }
         }
 
     }
@@ -209,7 +217,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         }
 
         headView()
-        notifyData(homeViewModel.year, homeViewModel.month)
+        notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
     }
 
     private fun headView() {
@@ -227,7 +235,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         popupView.popClickListener = object : BillPopClickListenerImpl() {
             override fun delete(bill: Bill) {
                 super.delete(bill)
-                notifyData(homeViewModel.year, homeViewModel.month)
+                notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
             }
 
             override fun update(bill: Bill) {}
@@ -258,9 +266,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
      * @param month 月
      */
     fun notifyData(year: Int, month: Int) {
-        homeViewModel.year = year
-        homeViewModel.month = month
-
+        homeViewModel.selectYearMonth =YearMonth(year,month)
         homeViewModel.billsNodLiveData.observe(this, billsObserver)
         homeViewModel.getBillsData()
         totalIncomeExpense(year, month)

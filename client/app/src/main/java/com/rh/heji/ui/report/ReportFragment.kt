@@ -54,8 +54,7 @@ class ReportFragment : BaseFragment() {
 
     override fun onStart() {
         super.onStart()
-        reportViewModel.yearMonth =
-            YearMonth(reportViewModel.yearMonth.year, reportViewModel.yearMonth.month)
+        reportViewModel.yearMonth = mainActivity.mainViewModel.globalYearMonth
     }
 
     override fun layoutId(): Int {
@@ -66,15 +65,20 @@ class ReportFragment : BaseFragment() {
         super.setUpToolBar()
         showBlack()
         toolBar.title = "统计"
-        showYearMonthTitle({ year, month ->
+        showYearMonthTitle(
+            selected = { year, month ->
 
-            if (month == 0) {//全年
-                reportViewModel.allYear = year
-            } else {//单月
-                reportViewModel.yearMonth = YearMonth(year, month)
-            }
+                if (month == 0) {//全年
+                    reportViewModel.allYear = year
+                } else {//单月
+                    reportViewModel.yearMonth = YearMonth(year, month)
+                }
 
-        }, showAllYear = true)
+            },
+            year = reportViewModel.yearMonth.year,
+            month = reportViewModel.yearMonth.month,
+            showAllYear = true
+        )
     }
 
     /**
@@ -204,7 +208,7 @@ class ReportFragment : BaseFragment() {
         xAxis.labelRotationAngle = 30f
         binding.lineChart.axisRight.isEnabled = false
 
-       binding.lineChart.axisLeft.valueFormatter = LargeValueFormatter()
+        binding.lineChart.axisLeft.valueFormatter = LargeValueFormatter()
         binding.lineChart.xAxis.valueFormatter = IndexAxisValueFormatter()
     }
 

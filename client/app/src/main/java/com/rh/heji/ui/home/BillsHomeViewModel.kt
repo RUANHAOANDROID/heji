@@ -3,7 +3,6 @@ package com.rh.heji.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.liveData
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
@@ -16,12 +15,14 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
+import com.rh.heji.utlis.YearMonth
 import java.util.*
 
 class BillsHomeViewModel : BaseViewModel() {
-    var year: Int = Calendar.getInstance()[Calendar.YEAR] //默认为当前时间
-    var month: Int = Calendar.getInstance()[Calendar.MONTH] + 1//默认为当前月份
-
+    var selectYearMonth = YearMonth(
+        Calendar.getInstance()[Calendar.YEAR], //默认为当前时间,
+        Calendar.getInstance()[Calendar.MONTH] + 1//默认为当前月份
+    )
     private val billDao: BillDao = AppDatabase.getInstance().billDao()
     var billImagesLiveData: MediatorLiveData<List<Image>> = MediatorLiveData()
 
@@ -29,8 +30,14 @@ class BillsHomeViewModel : BaseViewModel() {
 
     fun getBillsData() {
         launchIO({
-            val start = MyTimeUtils.firstDayOfMonth(year, month)
-            val end = MyTimeUtils.lastDayOfMonth(year, month)
+            val start = MyTimeUtils.firstDayOfMonth(
+               selectYearMonth.year ,
+                selectYearMonth.month
+            )
+            val end = MyTimeUtils.lastDayOfMonth(
+                selectYearMonth.year ,
+                selectYearMonth.month
+            )
             LogUtils.d("Time between:$start - $end")
             var monthEveryDayIncome = billDao.findEveryDayIncome(start, end)
             var listDayNodes = mutableListOf<BaseNode>()

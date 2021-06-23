@@ -11,7 +11,6 @@ import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
-import com.rh.heji.App;
 import com.rh.heji.AppCache;
 import com.rh.heji.data.db.Bill;
 import com.rh.heji.data.db.BillDao;

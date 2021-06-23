@@ -8,6 +8,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.lxj.xpopup.widget.VerticalRecyclerView
+import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
@@ -63,7 +64,8 @@ class BottomListPop(
                 }
 
             })
-
+            val mainActivity:MainActivity = context as MainActivity
+            mainActivity.mainViewModel.getBillImages(billId = item.getId()).observe(mainActivity,billInfoPop)
             XPopup.Builder(context).asCustom(billInfoPop).show()
 
         }

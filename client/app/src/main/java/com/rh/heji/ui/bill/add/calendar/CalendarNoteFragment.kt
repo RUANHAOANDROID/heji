@@ -1,5 +1,6 @@
 package com.rh.heji.ui.bill.add.calendar
 
+import android.content.Context
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -31,11 +32,15 @@ class CalendarNoteFragment : BaseFragment() {
         return R.layout.fragment_calendar_note
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        viewModel.selectYearMonth=mainActivity.mainViewModel.globalYearMonth
+    }
     override fun setUpToolBar() {
         super.setUpToolBar()
         //toolBar.title = "日历记账"
         showBlack()
-        viewModel.selectYearMonth=mainActivity.mainViewModel.globalYearMonth
+
         showYearMonthTitle(selected = { year, month ->
             binding.calendarView.scrollToCalendar(year, month, 1)
             viewModel.selectYearMonth.year = year

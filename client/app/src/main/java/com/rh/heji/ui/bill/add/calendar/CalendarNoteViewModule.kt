@@ -33,9 +33,7 @@ class CalendarNoteViewModule : BaseViewModel() {
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
-            val firstDayOfMonth = MyTimeUtils.firstDayOfMonth(year, month)
-            val lastDayOfMonth = MyTimeUtils.lastDayOfMonth(year, month)
-            var everyDayIncome = billDao.findEveryDayIncome(firstDayOfMonth, lastDayOfMonth)
+            var everyDayIncome = billDao.findEveryDayIncomeByMonth(selectYearMonth.toString())
             everyDayIncome?.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
                 if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {

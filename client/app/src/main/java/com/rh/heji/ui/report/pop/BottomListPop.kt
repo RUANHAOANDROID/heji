@@ -21,11 +21,11 @@ import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
  *#
  */
 class BottomListPop(
-    context: Context,
+    val activity: MainActivity,
     layoutResId: Int = R.layout.item_bill_daylist,
     data: MutableList<Bill>
 ) :
-    BottomPopupView(context) {
+    BottomPopupView(activity) {
     init {
         addInnerContent()
     }
@@ -48,7 +48,7 @@ class BottomListPop(
         )
         adapter.setOnItemClickListener { adapter, view, position ->
             val item = adapter.getItem(position) as Bill
-            val billInfoPop = BillInfoPop(context=context,bill = item, object : BillPopClickListenerImpl() {
+            val billInfoPop = BillInfoPop(activity= activity,bill = item, object : BillPopClickListenerImpl() {
                 override fun delete(bill: Bill) {
                     super.delete(bill)
                     adapter.removeAt(position)
@@ -64,8 +64,7 @@ class BottomListPop(
                 }
 
             })
-            val mainActivity:MainActivity = context as MainActivity
-            mainActivity.mainViewModel.getBillImages(billId = item.getId()).observe(mainActivity,billInfoPop)
+            //activity.mainViewModel.getBillImages(billId = item.getId()).observe(activity,billInfoPop)
             XPopup.Builder(context).asCustom(billInfoPop).show()
 
         }

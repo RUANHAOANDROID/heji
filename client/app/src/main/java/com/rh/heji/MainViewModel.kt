@@ -1,5 +1,9 @@
 package com.rh.heji
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.db.Image
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.data.repository.CategoryRepository
 import com.rh.heji.ui.base.BaseViewModel
@@ -15,6 +19,8 @@ class MainViewModel : BaseViewModel() {
     var billRepository = BillRepository()
     var categoryRepository = CategoryRepository()
 
+    private val imageLiveData = MediatorLiveData<MutableList<Image>>()
+
     /**
      * 全局选择的年月（home to subpage）
      */
@@ -29,5 +35,13 @@ class MainViewModel : BaseViewModel() {
             Calendar.getInstance()[Calendar.YEAR],
             Calendar.getInstance()[Calendar.MONTH] + 1
         )
+    }
+
+    fun getBillImages(billId: String): LiveData<MutableList<Image>> {
+        launchIO({
+            imageLiveData.postValue(AppDatabase.getInstance().imageDao().findByBillId(billId))
+        }, { imageLiveData.postValue(mutableListOf()) })
+
+        return imageLiveData
     }
 }

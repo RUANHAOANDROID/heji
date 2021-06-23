@@ -231,14 +231,16 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
      * @param billTab
      */
     private fun showBillItemPop(billTab: Bill) {
-        val popupView = BillInfoPop(context=mainActivity)
+        val popupView = BillInfoPop(bill = billTab,context=mainActivity)
         popupView.popClickListener = object : BillPopClickListenerImpl() {
             override fun delete(bill: Bill) {
                 super.delete(bill)
                 notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
             }
-
             override fun update(bill: Bill) {}
+        }
+        if (billTab.imgCount > 0) {
+            mainActivity.mainViewModel.getBillImages(billTab.getId()).observe(viewLifecycleOwner,popupView)
         }
         XPopup.Builder(context) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
                 //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
@@ -246,16 +248,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
                 //.hasShadowBg(true)//默认true
                 .asCustom(popupView) /*.enableDrag(false)*/
                 .show()
-        popupView.post {
-            popupView.bill = billTab //账单信息
-            popupView.setBillImages(ArrayList()) //首先把图片重置
-            if (billTab.imgCount > 0) {
-                homeViewModel.getBillImages(billTab.getId()).observe(viewLifecycleOwner, { images: List<Image> ->
-                    popupView.setBillImages(images)
-                }
-                )
-            }
-        }
+
 
     }
 

@@ -152,25 +152,16 @@ class CalendarNoteFragment : BaseFragment() {
                 notifyCalendar()
             }
         }
-        val popupView = BillInfoPop(mainActivity,popClickListener=clickListener)
+        val popupView = BillInfoPop(bill=bill,context = mainActivity,popClickListener=clickListener)
+        if (bill.imgCount>0){
+            mainActivity.mainViewModel.getBillImages(bill.id).observe(this,popupView)
+        }
         XPopup.Builder(mainActivity) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
             //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
             //.hasBlurBg(true)//模糊默认false
             //.hasShadowBg(true)//默认true
             .asCustom(popupView) /*.enableDrag(false)*/
             .show()
-        popupView.post {
-            popupView.bill = bill //账单信息
-            popupView.setBillImages(ArrayList()) //首先把图片重置
-            if (bill.imgCount > 0) {
-                viewModel.getBillImages(bill.id).observe(this, Observer {
-                    it.let {
-                        popupView.setBillImages(it)
-                    }
-                })
-            }
-        }
-
         popupView.show()
     }
 

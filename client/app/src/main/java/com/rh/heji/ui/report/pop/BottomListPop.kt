@@ -47,7 +47,7 @@ class BottomListPop(
         )
         adapter.setOnItemClickListener { adapter, view, position ->
             val item = adapter.getItem(position) as Bill
-            val billInfoPop = BillInfoPop(context, object : BillPopClickListenerImpl() {
+            val billInfoPop = BillInfoPop(context=context,bill = item, object : BillPopClickListenerImpl() {
                 override fun delete(bill: Bill) {
                     super.delete(bill)
                     adapter.removeAt(position)
@@ -65,12 +65,7 @@ class BottomListPop(
             })
 
             XPopup.Builder(context).asCustom(billInfoPop).show()
-            billInfoPop.post {
-                billInfoPop.bill = item
-                billInfoPop.setBillImages(
-                    AppDatabase.getInstance().imageDao().findByBillId(item.id)
-                )
-            }
+
         }
         recyclerView.adapter = adapter
     }

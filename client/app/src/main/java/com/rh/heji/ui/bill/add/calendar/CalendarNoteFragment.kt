@@ -34,11 +34,13 @@ class CalendarNoteFragment : BaseFragment() {
         super.setUpToolBar()
         //toolBar.title = "日历记账"
         showBlack()
-        showYearMonthTitle({ year, month ->
+        viewModel.year=mainActivity.mainViewModel.globalYearMonth.year
+        viewModel.month=mainActivity.mainViewModel.globalYearMonth.month
+        showYearMonthTitle(selected = { year, month ->
             binding.calendarView.scrollToCalendar(year, month, 1)
             viewModel.year = year
             viewModel.month = month
-        })
+        },year = viewModel.year,month = viewModel.month)
 
     }
 

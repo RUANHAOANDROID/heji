@@ -17,10 +17,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
+import androidx.navigation.*
 import androidx.navigation.NavController.OnDestinationChangedListener
-import androidx.navigation.NavDestination
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.blankj.utilcode.util.LogUtils
@@ -32,14 +30,13 @@ import com.permissionx.guolindev.callback.RequestCallback
 import com.permissionx.guolindev.request.ExplainScope
 import com.permissionx.guolindev.request.ForwardScope
 import com.rh.heji.AppCache.Companion.instance
-import com.rh.heji.databinding.ActivityMainBinding
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.ui.home.DrawerSlideListener
 import com.rh.heji.ui.home.HomeDrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.JWTParse.getUser
+import com.rh.heji.utlis.YearMonth
 import kotlinx.coroutines.*
-import java.lang.NullPointerException
 import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -193,11 +190,16 @@ class MainActivity : AppCompatActivity() {
                     val home = resources.getString(R.string.menu_home)
                     val report = resources.getString(R.string.menu_report)
                     val setting = resources.getString(R.string.menu_setting)
-                    val itemLabel = destination.label.toString()
-                    if (itemLabel == home) {
-                        title = "记账"
-                    } else if (itemLabel == report) {
-                    } else if (itemLabel == setting) {
+                    when (destination.label.toString()) {
+                        home -> {
+                            title = "记账"
+                        }
+                        report -> {
+
+                        }
+                        setting -> {
+
+                        }
                     }
                     LogUtils.i(destination.label)
                 }

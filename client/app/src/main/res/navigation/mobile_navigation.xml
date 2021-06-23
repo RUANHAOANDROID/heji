@@ -6,10 +6,11 @@
     app:startDestination="@+id/nav_home">
     <!-- 下划线_开头的代表不经过navigation管理的Fragment-->
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/nav_report"
         android:name="com.rh.heji.ui.report.ReportFragment"
         android:label="@string/menu_report"
-        tools:layout="@layout/fragment_report" />
+        tools:layout="@layout/fragment_report" >
+    </fragment>
 
     <fragment
         android:id="@+id/nav_setting"
@@ -84,7 +85,7 @@
             app:destination="@id/nav_input_etc" />
         <action
             android:id="@+id/action_nav_home_to_nav_gallery"
-            app:destination="@id/nav_gallery" />
+            app:destination="@id/nav_report" />
         <action
             android:id="@+id/action_nav_home_to_nav_setting"
             app:destination="@id/nav_setting" />

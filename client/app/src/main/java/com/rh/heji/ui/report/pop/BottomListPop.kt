@@ -64,7 +64,6 @@ class BottomListPop(
                 }
 
             })
-            //activity.mainViewModel.getBillImages(billId = item.getId()).observe(activity,billInfoPop)
             XPopup.Builder(context).asCustom(billInfoPop).show()
 
         }

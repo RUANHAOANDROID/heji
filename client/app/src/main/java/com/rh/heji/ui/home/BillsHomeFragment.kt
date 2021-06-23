@@ -239,9 +239,6 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             }
             override fun update(bill: Bill) {}
         }
-//        if (billTab.imgCount > 0) {
-//            mainActivity.mainViewModel.getBillImages(billTab.getId()).observe(viewLifecycleOwner,popupView)
-//        }
         XPopup.Builder(context) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
                 //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
                 //.hasBlurBg(true)//模糊默认false

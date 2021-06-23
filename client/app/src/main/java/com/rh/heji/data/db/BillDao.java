@@ -111,8 +111,8 @@ public interface BillDao {
     List<IncomeTime> findEveryDayIncomeByMonth(String yearMonth);
 
     @TypeConverters(MoneyConverters.class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND ( date(bill_time) BETWEEN :start AND :end )")
-    LiveData<Income> sumIncome(String start, String end);
+    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND ( strftime('%Y-%m',bill_time)=:yearMonth)")
+    LiveData<Income> sumIncome(String yearMonth);
 
     @TypeConverters(MoneyConverters.class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND ( strftime('%Y-%m',bill_time)=:yearMonth)")

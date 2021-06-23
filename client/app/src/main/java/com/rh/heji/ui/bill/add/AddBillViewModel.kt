@@ -58,6 +58,8 @@ class AddBillViewModel : BaseViewModel() {
         launchIO({
             val count = AppDatabase.getInstance().billDao().install(bill)
             AppDatabase.getInstance().imageDao().install(images)
+            bill.imgCount =images.size
+            AppDatabase.getInstance().billDao().update(bill)
             saveLiveData.postValue(bill)
             if (count > 0) {
                 ToastUtils.showShort("已保存: ${bill.getCategory() + money}  ")

@@ -5,7 +5,7 @@ package com.rh.heji.ui.bill.add.adapter
  * Author: 锅得铁
  * #
  */
-class TicketEntity {
+class BillPhotoEntity {
     var path: String? = null
     var createTime: String? = null
     var type = 0

@@ -14,7 +14,7 @@ import com.lxj.xpopup.core.BottomPopupView;
 import com.matisse.entity.ConstValue;
 import com.rh.heji.MainActivity;
 import com.rh.heji.R;
-import com.rh.heji.ui.bill.add.adapter.TicketPhotoAdapter;
+import com.rh.heji.ui.bill.add.adapter.BillPhotoAdapter;
 import com.rh.heji.utlis.matisse.MatisseUtils;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  */
 public class SelectImagePop extends BottomPopupView {
     private int MAX_SELECT_COUNT = 3;
-    private TicketPhotoAdapter ticketAdpater = new TicketPhotoAdapter();
+    private BillPhotoAdapter ticketAdpater = new BillPhotoAdapter();
     ;
     private MainActivity activity;
     RecyclerView selectImgRecycler;

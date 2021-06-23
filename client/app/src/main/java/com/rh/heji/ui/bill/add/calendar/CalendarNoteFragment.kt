@@ -18,6 +18,7 @@ import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.ui.bill.iteminfo.BillInfoPop
 import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
+import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
 
 class CalendarNoteFragment : BaseFragment() {
@@ -34,13 +35,12 @@ class CalendarNoteFragment : BaseFragment() {
         super.setUpToolBar()
         //toolBar.title = "日历记账"
         showBlack()
-        viewModel.year=mainActivity.mainViewModel.globalYearMonth.year
-        viewModel.month=mainActivity.mainViewModel.globalYearMonth.month
+        viewModel.selectYearMonth=mainActivity.mainViewModel.globalYearMonth
         showYearMonthTitle(selected = { year, month ->
             binding.calendarView.scrollToCalendar(year, month, 1)
-            viewModel.year = year
-            viewModel.month = month
-        },year = viewModel.year,month = viewModel.month)
+            viewModel.selectYearMonth.year = year
+            viewModel.selectYearMonth.month = month
+        },year = viewModel.selectYearMonth.year,month = viewModel.selectYearMonth.month)
 
     }
 
@@ -92,8 +92,7 @@ class CalendarNoteFragment : BaseFragment() {
 
     private fun initCalendarView() {
         binding.calendarView.setOnMonthChangeListener { year, month -> //月份滑动事件
-            viewModel.year = year
-            viewModel.month = month
+            viewModel.selectYearMonth = YearMonth(year,month)
             centerTitle.text = "$year.$month"
             notifyCalendar()
             fabShow()
@@ -124,9 +123,8 @@ class CalendarNoteFragment : BaseFragment() {
     }
 
     private fun fabShow() {
-        val thisMonth =
-            android.icu.util.Calendar.getInstance().get(android.icu.util.Calendar.MONTH) + 1;
-        if (viewModel.month == thisMonth)
+        val currentYearMonth = mainActivity.mainViewModel.currentYearMonth
+        if (viewModel.selectYearMonth == currentYearMonth)
             binding.todayFab.hide()
         else
             binding.todayFab.show()
@@ -180,6 +178,6 @@ class CalendarNoteFragment : BaseFragment() {
     }
 
     private fun notifyCalendar() {
-        viewModel.updateYearMonth(viewModel.year, viewModel.month)
+        viewModel.updateYearMonth(viewModel.selectYearMonth.year, viewModel.selectYearMonth.month)
     }
 }

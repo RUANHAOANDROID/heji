@@ -24,7 +24,6 @@ class BillsHomeViewModel : BaseViewModel() {
         Calendar.getInstance()[Calendar.MONTH] + 1//默认为当前月份
     )
     private val billDao: BillDao = AppDatabase.getInstance().billDao()
-    private val billImagesLiveData: MediatorLiveData<List<Image>> = MediatorLiveData()
 
     private val billsNodLiveData = MediatorLiveData<MutableList<BaseNode>>()
 
@@ -54,15 +53,6 @@ class BillsHomeViewModel : BaseViewModel() {
             billsNodLiveData.postValue(listDayNodes)
         }, {})
         return billsNodLiveData
-    }
-
-    fun getBillImages(billId: String): LiveData<List<Image>> {
-        launchIO({
-            billImagesLiveData.postValue(AppDatabase.getInstance().imageDao().findByBillId(billId))
-        }, {
-            it.printStackTrace()
-        })
-        return billImagesLiveData
     }
 
     fun getIncomeExpense(): LiveData<Income> {

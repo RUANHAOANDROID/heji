@@ -20,7 +20,6 @@ class CalendarNoteViewModule : BaseViewModel() {
     val billDao: BillDao = AppDatabase.getInstance().billDao()
     val calendarLiveData = MutableLiveData<Map<String, Calendar>>()
     val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>()
-    private val billImageLiveData = MutableLiveData<List<Image>>()
 
 
     var selectYearMonth = YearMonth(
@@ -125,13 +124,4 @@ class CalendarNoteViewModule : BaseViewModel() {
 
         return calendar
     }
-
-    fun getBillImages(billId: String): MutableLiveData<List<Image>> {
-        launchIO({
-            billImageLiveData.postValue(AppDatabase.getInstance().imageDao().findByBillId(billId));
-        }, {})
-        return billImageLiveData
-    }
-
-
 }

@@ -1,4 +1,4 @@
-package com.rh.heji.ui.category.adapter
+package com.rh.heji.ui.bill.category.adapter
 
 import android.text.TextUtils
 import android.view.View

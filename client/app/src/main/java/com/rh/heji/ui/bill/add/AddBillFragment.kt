@@ -5,16 +5,12 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.lifecycle.Observer
@@ -26,7 +22,6 @@ import com.lxj.xpopup.XPopup
 import com.matisse.Matisse.Companion.obtainResult
 import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
 import com.rh.heji.AppCache.Companion.instance
-import com.rh.heji.BuildConfig
 import com.rh.heji.R
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Bill
@@ -36,8 +31,8 @@ import com.rh.heji.databinding.IncomeFragmentBinding
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.add.adapter.TicketEntity
-import com.rh.heji.ui.category.CategoryTabFragment
-import com.rh.heji.ui.category.CategoryViewModule
+import com.rh.heji.ui.bill.category.CategoryTabFragment
+import com.rh.heji.ui.bill.category.CategoryViewModule
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
 import java.io.File
 import java.util.*

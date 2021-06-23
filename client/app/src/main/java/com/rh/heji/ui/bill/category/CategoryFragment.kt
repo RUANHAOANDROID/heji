@@ -1,4 +1,4 @@
-package com.rh.heji.ui.category
+package com.rh.heji.ui.bill.category
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,7 +13,7 @@ import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryContentBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.add.AddBillFragment
-import com.rh.heji.ui.category.adapter.CategoryAdapter
+import com.rh.heji.ui.bill.category.adapter.CategoryAdapter
 import java.util.*
 import java.util.function.Consumer
 import java.util.stream.Collectors

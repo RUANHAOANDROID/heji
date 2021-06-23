@@ -1,4 +1,4 @@
-package com.rh.heji.ui.category.adapter
+package com.rh.heji.ui.bill.category.adapter
 
 import android.text.TextUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -6,7 +6,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.rh.heji.R
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.ItemCategoryBinding
-import com.rh.heji.utlis.ColorUtils
 import com.rh.heji.utlis.textdraw.ColorGenerator
 import com.rh.heji.utlis.textdraw.TextDrawable
 

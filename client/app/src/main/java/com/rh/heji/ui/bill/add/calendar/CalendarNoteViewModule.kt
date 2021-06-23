@@ -16,6 +16,7 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
+import com.rh.heji.utlis.YearMonth
 
 class CalendarNoteViewModule : BaseViewModel() {
     val billDao: BillDao = AppDatabase.getInstance().billDao()
@@ -24,8 +25,10 @@ class CalendarNoteViewModule : BaseViewModel() {
     private val billImageLiveData = MutableLiveData<List<Image>>()
 
 
-    var year: Int = java.util.Calendar.getInstance()[java.util.Calendar.YEAR]
-    var month: Int = java.util.Calendar.getInstance()[java.util.Calendar.MONTH] + 1
+    var selectYearMonth = YearMonth(
+        java.util.Calendar.getInstance()[java.util.Calendar.YEAR],
+        java.util.Calendar.getInstance()[java.util.Calendar.MONTH] + 1
+    )
 
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
@@ -37,11 +40,12 @@ class CalendarNoteViewModule : BaseViewModel() {
                 var yymmdd = dayIncome.time!!.split("-")
                 if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {
                     val calender: Calendar = getSchemeCalendar(
-                            year = yymmdd[0].toInt(),
-                            month = yymmdd[1].toInt(),
-                            day = yymmdd[2].toInt(),
-                            expenditure = dayIncome.expenditure.toString(),
-                            income = dayIncome.income.toString())
+                        year = yymmdd[0].toInt(),
+                        month = yymmdd[1].toInt(),
+                        day = yymmdd[2].toInt(),
+                        expenditure = dayIncome.expenditure.toString(),
+                        income = dayIncome.income.toString()
+                    )
                     //map["${dayIncome.time}-${dayIncome.income }${dayIncome.expenditure}"] = calender
                     map[calender.toString()] = calender// Key需是calendar string
                 }
@@ -67,12 +71,13 @@ class CalendarNoteViewModule : BaseViewModel() {
                     }
                 }
                 var dayIncome = DayIncome(
-                        expected = expenditure,
-                        income = income,
-                        year = calendar.year,
-                        month = calendar.month,
-                        monthDay = calendar.day,
-                        weekday = calendar.week)
+                    expected = expenditure,
+                    income = income,
+                    year = calendar.year,
+                    month = calendar.month,
+                    monthDay = calendar.day,
+                    weekday = calendar.week
+                )
                 var parentNode = mutableListOf<BaseNode>()
                 var childNodes = emptyList<BaseNode>().toMutableList()
                 it.forEach {
@@ -95,7 +100,13 @@ class CalendarNoteViewModule : BaseViewModel() {
      * 支出
      * 收入
      */
-    private fun getSchemeCalendar(year: Int, month: Int, day: Int, expenditure: String = "0", income: String = "0"): Calendar {
+    private fun getSchemeCalendar(
+        year: Int,
+        month: Int,
+        day: Int,
+        expenditure: String = "0",
+        income: String = "0"
+    ): Calendar {
         val calendar = Calendar()
         calendar.year = year
         calendar.month = month

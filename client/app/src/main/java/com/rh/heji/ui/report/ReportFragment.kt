@@ -300,9 +300,9 @@ class ReportFragment : BaseFragment() {
         chart.setUsePercentValues(true)
         chart.setDrawEntryLabels(true)
         reportViewModel.categoryProportion
-            .observe(this, {
+            .observe(this, { list ->
                 val entries = ArrayList<PieEntry>()
-                it.forEach {
+                list.forEach {
                     entries.add(it)
                 }
                 setCategoryData(entries)

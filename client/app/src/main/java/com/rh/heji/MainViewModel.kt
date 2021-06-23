@@ -14,6 +14,20 @@ import java.util.*
 class MainViewModel : BaseViewModel() {
     var billRepository = BillRepository()
     var categoryRepository = CategoryRepository()
+
+    /**
+     * 全局选择的年月（home to subpage）
+     */
     var globalYearMonth: YearMonth =
         YearMonth(Calendar.getInstance()[Calendar.YEAR], Calendar.getInstance()[Calendar.MONTH] + 1)
+
+    /**
+     * 当前年月
+     */
+    val currentYearMonth by lazy {
+        YearMonth(
+            Calendar.getInstance()[Calendar.YEAR],
+            Calendar.getInstance()[Calendar.MONTH] + 1
+        )
+    }
 }

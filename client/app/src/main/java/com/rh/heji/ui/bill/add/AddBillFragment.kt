@@ -30,7 +30,7 @@ import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.databinding.IncomeFragmentBinding
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.add.adapter.TicketEntity
+import com.rh.heji.ui.bill.add.adapter.BillPhotoEntity
 import com.rh.heji.ui.bill.category.CategoryTabFragment
 import com.rh.heji.ui.bill.category.CategoryViewModule
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
@@ -291,9 +291,9 @@ class AddBillFragment : BaseFragment() {
     }
 
     private fun setImages(selected: List<String>) {
-        val photos: MutableList<TicketEntity> = ArrayList()
+        val photos: MutableList<BillPhotoEntity> = ArrayList()
         for (item in selected) {
-            val info = TicketEntity()
+            val info = BillPhotoEntity()
             val fileTime = File(item).lastModified()
             val time = TimeUtils.millis2String(fileTime)
             info.createTime = time

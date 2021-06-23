@@ -14,7 +14,7 @@ import java.util.*
  * Author: 锅得铁
  * #
  */
-class TicketPhotoAdapter :
+class BillPhotoAdapter :
     BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_pop_select_ticket_image, ArrayList()) {
     private lateinit var binding: ItemPopSelectTicketImageBinding
     override fun convert(viewHolder: BaseViewHolder, item: String) {

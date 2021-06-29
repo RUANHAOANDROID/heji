@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/",
                         "/*.html",
-                        "/favicon.ico",
+                        "/favicon.ico", //网页标题Ico
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
@@ -96,6 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/image/{imageId:.+}").permitAll()//对用户开放票据图片接口
                 .antMatchers("/image/uploadImage","/image/uploadImages").hasAnyAuthority(authorities)//用户开放图片接口,查看则完全开放
                 .antMatchers("/log/**").permitAll()//崩溃日志对所有人开放
+                .antMatchers("/favicon.ico").permitAll()//标题.ico
 
                 .anyRequest().authenticated()
 

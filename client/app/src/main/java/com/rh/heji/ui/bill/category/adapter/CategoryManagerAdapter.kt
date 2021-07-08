@@ -21,7 +21,7 @@ open class CategoryManagerAdapter :
     override fun convert(holder: BaseViewHolder, category: Category) {
         itemBinding = ItemCategoryManagerBinding.bind(holder.itemView)
         val bgColor =
-            context.getColor(if (category.selected) R.color.category_ico_selected else R.color.category_ico)
+            context.getColor(if (category.isSelected) R.color.category_ico_selected else R.color.category_ico)
         if (TextUtils.isEmpty(category.category)) return
         val drawable = TextDrawable.builder().buildRound(category.category.substring(0, 1), bgColor)
         itemBinding.roundImageView.setImageDrawable(drawable)

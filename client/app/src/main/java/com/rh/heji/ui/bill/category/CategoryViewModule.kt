@@ -18,7 +18,7 @@ import com.rh.heji.ui.base.BaseViewModel
  * # 分类
  */
 class CategoryViewModule : BaseViewModel() {
-    private val categoryDao by lazy{ AppDatabase.getInstance().categoryDao()}
+    private val categoryDao by lazy{   AppDatabase.getInstance().categoryDao()}
     var type: BillType = BillType.EXPENDITURE
         set(value) {
             field = value
@@ -32,7 +32,7 @@ class CategoryViewModule : BaseViewModel() {
     }
 
 
-    var selectCategory = Category(ObjectId().toString())
+    var selectCategory = Category(category = "管理")
         set(value) {
             if (value.category =="管理") return
             field = value//field 为type本身 (field领域)
@@ -70,21 +70,18 @@ class CategoryViewModule : BaseViewModel() {
         }
     }
 
-    fun saveCategory(name: String?, type: Int) {
+    fun saveCategory(name: String, type: Int) {
         if (TextUtils.isEmpty(name)) {
             ToastUtils.showShort("您必须填写分类名称")
             return
         }
         launchIO({
-            val category = Category(ObjectId().toString())
-            category.type = type
-            category.category = name!!
-            category.level = 0
+            val category = Category(category = name,type = type,level = 0)
             category.synced = Constant.STATUS_NOT_SYNC
             val categories = categoryDao.findByNameAndType(name, type)
             if (categories != null && categories.size > 0) {
-                val _id = categories[0]._id
-                category._id = _id
+                val _id = categories[0].id
+                category.id = _id
                 categoryDao.update(category)
             }
             categoryDao.insert(category)

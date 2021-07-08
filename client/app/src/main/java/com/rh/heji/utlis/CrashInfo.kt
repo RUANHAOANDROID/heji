@@ -38,7 +38,7 @@ open class CrashInfo() : CrashUtils.OnCrashListener {
         errorLog.sdkVersionCode = DeviceUtils.getSDKVersionCode().toString()
         errorLog.sdkVersionName = DeviceUtils.getSDKVersionName()
         LogUtils.e(crashInfo.throwable)
-        errorLog.throwable = getExceptionToString(crashInfo . throwable)
+        errorLog.crashContent = getExceptionToString(crashInfo . throwable)
         return errorLog;
     }
 

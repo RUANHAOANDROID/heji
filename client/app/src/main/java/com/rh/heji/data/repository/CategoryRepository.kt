@@ -12,7 +12,7 @@ import java.io.IOException
 
 class CategoryRepository {
     val network = HejiNetwork.getInstance()
-    val categoryDao = AppDatabase.getInstance().categoryDao()
+    val categoryDao =   AppDatabase.getInstance().categoryDao()
     suspend fun pushCategory(category: CategoryEntity) {
         val response = network.categoryPush(category)
         response.let {
@@ -25,8 +25,7 @@ class CategoryRepository {
     suspend fun deleteCategory(_id: String) {
         val response = network.categoryDelete(_id)
         response.let {
-            var category = Category(_id)
-            categoryDao.delete(category)
+            categoryDao.deleteById(_id)
         }
     }
 
@@ -35,11 +34,11 @@ class CategoryRepository {
         val categories = response.data
         if (categories.isNotEmpty()) {
             categories.stream().forEach { entity: CategoryEntity ->
-                val _id = AppDatabase.getInstance().categoryDao().findByID(entity._id)
+                val _id =   AppDatabase.getInstance().categoryDao().findByID(entity.id)
                 if (TextUtils.isEmpty(_id)) {
                     val dbCategory = entity.toDbCategory()
                     dbCategory!!.synced = Constant.STATUS_SYNCED
-                    AppDatabase.getInstance().categoryDao().insert(dbCategory)
+                      AppDatabase.getInstance().categoryDao().insert(dbCategory)
                 }
             }
         }

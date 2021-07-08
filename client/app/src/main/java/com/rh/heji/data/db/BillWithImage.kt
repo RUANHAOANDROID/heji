@@ -1,23 +1,21 @@
-package com.rh.heji.data.db;
+package com.rh.heji.data.db
 
-import androidx.room.Embedded;
-import androidx.room.Relation;
-
-import java.util.List;
+import androidx.room.Embedded
+import androidx.room.Relation
 
 /**
  * Date: 2020/9/15
  * Author: 锅得铁
  * #
  */
-public class BillWithImage {
+data class BillWithImage(
+    @JvmField
     @Embedded
-    public Bill bill;
+    var bill: Bill? = null,
 
-    @Relation(
-            parentColumn = "bill_id",
-            entityColumn = "_bid"
-    )
-    public List<Image> images;
+    @JvmField
+    @Relation(parentColumn = "bill_id", entityColumn = "_bid")
+    var images: List<Image>? = null
+) {
 
 }

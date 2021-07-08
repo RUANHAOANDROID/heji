@@ -1,8 +1,8 @@
-package com.rh.heji.data.db;
+package com.rh.heji.data.db
 
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 
 /**
  * Date: 2021/3/2
@@ -10,9 +10,7 @@ import androidx.room.OnConflictStrategy;
  * #
  */
 @Dao
-public interface ErrorLogDao {
-
+interface ErrorLogDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void install(ErrorLog errorLog);
-
+    fun install(errorLog: ErrorLog?)
 }

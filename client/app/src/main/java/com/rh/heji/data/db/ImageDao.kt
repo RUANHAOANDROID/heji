@@ -1,15 +1,7 @@
-package com.rh.heji.data.db;
+package com.rh.heji.data.db
 
-import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Transaction;
-import androidx.room.Update;
-
-import java.util.List;
+import androidx.lifecycle.LiveData
+import androidx.room.*
 
 /**
  * Date: 2020/11/19
@@ -17,43 +9,42 @@ import java.util.List;
  * #
  */
 @Dao
-public interface ImageDao {
+interface ImageDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun install(ticket: Image )
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void install(Image ticket);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void install(List<Image> ticket);
+    fun install(ticket: MutableList<Image >)
 
     @Delete
-    void delete(Image ticket);
+    fun delete(ticket: Image )
 
     @Query("delete from bill_img where _bid =:billID")
-    void deleteBillImage(String billID);
+    fun deleteBillImage(billID: String )
 
     @Transaction
-    @Query("update bill_img set img_path=:imagePath, sync_status =:status where _id =:id")
-    int updateImageLocalPath(String id, String imagePath, int status);
+    @Query("update bill_img set img_path=:imagePath, sync_status =:status where id =:id")
+    fun updateImageLocalPath(id: String , imagePath: String , status: Int): Int
 
     @Transaction
-    @Query("update bill_img set img_online_path=:onlinePath, sync_status=:status  where _id =:imgId")
-    int updateOnlinePath(String imgId, String onlinePath, int status);
+    @Query("update bill_img set img_online_path=:onlinePath, sync_status=:status  where id =:imgId")
+    fun updateOnlinePath(imgId: String , onlinePath: String , status: Int): Int
 
     @Query("select * from bill_img where img_online_path=:path")
-    List<Image> findByOnLinePath(String path);
+    fun findByOnLinePath(path: String ): MutableList<Image >
 
-    @Query("DELETE FROM " + Image.TAB_NAME + " WHERE " + Image.COLUMN_ID + "=:imgID")
-    void deleteById(String imgID);
+    @Query("DELETE FROM " + Image.Companion.TAB_NAME + " WHERE " + Image.Companion.COLUMN_ID + "=:imgID")
+    fun deleteById(imgID: String )
 
     @Query("SELECT * FROM bill_img WHERE _bid =:billId")
-    List<Image> findByBillId(String billId);
+    fun findByBillId(billId: String ): MutableList<Image >
 
-    @Query("SELECT * FROM bill_img WHERE _id =:id")
-    List<Image> findById(String id);
+    @Query("SELECT * FROM bill_img WHERE id =:id")
+    fun findById(id: String ): MutableList<Image >
 
-    @Query("SELECT * FROM bill_img WHERE _bid =:billId AND sync_status==" + Constant.STATUS_NOT_SYNC)
-    List<Image> findByBillIdNotAsync(String billId);
+    @Query("SELECT * FROM bill_img WHERE _bid =:billId AND sync_status==" + Constant.Companion.STATUS_NOT_SYNC)
+    fun findByBillIdNotAsync(billId: String): MutableList<Image>
 
     @Query("SELECT * FROM bill_img WHERE (img_path ISNULL OR img_path=='') AND(img_online_path!='' OR img_online_path != NULL)")
-    LiveData<List<Image>> observerNotDownloadImages();
+    fun observerNotDownloadImages(): LiveData<MutableList<Image > >
 }

@@ -1,29 +1,27 @@
-package com.rh.heji.data.converters;
+package com.rh.heji.data.converters
 
-import androidx.room.TypeConverter;
-
-import com.blankj.utilcode.util.TimeUtils;
-
-import java.util.Date;
+import androidx.room.TypeConverter
+import com.blankj.utilcode.util.TimeUtils
+import java.util.*
 
 /**
  * Date: 2020/9/20
  * Author: 锅得铁
  * #时间转换 -注意查的时候月份-1 ，存的时候不处理
  */
-public class DateConverters {
-    public static final String DB_PATTERN = "yyyy-MM-dd HH:mm:ss";
-    public static final String SHOW_PATTERN = "yyyy-MM-dd HH:mm";
+object DateConverters {
+    const val DB_PATTERN = "yyyy-MM-dd HH:mm:ss"
+    const val SHOW_PATTERN = "yyyy-MM-dd HH:mm"
 
+    @JvmStatic
     @TypeConverter
-    public static Date str2Date(String value) {
-        Date date = value == null ? null : TimeUtils.string2Date(value, DB_PATTERN);
-        return date;
+    fun str2Date(value: String?): Date {
+        return if (value == null) Date() else TimeUtils.string2Date(value, DB_PATTERN)
     }
 
+    @JvmStatic
     @TypeConverter
-    public static String date2Str(Date date) {
-        String time = date == null ? null : TimeUtils.date2String(date,DB_PATTERN);
-        return time;
+    fun date2Str(date: Date?): String {
+        return if (date == null) "null" else TimeUtils.date2String(date, DB_PATTERN)
     }
 }

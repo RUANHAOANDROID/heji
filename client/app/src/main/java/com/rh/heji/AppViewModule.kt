@@ -72,9 +72,9 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
 
     fun billDelete(bill: Bill) {
         launchIO({
-            AppDatabase.getInstance().billDao().preDelete(bill.getId())
+            AppDatabase.getInstance().billDao().preDelete(bill.id)
             dbObservable.postValue(DBObservable(CRUD.DELETE,bill))
-            billRepository.deleteBill(bill.getId())
+            billRepository.deleteBill(bill.id)
         })
 
     }

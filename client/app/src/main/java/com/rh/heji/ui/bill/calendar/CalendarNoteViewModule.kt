@@ -17,7 +17,7 @@ import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.YearMonth
 
 class CalendarNoteViewModule : BaseViewModel() {
-    val billDao: BillDao = AppDatabase.getInstance().billDao()
+    val billDao: BillDao =   AppDatabase.getInstance().billDao()
     val calendarLiveData = MutableLiveData<Map<String, Calendar>>()
     val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>()
 

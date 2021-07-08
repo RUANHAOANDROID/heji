@@ -42,9 +42,9 @@ class AddBillViewModel : BaseViewModel() {
      */
     fun save(billId: String?, money: String?, category: Category): MutableLiveData<Bill> {
         val bill = bill
-        bill.setId(billId!!)
-        bill.setMoney(BigDecimal(money))
-        bill.setCreateTime(System.currentTimeMillis())
+        bill.id = billId!!
+        bill.money = BigDecimal(money)
+        bill.createTime = System.currentTimeMillis()
         bill.billTime = TimeUtils.string2Date(time)
         //
         val images = imgUrls.stream().map { s: String? ->
@@ -53,16 +53,16 @@ class AddBillViewModel : BaseViewModel() {
             image
         }.collect(Collectors.toList())
         bill.imgCount = images.size
-        bill.setType(category.type)
-        bill.setCategory(category.category)
+        bill.type = category.type
+        bill.category = category.category
         launchIO({
-            val count = AppDatabase.getInstance().billDao().install(bill)
-            AppDatabase.getInstance().imageDao().install(images)
+            val count =   AppDatabase.getInstance().billDao().install(bill)
+              AppDatabase.getInstance().imageDao().install(images)
             bill.imgCount =images.size
-            AppDatabase.getInstance().billDao().update(bill)
+              AppDatabase.getInstance().billDao().update(bill)
             saveLiveData.postValue(bill)
             if (count > 0) {
-                ToastUtils.showShort("已保存: ${bill.getCategory() + money}  ")
+                ToastUtils.showShort("已保存: ${bill.category + money}  ")
             }
         }, {
             ToastUtils.showShort(it.message)
@@ -76,7 +76,7 @@ class AddBillViewModel : BaseViewModel() {
     }
 
     private suspend fun getDealers(): MutableList<String> {
-        val users = AppDatabase.getInstance().dealerDao().findAll()
+        val users =   AppDatabase.getInstance().dealerDao().findAll()
         val dealerNames: MutableList<String> = ArrayList()
         users.forEach(Consumer { dealer: Dealer -> dealerNames.add(dealer.userName) })
         return dealerNames

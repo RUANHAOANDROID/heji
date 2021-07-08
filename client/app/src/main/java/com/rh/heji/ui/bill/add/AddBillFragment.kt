@@ -85,8 +85,8 @@ class AddBillFragment : BaseFragment() {
                 if (category.category == "管理") {
                     categoryName = billType.text()
                 }
-                billViewModel.bill.setCategory(categoryName)
-                billViewModel.bill.setType(category.type)
+                billViewModel.bill.category = categoryName
+                billViewModel.bill.type = category.type
                 binding.keyboard.setType(billType)
             }
         })
@@ -97,7 +97,7 @@ class AddBillFragment : BaseFragment() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
-                billViewModel.bill.setRemark(s.toString().trim { it <= ' ' })
+                billViewModel.bill.remark = s.toString().trim { it <= ' ' }
             }
         })
     }
@@ -171,7 +171,7 @@ class AddBillFragment : BaseFragment() {
             //经手人名单
             if (names.size > 0) {
                 binding.tvUserLabel.text = "经手人:" + names[0] //默认经手人
-                billViewModel.bill.setDealer(names[0]) //设置默经手人
+                billViewModel.bill.dealer = names[0] //设置默经手人
             }
             binding.tvUserLabel.setOnClickListener {
                 XPopup.Builder(context)
@@ -180,7 +180,7 @@ class AddBillFragment : BaseFragment() {
                         "请选择经手人", names.toTypedArray()
                     ) { position: Int, text: String ->
                         binding.tvUserLabel.text = "经手人:$text"
-                        billViewModel.bill.setDealer(text)
+                        billViewModel.bill.dealer = text
                     }
                     .show()
             }
@@ -224,7 +224,7 @@ class AddBillFragment : BaseFragment() {
             ToastUtils.showShort("未填写金额")
             return
         }
-        billViewModel.bill.setCategory(category.category)
+        billViewModel.bill.category = category.category
         billViewModel.save(ObjectId().toString(), money, category).observe(this, saveObserver)
     }
 

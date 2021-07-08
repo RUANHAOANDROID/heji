@@ -1,4 +1,4 @@
-package com.rh.heji.utlis;
+package com.rh.heji;
 
 import android.content.Context;
 import android.net.Uri;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 
 @GlideModule
-public class GlideUtils extends AppGlideModule {
+public final class MyAppGlideModule extends AppGlideModule {
 
     /**
      * @param pathName getExternalCacheDir() + "/image.jpg"

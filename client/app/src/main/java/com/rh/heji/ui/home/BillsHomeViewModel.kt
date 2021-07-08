@@ -23,7 +23,7 @@ class BillsHomeViewModel : BaseViewModel() {
         Calendar.getInstance()[Calendar.YEAR], //默认为当前时间,
         Calendar.getInstance()[Calendar.MONTH] + 1//默认为当前月份
     )
-    private val billDao: BillDao = AppDatabase.getInstance().billDao()
+    private val billDao: BillDao =   AppDatabase.getInstance().billDao()
 
     private val billsNodLiveData = MediatorLiveData<MutableList<BaseNode>>()
 
@@ -43,7 +43,7 @@ class BillsHomeViewModel : BaseViewModel() {
                         weekday = TimeUtils.getChineseWeek(dayIncome.time, TimeUtils.getSafeDateFormat(MyTimeUtils.PATTERN_DAY))
                 )
                 val dayListNodes = mutableListOf<BaseNode>()
-                billDao.findByDay(dayIncome.time)?.forEach {
+                billDao.findByDay(dayIncome.time!!)?.forEach {
                     dayListNodes.add(DayBillsNode(it))
                 }
                 var dayItemNode = DayIncomeNode(dayListNodes, incomeNode)

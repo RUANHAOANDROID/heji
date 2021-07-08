@@ -4,9 +4,9 @@ import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.rh.heji.AppCache.Companion.instance
+import com.rh.heji.MyAppGlideModule
 import com.rh.heji.R
 import com.rh.heji.databinding.ItemPopSelectTicketImageBinding
-import com.rh.heji.utlis.GlideUtils
 import java.util.*
 
 /**
@@ -23,7 +23,7 @@ class BillPhotoAdapter :
             binding.imgTicket.setImageDrawable(context.resources.getDrawable(R.drawable.ic_add_image_red_32dp))
             binding.imgDelete.visibility = View.INVISIBLE
         } else {
-            GlideUtils.loadImageFile(instance.context, item, binding.imgTicket)
+            MyAppGlideModule.loadImageFile(instance.context, item, binding.imgTicket)
             binding.imgDelete.visibility = View.VISIBLE
         }
     }

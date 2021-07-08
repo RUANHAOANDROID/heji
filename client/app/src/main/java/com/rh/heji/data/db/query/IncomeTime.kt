@@ -8,5 +8,5 @@ import java.math.BigDecimal
 data class IncomeTime(
     var income: BigDecimal?= BigDecimal.ZERO,
     var expenditure: BigDecimal?= BigDecimal.ZERO,
-    var time: String?="null"
+    var time: String?
 )

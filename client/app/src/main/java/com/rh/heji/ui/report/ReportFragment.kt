@@ -229,7 +229,7 @@ class ReportFragment : BaseFragment() {
         list.clear()
         val entries = bills.stream().map {
             val day =
-                DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2].toFloat()
+                DateConverters.date2Str(it.billTime)!!.split(" ")[0].split("-")[2].toFloat()
             val type = if (it.type == -1) "支出" else "收入"
             dayMap.replace(day.toInt(), Entry(day, it.money.toFloat(), type))
             return@map Entry(day, it.money.toFloat(), type)
@@ -369,7 +369,7 @@ class ReportFragment : BaseFragment() {
         categoryTotalAdapter.setNewInstance(entries)
         categoryTotalAdapter.setOnItemClickListener(OnItemClickListener { adapter, view, position ->
             val categoryItem: PieEntry = adapter.getItem(position) as PieEntry
-            val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(
+            val bills =   AppDatabase.getInstance().billDao().findByCategoryAndMonth(
                 categoryItem.label,
                 reportViewModel.yearMonth.toString(),
                 BillType.EXPENDITURE.type()
@@ -408,7 +408,7 @@ class ReportFragment : BaseFragment() {
         monthYearBillsAdapter.setOnItemClickListener { adapter, view, position ->
             val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
             val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
-            val bills = AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
+            val bills =   AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
             val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
             bottomListPop.titleView.text = "$yearMonthDay (${bills.size}条)"
             XPopup.Builder(requireContext())

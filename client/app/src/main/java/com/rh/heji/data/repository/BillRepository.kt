@@ -21,8 +21,8 @@ import java.io.File
 
 class BillRepository {
     val hejiNetwork = HejiNetwork.getInstance()
-    var billDao = AppDatabase.getInstance().billDao()
-    val imgDao = AppDatabase.getInstance().imageDao()
+    var billDao =   AppDatabase.getInstance().billDao()
+    val imgDao =   AppDatabase.getInstance().imageDao()
 
     /**
      * 保存账单至Server
@@ -44,7 +44,7 @@ class BillRepository {
     suspend fun deleteBill(_id: String) {
         var response = hejiNetwork.billDelete(_id)
         response.data.let {
-            AppDatabase.getInstance().imageDao().deleteBillImage(_id)
+              AppDatabase.getInstance().imageDao().deleteBillImage(_id)
             billDao.delete(Bill(_id))
         }
     }
@@ -98,9 +98,13 @@ class BillRepository {
                     image.id = response.data._id
                     image.synced = Constant.STATUS_SYNCED
                     LogUtils.d("账单图片上传成功：$image")
-                    var count = AppDatabase.getInstance().imageDao().updateOnlinePath(image.id, image.onlinePath, image.synced)
-                    if (count > 0)
-                        LogUtils.d("图片更新成功：$image")
+                    image.onlinePath?.let {
+                        var count =   AppDatabase.getInstance().imageDao().updateOnlinePath(image.id,it , image.synced)
+                        if (count > 0)
+                            LogUtils.d("图片更新成功：$image")
+                    }
+
+
                 }
 
             }

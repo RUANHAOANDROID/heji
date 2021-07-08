@@ -1,7 +1,6 @@
-package com.rh.heji.data.db;
+package com.rh.heji.data.db
 
-import androidx.room.Dao;
-import androidx.room.Insert;
+import androidx.room.Dao
 
 /**
  * Date: 2021/6/22
@@ -9,6 +8,4 @@ import androidx.room.Insert;
  * #
  */
 @Dao
-public interface BillWithImageDao {
-
-}
+interface BillWithImageDao 

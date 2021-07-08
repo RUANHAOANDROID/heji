@@ -1,31 +1,35 @@
-package com.rh.heji.data.converters;
+package com.rh.heji.data.converters
 
-import androidx.room.Ignore;
-import androidx.room.TypeConverter;
-
-import java.math.BigDecimal;
+import androidx.room.Ignore
+import androidx.room.TypeConverter
+import java.math.BigDecimal
 
 /**
  * Date: 2020/9/20
  * Author: 锅得铁
  * #货币转换
  */
-public class MoneyConverters {
+object MoneyConverters {
+    @JvmStatic
     @TypeConverter
-    public static BigDecimal fromLong(Long value) {
-        BigDecimal bigDecimal = value == null ? null : new BigDecimal(value).divide(new BigDecimal(100),2, BigDecimal.ROUND_DOWN);
-                //.divide(BigDecimal.ONE, 2, BigDecimal.ROUND_DOWN);//两位小数 整数补00
-        return bigDecimal;
+    fun fromLong(value: Long?): BigDecimal? {
+        //.divide(BigDecimal.ONE, 2, BigDecimal.ROUND_DOWN);//两位小数 整数补00
+        return if (value == null) null else BigDecimal(value).divide(
+            BigDecimal(100),
+            2,
+            BigDecimal.ROUND_DOWN
+        )
     }
 
+    @JvmStatic
     @TypeConverter
-    public static Long toLong(BigDecimal bigDecimal) {
-        Long longValue = bigDecimal.multiply(new BigDecimal(100)).longValue();
-        return longValue;
+    fun toLong(bigDecimal: BigDecimal): Long {
+        return bigDecimal.multiply(BigDecimal(100)).toLong()
     }
 
+    @JvmStatic
     @Ignore
-    public static BigDecimal ZERO_00() {
-        return BigDecimal.ZERO.divide(BigDecimal.ONE, 2, BigDecimal.ROUND_DOWN);
+    fun ZERO_00(): BigDecimal {
+        return BigDecimal.ZERO.divide(BigDecimal.ONE, 2, BigDecimal.ROUND_DOWN)
     }
 }

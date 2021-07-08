@@ -39,7 +39,7 @@ class CategoryFragment : BaseFragment() {
                 val isSelected =
                     category.category == selectCategory.category && category.type == selectCategory.type
                 if (isSelected) {
-                    category.selected = true
+                    category.isSelected = true
                 }
             }
         }
@@ -84,11 +84,11 @@ class CategoryFragment : BaseFragment() {
                     .setIeType(type.type()).build()
                 mainActivity.navController.navigate(R.id.nav_category_manager, args.toBundle())
             }
-            category.selected = !category.selected //反选
+            category.isSelected = !category.isSelected //反选
             //使其他置为为选中状态
             labelAdapter.data.forEach(Consumer { i: Category ->
                 if (i.category != category.category) {
-                    i.selected = false
+                    i.isSelected = false
                 }
             })
             labelAdapter.notifyDataSetChanged()
@@ -113,12 +113,12 @@ class CategoryFragment : BaseFragment() {
     private fun defSelected() {
         if (labelAdapter.data.isNotEmpty() && labelAdapter.data.size > 0) {
             val count =
-                labelAdapter.data.stream().filter { category: Category -> category.selected }
+                labelAdapter.data.stream().filter { category: Category -> category.isSelected }
                     .count()
             if (count <= 0) {
                 val firstItem = labelAdapter.data.stream().findFirst().get()
                 if (firstItem.category != "管理") {
-                    firstItem.selected = true
+                    firstItem.isSelected = true
                     labelAdapter.notifyDataSetChanged()
                     if (!isHidden && type == categoryViewModule.type) {
                         categoryViewModule.selectCategory = firstItem
@@ -141,14 +141,14 @@ class CategoryFragment : BaseFragment() {
     }
 
     private fun addSettingItem(labelAdapter: CategoryAdapter) {
-        val category = Category(CategoryAdapter.SETTING, 0, type.type())
+        val category = Category(category= CategoryAdapter.SETTING,level = 0,type =type.type())
         labelAdapter.addData(labelAdapter.itemCount, category)
     }
 
     fun setCategory() {
         if (!this::labelAdapter.isInitialized || labelAdapter == null) return
         var selectCategory: Category?
-        val selects = labelAdapter.data.stream().filter { category: Category -> category.selected }
+        val selects = labelAdapter.data.stream().filter { category: Category -> category.isSelected }
             .collect(Collectors.toList())
         selectCategory = if (selects.size <= 0) labelAdapter.data.stream().findFirst()
             .get() else selects.stream().findFirst().get()

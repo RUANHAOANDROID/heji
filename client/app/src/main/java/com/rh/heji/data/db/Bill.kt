@@ -1,22 +1,11 @@
-package com.rh.heji.data.db;
+package com.rh.heji.data.db
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
-import com.rh.heji.data.converters.DateConverters;
-import com.rh.heji.data.converters.MoneyConverters;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
+import androidx.room.*
+import com.rh.heji.data.converters.DateConverters
+import com.rh.heji.data.converters.MoneyConverters
+import com.rh.heji.data.db.mongo.ObjectId
+import java.math.BigDecimal
+import java.util.*
 
 /**
  * Date: 2020/8/28
@@ -24,214 +13,105 @@ import java.util.Objects;
  * #
  */
 @Entity(tableName = "bill")
-public class Bill {
-    public static final String COLUMN_ID = "bill_id";
-    @NonNull
-    @PrimaryKey()
+data class Bill(
+    @PrimaryKey
     @ColumnInfo(name = "bill_id")
-    public String id;
+    var id: String = ObjectId().toHexString(),
+
     /**
      * 钱
      */
-    @TypeConverters(MoneyConverters.class)
+    @TypeConverters(MoneyConverters::class)
     @ColumnInfo(name = "money")
-    public BigDecimal money;
+    var money: BigDecimal = BigDecimal.ZERO,
+
     /**
      * 收支类型 s|z
      */
-    @NotNull
     @ColumnInfo(name = "type")
-    public int type;
+    var type: Int = 0,
+
     /**
      * 类别
      */
     @ColumnInfo(name = "category")
-    public String category;
+    var category: String? = null,
+
     /**
      * 账单时间-产生费用的日期-以这个为主
      */
-    @TypeConverters(DateConverters.class)
+    @TypeConverters(DateConverters::class)
     @ColumnInfo(name = "bill_time")
-    public Date time;
+    var billTime: Date? = null,
 
     /**
      * 创建时间
      */
     @ColumnInfo(name = "create_time")
-    public long createTime;//记账时间
+    var createTime //记账时间
+    : Long = 0,
 
     /**
      * 更新时间
      */
     @ColumnInfo(name = "update_time")
-    public long updateTime;//记账时间
+    var updateTime //记账时间
+    : Long = 0,
 
     /**
      * 用户标签，费用产生人
      */
     @ColumnInfo(name = "dealer")
-    public String dealer;
+    var dealer: String? = null,
 
     @ColumnInfo(name = "create_user")
-    private String createUser;
+    var createUser: String? = null,
 
     /**
      * 备注
      */
     @ColumnInfo(name = "remark")
-    public String remark;
+    var remark: String? = null,
 
     @ColumnInfo(name = "img_count")
-    private int imgCount;
-
+    var imgCount: Int = 0,
 
     @ColumnInfo(name = "sync_status")
-    int synced = Constant.STATUS_NOT_SYNC;
+    var synced: Int = Constant.STATUS_NOT_SYNC
 
-    public Bill() {
+) {
 
+    @Ignore
+    override fun equals(o: Any?): Boolean {
+        if (this === o) return true
+        if (o == null || javaClass != o.javaClass) return false
+        val bill = o as Bill
+        return id == bill.id
     }
 
     @Ignore
-    public Bill(@NonNull String id) {
-        this.id = id;
-    }
-
-    @NonNull
-    public String getId() {
-        return id;
-    }
-
-    public void setId(@NonNull String id) {
-        this.id = id;
-    }
-
-    public BigDecimal getMoney() {
-        return money;
-    }
-
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(@NotNull int type) {
-        this.type = type;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getDealer() {
-        return dealer;
-    }
-
-    public void setDealer(String dealer) {
-        this.dealer = dealer;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public Date getBillTime() {
-        return time;
-    }
-
-    public void setBillTime(Date billTime) {
-        this.time = billTime;
-    }
-
-    public int getSynced() {
-        return synced;
-    }
-
-    public void setSynced(int synced) {
-        this.synced = synced;
-    }
-
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
-    public long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(long updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
-    }
-
-    public int getImgCount() {
-        return imgCount;
-    }
-
-    public void setImgCount(int imgCount) {
-        this.imgCount = imgCount;
-    }
-
-    public String getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(String createUser) {
-        this.createUser = createUser;
+    override fun hashCode(): Int {
+        return Objects.hash(id)
     }
 
     @Ignore
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Bill bill = (Bill) o;
-        return id.equals(bill.id);
-    }
-
-    @Ignore
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Ignore
-    @Override
-    public String toString() {
+    override fun toString(): String {
         return "Bill{" +
                 "id='" + id + '\'' +
                 ", money=" + money +
                 ", type=" + type +
                 ", category='" + category + '\'' +
-                ", time=" + time +
+                ", time=" + billTime +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", dealer='" + dealer + '\'' +
                 ", remark='" + remark + '\'' +
                 ", imgCount=" + imgCount +
                 ", synced=" + synced +
-                '}';
+                '}'
+    }
+
+    companion object {
+        const val COLUMN_ID = "bill_id"
     }
 }

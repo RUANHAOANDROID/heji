@@ -39,7 +39,7 @@ class MainViewModel : BaseViewModel() {
 
     fun getBillImages(billId: String): LiveData<MutableList<Image>> {
         launchIO({
-            imageLiveData.postValue(AppDatabase.getInstance().imageDao().findByBillId(billId))
+            imageLiveData.postValue(  AppDatabase.getInstance().imageDao().findByBillId(billId))
         }, { imageLiveData.postValue(mutableListOf()) })
 
         return imageLiveData

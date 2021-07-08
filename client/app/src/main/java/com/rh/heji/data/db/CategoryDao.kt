@@ -1,15 +1,7 @@
-package com.rh.heji.data.db;
+package com.rh.heji.data.db
 
-import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import java.util.List;
-
+import androidx.lifecycle.LiveData
+import androidx.room.*
 
 /**
  * Date: 2020/9/16
@@ -17,52 +9,51 @@ import java.util.List;
  * #
  */
 @Dao
-public interface CategoryDao {
-
+interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Category category);
+    fun insert(category: Category  )
 
     @Query("select _id from bill_category where _id=:id")
-    String findByID(String id);
+    fun findByID(id: String  ): String  
 
     @Query("select * from bill_category where sync_status=:syncStatus")
-    List<Category> findCategoryByStatic(int syncStatus);
+    fun findCategoryByStatic(syncStatus: Int): List<Category  >  
 
     @Query("select * from bill_category where category=:name and type=:type")
-    List<Category> findByNameAndType(String name, int type);
+    fun findByNameAndType(name: String  , type: Int): MutableList<Category  >
 
-    @Query("select * from  bill_category where type =:type AND sync_status !=" + Constant.STATUS_DELETE + " ORDER BY `index` DESC,_id DESC ")
-    LiveData<List<Category>> findIncomeOrExpenditure(int type);
+    @Query("select * from  bill_category where type =:type AND sync_status !=" + Constant.Companion.STATUS_DELETE + " ORDER BY `index` DESC,_id DESC ")
+    fun findIncomeOrExpenditure(type: Int): LiveData<MutableList<Category>>
 
-    @Query("select * from  bill_category where sync_status ==" + Constant.STATUS_DELETE + " or sync_status ==" + Constant.STATUS_NOT_SYNC)
-    LiveData<List<Category>> observeNotUploadOrDelete();
+    @Query("select * from  bill_category where sync_status ==" + Constant.Companion.STATUS_DELETE + " or sync_status ==" + Constant.Companion.STATUS_NOT_SYNC)
+    fun observeNotUploadOrDelete(): LiveData<MutableList<Category  >  >
 
     @Query("select * from bill_category where category =:category")
-    List<Category> queryByCategoryName(String category);
+    fun queryByCategoryName(category: String  ): List<Category  >  
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void update(Category category);
+    fun update(category: Category  )
 
     @Delete
-    void delete(Category category);
-
-    // updateOrders();
+    fun delete(category: Category  ) // updateOrders();
+    @Query("delete from bill where bill_id=:id")
+    fun deleteById(id: String)
     //getSubListByParentId
     //getByType
-//    public final List<Category> assembleCategories(List<? extends Category> paramList) {
-//        LinkedHashMap linkedHashMap = new LinkedHashMap();
-//        for (Category category : paramList) {
-//            if (category.isParentCategory()) {
-//                linkedHashMap.put(Long.valueOf(category.getId()), category);
-//                continue;
-//            }
-//            if (category.isSubCategory()) {
-//                Category category1 = (Category)linkedHashMap.get(Long.valueOf(category.getParentId()));
-//                if (category1 != null)
-//                    category1.addSubCategory(category, false);
-//            }
-//        }
-//        Collection collection = linkedHashMap.values();
-//        return f.a(collection);
-//    }
+    //    public final List<Category> assembleCategories(List<   extends Category> paramList) {
+    //        LinkedHashMap linkedHashMap = new LinkedHashMap();
+    //        for (Category category : paramList) {
+    //            if (category.isParentCategory()) {
+    //                linkedHashMap.put(Long.valueOf(category.getId()), category);
+    //                continue;
+    //            }
+    //            if (category.isSubCategory()) {
+    //                Category category1 = (Category)linkedHashMap.get(Long.valueOf(category.getParentId()));
+    //                if (category1 != null)
+    //                    category1.addSubCategory(category, false);
+    //            }
+    //        }
+    //        Collection collection = linkedHashMap.values();
+    //        return f.a(collection);
+    //    }
 }

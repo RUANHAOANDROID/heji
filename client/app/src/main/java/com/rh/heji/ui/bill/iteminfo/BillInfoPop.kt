@@ -43,13 +43,13 @@ class BillInfoPop(
     val bill: Bill,
     var popClickListener: BillPopClickListenerImpl = BillPopClickListenerImpl(),
 ) : BottomPopupView(activity), Observer<List<Image>> {
-    private val imageObservable by lazy { activity.mainViewModel.getBillImages(billId = bill.getId()) }
+    private val imageObservable by lazy { activity.mainViewModel.getBillImages(billId = bill.id) }
     fun setBill() {
-        binding.tvMonney.text = bill.getMoney().toString()
-        binding.tvType.text = bill.getCategory()
-        binding.tvRecordTime.text = TimeUtils.millis2String(bill.getCreateTime())
+        binding.tvMonney.text = bill.money.toString()
+        binding.tvType.text = bill.category
+        binding.tvRecordTime.text = TimeUtils.millis2String(bill.createTime)
         binding.tvTicketTime.text = DateConverters.date2Str(bill.billTime)
-        binding.rePeople.text = bill.getDealer()
+        binding.rePeople.text = bill.dealer
     }
 
     lateinit var binding: PopBilliInfoBinding
@@ -145,7 +145,7 @@ class BillInfoPop(
         //服务器返回的是图片的ID、需要加上前缀
         val imagePaths = images.stream().map { image: Image ->
             val onlinePath = image.onlinePath
-            if (onlinePath != null && !image.onlinePath.contains("http")) { //在线Image路径
+            if (onlinePath != null && !image.onlinePath!!.contains("http")) { //在线Image路径
                 val path = BuildConfig.HTTP_URL + "/image/" + image.onlinePath
                 image.onlinePath = path
             }

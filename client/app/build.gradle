@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs"
 android {
     signingConfigs {
@@ -147,7 +148,10 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     //Room annotationProcessor  For Kotlin use kapt instead of annotationProcessor
     annotationProcessor "androidx.room:room-compiler:$room_version"
-
+    // To use Kotlin annotation processing tool (kapt)
+    kapt("androidx.room:room-compiler:$room_version")
+    // To use Kotlin Symbolic Processing (KSP)
+    //ksp("androidx.room:room-compiler:$room_version")
     //--------------------------
     //spinner
     //implementation 'com.github.arcadefire:nice-spinner:1.4.4'

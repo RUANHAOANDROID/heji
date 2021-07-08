@@ -45,12 +45,12 @@ class ETCViewModel : BaseViewModel() {
      */
     private val categoryName: String
          get() {
-            val categories = AppDatabase.getInstance().categoryDao().queryByCategoryName("过路费")
+            val categories =   AppDatabase.getInstance().categoryDao().queryByCategoryName("过路费")
             val category: Category
-            if (categories.size <= 0) {
-                category = Category("过路费", 1, BillType.EXPENDITURE.type())
+            if (categories.isEmpty()) {
+                category = Category(category = "过路费", level = 0, type = BillType.EXPENDITURE.type())
                 category.synced = Constant.STATUS_NOT_SYNC
-                AppDatabase.getInstance().categoryDao().insert(category)
+                  AppDatabase.getInstance().categoryDao().insert(category)
             } else {
                 category = categories[0]
             }
@@ -71,23 +71,23 @@ class ETCViewModel : BaseViewModel() {
             data.forEach(Consumer { info: ETCListInfoEntity.Info ->
                 val billTime = TimeUtils.string2Date(info.exchargetime, "yyyy-MM-dd HH:mm:ss")
                 val bill = Bill()
-                bill.setId(ObjectId(billTime).toString())
-                bill.setMoney(BigDecimal(info.etcPrice).divide(BigDecimal(100)))
-                bill.setRemark(info.exEnStationName)
+                bill.id = ObjectId(billTime).toString()
+                bill.money = BigDecimal(info.etcPrice).divide(BigDecimal(100))
+                bill.remark = info.exEnStationName
                 bill.billTime = billTime
-                bill.setCategory(categoryName)
-                bill.setDealer("ETC")
-                bill.setCreateTime(TimeUtils.getNowMills())
-                bill.setType(BillType.EXPENDITURE.type())
+                bill.category = categoryName
+                bill.dealer = "ETC"
+                bill.createTime = TimeUtils.getNowMills()
+                bill.type = BillType.EXPENDITURE.type()
                 /**
                  * 如果不存在才插入
                  */
                 /**
                  * 如果不存在才插入
                  */
-                val bills = AppDatabase.getInstance().billDao().findIds(bill.billTime, bill.getMoney(), bill.getRemark())
+                val bills =   AppDatabase.getInstance().billDao().findIds(bill.billTime!!, bill.money, bill.remark!!)
                 if (bills.size <= 0) {
-                    AppDatabase.getInstance().billDao().install(bill)
+                      AppDatabase.getInstance().billDao().install(bill)
                     LogUtils.d("导入ETC账单：", bill)
                 } else {
                     LogUtils.d("ETC账单已存在", bills)
@@ -226,20 +226,22 @@ class ETCViewModel : BaseViewModel() {
         val remark = info.enStationName + "|" + info.exStationName
         val billTime = DateConverters.str2Date(info.exTime)
         val bill = Bill()
-        bill.setId(ObjectId(billTime).toString())
-        bill.setMoney(BigDecimal(money).divide(BigDecimal(100)))
-        bill.setRemark(remark)
+        bill.id = ObjectId(billTime).toString()
+        bill.money = BigDecimal(money).divide(BigDecimal(100))
+        bill.remark = remark
         bill.billTime = billTime
-        bill.setCategory(categoryName)
-        bill.setDealer("ETC")
-        bill.setCreateTime(TimeUtils.getNowMills())
-        bill.setType(BillType.EXPENDITURE.type())
+        bill.category = categoryName
+        bill.dealer = "ETC"
+        bill.createTime = TimeUtils.getNowMills()
+        bill.type = BillType.EXPENDITURE.type()
         /**
          * 如果不存在才插入(插入时必须保持格式一致)
          */
-        val bills = AppDatabase.getInstance().billDao().findIds(bill.billTime, bill.getMoney(), bill.getRemark())
+        val bills =   AppDatabase.getInstance().billDao().findIds(bill.billTime!!, bill.money,
+            bill.remark!!
+        )
         if (bills.size <= 0) {
-            AppDatabase.getInstance().billDao().install(bill)
+              AppDatabase.getInstance().billDao().install(bill)
             LogUtils.d("导入ETC账单：", bill)
         } else {
             LogUtils.d("ETC账单已存在", bills)

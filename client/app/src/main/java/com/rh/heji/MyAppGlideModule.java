@@ -16,7 +16,6 @@ import com.rh.heji.utlis.http.basic.OkHttpConfig;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 

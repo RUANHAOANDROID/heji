@@ -4,6 +4,25 @@
 ## 功能介绍
 
 多人同时记账,账单区分权限,账单统计,账单导入,账单导出
+### UI
+
+<table>
+    <tr>
+      <td>
+          <img src="https://user-images.githubusercontent.com/10151414/120281819-02348980-c2ec-11eb-9171-4a32c1609fd5.jpeg" alt="hello" style="zoom:67%;"/>             </td>
+      <td>
+          <img src="https://user-images.githubusercontent.com/10151414/120281838-0791d400-c2ec-11eb-8ad4-1601b4de1694.jpeg" alt="hello" style="zoom:67%;"/>
+      </td>
+      <td>
+          <img src="https://user-images.githubusercontent.com/10151414/120454374-675cad80-c3c6-11eb-926d-d70ba010e1cf.jpeg" alt="addBill" style="zoom:67%;"/>
+      </td>
+    </tr>
+    <tr>
+        <td><img src="https://user-images.githubusercontent.com/10151414/120281860-0e204b80-c2ec-11eb-8d8d-a1e0fd04bab3.jpeg" alt="hello" style="zoom:67%;"/></td>
+        <td> <img src="https://user-images.githubusercontent.com/10151414/120281866-0fea0f00-c2ec-11eb-9c93-f2172c3c76eb.jpeg" alt="hello" style="zoom:67%;"/></td>
+        <td><img src="https://user-images.githubusercontent.com/10151414/120281869-111b3c00-c2ec-11eb-9454-2330cca7897a.jpeg" alt="hello" style="zoom:67%;"/></td>
+    </tr>
+</table>
 
 ### 权限角色
 不同角色具有不同的权限
@@ -76,26 +95,6 @@
 ## Client Android
 
 Android client 采用单Activity 多Fragment 项目结构偏向于MVVM模式
-
-### UI
-
-<table>
-    <tr>
-      <td>
-          <img src="https://user-images.githubusercontent.com/10151414/120281819-02348980-c2ec-11eb-9171-4a32c1609fd5.jpeg" alt="hello" style="zoom:67%;"/>             </td>
-      <td>
-          <img src="https://user-images.githubusercontent.com/10151414/120281838-0791d400-c2ec-11eb-8ad4-1601b4de1694.jpeg" alt="hello" style="zoom:67%;"/>
-      </td>
-      <td>
-          <img src="https://user-images.githubusercontent.com/10151414/120454374-675cad80-c3c6-11eb-926d-d70ba010e1cf.jpeg" alt="addBill" style="zoom:67%;"/>
-      </td>
-    </tr>
-    <tr>
-        <td><img src="https://user-images.githubusercontent.com/10151414/120281860-0e204b80-c2ec-11eb-8d8d-a1e0fd04bab3.jpeg" alt="hello" style="zoom:67%;"/></td>
-        <td> <img src="https://user-images.githubusercontent.com/10151414/120281866-0fea0f00-c2ec-11eb-9c93-f2172c3c76eb.jpeg" alt="hello" style="zoom:67%;"/></td>
-        <td><img src="https://user-images.githubusercontent.com/10151414/120281869-111b3c00-c2ec-11eb-9454-2330cca7897a.jpeg" alt="hello" style="zoom:67%;"/></td>
-    </tr>
-</table>
 
 ### 技术栈
 *   基于AndroidX,使用Java + kotlin 混合开发

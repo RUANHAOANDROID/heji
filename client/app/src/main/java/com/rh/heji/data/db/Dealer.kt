@@ -9,5 +9,5 @@ import androidx.room.PrimaryKey
  * Author: 锅得铁
  * #经手人
  */
-@Entity(tableName = "bill_dealer")
+@Entity(tableName = "dealer")
 data class Dealer(@field:ColumnInfo(name = "dealer_name") @field:PrimaryKey var userName: String)

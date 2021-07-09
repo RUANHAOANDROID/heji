@@ -9,7 +9,7 @@ import java.util.*
  * Author: 锅得铁
  * #收入/支出 类型标签
  */
-@Entity(tableName = "bill_category")
+@Entity(tableName = "category")
 data class Category(
     @PrimaryKey
     @ColumnInfo(name = "_id")

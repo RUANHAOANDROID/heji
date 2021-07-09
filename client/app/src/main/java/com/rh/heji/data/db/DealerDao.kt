@@ -15,6 +15,6 @@ interface DealerDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(user: Dealer?)
 
-    @Query("select * from bill_dealer")
+    @Query("select * from dealer")
     fun findAll(): List<Dealer>
 }

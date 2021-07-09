@@ -4,6 +4,7 @@
     <string name="action_background">换背景</string>
 
     <string name="menu_home">记账</string>
+    <string name="menu_book">账本</string>
     <string name="menu_report">统计报表</string>
     <string name="menu_setting">设置</string>
 

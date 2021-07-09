@@ -1,60 +1,53 @@
 package com.rh.heji.ui.book
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
+import android.graphics.Rect
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.rh.heji.R
-import com.rh.heji.ui.book.dummy.DummyContent
+import com.rh.heji.data.db.Book
+import com.rh.heji.databinding.FragmentBookBinding
+import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.widget.CardDecoration
 
 /**
- * A fragment representing a list of Items.
+ * Date: 2021/7/9
+ * Author: 锅得铁
+ * #
  */
-class BookListFragment : Fragment() {
-
-    private var columnCount = 1
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
+class BookListFragment : BaseFragment() {
+    val binding by lazy { FragmentBookBinding.bind(rootView) }
+    val adapter: BookListAdapter = BookListAdapter()
+    override fun layoutId(): Int {
+        return R.layout.fragment_book
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_book_list_list, container, false)
+    override fun setUpToolBar() {
+        super.setUpToolBar()
+        toolBar.title = "账本"
+        showBlack()
+    }
 
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = MyBookItemRecyclerViewAdapter(DummyContent.ITEMS)
+    override fun initView(rootView: View) {
+        adapter.recyclerView = binding.list
+        //binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity(),LinearLayoutManager.HORIZONTAL,false));
+        //binding.homeRecycler.layoutManager = LinearLayoutManager(mainActivity)
+        binding.list.adapter = adapter
+        binding.list.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                outRect.left = 16
+                outRect.top = 16
+                outRect.bottom = 16
+                outRect.right = 16
+                //super.getItemOffsets(outRect, view, parent, state)
             }
-        }
-        return view
+        })
+        adapter.setNewInstance(mutableListOf(Book("1", "个人账本", "19921969586", "日常")))
     }
 
-    companion object {
-
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
-
-        // TODO: Customize parameter initialization
-        @JvmStatic
-        fun newInstance(columnCount: Int) =
-                BookListFragment().apply {
-                    arguments = Bundle().apply {
-                        putInt(ARG_COLUMN_COUNT, columnCount)
-                    }
-                }
-    }
 }

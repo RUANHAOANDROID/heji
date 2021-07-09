@@ -13,22 +13,22 @@ interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(category: Category  )
 
-    @Query("select _id from bill_category where _id=:id")
+    @Query("select _id from category where _id=:id")
     fun findByID(id: String  ): String  
 
-    @Query("select * from bill_category where sync_status=:syncStatus")
+    @Query("select * from category where sync_status=:syncStatus")
     fun findCategoryByStatic(syncStatus: Int): List<Category  >  
 
-    @Query("select * from bill_category where category=:name and type=:type")
+    @Query("select * from category where category=:name and type=:type")
     fun findByNameAndType(name: String  , type: Int): MutableList<Category  >
 
-    @Query("select * from  bill_category where type =:type AND sync_status !=" + Constant.Companion.STATUS_DELETE + " ORDER BY `index` DESC,_id DESC ")
+    @Query("select * from  category where type =:type AND sync_status !=" + Constant.Companion.STATUS_DELETE + " ORDER BY `index` DESC,_id DESC ")
     fun findIncomeOrExpenditure(type: Int): LiveData<MutableList<Category>>
 
-    @Query("select * from  bill_category where sync_status ==" + Constant.Companion.STATUS_DELETE + " or sync_status ==" + Constant.Companion.STATUS_NOT_SYNC)
+    @Query("select * from  category where sync_status ==" + Constant.Companion.STATUS_DELETE + " or sync_status ==" + Constant.Companion.STATUS_NOT_SYNC)
     fun observeNotUploadOrDelete(): LiveData<MutableList<Category  >  >
 
-    @Query("select * from bill_category where category =:category")
+    @Query("select * from category where category =:category")
     fun queryByCategoryName(category: String  ): List<Category  >  
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -36,7 +36,7 @@ interface CategoryDao {
 
     @Delete
     fun delete(category: Category  ) // updateOrders();
-    @Query("delete from bill where bill_id=:id")
+    @Query("delete from bill where id=:id")
     fun deleteById(id: String)
     //getSubListByParentId
     //getByType

@@ -14,7 +14,7 @@ data class BillWithImage(
     var bill: Bill? = null,
 
     @JvmField
-    @Relation(parentColumn = "bill_id", entityColumn = "_bid")
+    @Relation(parentColumn = "id", entityColumn = "_bid")
     var images: List<Image>? = null
 ) {
 

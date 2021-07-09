@@ -12,12 +12,20 @@ import java.util.*
  * Author: 锅得铁
  * #
  */
-@Entity(tableName = "bill")
+@Entity(tableName = "bill",    foreignKeys = [ForeignKey(
+    entity = Book::class,
+    parentColumns = [Book.COLUMN_ID],
+    childColumns = [Bill.COLUMN_BOOK_ID],
+    onDelete = ForeignKey.CASCADE,
+    onUpdate = ForeignKey.CASCADE
+)])
 data class Bill(
     @PrimaryKey
-    @ColumnInfo(name = "bill_id")
+    @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
 
+    @ColumnInfo(name = COLUMN_BOOK_ID)
+    var bookId:String ?=null,
     /**
      * 钱
      */
@@ -112,6 +120,7 @@ data class Bill(
     }
 
     companion object {
-        const val COLUMN_ID = "bill_id"
+        const val COLUMN_ID = "id"
+        const val COLUMN_BOOK_ID = "book_id"
     }
 }

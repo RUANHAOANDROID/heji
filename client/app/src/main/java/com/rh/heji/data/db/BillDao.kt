@@ -24,11 +24,11 @@ interface BillDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun install(billTab: Bill ): Long
 
-    @Query("update bill set sync_status = " + Constant.STATUS_DELETE + " where bill_id=:billId")
+    @Query("update bill set sync_status = " + Constant.STATUS_DELETE + " where id=:billId")
     fun preDelete(billId: String ): Int
 
     @Transaction
-    @Query("update bill set img_count=:count where bill_id=:id")
+    @Query("update bill set img_count=:count where id=:id")
     fun updateImageCount(count: Int, id: String ): Int
 
     /**
@@ -40,17 +40,17 @@ interface BillDao {
      * @return
      */
     @TypeConverters(MoneyConverters::class, DateConverters::class)
-    @Query("select bill_id from bill where datetime(bill_time) =:time and money =:money and remark=:remark")
+    @Query("select id from bill where datetime(bill_time) =:time and money =:money and remark=:remark")
     fun findIds(time: Date , money: BigDecimal , remark: String ): MutableList<String >
 
-    @Query("select count(*)  from bill where bill_id =:id")
+    @Query("select count(*)  from bill where id =:id")
     fun countById(id: String ): Int
 
     /**
      * @param syncStatus 同步状态
      * @return
      */
-    @Query("SELECT bill_id FROM bill WHERE sync_status =:syncStatus")
+    @Query("SELECT id FROM bill WHERE sync_status =:syncStatus")
     fun observeSyncStatus(syncStatus: Int): LiveData<MutableList<String > >
 
     /**
@@ -60,7 +60,7 @@ interface BillDao {
      * @param end   结束时间
      * @return 账单列表
      */
-    @Query("SELECT * FROM bill WHERE (date(bill_time) BETWEEN :start AND :end ) AND (sync_status !=" + Constant.Companion.STATUS_DELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
+    @Query("SELECT * FROM bill WHERE (date(bill_time) BETWEEN :start AND :end ) AND (sync_status !=" + Constant.Companion.STATUS_DELETE + ") ORDER BY bill_time DESC ,id DESC")
     fun findBetweenTime(start: String , end: String ): MutableList<Bill >
 
     /**
@@ -70,7 +70,7 @@ interface BillDao {
      * @param end
      * @return
      */
-    @Query("SELECT DISTINCT date(bill_time)   FROM bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (" + REDELETE + ") ORDER BY bill_time DESC ,bill_id DESC")
+    @Query("SELECT DISTINCT date(bill_time)   FROM bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (" + REDELETE + ") ORDER BY bill_time DESC ,id DESC")
     fun findHaveBillDays(start: String , end: String ): MutableList<String >
 
     @Query("SELECT * FROM bill WHERE date(bill_time) =:time AND sync_status!=-1")
@@ -92,7 +92,7 @@ interface BillDao {
     fun sumDayIncome(time: String ): Income 
 
     @TypeConverters(MoneyConverters::class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income ,date(bill_time) as time from bill  where sync_status!=-1 AND strftime('%Y-%m',bill_time)=:yearMonth group by date(bill_time) ORDER BY bill_time DESC ,bill_id DESC")
+    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income ,date(bill_time) as time from bill  where sync_status!=-1 AND strftime('%Y-%m',bill_time)=:yearMonth group by date(bill_time) ORDER BY bill_time DESC ,id DESC")
     fun findEveryDayIncomeByMonth(yearMonth: String ): MutableList<IncomeTime >
 
     @TypeConverters(MoneyConverters::class)

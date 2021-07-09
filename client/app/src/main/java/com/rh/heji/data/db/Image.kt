@@ -9,7 +9,7 @@ import java.util.*
  * #
  */
 @Entity(
-    tableName = Image.TAB_NAME,
+    tableName = "image",
     foreignKeys = [ForeignKey(
         entity = Bill::class,
         parentColumns = [Bill.COLUMN_ID],
@@ -65,7 +65,6 @@ data class Image(
     }
 
     companion object {
-        const val TAB_NAME = "bill_img"
         const val COLUMN_ID = "_bid"
         const val COLUMN_PATH = "img_path"
         const val COLUMN_ONLINE_PATH = "img_online_path"

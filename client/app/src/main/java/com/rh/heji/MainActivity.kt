@@ -1,12 +1,9 @@
 package com.rh.heji
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.StrictMode
 import android.text.TextUtils
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -25,23 +22,16 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
-import com.permissionx.guolindev.PermissionX
-import com.permissionx.guolindev.callback.RequestCallback
-import com.permissionx.guolindev.request.ExplainScope
-import com.permissionx.guolindev.request.ForwardScope
 import com.rh.heji.AppCache.Companion.instance
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.ui.home.DrawerSlideListener
 import com.rh.heji.ui.home.HomeDrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.JWTParse.getUser
-import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.checkPermissions
 import com.rh.heji.utlis.permitDiskReads
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController private set

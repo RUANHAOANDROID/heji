@@ -19,10 +19,15 @@ object Constants {
     /**
      * 压缩阀值大小 Luban 单位为K
      */
-    var COMPRESSION_SIZE = 1204 * 2
+    const val COMPRESSION_SIZE = 1204 * 2
 
     /**
      * 1M 文件大小以Bytes为单位
      */
-    var FILE_LENGTH_1M = 1204 * 1024 * 1
+    const val FILE_LENGTH_1M = 1204 * 1024 * 1
+
+    /**
+     * 当前账本
+     */
+    const val CURRENT_BOOK = "currentBook"
 }

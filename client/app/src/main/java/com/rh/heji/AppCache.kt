@@ -27,7 +27,7 @@ class AppCache {
     }
     lateinit var appViewModule: AppViewModule
     val database: AppDatabase by lazy { AppDatabase.getInstance() }
-    val kvStorage = MMKV.defaultMMKV()
+    val kvStorage: MMKV? = MMKV.defaultMMKV()
     fun onInit(app: Application) {
         context = app
         appViewModule = AppViewModule(app)

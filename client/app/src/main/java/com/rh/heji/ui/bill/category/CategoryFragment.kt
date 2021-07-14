@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemClickListener
@@ -82,7 +83,7 @@ class CategoryFragment : BaseFragment() {
             if (category.category == CategoryAdapter.SETTING) { //设置
                 val args = CategoryManagerFragmentArgs.Builder()
                     .setIeType(type.type()).build()
-                mainActivity.navController.navigate(R.id.nav_category_manager, args.toBundle())
+                findNavController().navigate(R.id.nav_category_manager, args.toBundle())
             }
             category.isSelected = !category.isSelected //反选
             //使其他置为为选中状态

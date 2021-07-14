@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.BarHide
@@ -91,6 +92,7 @@ abstract class BaseFragment : Fragment() {
     protected fun showBlack() {
         toolBar.navigationIcon = blackDrawable()
         toolBar.setNavigationOnClickListener { Navigation.findNavController(rootView).navigateUp() }
+        KeyboardUtils.hideSoftInput(toolBar)
     }
 
     val toolBar: Toolbar

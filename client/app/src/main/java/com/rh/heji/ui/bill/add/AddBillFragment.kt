@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
@@ -67,7 +68,7 @@ class AddBillFragment : BaseFragment() {
         super.setUpToolBar()
         categoryTabFragment.toolBar.setNavigationIcon(R.drawable.ic_baseline_close_24)
         categoryTabFragment.toolBar.setNavigationOnClickListener {
-            mainActivity.navController.popBackStack()
+            findNavController().popBackStack()
         }
     }
 
@@ -195,7 +196,7 @@ class AddBillFragment : BaseFragment() {
                 val category = categoryViewModule.selectCategory
                 saveBill(result, category, Observer { bill: Bill? ->
                     instance.appViewModule.billPush(BillEntity(bill))
-                    mainActivity.navController.popBackStack()
+                    findNavController().popBackStack()
                 })
             }
 

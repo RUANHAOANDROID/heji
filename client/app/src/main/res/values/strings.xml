@@ -65,7 +65,6 @@
     <string name="original">Media.Original</string>
     <string name="camera">Media.Camera</string>
     <string name="album">相册</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="category_manager">类别管理</string>
     <string name="etc_list_query">ETC账单查询</string>
     <string name="income">支出/收入</string>
@@ -75,7 +74,6 @@
     <string name="user_name">用户名</string>
     <string name="book">帐簿</string>
     <string name="user_id">用户ID</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="userinfo">个人信息</string>
     <string name="add">添加</string>
     <string name="input_add">输入名称添加一个</string>
@@ -86,5 +84,6 @@
     <string name="password">密码</string>
     <string name="retrieve_password">找回密码</string>
     <string name="again_password">再次输入确认密码</string>
+    <string name="addBook">添加账本</string>
 
 </resources>

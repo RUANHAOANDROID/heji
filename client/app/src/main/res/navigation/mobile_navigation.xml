@@ -9,8 +9,7 @@
         android:id="@+id/nav_report"
         android:name="com.rh.heji.ui.report.ReportFragment"
         android:label="@string/menu_report"
-        tools:layout="@layout/fragment_report" >
-    </fragment>
+        tools:layout="@layout/fragment_report"></fragment>
 
     <fragment
         android:id="@+id/nav_setting"
@@ -128,14 +127,18 @@
             app:destination="@id/nav_category_manager" />
         <argument
             android:name="type"
-            app:argType="com.rh.heji.data.BillType"
-            android:defaultValue="EXPENDITURE" />
+            android:defaultValue="EXPENDITURE"
+            app:argType="com.rh.heji.data.BillType" />
     </fragment>
     <fragment
         android:id="@+id/nav_book"
         android:name="com.rh.heji.ui.book.BookListFragment"
         android:label="fragment_book_list_list"
-        tools:layout="@layout/fragment_book" />
+        tools:layout="@layout/fragment_book">
+        <action
+            android:id="@+id/action_nav_book_to_nav_add_book"
+            app:destination="@id/nav_add_book" />
+    </fragment>
     <fragment
         android:id="@+id/nav_banner"
         android:name="com.rh.heji.ui.setting.banner.BannerFragment"
@@ -150,5 +153,12 @@
             android:id="@+id/action__category_tab_to__category"
             app:destination="@id/_category" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_book"
+        android:name="com.rh.heji.ui.book.AddBookFragment"
+        android:label="add_book_fragment"
+        tools:layout="@layout/add_book_fragment" />
+
 
 </navigation>

@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.view.View
 import android.webkit.*
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
@@ -35,7 +36,7 @@ class ETCFragment : BaseFragment() {
             if (binding.etcWeb.canGoBack()) {
                 binding.etcWeb.goBack()
             } else {
-                mainActivity.navController.popBackStack()
+                findNavController().popBackStack()
             }
         }
     }

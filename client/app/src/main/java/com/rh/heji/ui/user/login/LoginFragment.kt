@@ -3,6 +3,7 @@ package com.rh.heji.ui.user.login
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppCache
@@ -24,16 +25,16 @@ class LoginFragment : BaseFragment() {
         toolBar.title = getString(R.string.login)
         binding = FragmentLoginBinding.bind(rootView);
         binding.tvRegister.setOnClickListener {
-            //mainActivity.navController.popBackStack()
-            mainActivity.navController.navigate(R.id.nav_register)
+            //findNavController().popBackStack()
+            findNavController().navigate(R.id.nav_register)
         }
         binding.btnLogin.setOnClickListener {
             val username = binding.editUser.text.toString()
             val password = binding.editPassword.text.toString()
             viewModel.login(username, password)
                     .observe(this.viewLifecycleOwner, Observer { token ->
-                        mainActivity.navController.popBackStack()
-                        mainActivity.navController.navigate(R.id.nav_home)
+                        findNavController().popBackStack()
+                        findNavController().navigate(R.id.nav_home)
                         AppCache.instance.appViewModule.asyncData()
                         LogUtils.d(token)
                     })

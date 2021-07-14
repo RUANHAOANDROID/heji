@@ -3,6 +3,7 @@ package com.rh.heji.data.db
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.jetbrains.annotations.NotNull
 
 /**
  * Date: 2021/7/8
@@ -11,7 +12,8 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "book")
 data class Book(
-    @PrimaryKey
+    @PrimaryKey()
+    @NotNull
     @ColumnInfo(name = COLUMN_ID)
     var id: String,
     var name: String,

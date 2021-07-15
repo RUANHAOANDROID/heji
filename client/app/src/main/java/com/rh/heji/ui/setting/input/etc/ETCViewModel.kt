@@ -94,7 +94,7 @@ class ETCViewModel : BaseViewModel() {
                 }
             })
             etcLive.postValue("导入完成")
-            AppCache.instance.appViewModule.asyncData()
+            AppCache.getInstance().appViewModule.asyncData()
         } else {
             ToastUtils.showShort("导入失败")
             etcLive.postValue("导入失败")

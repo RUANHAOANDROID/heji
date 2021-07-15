@@ -155,7 +155,7 @@ class ReportFragment : BaseFragment() {
 
         initPieChartCategory()
         updateMonthYearBillListView()
-        AppCache.instance.appViewModule.dbObservable.observe(this, {
+        AppCache.getInstance().appViewModule.dbObservable.observe(this, {
             if (it.entity is Bill) {
                 reportViewModel.refreshData(BillType.EXPENDITURE.type())
             }

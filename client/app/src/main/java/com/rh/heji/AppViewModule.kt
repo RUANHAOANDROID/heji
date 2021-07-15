@@ -34,7 +34,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     private val billRepository = BillRepository()
     private val categoryRepository = CategoryRepository()
     val asyncLiveData = MediatorLiveData<Any>()
-    val user: JWTParse.User by lazy { JWTParse.getUser(AppCache.instance.token.tokenString) }
+    val user: JWTParse.User by lazy { JWTParse.getUser(AppCache.getInstance().token.tokenString) }
     val dbObservable = MediatorLiveData<DBObservable>()
 
     init {
@@ -49,11 +49,11 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
 
      fun initCrashTool() {
         if (ActivityCompat.checkSelfPermission(
-                AppCache.instance.context,
+                AppCache.getInstance().context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            CrashUtils.init(AppCache.instance.storage("Crash"), object : CrashInfo() {
+            CrashUtils.init(AppCache.getInstance().storage("Crash"), object : CrashInfo() {
                 override fun onCrash(crashInfo: CrashUtils.CrashInfo) {
                     super.onCrash(crashInfo)
                     launchIO({
@@ -127,7 +127,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         AppDatabase.getInstance().dealerDao().insert(u4)
         AppDatabase.getInstance().dealerDao().insert(u5)
 
-        val startCount = AppCache.instance.kvStorage?.decodeInt("start", 0)
+        val startCount = AppCache.getInstance().kvStorage?.decodeInt("start", 0)
         if (startCount == 1) {
             val c0_0 = Category(ObjectId().toString(), "其他", 0, -1)
             val c0_1 = Category(ObjectId().toString(), "其他", 0, 1)

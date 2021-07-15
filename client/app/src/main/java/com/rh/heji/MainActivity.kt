@@ -3,9 +3,14 @@ package com.rh.heji
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextUtils
+import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.Space
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +27,6 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
-import com.rh.heji.AppCache.Companion.instance
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.ui.home.DrawerSlideListener
 import com.rh.heji.ui.home.HomeDrawerListener
@@ -32,6 +36,7 @@ import com.rh.heji.utlis.checkPermissions
 import com.rh.heji.utlis.permitDiskReads
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController private set
@@ -45,20 +50,20 @@ class MainActivity : AppCompatActivity() {
         permitDiskReads { super.onCreate(savedInstanceState) }//StrictMode policy violation; ~duration=127 ms: android.os.strictmode.DiskReadViolation by XiaoMi
         checkPermissions(this) { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
             //初始化一些需要权限的功能
-            AppCache.instance.appViewModule.initCrashTool()
+            AppCache.getInstance().appViewModule.initCrashTool()
             Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
         }
         setContentView(R.layout.activity_main)
         initDrawerLayout()
         lifecycleScope.launch(Dispatchers.IO) {
-            val token = instance.token.tokenString
+            val token = AppCache.getInstance().token.tokenString
             withContext(Dispatchers.Main) {
                 if (TextUtils.isEmpty(token)) {
                     navController.navigate(R.id.nav_login)
                 } else {
                     val user = getUser(token)
                     setDrawerLayout(user)
-                    instance.appViewModule.asyncData()
+                    AppCache.getInstance().appViewModule.asyncData()
                 }
             }
         }
@@ -107,6 +112,7 @@ class MainActivity : AppCompatActivity() {
             }.show()
             false
         }
+
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         //系统默认侧滑控制
         //NavigationUI.setupWithNavController(navigationView, navController);
@@ -119,6 +125,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
+        AppCache.getInstance().kvStorage?.decodeString(CURRENT_BOOK)?.let { setCurrentBook(it) }
     }
 
     private fun navigationDrawerController() {
@@ -253,5 +260,19 @@ class MainActivity : AppCompatActivity() {
 
     fun enableDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    }
+
+    fun setCurrentBook(bookName: String) {
+        val bookItem = navigationView.menu.findItem(R.id.nav_book)
+        val str1 = getString(R.string.menu_book)
+        val str2 = "[$bookName]"
+        val spannableString = SpannableString("$str1$str2")
+        spannableString.setSpan(
+            ForegroundColorSpan(getColor(R.color.textRemark)),
+            str1.length,
+            spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        bookItem.title = spannableString
+        AppCache.getInstance().kvStorage?.encode(CURRENT_BOOK,bookName)
     }
 }

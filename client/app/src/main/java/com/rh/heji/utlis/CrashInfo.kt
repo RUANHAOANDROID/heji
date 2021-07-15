@@ -29,7 +29,7 @@ open class CrashInfo() : CrashUtils.OnCrashListener {
         val errorLog = ErrorLog()
         errorLog.appVersionCode = BuildConfig.VERSION_CODE.toString()
         errorLog.appVersionName = BuildConfig.VERSION_NAME
-        errorLog.userid = AppCache.instance.user.username
+        errorLog.userid = AppCache.getInstance().user.username
         errorLog.deviceModel = DeviceUtils.getModel()
         errorLog.isEmulator = DeviceUtils.isEmulator()
         errorLog.isTablet = DeviceUtils.isTablet()
@@ -49,7 +49,7 @@ open class CrashInfo() : CrashUtils.OnCrashListener {
     }
 
     fun save2DB() {
-        AppCache.instance.database.errorLogDao().install(errorLog)
+        AppCache.getInstance().database.errorLogDao().install(errorLog)
     }
 
     companion object {

@@ -19,7 +19,7 @@ import java.io.IOException
         Log.d("OkHttpConfig", "add log interceptor")
         val bearerToken = runBlocking(Dispatchers.IO) {
             Log.d("OkHttpConfig", "get token")
-            AppCache.instance.token.tokenString
+            AppCache.getInstance().token.tokenString
         }
         Log.d("OkHttpConfig", bearerToken)
         if (TextUtils.isEmpty(bearerToken)) {

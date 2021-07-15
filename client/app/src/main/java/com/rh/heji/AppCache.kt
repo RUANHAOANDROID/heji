@@ -55,7 +55,8 @@ class AppCache {
 
 
     companion object {
-        val instance = AppCache()
+        private val instance = AppCache()
+        fun getInstance() = instance
 
         @JvmStatic
         fun init(app: Application) {

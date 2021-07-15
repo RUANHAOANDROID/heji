@@ -19,7 +19,7 @@ class LoginViewModel : BaseViewModel() {
             var token = requestBody.data
             loginLiveData.value = token
             withContext(Dispatchers.IO) {
-                AppCache.instance.token.save(token)
+                AppCache.getInstance().token.save(token)
             }
             ToastUtils.showLong(requestBody.data)
             LogUtils.w(token)

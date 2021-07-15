@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.menu
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener { item: MenuItem? ->
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                runBlocking(Dispatchers.IO) { instance.token.delete() }
+                runBlocking(Dispatchers.IO) { AppCache.getInstance().token.delete() }
                 finish()
             }.show()
             false
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
-        AppCache.getInstance().kvStorage?.decodeString(CURRENT_BOOK)?.let { setCurrentBook(it) }
+        setCurrentBook(AppCache.getInstance().currentBook.name)
     }
 
     private fun navigationDrawerController() {
@@ -273,6 +273,6 @@ class MainActivity : AppCompatActivity() {
             spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         bookItem.title = spannableString
-        AppCache.getInstance().kvStorage?.encode(CURRENT_BOOK,bookName)
     }
+
 }

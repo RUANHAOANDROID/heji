@@ -29,3 +29,7 @@ const val FILE_LENGTH_1M = 1204 * 1024 * 1
  * 当前账本
  */
 const val CURRENT_BOOK = "currentBook"
+/**
+ * 当前账本ID
+ */
+const val CURRENT_BOOK_ID = "currentBookID"

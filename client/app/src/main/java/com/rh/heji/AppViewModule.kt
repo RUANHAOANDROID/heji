@@ -14,6 +14,7 @@ import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.CRUD
 import com.rh.heji.data.DBObservable
 import com.rh.heji.data.db.Bill
+import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.Dealer
 import com.rh.heji.data.db.mongo.ObjectId
@@ -34,7 +35,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     private val billRepository = BillRepository()
     private val categoryRepository = CategoryRepository()
     val asyncLiveData = MediatorLiveData<Any>()
-    val user: JWTParse.User by lazy { JWTParse.getUser(AppCache.getInstance().token.tokenString) }
+
     val dbObservable = MediatorLiveData<DBObservable>()
 
     init {
@@ -47,7 +48,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         })
     }
 
-     fun initCrashTool() {
+    fun initCrashTool() {
         if (ActivityCompat.checkSelfPermission(
                 AppCache.getInstance().context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -74,7 +75,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     fun billDelete(bill: Bill) {
         launchIO({
             AppDatabase.getInstance().billDao().preDelete(bill.id)
-            dbObservable.postValue(DBObservable(CRUD.DELETE,bill))
+            dbObservable.postValue(DBObservable(CRUD.DELETE, bill))
             billRepository.deleteBill(bill.id)
         })
 
@@ -114,7 +115,6 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     }
 
 
-
     fun fakeData() {
         val u1 = Dealer("锅得铁")
         val u2 = Dealer("谢大脚")
@@ -127,12 +127,16 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         AppDatabase.getInstance().dealerDao().insert(u4)
         AppDatabase.getInstance().dealerDao().insert(u5)
 
-        val startCount = AppCache.getInstance().kvStorage?.decodeInt("start", 0)
+        val startCount = AppCache.getInstance().kvStorage?.decodeInt("start", 0)//首次启动
         if (startCount == 1) {
             val c0_0 = Category(ObjectId().toString(), "其他", 0, -1)
             val c0_1 = Category(ObjectId().toString(), "其他", 0, 1)
             AppDatabase.getInstance().categoryDao().insert(c0_0)
             AppDatabase.getInstance().categoryDao().insert(c0_1)
+            val book = Book(name = "个人账本")
+            AppDatabase.getInstance().bookDao().createNewBook(book)
+            AppCache.getInstance().kvStorage?.encode(CURRENT_BOOK, book.name)
+            AppCache.getInstance().kvStorage?.encode(CURRENT_BOOK_ID, book.id)
         }
         if (startCount == 1) {
             val c1 = Category(ObjectId().toString(), "吃饭", 0, -1)

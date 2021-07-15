@@ -3,6 +3,7 @@ package com.rh.heji.data.db
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 
 @Dao
 interface BookDao {
@@ -15,4 +16,8 @@ interface BookDao {
 
     @Query("select * from book")
     fun books(): MutableList<Book>
+
+    @Transaction
+    @Query("select * from book where name =:bookName")
+    fun findBookWhitBills(bookName: String):MutableList<BookWithBills>
 }

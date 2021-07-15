@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.rh.heji.AppCache
+import com.rh.heji.CURRENT_BOOK
+import com.rh.heji.CURRENT_BOOK_ID
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
@@ -43,6 +46,7 @@ class AddBillViewModel : BaseViewModel() {
      */
     fun save(billId: String?, money: String?, category: Category): MutableLiveData<Bill> {
         val bill = bill
+        bill.bookId =AppCache.getInstance().currentBook.id
         bill.id = billId!!
         bill.money = BigDecimal(money)
         bill.createTime = System.currentTimeMillis()

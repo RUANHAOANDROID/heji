@@ -11,6 +11,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
 import com.rh.heji.CURRENT_BOOK
+import com.rh.heji.CURRENT_BOOK_ID
 import com.rh.heji.R
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookBinding
@@ -74,7 +75,7 @@ class BookListFragment : BaseFragment() {
             AppCache.getInstance().kvStorage?.let {
                 val book: Book = adapter.getItem(position) as Book
                 mainActivity.setCurrentBook(book.name)
-                it.encode(CURRENT_BOOK, book.name)
+                AppCache.getInstance().currentBook = book
             }
             findNavController().popBackStack()
         }

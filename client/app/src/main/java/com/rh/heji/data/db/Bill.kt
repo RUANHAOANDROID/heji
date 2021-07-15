@@ -1,6 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
+import com.rh.heji.AppCache
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.mongo.ObjectId
@@ -18,14 +19,14 @@ import java.util.*
     childColumns = [Bill.COLUMN_BOOK_ID],
     onDelete = ForeignKey.CASCADE,
     onUpdate = ForeignKey.CASCADE
-)])
+)],indices = [Index(value = ["id","book_id"],unique = true)])
 data class Bill(
     @PrimaryKey
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
 
     @ColumnInfo(name = COLUMN_BOOK_ID)
-    var bookId:String ?=null,
+    var bookId:String=AppCache.getInstance().currentBook.id!!,
     /**
      * 钱
      */
@@ -73,7 +74,7 @@ data class Bill(
     var dealer: String? = null,
 
     @ColumnInfo(name = "create_user")
-    var createUser: String? = null,
+    var createUser: String=AppCache.getInstance().currentUser.username,
 
     /**
      * 备注

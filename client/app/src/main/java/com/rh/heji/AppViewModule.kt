@@ -47,7 +47,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         })
     }
 
-    private fun initCrashTool() {
+     fun initCrashTool() {
         if (ActivityCompat.checkSelfPermission(
                 AppCache.instance.context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE

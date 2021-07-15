@@ -9,6 +9,7 @@ import com.rh.heji.App
 import com.rh.heji.AppCache
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.utlis.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

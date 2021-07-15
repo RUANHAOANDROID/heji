@@ -33,18 +33,18 @@ class BillsHomeViewModel : BaseViewModel() {
 
             var monthEveryDayIncome = billDao.findEveryDayIncomeByMonth(selectYearMonth.toString())
             var listDayNodes = mutableListOf<BaseNode>()
-            monthEveryDayIncome?.forEach { dayIncome ->
+            monthEveryDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
                 var incomeNode = DayIncome(
-                        expected = dayIncome.expenditure.toString(),
-                        income = dayIncome.income.toString(),
-                        year = yymmdd[0].toInt(),
-                        month = yymmdd[1].toInt(),
-                        monthDay = yymmdd[2].toInt(),
-                        weekday = TimeUtils.getChineseWeek(dayIncome.time, TimeUtils.getSafeDateFormat(MyTimeUtils.PATTERN_DAY))
+                    expected = dayIncome.expenditure.toString(),
+                    income = dayIncome.income.toString(),
+                    year = yymmdd[0].toInt(),
+                    month = yymmdd[1].toInt(),
+                    monthDay = yymmdd[2].toInt(),
+                    weekday = TimeUtils.getChineseWeek(dayIncome.time, TimeUtils.getSafeDateFormat(MyTimeUtils.PATTERN_DAY))
                 )
                 val dayListNodes = mutableListOf<BaseNode>()
-                billDao.findByDay(dayIncome.time!!)?.forEach {
+                billDao.findByDay(dayIncome.time!!).forEach {
                     dayListNodes.add(DayBillsNode(it))
                 }
                 var dayItemNode = DayIncomeNode(dayListNodes, incomeNode)

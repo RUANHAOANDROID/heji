@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         permitDiskReads { super.onCreate(savedInstanceState) }//StrictMode policy violation; ~duration=127 ms: android.os.strictmode.DiskReadViolation by XiaoMi
         checkPermissions(this) { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
             //初始化一些需要权限的功能
-            AppCache.instance.appViewModule.initCarshTool()
+            AppCache.instance.appViewModule.initCrashTool()
             Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
         }
         setContentView(R.layout.activity_main)

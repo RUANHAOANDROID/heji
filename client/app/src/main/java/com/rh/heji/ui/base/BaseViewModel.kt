@@ -9,30 +9,5 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 
 open class BaseViewModel : ViewModel() {
-    fun launch(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) = viewModelScope.launch {
-        try {
-            block()
-        } catch (e: Throwable) {
-            error(e)
-            e.printStackTrace()
-        }
-    }
 
-    fun launchIO(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
-        try {
-            block()
-        } catch (e: Throwable) {
-            error(e)
-            e.printStackTrace()
-        }
-    }
-    @kotlinx.coroutines.ObsoleteCoroutinesApi
-    fun launchNewThread(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) = viewModelScope.launch(newSingleThreadContext("rh_newThread")) {
-        try {
-            block()
-        } catch (e: Throwable) {
-            error(e)
-            e.printStackTrace()
-        }
-    }
 }

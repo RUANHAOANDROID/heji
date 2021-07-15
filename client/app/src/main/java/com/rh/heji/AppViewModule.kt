@@ -25,6 +25,7 @@ import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.service.work.DataSyncWork
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.CrashInfo
+import com.rh.heji.utlis.launchIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -40,13 +41,13 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         launchIO({
             fakeData()
             LogUtils.getConfig().globalTag = "TAG"
-            initCarshTool()
+            initCrashTool()
         }, {
             it.printStackTrace()
         })
     }
 
-    fun initCarshTool() {
+    private fun initCrashTool() {
         if (ActivityCompat.checkSelfPermission(
                 AppCache.instance.context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -112,29 +113,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         super.onCleared()
     }
 
-    private fun launchIO(
-        block: suspend () -> Unit,
-        error: suspend (Throwable) -> Unit = { it.printStackTrace() }
-    ) = viewModelScope.launch(Dispatchers.IO) {
-        try {
-            block()
-        } catch (e: Throwable) {
-            error(e)
-            e.printStackTrace()
-        }
-    }
 
-    private fun launch(
-        block: suspend () -> Unit,
-        error: suspend (Throwable) -> Unit = { it.printStackTrace() }
-    ) = viewModelScope.launch() {
-        try {
-            block()
-        } catch (e: Throwable) {
-            error(e)
-            e.printStackTrace()
-        }
-    }
 
     fun fakeData() {
         val u1 = Dealer("锅得铁")

@@ -55,7 +55,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
                 Navigation.findNavController(rootView).navigate(R.id.nav_income, AddBillFragmentArgs.Builder(calendar).build().toBundle())
             }
             initSwipeRefreshLayout()
-            AppCache.instance.appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month))
+            AppCache.getInstance().appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month))
         }
         binding.total.setOnInflateListener(this)//提前设置避免多次设置
     }

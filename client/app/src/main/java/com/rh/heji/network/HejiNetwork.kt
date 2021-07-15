@@ -15,7 +15,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class HejiNetwork {
-    private val hejiServer = AppCache.instance.heJiServer
+    private val hejiServer = AppCache.getInstance().heJiServer
 
     suspend fun register(registerUser:RegisterUser) = hejiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) = hejiServer.login(username, password).await()

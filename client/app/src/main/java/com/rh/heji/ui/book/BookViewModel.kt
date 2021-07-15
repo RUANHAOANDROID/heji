@@ -24,7 +24,7 @@ class BookViewModel : BaseViewModel() {
                     id = ObjectId().toHexString(),
                     name = name,
                     type = type,
-                    createUser = AppCache.instance.user.username
+                    createUser = AppCache.getInstance().user.username
                 )
                 AppDatabase.getInstance().bookDao().createNewBook(book)
                 bookLiveData.postValue(book)

@@ -24,9 +24,9 @@ class ExportViewModel : ViewModel() {
 
     fun exportExcel( fileName: String): MediatorLiveData<String> {
         viewModelScope.launch(Dispatchers.IO) {
-            var response = AppCache.instance.heJiServer.exportBills("0", "0").execute()
+            var response = AppCache.getInstance().heJiServer.exportBills("0", "0").execute()
             if (response.isSuccessful && response.code() == 200) {
-                val filesDir = AppCache.instance.context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+                val filesDir = AppCache.getInstance().context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
                 var attachment = response.headers()["Content-Disposition"]
                 var subFileName = attachment?.substringAfterLast("attachment; filename=", System.currentTimeMillis().toString() + ".xlsx")
                 val excelFile = File(filesDir, subFileName)
@@ -37,7 +37,7 @@ class ExportViewModel : ViewModel() {
                     sink.close()
                     exportLiveData.postValue(excelFile.absolutePath)
                     LogUtils.i("下载成功：${excelFile.absolutePath}")
-                    AppCache.instance.galleryAddPic(excelFile.absolutePath)
+                    AppCache.getInstance().galleryAddPic(excelFile.absolutePath)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

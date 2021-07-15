@@ -22,7 +22,7 @@ import com.blankj.utilcode.util.UriUtils
 import com.lxj.xpopup.XPopup
 import com.matisse.Matisse.Companion.obtainResult
 import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
-import com.rh.heji.AppCache.Companion.instance
+import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Bill
@@ -195,7 +195,7 @@ class AddBillFragment : BaseFragment() {
                 ToastUtils.showLong(result)
                 val category = categoryViewModule.selectCategory
                 saveBill(result, category, Observer { bill: Bill? ->
-                    instance.appViewModule.billPush(BillEntity(bill))
+                    AppCache.getInstance().appViewModule.billPush(BillEntity(bill))
                     findNavController().popBackStack()
                 })
             }
@@ -209,7 +209,7 @@ class AddBillFragment : BaseFragment() {
                 saveBill(
                     result,
                     categoryViewModule.selectCategory,
-                    Observer { bill: Bill? -> instance.appViewModule.billPush(BillEntity(bill)) })
+                    Observer { bill: Bill? -> AppCache.getInstance().appViewModule.billPush(BillEntity(bill)) })
                 clear()
             }
         })

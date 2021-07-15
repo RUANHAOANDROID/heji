@@ -15,7 +15,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.core.ImageViewerPopupView
 import com.lxj.xpopup.util.XPopupUtils
-import com.rh.heji.AppCache.Companion.instance
+import com.rh.heji.AppCache
 import com.rh.heji.BuildConfig
 import com.rh.heji.MainActivity
 import com.rh.heji.R
@@ -122,7 +122,7 @@ class BillInfoPop(
         ) {
             val mainActivity = context as MainActivity
             mainActivity.lifecycleScope.launch(Dispatchers.Default) {
-                val user = getUser(instance.token.tokenString)
+                val user = getUser(AppCache.getInstance().token.tokenString)
                 if (bill.createUser == null || bill.createUser == user.username) {
                     popClickListener?.let {
                         mainActivity.runOnUiThread {
@@ -173,7 +173,7 @@ private interface PopClickListener {
 open class BillPopClickListenerImpl : PopClickListener {
 
     override fun delete(bill: Bill) {
-        instance.appViewModule.billDelete(bill)
+        AppCache.getInstance().appViewModule.billDelete(bill)
     }
 
     override fun update(bill: Bill) {

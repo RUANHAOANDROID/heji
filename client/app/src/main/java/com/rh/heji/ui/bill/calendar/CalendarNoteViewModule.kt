@@ -18,7 +18,7 @@ import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
 
 class CalendarNoteViewModule : BaseViewModel() {
-    val billDao: BillDao =   AppDatabase.getInstance().billDao()
+    val billDao: BillDao = AppDatabase.getInstance().billDao()
     val calendarLiveData = MutableLiveData<Map<String, Calendar>>()
     val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>()
 
@@ -56,36 +56,34 @@ class CalendarNoteViewModule : BaseViewModel() {
         launchIO({
             val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
             val dayBills = billDao.findByDay(dateTime)
-            dayBills?.let {
-                var expenditure = "0"
-                var income = "0"
-                calendar.schemes?.forEach { scheme ->
-                    if (scheme.type == 1) {
-                        income = scheme.obj as String
-                    } else {
-                        expenditure = scheme.obj as String
-                    }
+            var expenditure = "0"
+            var income = "0"
+            calendar.schemes?.forEach { scheme ->
+                if (scheme.type == 1) {
+                    income = scheme.obj as String
+                } else {
+                    expenditure = scheme.obj as String
                 }
-                var dayIncome = DayIncome(
-                    expected = expenditure,
-                    income = income,
-                    year = calendar.year,
-                    month = calendar.month,
-                    monthDay = calendar.day,
-                    weekday = calendar.week
-                )
-                var parentNode = mutableListOf<BaseNode>()
-                var childNodes = emptyList<BaseNode>().toMutableList()
-                it.forEach {
-                    var billsNode = DayBillsNode(it)
-                    childNodes.add(billsNode)
-                }
-                if (childNodes.size > 0) {
-                    parentNode.add(DayIncomeNode(childNodes, dayIncome))
-                }
-                dayBillsLiveData.postValue(parentNode)
-                LogUtils.i(dayIncome.toString())
             }
+            var dayIncome = DayIncome(
+                expected = expenditure,
+                income = income,
+                year = calendar.year,
+                month = calendar.month,
+                monthDay = calendar.day,
+                weekday = calendar.week
+            )
+            var parentNode = mutableListOf<BaseNode>()//天节点
+            var childNodes = emptyList<BaseNode>().toMutableList()//天收支节点
+            dayBills.forEach {
+                var billsNode = DayBillsNode(it)
+                childNodes.add(billsNode)
+            }
+            if (childNodes.size > 0) {
+                parentNode.add(DayIncomeNode(childNodes, dayIncome))
+            }
+            dayBillsLiveData.postValue(parentNode)
+            LogUtils.i(dayIncome.toString())
         }, {})
     }
 
@@ -110,7 +108,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         if (expenditure != "0") {
             val expenditureScheme = Calendar.Scheme()
             expenditureScheme.type = -1
-            expenditureScheme.shcemeColor = AppCache.instance.context.getColor(R.color.expenditure)
+            expenditureScheme.shcemeColor = AppCache.getInstance().context.getColor(R.color.expenditure)
             expenditureScheme.obj = "-$expenditure"
             calendar.addScheme(expenditureScheme)
         }
@@ -118,7 +116,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         if (income != "0") {
             val incomeScheme = Calendar.Scheme()
             incomeScheme.type = 1
-            incomeScheme.shcemeColor = AppCache.instance.context.getColor(R.color.income)
+            incomeScheme.shcemeColor = AppCache.getInstance().context.getColor(R.color.income)
             incomeScheme.obj = "+$income"
             calendar.addScheme(incomeScheme)
         }

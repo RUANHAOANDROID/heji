@@ -35,7 +35,7 @@ class LoginFragment : BaseFragment() {
                     .observe(this.viewLifecycleOwner, Observer { token ->
                         findNavController().popBackStack()
                         findNavController().navigate(R.id.nav_home)
-                        AppCache.instance.appViewModule.asyncData()
+                        AppCache.getInstance().appViewModule.asyncData()
                         LogUtils.d(token)
                     })
         }

@@ -13,8 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DataSyncWork {
-    private val billDao = AppDatabase.getInstance().billDao()
-    private val categoryDao = AppDatabase.getInstance().categoryDao()
+    private val billDao =   AppDatabase.getInstance().billDao()
+    private val categoryDao =   AppDatabase.getInstance().categoryDao()
     private val network = HejiNetwork.getInstance()
     private val billRepository = com.rh.heji.data.repository.BillRepository()
     suspend fun asyncBills() {
@@ -89,7 +89,7 @@ class DataSyncWork {
             if (it.size > 0) {
                 it.forEach { category ->
                     category?.let {
-                        val response = network.categoryDelete(category._id)
+                        val response = network.categoryDelete(category.id)
                         if (response.code == 0) {
                             categoryDao.delete(category)
                         }
@@ -121,7 +121,7 @@ class DataSyncWork {
                     val response = network.billUpdate(BillEntity(bill))
                     if (response.code == 0) {
                         bill.synced = Constant.STATUS_SYNCED
-                        AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
+                          AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
                         billDao.delete(bill)
                     }
                 }
@@ -157,14 +157,14 @@ class DataSyncWork {
                         if (null != imagesId && imagesId.size > 0) {//有图片
                             var response = network.billPullImages(serverBill.id)
                                 response.date?.forEach { entity ->
-                                    var image = Image()
+                                    var image = Image(entity._id,billImageID = serverBill.id)
                                     image.id = entity._id
                                     image.md5 = entity.md5
                                     image.onlinePath = entity._id.toString()
                                     image.ext = entity.ext
                                     image.billImageID = serverBill.id
                                     image.synced = Constant.STATUS_SYNCED
-                                    AppDatabase.getInstance().imageDao().install(image)
+                                      AppDatabase.getInstance().imageDao().install(image)
                                     LogUtils.i("账单图片信息已保存 $image")
                                 }
                                 billDao.updateImageCount(response.date.size, serverBill.id)

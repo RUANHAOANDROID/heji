@@ -64,7 +64,7 @@ public class BillEntity {
         bill.setCreateUser(createUser);
         if (images != null) {
             for (int i = 0; i < images.size(); i++) {
-                Image image = new Image();
+                Image image = new Image("","");
                 image.setOnlinePath(images.get(i));
             }
         }

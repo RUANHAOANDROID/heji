@@ -13,9 +13,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
+import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
 import com.rh.heji.MainActivity
 import com.rh.heji.R
@@ -30,7 +33,11 @@ import java.util.*
 abstract class BaseFragment : Fragment() {
     lateinit var rootView: View
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         rootView = inflater.inflate(layoutId(), container, false)
         initView(rootView)
@@ -42,13 +49,13 @@ abstract class BaseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         try {
             ImmersionBar.with(this)
-                    .titleBar(toolBar)
-                    .autoDarkModeEnable(true)
-                    .transparentStatusBar()
-                    .hideBar(BarHide.FLAG_SHOW_BAR)
-                    .navigationBarColor(R.color.white)
-                    .fullScreen(false)
-                    .init();
+                .titleBar(toolBar)
+                .autoDarkModeEnable(true)
+                .transparentStatusBar()
+                .hideBar(BarHide.FLAG_SHOW_BAR)
+                .navigationBarColor(R.color.white)
+                .fullScreen(false)
+                .init();
         } catch (e: Exception) {
             LogUtils.w(e.message)
         }
@@ -80,9 +87,12 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    val mainActivity: MainActivity get() = activity as MainActivity
+
     protected fun showBlack() {
         toolBar.navigationIcon = blackDrawable()
         toolBar.setNavigationOnClickListener { Navigation.findNavController(rootView).navigateUp() }
+        KeyboardUtils.hideSoftInput(toolBar)
     }
 
     val toolBar: Toolbar
@@ -98,8 +108,13 @@ abstract class BaseFragment : Fragment() {
         return ViewModelProvider(mainActivity).get(clazz)
     }
 
-    val mainActivity: MainActivity
-        get() = activity as MainActivity
+    fun getRootViewHeight(): Int {
+        var height = ScreenUtils.getScreenHeight() - navigationBarHeight
+        toolBar?.let {
+            height -= toolBar.height
+        }
+        return height //占满一屏
+    }
 
     fun blackDrawable(): Drawable {
         val ico = androidx.appcompat.R.drawable.abc_ic_ab_back_material
@@ -109,21 +124,30 @@ abstract class BaseFragment : Fragment() {
     /**
      *   拦截回退直接退出  object : Class 内部类指定owner 仅在该Fragment生命周期下有效
      */
-    fun registerBackPressed(block: () -> Unit) = mainActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            block()
-        }
-    })
+    fun registerBackPressed(block: () -> Unit) = mainActivity.onBackPressedDispatcher.addCallback(
+        this,
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                block()
+            }
+        })
 
     /**
      * 该Menu属于全局所以在这里控制
      */
-    fun showYearMonthTitle(selected: YearSelectPop.OnTabSelected,
-                           year: Int = Calendar.getInstance().get(Calendar.YEAR),
-                           month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1, showAllYear: Boolean = false) {
+    fun showYearMonthTitle(
+        selected: YearSelectPop.OnTabSelected,
+        year: Int = Calendar.getInstance().get(Calendar.YEAR),
+        month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1, showAllYear: Boolean = false
+    ) {
         rootView.post {
             centerTitle.visibility = View.VISIBLE
-            centerTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null), null)
+            centerTitle.setCompoundDrawablesWithIntrinsicBounds(
+                null,
+                null,
+                resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null),
+                null
+            )
             centerTitle.compoundDrawablePadding = 8
             val yearMonth = "$year.$month"
             centerTitle.text = yearMonth
@@ -133,10 +157,10 @@ abstract class BaseFragment : Fragment() {
                     selected.selected(selectYear, selectMonth)
                 }, showAllYear)
                 XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
-                        .hasShadowBg(true)
-                        .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                        .asCustom(yearSelectPop) /*.enableDrag(false)*/
-                        .show();
+                    .hasShadowBg(true)
+                    .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                    .asCustom(yearSelectPop) /*.enableDrag(false)*/
+                    .show();
             }
         }
 

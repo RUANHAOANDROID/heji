@@ -7,6 +7,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppCache
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.utlis.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -18,7 +19,7 @@ class LoginViewModel : BaseViewModel() {
             var token = requestBody.data
             loginLiveData.value = token
             withContext(Dispatchers.IO) {
-                AppCache.instance.token.save(token)
+                AppCache.getInstance().token.save(token)
             }
             ToastUtils.showLong(requestBody.data)
             LogUtils.w(token)

@@ -4,12 +4,7 @@ import android.graphics.Color
 import android.text.SpannableString
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ScreenUtils
-import com.blankj.utilcode.util.SizeUtils
-import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.MarkerView
@@ -21,7 +16,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.MPPointF
-import com.gyf.immersionbar.NotchUtils
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
 import com.rh.heji.R
@@ -60,8 +54,7 @@ class ReportFragment : BaseFragment() {
 
     override fun onStart() {
         super.onStart()
-        reportViewModel.yearMonth =
-            YearMonth(reportViewModel.yearMonth.year, reportViewModel.yearMonth.month)
+        reportViewModel.yearMonth = mainActivity.mainViewModel.globalYearMonth
     }
 
     override fun layoutId(): Int {
@@ -72,15 +65,20 @@ class ReportFragment : BaseFragment() {
         super.setUpToolBar()
         showBlack()
         toolBar.title = "统计"
-        showYearMonthTitle({ year, month ->
+        showYearMonthTitle(
+            selected = { year, month ->
 
-            if (month == 0) {//全年
-                reportViewModel.allYear = year
-            } else {//单月
-                reportViewModel.yearMonth = YearMonth(year, month)
-            }
+                if (month == 0) {//全年
+                    reportViewModel.allYear = year
+                } else {//单月
+                    reportViewModel.yearMonth = YearMonth(year, month)
+                }
 
-        }, showAllYear = true)
+            },
+            year = reportViewModel.yearMonth.year,
+            month = reportViewModel.yearMonth.month,
+            showAllYear = true
+        )
     }
 
     /**
@@ -157,7 +155,7 @@ class ReportFragment : BaseFragment() {
 
         initPieChartCategory()
         updateMonthYearBillListView()
-        AppCache.instance.appViewModule.dbObservable.observe(this, {
+        AppCache.getInstance().appViewModule.dbObservable.observe(this, {
             if (it.entity is Bill) {
                 reportViewModel.refreshData(BillType.EXPENDITURE.type())
             }
@@ -210,7 +208,7 @@ class ReportFragment : BaseFragment() {
         xAxis.labelRotationAngle = 30f
         binding.lineChart.axisRight.isEnabled = false
 
-       binding.lineChart.axisLeft.valueFormatter = LargeValueFormatter()
+        binding.lineChart.axisLeft.valueFormatter = LargeValueFormatter()
         binding.lineChart.xAxis.valueFormatter = IndexAxisValueFormatter()
     }
 
@@ -231,7 +229,7 @@ class ReportFragment : BaseFragment() {
         list.clear()
         val entries = bills.stream().map {
             val day =
-                DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2].toFloat()
+                DateConverters.date2Str(it.billTime)!!.split(" ")[0].split("-")[2].toFloat()
             val type = if (it.type == -1) "支出" else "收入"
             dayMap.replace(day.toInt(), Entry(day, it.money.toFloat(), type))
             return@map Entry(day, it.money.toFloat(), type)
@@ -302,9 +300,9 @@ class ReportFragment : BaseFragment() {
         chart.setUsePercentValues(true)
         chart.setDrawEntryLabels(true)
         reportViewModel.categoryProportion
-            .observe(this, {
+            .observe(this, { list ->
                 val entries = ArrayList<PieEntry>()
-                it.forEach {
+                list.forEach {
                     entries.add(it)
                 }
                 setCategoryData(entries)
@@ -371,12 +369,12 @@ class ReportFragment : BaseFragment() {
         categoryTotalAdapter.setNewInstance(entries)
         categoryTotalAdapter.setOnItemClickListener(OnItemClickListener { adapter, view, position ->
             val categoryItem: PieEntry = adapter.getItem(position) as PieEntry
-            val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(
+            val bills =   AppDatabase.getInstance().billDao().findByCategoryAndMonth(
                 categoryItem.label,
                 reportViewModel.yearMonth.toString(),
                 BillType.EXPENDITURE.type()
             )
-            val bottomListPop = BottomListPop(context = requireContext(), data = bills)
+            val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
             bottomListPop.titleView.text = categoryItem.label + "(${bills.size}条)"
             XPopup.Builder(requireContext())
                 .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
@@ -410,8 +408,8 @@ class ReportFragment : BaseFragment() {
         monthYearBillsAdapter.setOnItemClickListener { adapter, view, position ->
             val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
             val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
-            val bills = AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
-            val bottomListPop = BottomListPop(context = requireContext(), data = bills)
+            val bills =   AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
+            val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
             bottomListPop.titleView.text = "$yearMonthDay (${bills.size}条)"
             XPopup.Builder(requireContext())
                 .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐

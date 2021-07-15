@@ -1,22 +1,48 @@
 package com.rh.heji
 
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.db.Constant
+import com.rh.heji.data.db.Image
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.data.repository.CategoryRepository
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.utlis.YearMonth
+import com.rh.heji.utlis.launchIO
 import java.util.*
 
 /**
  * Date: 2020/11/3
  * Author: 锅得铁
- * #
+ * # APP运行时 UI常量共享存储
  */
 class MainViewModel : BaseViewModel() {
     var billRepository = BillRepository()
     var categoryRepository = CategoryRepository()
-    var selectYear: Int = Calendar.getInstance()[Calendar.YEAR] //默认为当前时间
-    var selectMonth: Int = Calendar.getInstance()[Calendar.MONTH] + 1//默认为当前月份
 
+    private val imageLiveData = MediatorLiveData<MutableList<Image>>()
+
+    /**
+     * 全局选择的年月（home to subpage）
+     */
+    var globalYearMonth: YearMonth =
+        YearMonth(Calendar.getInstance()[Calendar.YEAR], Calendar.getInstance()[Calendar.MONTH] + 1)
+
+    /**
+     * 当前年月
+     */
+    val currentYearMonth by lazy {
+        YearMonth(
+            Calendar.getInstance()[Calendar.YEAR],
+            Calendar.getInstance()[Calendar.MONTH] + 1
+        )
+    }
+
+    fun getBillImages(billId: String): LiveData<MutableList<Image>> {
+        launchIO({
+            imageLiveData.postValue(  AppDatabase.getInstance().imageDao().findByBillId(billId))
+        }, { imageLiveData.postValue(mutableListOf()) })
+
+        return imageLiveData
+    }
 }

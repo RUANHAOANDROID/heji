@@ -41,16 +41,15 @@ class App : Application() {
 
         HttpRetrofit.initClient(clientBuilder.build())
         AppCache.init(this)
-        AppCache.instance.appViewModule
 
         startCount()
     }
 
     private fun startCount() {
         val key = "start"
-        val startCount = AppCache.instance.kvStorage!!.decodeInt(key, 0)
+        val startCount = AppCache.getInstance().kvStorage!!.decodeInt(key, 0)
         LogUtils.d(startCount)
-        AppCache.instance.kvStorage.encode(key, startCount + 1)
+        AppCache.getInstance().kvStorage?.encode(key, startCount + 1)
     }
 
     override fun onTerminate() {

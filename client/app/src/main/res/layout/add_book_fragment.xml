@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.book.AddBookFragment">
+
+    <include layout="@layout/app_toolbar"></include>
+
+    <TextView
+        android:id="@+id/banner"
+        style="@style/text_bold_white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center|bottom"
+        android:minHeight="180dp"
+        android:text="点击选择封面图\n封面会作为主页的背景图"
+        android:padding="16dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/layoutType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:paddingLeft="8dp"
+            android:text="类型" />
+
+        <TextView
+            android:id="@+id/tvBookType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_16"
+            android:drawablePadding="8dp"
+            android:gravity="right|center"
+            android:text="未设置" />
+    </LinearLayout>
+    <View android:background="@color/gray"
+        android:layout_width = "match_parent"
+        android:layout_height="1sp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:gravity="center|left"
+            android:text="名称" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInputEdit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:paddingRight="8dp"
+            android:gravity="right|center"
+            android:maxLength="10"
+            android:hint="点击输入账本名称"
+            android:background="@drawable/transparent"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:minHeight="60dp"
+        android:minWidth="180dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/save" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

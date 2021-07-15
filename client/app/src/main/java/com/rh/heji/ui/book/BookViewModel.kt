@@ -8,6 +8,7 @@ import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.utlis.launchIO
 
 class BookViewModel : BaseViewModel() {
     private val bookLiveData = MediatorLiveData<Book>()

@@ -11,6 +11,7 @@ import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.Constant
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.utlis.launchIO
 
 /**
  * Date: 2020/10/11
@@ -79,7 +80,7 @@ class CategoryViewModule : BaseViewModel() {
             val category = Category(category = name,type = type,level = 0)
             category.synced = Constant.STATUS_NOT_SYNC
             val categories = categoryDao.findByNameAndType(name, type)
-            if (categories != null && categories.size > 0) {
+            if (categories.size > 0) {
                 val _id = categories[0].id
                 category.id = _id
                 categoryDao.update(category)

@@ -32,7 +32,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
             var everyDayIncome = billDao.findEveryDayIncomeByMonth(selectYearMonth.toString())
-            everyDayIncome?.forEach { dayIncome ->
+            everyDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
                 if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {
                     val calender: Calendar = getSchemeCalendar(

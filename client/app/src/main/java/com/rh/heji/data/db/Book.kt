@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.rh.heji.data.db.mongo.ObjectId
+import kotlinx.android.parcel.Parcelize
 import org.jetbrains.annotations.NotNull
 
 /**

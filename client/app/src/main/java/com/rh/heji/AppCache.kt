@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.db.Book
 import com.rh.heji.network.HeJiServer
 import com.rh.heji.security.Token
 import com.rh.heji.ui.user.JWTParse
@@ -21,13 +22,13 @@ class AppCache {
     val app: App by lazy { context as App }
     lateinit var context: Context
     val token by lazy { Token(context) }
-    val user by lazy { JWTParse.getUser(token.tokenString) }
+    val currentUser by lazy { JWTParse.getUser(token.tokenString) }
     val heJiServer: HeJiServer by lazy {
         ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer
     }
     lateinit var appViewModule: AppViewModule
     val database: AppDatabase by lazy { AppDatabase.getInstance() }
-    val kvStorage: MMKV? = MMKV.defaultMMKV()
+    val kvStorage: MMKV = MMKV.defaultMMKV()!!
     fun onInit(app: Application) {
         context = app
         appViewModule = AppViewModule(app)
@@ -64,6 +65,26 @@ class AppCache {
         }
     }
 
+    var currentBook = Book(name = "个人账本").apply {
+        kvStorage.let { mmkv ->
+            id = mmkv.decodeString(CURRENT_BOOK_ID).toString()
+            name = mmkv.decodeString(CURRENT_BOOK).toString()
+        }
+    }
+        set(value) {
+            kvStorage.let { mmkv ->
+                mmkv.encode(CURRENT_BOOK_ID, value.id)
+                mmkv.decodeString(CURRENT_BOOK, value.name)
+            }
+            field = value
+        }
+        get() {
+            kvStorage.let { mmkv ->
+                field.id = mmkv.decodeString(CURRENT_BOOK_ID).toString()
+                field.name = mmkv.decodeString(CURRENT_BOOK).toString()
+            }
+            return field
+        }
 
 }
 

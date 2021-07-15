@@ -3,7 +3,7 @@ package com.rh.heji.data.repository
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.App
 import com.rh.heji.AppCache
-import com.rh.heji.Constants
+import com.rh.heji.FILE_LENGTH_1M
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Constant
@@ -21,8 +21,8 @@ import java.io.File
 
 class BillRepository {
     val hejiNetwork = HejiNetwork.getInstance()
-    var billDao = AppDatabase.getInstance().billDao()
-    val imgDao = AppDatabase.getInstance().imageDao()
+    var billDao =   AppDatabase.getInstance().billDao()
+    val imgDao =   AppDatabase.getInstance().imageDao()
 
     /**
      * 保存账单至Server
@@ -44,7 +44,7 @@ class BillRepository {
     suspend fun deleteBill(_id: String) {
         var response = hejiNetwork.billDelete(_id)
         response.data.let {
-            AppDatabase.getInstance().imageDao().deleteBillImage(_id)
+              AppDatabase.getInstance().imageDao().deleteBillImage(_id)
             billDao.delete(Bill(_id))
         }
     }
@@ -79,9 +79,9 @@ class BillRepository {
                 var imgFile = File(image.localPath)
                 val length = imgFile.length()
                 LogUtils.i("图片大小", length)
-                if (length > Constants.FILE_LENGTH_1M * 3) { //图片超过设定值则压缩
-                    LogUtils.i("图片大小超过2M,压缩图片", Constants.FILE_LENGTH_1M * 3)
-                    val fileList = Luban.with(AppCache.instance.context).load(imgFile).get()
+                if (length > FILE_LENGTH_1M * 3) { //图片超过设定值则压缩
+                    LogUtils.i("图片大小超过2M,压缩图片", FILE_LENGTH_1M * 3)
+                    val fileList = Luban.with(AppCache.getInstance().context).load(imgFile).get()
                     if (fileList.isNotEmpty() && fileList.size > 0) {
                         imgFile = fileList[0]
                     }
@@ -98,9 +98,13 @@ class BillRepository {
                     image.id = response.data._id
                     image.synced = Constant.STATUS_SYNCED
                     LogUtils.d("账单图片上传成功：$image")
-                    var count = AppDatabase.getInstance().imageDao().updateOnlinePath(image.id, image.onlinePath, image.synced)
-                    if (count > 0)
-                        LogUtils.d("图片更新成功：$image")
+                    image.onlinePath?.let {
+                        var count =   AppDatabase.getInstance().imageDao().updateOnlinePath(image.id,it , image.synced)
+                        if (count > 0)
+                            LogUtils.d("图片更新成功：$image")
+                    }
+
+
                 }
 
             }

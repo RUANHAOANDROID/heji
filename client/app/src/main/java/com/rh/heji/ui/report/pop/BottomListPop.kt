@@ -8,6 +8,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.lxj.xpopup.widget.VerticalRecyclerView
+import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
@@ -20,11 +21,11 @@ import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
  *#
  */
 class BottomListPop(
-    context: Context,
+    val activity: MainActivity,
     layoutResId: Int = R.layout.item_bill_daylist,
     data: MutableList<Bill>
 ) :
-    BottomPopupView(context) {
+    BottomPopupView(activity) {
     init {
         addInnerContent()
     }
@@ -47,7 +48,7 @@ class BottomListPop(
         )
         adapter.setOnItemClickListener { adapter, view, position ->
             val item = adapter.getItem(position) as Bill
-            val billInfoPop = BillInfoPop(context, object : BillPopClickListenerImpl() {
+            val billInfoPop = BillInfoPop(activity= activity,bill = item, object : BillPopClickListenerImpl() {
                 override fun delete(bill: Bill) {
                     super.delete(bill)
                     adapter.removeAt(position)
@@ -63,14 +64,8 @@ class BottomListPop(
                 }
 
             })
-
             XPopup.Builder(context).asCustom(billInfoPop).show()
-            billInfoPop.post {
-                billInfoPop.bill = item
-                billInfoPop.setBillImages(
-                    AppDatabase.getInstance().imageDao().findByBillId(item.id)
-                )
-            }
+
         }
         recyclerView.adapter = adapter
     }

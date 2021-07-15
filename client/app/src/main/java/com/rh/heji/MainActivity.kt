@@ -1,14 +1,16 @@
 package com.rh.heji
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.StrictMode
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextUtils
-import android.util.Log
+import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.Space
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -17,32 +19,24 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
+import androidx.navigation.*
 import androidx.navigation.NavController.OnDestinationChangedListener
-import androidx.navigation.NavDestination
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
-import com.permissionx.guolindev.PermissionX
-import com.permissionx.guolindev.callback.RequestCallback
-import com.permissionx.guolindev.request.ExplainScope
-import com.permissionx.guolindev.request.ForwardScope
-import com.rh.heji.AppCache.Companion.instance
-import com.rh.heji.databinding.ActivityMainBinding
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.ui.home.DrawerSlideListener
 import com.rh.heji.ui.home.HomeDrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.JWTParse.getUser
+import com.rh.heji.utlis.checkPermissions
+import com.rh.heji.utlis.permitDiskReads
 import kotlinx.coroutines.*
-import java.lang.NullPointerException
 import java.lang.ref.WeakReference
-import java.math.BigDecimal
-import java.math.RoundingMode
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController private set
@@ -50,40 +44,26 @@ class MainActivity : AppCompatActivity() {
     val mainViewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
     private lateinit var navHeaderMainBinding: HeaderMainNavBinding//侧拉头像
     private lateinit var navigationView: NavigationView
-    private fun permitDiskReads(func: () -> Any): Any {
-        if (BuildConfig.DEBUG) {
-            val oldThreadPolicy = StrictMode.getThreadPolicy()
-            StrictMode.setThreadPolicy(
-                StrictMode.ThreadPolicy.Builder(oldThreadPolicy)
-                    .permitDiskReads().build()
-            )
-            val anyValue = func()
-            StrictMode.setThreadPolicy(oldThreadPolicy)
 
-            return anyValue
-        } else {
-            return func()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         permitDiskReads { super.onCreate(savedInstanceState) }//StrictMode policy violation; ~duration=127 ms: android.os.strictmode.DiskReadViolation by XiaoMi
-        checkPermissions { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
+        checkPermissions(this) { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
             //初始化一些需要权限的功能
-            AppCache.instance.appViewModule.initCarshTool()
+            AppCache.getInstance().appViewModule.initCrashTool()
             Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
         }
         setContentView(R.layout.activity_main)
         initDrawerLayout()
         lifecycleScope.launch(Dispatchers.IO) {
-            val token = instance.token.tokenString
+            val token = AppCache.getInstance().token.tokenString
             withContext(Dispatchers.Main) {
                 if (TextUtils.isEmpty(token)) {
                     navController.navigate(R.id.nav_login)
                 } else {
                     val user = getUser(token)
                     setDrawerLayout(user)
-                    instance.appViewModule.asyncData()
+                    AppCache.getInstance().appViewModule.asyncData()
                 }
             }
         }
@@ -127,11 +107,12 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.menu
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener { item: MenuItem? ->
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                runBlocking(Dispatchers.IO) { instance.token.delete() }
+                runBlocking(Dispatchers.IO) { AppCache.getInstance().token.delete() }
                 finish()
             }.show()
             false
         }
+
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         //系统默认侧滑控制
         //NavigationUI.setupWithNavController(navigationView, navController);
@@ -144,6 +125,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
+        setCurrentBook(AppCache.getInstance().currentBook.name)
     }
 
     private fun navigationDrawerController() {
@@ -193,11 +175,16 @@ class MainActivity : AppCompatActivity() {
                     val home = resources.getString(R.string.menu_home)
                     val report = resources.getString(R.string.menu_report)
                     val setting = resources.getString(R.string.menu_setting)
-                    val itemLabel = destination.label.toString()
-                    if (itemLabel == home) {
-                        title = "记账"
-                    } else if (itemLabel == report) {
-                    } else if (itemLabel == setting) {
+                    when (destination.label.toString()) {
+                        home -> {
+                            title = "记账"
+                        }
+                        report -> {
+
+                        }
+                        setting -> {
+
+                        }
                     }
                     LogUtils.i(destination.label)
                 }
@@ -207,36 +194,6 @@ class MainActivity : AppCompatActivity() {
     private fun setDrawerLayout(user: JWTParse.User) {
         navHeaderMainBinding.tvTitle.text = user.username
         navHeaderMainBinding.tvNice.text = user.auth.toString()
-    }
-
-    fun checkPermissions(requestCallback: RequestCallback) {
-        PermissionX.init(this).permissions(
-            Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.INTERNET
-        ).explainReasonBeforeRequest()
-            .onExplainRequestReason { scope: ExplainScope, deniedList: List<String?>? ->
-                scope.showRequestReasonDialog(
-                    deniedList,
-                    "为了正常使用你必须同意以下权限:",
-                    "我已明白"
-                )
-            }
-            .onForwardToSettings { scope: ForwardScope, deniedList: List<String?>? ->
-                scope.showForwardToSettingsDialog(
-                    deniedList,
-                    "您需要去应用程序设置当中手动开启权限",
-                    "我已明白"
-                )
-            }
-            .request { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
-                requestCallback.onResult(
-                    allGranted,
-                    grantedList,
-                    deniedList
-                )
-            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -304,4 +261,18 @@ class MainActivity : AppCompatActivity() {
     fun enableDrawer() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
+
+    fun setCurrentBook(bookName: String) {
+        val bookItem = navigationView.menu.findItem(R.id.nav_book)
+        val str1 = getString(R.string.menu_book)
+        val str2 = "[$bookName]"
+        val spannableString = SpannableString("$str1$str2")
+        spannableString.setSpan(
+            ForegroundColorSpan(getColor(R.color.textRemark)),
+            str1.length,
+            spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        bookItem.title = spannableString
+    }
+
 }

@@ -5,10 +5,10 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.rh.heji.GlideApp;
 import com.rh.heji.R;
 import com.rh.heji.data.db.Image;
 import com.rh.heji.databinding.ItemImgBinding;
-import com.rh.heji.utlis.GlideApp;
 
 import org.jetbrains.annotations.NotNull;
 

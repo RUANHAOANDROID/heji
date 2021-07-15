@@ -68,7 +68,7 @@
     <fragment
         android:id="@+id/categoryFragment"
         android:tag="categoryFragment"
-        android:name="com.rh.heji.ui.category.CategoryTabFragment"
+        android:name="com.rh.heji.ui.bill.category.CategoryTabFragment"
         tools:layout="@layout/fragment_category_tab"
         android:layout_width="match_parent"
         android:layout_height="0dp"

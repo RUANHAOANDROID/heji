@@ -5,19 +5,16 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
@@ -25,8 +22,7 @@ import com.blankj.utilcode.util.UriUtils
 import com.lxj.xpopup.XPopup
 import com.matisse.Matisse.Companion.obtainResult
 import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
-import com.rh.heji.AppCache.Companion.instance
-import com.rh.heji.BuildConfig
+import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Bill
@@ -35,9 +31,9 @@ import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.databinding.IncomeFragmentBinding
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.add.adapter.TicketEntity
-import com.rh.heji.ui.category.CategoryTabFragment
-import com.rh.heji.ui.category.CategoryViewModule
+import com.rh.heji.ui.bill.add.adapter.BillPhotoEntity
+import com.rh.heji.ui.bill.category.CategoryTabFragment
+import com.rh.heji.ui.bill.category.CategoryViewModule
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
 import java.io.File
 import java.util.*
@@ -72,7 +68,7 @@ class AddBillFragment : BaseFragment() {
         super.setUpToolBar()
         categoryTabFragment.toolBar.setNavigationIcon(R.drawable.ic_baseline_close_24)
         categoryTabFragment.toolBar.setNavigationOnClickListener {
-            mainActivity.navController.popBackStack()
+            findNavController().popBackStack()
         }
     }
 
@@ -90,8 +86,8 @@ class AddBillFragment : BaseFragment() {
                 if (category.category == "管理") {
                     categoryName = billType.text()
                 }
-                billViewModel.bill.setCategory(categoryName)
-                billViewModel.bill.setType(category.type)
+                billViewModel.bill.category = categoryName
+                billViewModel.bill.type = category.type
                 binding.keyboard.setType(billType)
             }
         })
@@ -102,7 +98,7 @@ class AddBillFragment : BaseFragment() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
-                billViewModel.bill.setRemark(s.toString().trim { it <= ' ' })
+                billViewModel.bill.remark = s.toString().trim { it <= ' ' }
             }
         })
     }
@@ -176,7 +172,7 @@ class AddBillFragment : BaseFragment() {
             //经手人名单
             if (names.size > 0) {
                 binding.tvUserLabel.text = "经手人:" + names[0] //默认经手人
-                billViewModel.bill.setDealer(names[0]) //设置默经手人
+                billViewModel.bill.dealer = names[0] //设置默经手人
             }
             binding.tvUserLabel.setOnClickListener {
                 XPopup.Builder(context)
@@ -185,7 +181,7 @@ class AddBillFragment : BaseFragment() {
                         "请选择经手人", names.toTypedArray()
                     ) { position: Int, text: String ->
                         binding.tvUserLabel.text = "经手人:$text"
-                        billViewModel.bill.setDealer(text)
+                        billViewModel.bill.dealer = text
                     }
                     .show()
             }
@@ -199,8 +195,8 @@ class AddBillFragment : BaseFragment() {
                 ToastUtils.showLong(result)
                 val category = categoryViewModule.selectCategory
                 saveBill(result, category, Observer { bill: Bill? ->
-                    instance.appViewModule.billPush(BillEntity(bill))
-                    mainActivity.navController.popBackStack()
+                    AppCache.getInstance().appViewModule.billPush(BillEntity(bill))
+                    findNavController().popBackStack()
                 })
             }
 
@@ -213,7 +209,7 @@ class AddBillFragment : BaseFragment() {
                 saveBill(
                     result,
                     categoryViewModule.selectCategory,
-                    Observer { bill: Bill? -> instance.appViewModule.billPush(BillEntity(bill)) })
+                    Observer { bill: Bill? -> AppCache.getInstance().appViewModule.billPush(BillEntity(bill)) })
                 clear()
             }
         })
@@ -229,7 +225,7 @@ class AddBillFragment : BaseFragment() {
             ToastUtils.showShort("未填写金额")
             return
         }
-        billViewModel.bill.setCategory(category.category)
+        billViewModel.bill.category = category.category
         billViewModel.save(ObjectId().toString(), money, category).observe(this, saveObserver)
     }
 
@@ -296,9 +292,9 @@ class AddBillFragment : BaseFragment() {
     }
 
     private fun setImages(selected: List<String>) {
-        val photos: MutableList<TicketEntity> = ArrayList()
+        val photos: MutableList<BillPhotoEntity> = ArrayList()
         for (item in selected) {
-            val info = TicketEntity()
+            val info = BillPhotoEntity()
             val fileTime = File(item).lastModified()
             val time = TimeUtils.millis2String(fileTime)
             info.createTime = time

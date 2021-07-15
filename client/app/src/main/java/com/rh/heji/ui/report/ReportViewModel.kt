@@ -11,6 +11,7 @@ import com.rh.heji.data.db.query.Income
 import com.rh.heji.data.db.query.IncomeTimeSurplus
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.YearMonth
+import com.rh.heji.utlis.launchIO
 import java.util.*
 import java.util.stream.Collectors
 
@@ -76,17 +77,16 @@ class ReportViewModel : BaseViewModel() {
             LogUtils.d(value)
         }
 
-     fun refreshData(type: Int) {
+    fun refreshData(type: Int) {
         monthIncomeExpenditure()
         monthEveryNodeIncomeExpenditure()
         monthCategoryProportion()
         monthReportList()
     }
-
     private fun monthIncomeExpenditure() {
         launchIO({
             val monthIncomeExpenditureData =
-                AppDatabase.getInstance().billDao().sumMonthIncomeExpenditure(yearMonth.toString())
+                  AppDatabase.getInstance().billDao().sumMonthIncomeExpenditure(yearMonth.toString())
             incomeExpenditureLiveData.postValue(monthIncomeExpenditureData)
         }, {})
 
@@ -95,7 +95,7 @@ class ReportViewModel : BaseViewModel() {
     private fun monthEveryNodeIncomeExpenditure() {
         launchIO({
             everyNodeIncomeExpenditureLiveData.postValue(
-                AppDatabase.getInstance().billDao().findByMonth(yearMonth.toString())
+                  AppDatabase.getInstance().billDao().findByMonth(yearMonth.toString())
             )
         }, {})
 
@@ -107,7 +107,7 @@ class ReportViewModel : BaseViewModel() {
      */
     private fun monthCategoryProportion() {
         launchIO({
-            val list = AppDatabase.getInstance().billDao().reportCategory(-1, yearMonth.toString())
+            val list =   AppDatabase.getInstance().billDao().reportCategory(-1, yearMonth.toString())
                 .stream().map {
                     return@map PieEntry(it.percentage, it.category, it.money)
                 }.collect(Collectors.toList())
@@ -133,7 +133,7 @@ class ReportViewModel : BaseViewModel() {
      */
     private fun monthReportList() {
         launchIO({
-            var data = AppDatabase.getInstance().billDao()
+            var data =   AppDatabase.getInstance().billDao()
                 .listIncomeExpSurplusByMonth(yearMonth.toString())
             reportBillsLiveData.postValue(data)
         }, {})

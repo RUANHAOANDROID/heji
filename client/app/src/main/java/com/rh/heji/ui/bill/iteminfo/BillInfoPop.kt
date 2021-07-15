@@ -3,6 +3,8 @@ package com.rh.heji.ui.bill.iteminfo
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +15,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.core.ImageViewerPopupView
 import com.lxj.xpopup.util.XPopupUtils
-import com.rh.heji.AppCache.Companion.instance
+import com.rh.heji.AppCache
 import com.rh.heji.BuildConfig
 import com.rh.heji.MainActivity
 import com.rh.heji.R
@@ -29,6 +31,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import java.util.function.Function
 import java.util.stream.Collectors
+import kotlin.String as String
 
 /**
  * Date: 2020/9/20
@@ -36,44 +39,21 @@ import java.util.stream.Collectors
  * #
  */
 class BillInfoPop(
-    context: Context,
-    var popClickListener: BillPopClickListenerImpl = BillPopClickListenerImpl()
-) : BottomPopupView(context) {
-    //post Runnable()
-    var bill: Bill = Bill()
-        set(value) {
-            field = value
-            binding.tvMonney.text = bill.getMoney().toString()
-            binding.tvType.text = bill.getCategory()
-            binding.tvRecordTime.text = TimeUtils.millis2String(bill.getCreateTime())
-            binding.tvTicketTime.text = DateConverters.date2Str(bill.billTime)
-            binding.rePeople.text = bill.getDealer()
-        }
-    lateinit var binding: PopBilliInfoBinding
-    private lateinit var imageAdapter: ImageAdapter
-
-    fun setBillImages(images: List<Image>) {
-        if (images.isEmpty()) {
-            if (this::imageAdapter.isInitialized) {//判断是否初始化 ::表示作用域
-                imageAdapter.let {
-                    it.setNewInstance(ArrayList())
-                    it.notifyDataSetChanged()
-                }
-            }
-            return
-        }
-        initBillImage()//初始化列表和适配器
-        //服务器返回的是图片的ID、需要加上前缀
-        val imagePaths = images.stream().map { image: Image ->
-            val onlinePath = image.onlinePath
-            if (onlinePath != null && !image.onlinePath.contains("http")) { //在线Image路径
-                val path = BuildConfig.HTTP_URL + "/image/" + image.onlinePath
-                image.onlinePath = path
-            }
-            image
-        }.collect(Collectors.toList())
-        imageAdapter.setNewInstance(imagePaths)
+    val activity: MainActivity,
+    val bill: Bill,
+    var popClickListener: BillPopClickListenerImpl = BillPopClickListenerImpl(),
+) : BottomPopupView(activity), Observer<List<Image>> {
+    private val imageObservable by lazy { activity.mainViewModel.getBillImages(billId = bill.id) }
+    fun setBill() {
+        binding.tvMonney.text = bill.money.toString()
+        binding.tvType.text = bill.category
+        binding.tvRecordTime.text = TimeUtils.millis2String(bill.createTime)
+        binding.tvTicketTime.text = DateConverters.date2Str(bill.billTime)
+        binding.rePeople.text = bill.dealer
     }
+
+    lateinit var binding: PopBilliInfoBinding
+    private var imageAdapter = ImageAdapter()
 
     override fun getImplLayoutId(): Int {
         return R.layout.pop_billi_info
@@ -93,22 +73,17 @@ class BillInfoPop(
             resources.getColor(R.color._xpopup_light_color, null),
             popupInfo.borderRadius, popupInfo.borderRadius, 0f, 0f
         )
+        setBill()
+        initBillImageList()//初始化列表和适配器
+        if (bill.imgCount>0){
+            imageObservable.observeForever(this)
+        }
     }
 
-    private fun initBillImage() {
+    private fun initBillImageList() {
         binding.ticketRecycler.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        imageAdapter = ImageAdapter()
         binding.ticketRecycler.adapter = imageAdapter
-        imageAdapter.setDiffCallback(object : DiffUtil.ItemCallback<Image>() {
-            override fun areItemsTheSame(oldItem: Image, newItem: Image): Boolean {
-                return oldItem == newItem
-            }
-
-            override fun areContentsTheSame(oldItem: Image, newItem: Image): Boolean {
-                return oldItem == newItem
-            }
-        })
         imageAdapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View, position: Int ->
             showImage(
                 view,
@@ -147,7 +122,7 @@ class BillInfoPop(
         ) {
             val mainActivity = context as MainActivity
             mainActivity.lifecycleScope.launch(Dispatchers.Default) {
-                val user = getUser(instance.token.tokenString)
+                val user = getUser(AppCache.getInstance().token.tokenString)
                 if (bill.createUser == null || bill.createUser == user.username) {
                     popClickListener?.let {
                         mainActivity.runOnUiThread {
@@ -165,7 +140,26 @@ class BillInfoPop(
         }.show()
     }
 
+    override fun onChanged(images: List<Image>) {
+        if (images.isEmpty()) return
+        //服务器返回的是图片的ID、需要加上前缀
+        val imagePaths = images.stream().map { image: Image ->
+            val onlinePath = image.onlinePath
+            if (onlinePath != null && !image.onlinePath!!.contains("http")) { //在线Image路径
+                val path = BuildConfig.HTTP_URL + "/image/" + image.onlinePath
+                image.onlinePath = path
+            }
+            image
+        }.collect(Collectors.toList())
+        imageAdapter.setNewInstance(imagePaths)
+    }
 
+    override fun onDismiss() {
+        super.onDismiss()
+        if (bill.imgCount>0){
+            imageObservable.removeObserver(this)
+        }
+    }
 }
 
 /**
@@ -179,7 +173,7 @@ private interface PopClickListener {
 open class BillPopClickListenerImpl : PopClickListener {
 
     override fun delete(bill: Bill) {
-        instance.appViewModule.billDelete(bill)
+        AppCache.getInstance().appViewModule.billDelete(bill)
     }
 
     override fun update(bill: Bill) {

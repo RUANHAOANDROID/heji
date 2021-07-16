@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.navigation.Navigation
 import com.blankj.utilcode.util.ImageUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -47,7 +48,7 @@ class BookListAdapter :
                 binding.imgSelected.visibility = View.INVISIBLE
             }
             binding.imgSetting.setOnClickListener {
-
+                Navigation.findNavController(binding.root).navigate(R.id.nav_book_setting)
             }
         }
     }

@@ -263,7 +263,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setCurrentBook(bookName: String) {
-        val bookItem = navigationView.menu.findItem(R.id.nav_book)
+        val bookItem = navigationView.menu.findItem(R.id.nav_book_list)
         val str1 = getString(R.string.menu_book)
         val str2 = "[$bookName]"
         val spannableString = SpannableString("$str1$str2")

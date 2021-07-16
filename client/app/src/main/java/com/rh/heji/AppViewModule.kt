@@ -135,8 +135,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
             AppDatabase.getInstance().categoryDao().insert(c0_1)
             val book = Book(name = "个人账本")
             AppDatabase.getInstance().bookDao().createNewBook(book)
-            AppCache.getInstance().kvStorage?.encode(CURRENT_BOOK, book.name)
-            AppCache.getInstance().kvStorage?.encode(CURRENT_BOOK_ID, book.id)
+            AppCache.getInstance().currentBook = book
         }
         if (startCount == 1) {
             val c1 = Category(ObjectId().toString(), "吃饭", 0, -1)

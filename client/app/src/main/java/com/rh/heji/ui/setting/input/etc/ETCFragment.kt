@@ -107,7 +107,7 @@ class ETCFragment : BaseFragment() {
     }
 
     override fun layoutId(): Int {
-        return R.layout.etc_fragment
+        return R.layout.fragment_etc
     }
 
     override fun setUpToolBar() {

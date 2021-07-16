@@ -21,7 +21,6 @@ import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
-import com.rh.heji.data.CRUD
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill

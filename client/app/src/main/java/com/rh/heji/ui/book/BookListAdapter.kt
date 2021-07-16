@@ -1,5 +1,7 @@
 package com.rh.heji.ui.book
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.ImageUtils
@@ -17,6 +19,7 @@ import com.rh.heji.databinding.FragmentBookItemBinding
  * #
  */
 class BookListAdapter :
+
     BaseQuickAdapter<Book, BaseViewHolder>(
         layoutResId = R.layout.fragment_book_item,
         mutableListOf()
@@ -31,8 +34,13 @@ class BookListAdapter :
                     R.drawable.banner_tree
                 )
             )
-            binding.root.background =
-                ImageUtils.bitmap2Drawable(ImageUtils.toRoundCorner(bannerBitmap, 10f))
+            if (holder.layoutPosition==0){
+                binding.root.background = ImageUtils.bitmap2Drawable(ImageUtils.toRoundCorner(bannerBitmap, 10f))
+            }else{
+                binding.root.background = ColorDrawable(Color.rgb(140, 234, 255))
+            }
+
+
             if (item.id == AppCache.getInstance().currentBook.id) {
                 binding.imgSelected.visibility = View.VISIBLE
             } else {
@@ -44,4 +52,6 @@ class BookListAdapter :
         }
     }
 
+
+    val colors = com.rh.heji.utlis.ColorUtils.groupColors()
 }

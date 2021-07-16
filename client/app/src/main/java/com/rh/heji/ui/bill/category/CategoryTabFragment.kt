@@ -39,7 +39,7 @@ class CategoryTabFragment : BaseFragment() {
     }
 
     override fun layoutId(): Int {
-        return R.layout.category_tab_fragment
+        return R.layout.fragment_category_tab
     }
 
     private fun showPager() {

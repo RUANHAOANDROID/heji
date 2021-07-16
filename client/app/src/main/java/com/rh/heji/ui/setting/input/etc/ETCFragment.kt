@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
+import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentEtcBinding
 import com.rh.heji.ui.base.BaseFragment
@@ -149,11 +150,11 @@ class ETCFragment : BaseFragment() {
                     .show()
         } else {
             XPopup.Builder(context)
-                    .asConfirm("确认导入" + etcViewModel.yearMonth + "的账单吗？", "账单可能会有延迟，月初导入上月账单最佳") {
+                    .asConfirm("导入" + etcViewModel.yearMonth + "账单", "当前账本【${AppCache.getInstance().currentBook.name}】，确认导入吗？") {
                         val inputLoading = XPopup.Builder(context).asLoading().setTitle("正在导入")
                         inputLoading.show()
                         etcViewModel.requestHBGSETCList(etcViewModel.etcID, etcViewModel.yearMonth!!, etcViewModel.carID)
-                                .observe(viewLifecycleOwner, Observer<String> { message: String ->
+                                .observe(viewLifecycleOwner, { message: String ->
                                     inputLoading.setTitle(message)
                                     Handler(Looper.getMainLooper()).postDelayed({ inputLoading.dismiss() }, 1000)
                                 })

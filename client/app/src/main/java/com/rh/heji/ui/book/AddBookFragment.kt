@@ -6,12 +6,12 @@ import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.interfaces.OnSelectListener
 import com.rh.heji.R
-import com.rh.heji.databinding.AddBookFragmentBinding
+import com.rh.heji.databinding.FragmentBookAddBinding
 import com.rh.heji.ui.base.BaseFragment
 
 class AddBookFragment : BaseFragment() {
     private val viewModel: BookViewModel by lazy { getViewModel(BookViewModel::class.java) }
-    lateinit var binding: AddBookFragmentBinding
+    lateinit var binding: FragmentBookAddBinding
     override fun setUpToolBar() {
         super.setUpToolBar()
         showBlack()
@@ -22,7 +22,7 @@ class AddBookFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding = AddBookFragmentBinding.bind(rootView)
+        binding = FragmentBookAddBinding.bind(rootView)
         binding.banner.setOnClickListener { }
         binding.layoutType.setOnClickListener {
             XPopup.Builder(context).asBottomList("选择账单类型", arrayOf("日常生活", "经营账本", "人情账本", "汽车账本"),

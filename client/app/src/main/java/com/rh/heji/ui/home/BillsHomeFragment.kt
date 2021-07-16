@@ -99,7 +99,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
     }
 
     override fun layoutId(): Int {
-        return R.layout.bills_home_fragment
+        return R.layout.fragment_bills_home
     }
 
     private fun asyncNotifyObserver(thisYear: Int, thisMonth: Int): Observer<Any> =

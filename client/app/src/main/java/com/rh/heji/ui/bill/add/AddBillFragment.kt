@@ -28,7 +28,7 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.databinding.IncomeFragmentBinding
+import com.rh.heji.databinding.FragmentIncomeBinding
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.add.adapter.BillPhotoEntity
@@ -46,7 +46,7 @@ class AddBillFragment : BaseFragment() {
     private val billViewModel by lazy { getViewModel(AddBillViewModel::class.java) }
     val categoryViewModule by lazy { getViewModel(CategoryViewModule::class.java) }
 
-    lateinit var binding: IncomeFragmentBinding
+    lateinit var binding: FragmentIncomeBinding
     private lateinit var categoryTabFragment: CategoryTabFragment
     var selectImagePou: SelectImagePop? = null//图片弹窗
 
@@ -55,7 +55,7 @@ class AddBillFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding = IncomeFragmentBinding.bind(rootView)
+        binding = FragmentIncomeBinding.bind(rootView)
         selectImage()
         selectPerson()
         selectYearAndDay()

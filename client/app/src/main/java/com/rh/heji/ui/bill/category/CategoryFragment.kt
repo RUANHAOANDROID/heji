@@ -97,7 +97,7 @@ class CategoryFragment : BaseFragment() {
         }
 
     override fun layoutId(): Int {
-        return R.layout.category_content_fragment
+        return R.layout.fragment_category_content
     }
 
     private fun initCategory(categories: MutableList<Category>) {

@@ -29,7 +29,7 @@ class CalendarNoteFragment : BaseFragment() {
 
 
     override fun layoutId(): Int {
-        return R.layout.calendar_note_fragment
+        return R.layout.fragment_calendar_note
     }
 
     override fun onAttach(context: Context) {

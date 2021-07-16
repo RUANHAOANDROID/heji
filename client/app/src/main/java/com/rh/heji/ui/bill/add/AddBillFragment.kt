@@ -51,7 +51,7 @@ class AddBillFragment : BaseFragment() {
     var selectImagePou: SelectImagePop? = null//图片弹窗
 
     override fun layoutId(): Int {
-        return R.layout.income_fragment
+        return R.layout.fragment_income
     }
 
     override fun initView(rootView: View) {

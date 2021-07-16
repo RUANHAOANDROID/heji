@@ -24,7 +24,7 @@
         android:id="@+id/nav_income"
         android:name="com.rh.heji.ui.bill.add.AddBillFragment"
         android:label="@string/income"
-        tools:layout="@layout/income_fragment">
+        tools:layout="@layout/fragment_income">
         <argument
             android:name="calendar"
             app:argType="java.util.Calendar" />
@@ -36,7 +36,7 @@
         android:id="@+id/nav_category_manager"
         android:name="com.rh.heji.ui.bill.category.CategoryManagerFragment"
         android:label="@string/category_manager"
-        tools:layout="@layout/fragment_category_manager">
+        tools:layout="@layout/category_manager_fragment">
         <argument
             android:name="ieType"
             android:defaultValue="0"
@@ -46,12 +46,12 @@
         android:id="@+id/nav_input_etc"
         android:name="com.rh.heji.ui.setting.input.etc.ETCFragment"
         android:label="@string/etc_list_query"
-        tools:layout="@layout/fragment_etc" />
+        tools:layout="@layout/etc_fragment" />
     <fragment
         android:id="@+id/nav_export"
         android:name="com.rh.heji.ui.setting.export.ExportFragment"
         android:label="@string/export"
-        tools:layout="@layout/fragment_export"></fragment>
+        tools:layout="@layout/export_fragment"></fragment>
     <fragment
         android:id="@+id/nav_register"
         android:name="com.rh.heji.ui.user.register.RegisterFragment"
@@ -65,7 +65,7 @@
         android:id="@+id/nav_login"
         android:name="com.rh.heji.ui.user.login.LoginFragment"
         android:label="@string/login"
-        tools:layout="@layout/fragment_login">
+        tools:layout="@layout/login_fragment">
         <action
             android:id="@+id/action_nav_login_to_nav_register4"
             app:destination="@id/nav_register" />
@@ -78,7 +78,7 @@
         android:id="@+id/nav_home"
         android:name="com.rh.heji.ui.home.BillsHomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_bills_home">
+        tools:layout="@layout/bills_home_fragment">
         <action
             android:id="@+id/action_nav_home_to_nav_etc"
             app:destination="@id/nav_input_etc" />
@@ -105,7 +105,7 @@
         android:id="@+id/nav_calendar_note"
         android:name="com.rh.heji.ui.bill.calendar.CalendarNoteFragment"
         android:label="日历记账"
-        tools:layout="@layout/fragment_calendar_note"></fragment>
+        tools:layout="@layout/calendar_note_fragment"></fragment>
     <fragment
         android:id="@+id/nav_user_info"
         android:name="com.rh.heji.ui.user.info.UserInfoFragment"
@@ -121,7 +121,7 @@
         android:id="@+id/_category"
         android:name="com.rh.heji.ui.bill.category.CategoryFragment"
         android:label="CategoryFragment"
-        tools:layout="@layout/fragment_category_content">
+        tools:layout="@layout/category_content_fragment">
         <action
             android:id="@+id/action_categoryFragment_to_nav_category_manager"
             app:destination="@id/nav_category_manager" />
@@ -134,7 +134,7 @@
         android:id="@+id/nav_book"
         android:name="com.rh.heji.ui.book.BookListFragment"
         android:label="fragment_book_list_list"
-        tools:layout="@layout/fragment_book">
+        tools:layout="@layout/fragment_book_list">
         <action
             android:id="@+id/action_nav_book_to_nav_add_book"
             app:destination="@id/nav_add_book" />
@@ -143,12 +143,12 @@
         android:id="@+id/nav_banner"
         android:name="com.rh.heji.ui.setting.banner.BannerFragment"
         android:label="banner_fragment"
-        tools:layout="@layout/banner_fragment" />
+        tools:layout="@layout/fragment_banner" />
     <fragment
         android:id="@+id/_category_tab"
         android:name="com.rh.heji.ui.bill.category.CategoryTabFragment"
         android:label="CategoryTabFragment"
-        tools:layout="@layout/fragment_category_tab">
+        tools:layout="@layout/category_tab_fragment">
         <action
             android:id="@+id/action__category_tab_to__category"
             app:destination="@id/_category" />
@@ -158,7 +158,7 @@
         android:id="@+id/nav_add_book"
         android:name="com.rh.heji.ui.book.AddBookFragment"
         android:label="add_book_fragment"
-        tools:layout="@layout/add_book_fragment" />
+        tools:layout="@layout/fragment_book_add" />
 
 
 </navigation>

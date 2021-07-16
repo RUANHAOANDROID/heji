@@ -54,7 +54,7 @@ class ExportFragment : BaseFragment() {
     }
 
     override fun layoutId(): Int {
-        return R.layout.fragment_export;
+        return R.layout.export_fragment;
     }
 
     override fun setUpToolBar() {

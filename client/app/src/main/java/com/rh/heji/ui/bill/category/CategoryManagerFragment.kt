@@ -80,7 +80,7 @@ class CategoryManagerFragment : BaseFragment(){
     }
 
     override fun layoutId(): Int {
-        return R.layout.fragment_category_manager
+        return R.layout.category_manager_fragment
     }
 
     private fun alertDeleteTip(label: Category) {}

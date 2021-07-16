@@ -5,19 +5,15 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
-import com.rh.heji.CURRENT_BOOK
-import com.rh.heji.CURRENT_BOOK_ID
 import com.rh.heji.R
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.hideRefreshing
-import com.rh.heji.ui.base.showRefreshing
 import com.rh.heji.ui.base.swipeRefreshLayout
 
 /**
@@ -30,7 +26,7 @@ class BookListFragment : BaseFragment() {
     lateinit var binding: FragmentBookBinding
     private val bookViewModel by lazy { getViewModel(BookViewModel::class.java) }
     override fun layoutId(): Int {
-        return R.layout.fragment_book
+        return R.layout.fragment_book_list
     }
 
     override fun setUpToolBar() {

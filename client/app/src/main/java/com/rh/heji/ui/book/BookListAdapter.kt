@@ -1,9 +1,11 @@
 package com.rh.heji.ui.book
 
+import android.view.View
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.ImageUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookItemBinding
@@ -29,8 +31,16 @@ class BookListAdapter :
                     R.drawable.banner_tree
                 )
             )
-            binding.root.background=ImageUtils.bitmap2Drawable(ImageUtils.toRoundCorner(bannerBitmap,10f))
+            binding.root.background =
+                ImageUtils.bitmap2Drawable(ImageUtils.toRoundCorner(bannerBitmap, 10f))
+            if (item.id == AppCache.getInstance().currentBook.id) {
+                binding.imgSelected.visibility = View.VISIBLE
+            } else {
+                binding.imgSelected.visibility = View.INVISIBLE
+            }
+            binding.imgSetting.setOnClickListener {
 
+            }
         }
     }
 

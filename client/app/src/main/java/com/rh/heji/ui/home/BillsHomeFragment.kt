@@ -9,16 +9,13 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ScreenUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.google.android.material.appbar.AppBarLayout
-import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.databinding.FragmentBillsHomeBinding
 import com.rh.heji.databinding.LayoutBillsTopBinding
@@ -102,7 +99,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
     }
 
     override fun layoutId(): Int {
-        return R.layout.fragment_bills_home
+        return R.layout.bills_home_fragment
     }
 
     private fun asyncNotifyObserver(thisYear: Int, thisMonth: Int): Observer<Any> =

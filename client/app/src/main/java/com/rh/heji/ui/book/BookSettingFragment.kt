@@ -1,32 +1,24 @@
 package com.rh.heji.ui.book
 
-import androidx.lifecycle.ViewModelProvider
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.rh.heji.R
+import com.rh.heji.databinding.FragmentBookSettingBinding
+import com.rh.heji.ui.base.BaseFragment
 
-class BookSettingFragment : Fragment() {
+class BookSettingFragment : BaseFragment() {
 
-    companion object {
-        fun newInstance() = BookSettingFragment()
+
+    private val viewModel by lazy { getViewModel(BookSettingViewModel::class.java) }
+    private lateinit var binding: FragmentBookSettingBinding
+
+
+    override fun layoutId(): Int {
+        return R.layout.fragment_book_setting
     }
 
-    private lateinit var viewModel: BookSettingViewModel
+    override fun initView(rootView: View) {
+        binding = FragmentBookSettingBinding.bind(rootView)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_book_setting, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(BookSettingViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
 }

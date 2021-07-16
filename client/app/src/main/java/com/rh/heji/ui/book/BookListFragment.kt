@@ -77,14 +77,13 @@ class BookListFragment : BaseFragment() {
         }
         binding.fab.setOnClickListener {
             XPopup.Builder(context).asBottomList(
-                "", arrayOf("新建账本", "复制账本", "加入他人账本")
-            ) { position, text ->
-                when (position) {
-                    0 ->
-                        findNavController().navigate(R.id.nav_add_book)
-                    1 ->
-                        ToastUtils.showShort("copy")
-                    2 -> ToastUtils.showShort("join Boot")
+                "", arrayOf("新建账本", "加入他人账本")
+            ) { _, text ->
+                when (text) {
+                    "新建账本" ->
+                        findNavController().navigate(R.id.nav_book_add)
+                    "加入他人账本" ->
+                      ToastUtils.showShort("join Boot")
                 }
 
             }.show()

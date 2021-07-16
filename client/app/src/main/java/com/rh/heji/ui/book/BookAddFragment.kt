@@ -9,7 +9,7 @@ import com.rh.heji.R
 import com.rh.heji.databinding.FragmentBookAddBinding
 import com.rh.heji.ui.base.BaseFragment
 
-class AddBookFragment : BaseFragment() {
+class BookAddFragment : BaseFragment() {
     private val viewModel: BookViewModel by lazy { getViewModel(BookViewModel::class.java) }
     lateinit var binding: FragmentBookAddBinding
     override fun setUpToolBar() {

@@ -7,7 +7,6 @@ import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.webkit.*
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
@@ -108,7 +107,7 @@ class ETCFragment : BaseFragment() {
     }
 
     override fun layoutId(): Int {
-        return R.layout.fragment_etc
+        return R.layout.etc_fragment
     }
 
     override fun setUpToolBar() {

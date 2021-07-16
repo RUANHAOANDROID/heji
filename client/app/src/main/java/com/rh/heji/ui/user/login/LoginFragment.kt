@@ -18,7 +18,7 @@ class LoginFragment : BaseFragment() {
     private val viewModel by lazy { ViewModelProvider(this).get(LoginViewModel::class.java) }
 
     override fun layoutId(): Int {
-        return R.layout.fragment_login
+        return R.layout.login_fragment
     }
 
     override fun initView(rootView: View) {

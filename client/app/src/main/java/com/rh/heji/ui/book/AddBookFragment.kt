@@ -3,6 +3,8 @@ package com.rh.heji.ui.book
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.ToastUtils
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.interfaces.OnSelectListener
 import com.rh.heji.R
 import com.rh.heji.databinding.AddBookFragmentBinding
 import com.rh.heji.ui.base.BaseFragment
@@ -16,25 +18,32 @@ class AddBookFragment : BaseFragment() {
     }
 
     override fun layoutId(): Int {
-        return R.layout.add_book_fragment
+        return R.layout.fragment_book_add
     }
 
     override fun initView(rootView: View) {
         binding = AddBookFragmentBinding.bind(rootView)
         binding.banner.setOnClickListener { }
-        binding.layoutType.setOnClickListener { }
+        binding.layoutType.setOnClickListener {
+            XPopup.Builder(context).asBottomList("选择账单类型", arrayOf("日常生活", "经营账本", "人情账本", "汽车账本"),
+                OnSelectListener { position, text ->
+                    binding.tvBookType.text = text
+                }).show()
+        }
         binding.btnSave.setOnClickListener {
-            val name =bookName()
-            val type =bookType()
+            val name = bookName()
+            val type = bookType()
             if (name.isEmpty()) {
                 ToastUtils.showShort("请选择填写账本名称")
                 return@setOnClickListener
             }
-            if (type.isEmpty()/**||type=="未设置"**/) {
+            if (type.isEmpty()
+            /**||type=="未设置"**/
+            ) {
                 ToastUtils.showShort("请选择账本类型")
                 return@setOnClickListener
             }
-            viewModel.createNewBook(name, type).observe(viewLifecycleOwner,{
+            viewModel.createNewBook(name, type).observe(viewLifecycleOwner, {
                 findNavController().popBackStack()
             })
         }

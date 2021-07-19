@@ -65,26 +65,24 @@ class AppCache {
         }
     }
 
-    var currentBook = Book(name = "个人账本").apply {
-        kvStorage.let { mmkv ->
-            id = mmkv.decodeString(CURRENT_BOOK_ID).toString()
-            name = mmkv.decodeString(CURRENT_BOOK).toString()
-        }
-    }
+    var currentBook = Book(
+        id = kvStorage.decodeString(CURRENT_BOOK_ID).toString(),
+        name = kvStorage.decodeString(CURRENT_BOOK).toString()
+    )
         set(value) {
             kvStorage.let { mmkv ->
                 mmkv.encode(CURRENT_BOOK_ID, value.id)
-                mmkv.decodeString(CURRENT_BOOK, value.name)
+                mmkv.encode(CURRENT_BOOK, value.name)
             }
             field = value
         }
-        get() {
-            kvStorage.let { mmkv ->
-                field.id = mmkv.decodeString(CURRENT_BOOK_ID).toString()
-                field.name = mmkv.decodeString(CURRENT_BOOK).toString()
-            }
-            return field
-        }
+//        get() {
+//            kvStorage.let { mmkv ->
+//                field.id = mmkv.decodeString(CURRENT_BOOK_ID).toString()
+//                field.name = mmkv.decodeString(CURRENT_BOOK).toString()
+//            }
+//            return field
+//        }
 
 }
 

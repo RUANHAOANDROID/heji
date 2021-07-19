@@ -5,19 +5,15 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
-import com.rh.heji.CURRENT_BOOK
-import com.rh.heji.CURRENT_BOOK_ID
 import com.rh.heji.R
 import com.rh.heji.data.db.Book
-import com.rh.heji.databinding.FragmentBookBinding
+import com.rh.heji.databinding.FragmentBookListBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.hideRefreshing
-import com.rh.heji.ui.base.showRefreshing
 import com.rh.heji.ui.base.swipeRefreshLayout
 
 /**
@@ -27,10 +23,10 @@ import com.rh.heji.ui.base.swipeRefreshLayout
  */
 class BookListFragment : BaseFragment() {
     lateinit var adapter: BookListAdapter
-    lateinit var binding: FragmentBookBinding
+    lateinit var binding: FragmentBookListBinding
     private val bookViewModel by lazy { getViewModel(BookViewModel::class.java) }
     override fun layoutId(): Int {
-        return R.layout.fragment_book
+        return R.layout.fragment_book_list
     }
 
     override fun setUpToolBar() {
@@ -40,7 +36,7 @@ class BookListFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding = FragmentBookBinding.bind(rootView)
+        binding = FragmentBookListBinding.bind(rootView)
 
         adapter = BookListAdapter()
         adapter.recyclerView = binding.list
@@ -81,14 +77,13 @@ class BookListFragment : BaseFragment() {
         }
         binding.fab.setOnClickListener {
             XPopup.Builder(context).asBottomList(
-                "", arrayOf("新建账本", "复制账本", "加入他人账本")
-            ) { position, text ->
-                when (position) {
-                    0 ->
-                        findNavController().navigate(R.id.nav_add_book)
-                    1 ->
-                        ToastUtils.showShort("copy")
-                    2 -> ToastUtils.showShort("join Boot")
+                "", arrayOf("新建账本", "加入他人账本")
+            ) { _, text ->
+                when (text) {
+                    "新建账本" ->
+                        findNavController().navigate(R.id.nav_book_add)
+                    "加入他人账本" ->
+                      ToastUtils.showShort("join Boot")
                 }
 
             }.show()

@@ -113,7 +113,7 @@ interface BillDao {
     fun findAllBillWhitImage(): MutableList<BillWithImage>
 
     @Transaction
-    @Query("SELECT * FROM bill WHERE img_count > 0 AND sync_status==" + Constant.Companion.STATUS_NOT_SYNC)
+    @Query("SELECT * FROM bill WHERE img_count > 0 AND sync_status==" + Constant.STATUS_NOT_SYNC)
     fun findNotSyncBillWhitImage(): MutableList<BillWithImage>
 
     @Query("SELECT * FROM bill WHERE  sync_status==:syncStatus")

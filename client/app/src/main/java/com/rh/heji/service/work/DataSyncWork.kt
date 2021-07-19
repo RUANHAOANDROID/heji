@@ -13,10 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DataSyncWork {
-    private val billDao =   AppDatabase.getInstance().billDao()
-    private val categoryDao =   AppDatabase.getInstance().categoryDao()
+    private val billDao = AppDatabase.getInstance().billDao()
+    private val categoryDao = AppDatabase.getInstance().categoryDao()
     private val network = HejiNetwork.getInstance()
-    private val billRepository = com.rh.heji.data.repository.BillRepository()
+    private val billRepository = BillRepository()
     suspend fun asyncBills() {
         withContext(Dispatchers.IO) {
             billDelete()
@@ -37,47 +37,37 @@ class DataSyncWork {
 
     private suspend fun categoryUpdate() {
         val updateCategory = categoryDao.findCategoryByStatic(Constant.STATUS_UPDATE)
-        updateCategory?.let {
-            if (it.size > 0) {
-                it.forEach { category ->
-                    category?.let {
-                        val response = network.categoryPush(CategoryEntity(category))
-                        if (response.code == 0) {
-                            category.synced = Constant.STATUS_SYNCED
-                            categoryDao.update(category)
-                        }
+            if (updateCategory.isNotEmpty()) {
+                updateCategory.forEach { category ->
+                    val response = network.categoryPush(CategoryEntity(category))
+                    if (response.code == 0) {
+                        category.synced = Constant.STATUS_SYNCED
+                        categoryDao.update(category)
                     }
                 }
             }
-        }
     }
 
     private suspend fun categoryPush() {
         val pushCategory = categoryDao.findCategoryByStatic(Constant.STATUS_UPDATE)
-        pushCategory?.let {
-            if (it.size > 0) {
-                it.forEach { category ->
-                    category?.let {
-                        val response = network.categoryPush(CategoryEntity(category))
-                        if (response.code == 0) {
-                            category.synced = Constant.STATUS_SYNCED
-                            categoryDao.update(category)
-                        }
+            if (pushCategory.isNotEmpty()) {
+                pushCategory.forEach { category ->
+                    val response = network.categoryPush(CategoryEntity(category))
+                    if (response.code == 0) {
+                        category.synced = Constant.STATUS_SYNCED
+                        categoryDao.update(category)
                     }
                 }
             }
-        }
     }
 
     private suspend fun categoryPull() {
         val categoryResponse = network.categoryPull()
         if (categoryResponse.code == 0) {
             val data = categoryResponse.data
-            data?.let {
-                if (it.isNotEmpty()) {
-                    it.forEach { categoryEntity ->
-                        categoryDao.insert(categoryEntity.toDbCategory())
-                    }
+            if (data.isNotEmpty()) {
+                data.forEach { categoryEntity ->
+                    categoryDao.insert(categoryEntity.toDbCategory())
                 }
             }
         }
@@ -85,15 +75,11 @@ class DataSyncWork {
 
     private suspend fun categoryDelete() {
         val deleteCategory = categoryDao.findCategoryByStatic(Constant.STATUS_DELETE)
-        deleteCategory?.let {
-            if (it.size > 0) {
-                it.forEach { category ->
-                    category?.let {
-                        val response = network.categoryDelete(category.id)
-                        if (response.code == 0) {
-                            categoryDao.delete(category)
-                        }
-                    }
+        if (deleteCategory.isNotEmpty()) {
+            deleteCategory.forEach { category ->
+                val response = network.categoryDelete(category.id)
+                if (response.code == 0) {
+                    categoryDao.delete(category)
                 }
             }
         }
@@ -101,13 +87,11 @@ class DataSyncWork {
 
     private suspend fun billDelete() {
         val deleteBills = billDao.findByStatus(Constant.STATUS_DELETE)
-        deleteBills?.let {
-            if (it.isNotEmpty() && it.size > 0) {
-                it.forEach { bill ->
-                    var response = network.billDelete(bill.id)
-                    if (response.code == 0) {
-                        billDao.delete(bill)
-                    }
+        if (deleteBills.isNotEmpty()) {
+            deleteBills.forEach { bill ->
+                var response = network.billDelete(bill.id)
+                if (response.code == 0) {
+                    billDao.delete(bill)
                 }
             }
         }
@@ -115,15 +99,13 @@ class DataSyncWork {
 
     private suspend fun billsUpdate() {
         val updateBills = billDao.findByStatus(Constant.STATUS_UPDATE)
-        updateBills?.let {
-            if (it.isNotEmpty() && it.size > 0) {
-                it.forEach { bill ->
-                    val response = network.billUpdate(BillEntity(bill))
-                    if (response.code == 0) {
-                        bill.synced = Constant.STATUS_SYNCED
-                          AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
-                        billDao.delete(bill)
-                    }
+        if (updateBills.isNotEmpty()) {
+            updateBills.forEach { bill ->
+                val response = network.billUpdate(BillEntity(bill))
+                if (response.code == 0) {
+                    bill.synced = Constant.STATUS_SYNCED
+                    AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
+                    billDao.delete(bill)
                 }
             }
         }
@@ -131,49 +113,44 @@ class DataSyncWork {
 
     private suspend fun billsPush() {
         val pushBills = billDao.findByStatus(Constant.STATUS_NOT_SYNC)
-
-        pushBills?.let {
-            if (it.isNotEmpty() && it.size > 0) {
-                it.forEach { bill ->
-                    billRepository.pushBill(BillEntity(bill))
-                }
+        if (pushBills.isNotEmpty()) {
+            pushBills.forEach { bill ->
+                billRepository.pushBill(BillEntity(bill))
             }
         }
     }
 
     private suspend fun billsPull() {
         val pullBillsResponse = network.billPull("0", "0")
-        pullBillsResponse.let {
-            var data = it.data
-            data?.let { serverBills ->
-                if (serverBills.isNotEmpty()) {
-                    serverBills.forEach { serverBill ->
-                        val existCount = billDao.countById(serverBill.id)//本地的
+        var data = pullBillsResponse.data
+        data?.let { serverBills ->
+            if (serverBills.isNotEmpty()) {
+                serverBills.forEach { serverBill ->
+                    val existCount = billDao.countById(serverBill.id)//本地的
 
-                        if (existCount ==0) {//不存在直接存入
-                            billDao.install(serverBill.toBill())
+                    if (existCount == 0) {//不存在直接存入
+                        billDao.install(serverBill.toBill())
+                    }
+                    var imagesId = serverBill.images//云图片
+                    if (null != imagesId && imagesId.size > 0) {//有图片
+                        var response = network.billPullImages(serverBill.id)
+                        response.date?.forEach { entity ->
+                            var image = Image(entity._id, billImageID = serverBill.id)
+                            image.id = entity._id
+                            image.md5 = entity.md5
+                            image.onlinePath = entity._id.toString()
+                            image.ext = entity.ext
+                            image.billImageID = serverBill.id
+                            image.synced = Constant.STATUS_SYNCED
+                            AppDatabase.getInstance().imageDao().install(image)
+                            LogUtils.i("账单图片信息已保存 $image")
                         }
-                        var imagesId = serverBill.images//云图片
-                        if (null != imagesId && imagesId.size > 0) {//有图片
-                            var response = network.billPullImages(serverBill.id)
-                                response.date?.forEach { entity ->
-                                    var image = Image(entity._id,billImageID = serverBill.id)
-                                    image.id = entity._id
-                                    image.md5 = entity.md5
-                                    image.onlinePath = entity._id.toString()
-                                    image.ext = entity.ext
-                                    image.billImageID = serverBill.id
-                                    image.synced = Constant.STATUS_SYNCED
-                                      AppDatabase.getInstance().imageDao().install(image)
-                                    LogUtils.i("账单图片信息已保存 $image")
-                                }
-                                billDao.updateImageCount(response.date.size, serverBill.id)
-                        }
+                        billDao.updateImageCount(response.date.size, serverBill.id)
                     }
                 }
             }
-
         }
+
     }
 
 }

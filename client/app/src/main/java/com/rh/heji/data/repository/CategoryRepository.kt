@@ -3,7 +3,7 @@ package com.rh.heji.data.repository
 import android.text.TextUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Category
-import com.rh.heji.data.db.Constant
+import com.rh.heji.data.db.STATUS_SYNCED
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.CategoryEntity
@@ -17,7 +17,7 @@ class CategoryRepository {
         val response = network.categoryPush(category)
         response.let {
             val dbCategory = category.toDbCategory()
-            dbCategory?.synced = Constant.STATUS_SYNCED
+            dbCategory?.synced = STATUS_SYNCED
             categoryDao.update(dbCategory)
         }
     }
@@ -37,7 +37,7 @@ class CategoryRepository {
                 val _id =   AppDatabase.getInstance().categoryDao().findByID(entity.id)
                 if (TextUtils.isEmpty(_id)) {
                     val dbCategory = entity.toDbCategory()
-                    dbCategory!!.synced = Constant.STATUS_SYNCED
+                    dbCategory!!.synced = STATUS_SYNCED
                       AppDatabase.getInstance().categoryDao().insert(dbCategory)
                 }
             }

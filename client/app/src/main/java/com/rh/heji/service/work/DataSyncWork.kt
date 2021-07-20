@@ -2,9 +2,7 @@ package com.rh.heji.service.work
 
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Constant
-import com.rh.heji.data.db.Image
+import com.rh.heji.data.db.*
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.BillEntity
@@ -36,12 +34,12 @@ class DataSyncWork {
     }
 
     private suspend fun categoryUpdate() {
-        val updateCategory = categoryDao.findCategoryByStatic(Constant.STATUS_UPDATE)
+        val updateCategory = categoryDao.findCategoryByStatic( STATUS_UPDATE)
             if (updateCategory.isNotEmpty()) {
                 updateCategory.forEach { category ->
                     val response = network.categoryPush(CategoryEntity(category))
                     if (response.code == 0) {
-                        category.synced = Constant.STATUS_SYNCED
+                        category.synced =  STATUS_SYNCED
                         categoryDao.update(category)
                     }
                 }
@@ -49,12 +47,12 @@ class DataSyncWork {
     }
 
     private suspend fun categoryPush() {
-        val pushCategory = categoryDao.findCategoryByStatic(Constant.STATUS_UPDATE)
+        val pushCategory = categoryDao.findCategoryByStatic( STATUS_UPDATE)
             if (pushCategory.isNotEmpty()) {
                 pushCategory.forEach { category ->
                     val response = network.categoryPush(CategoryEntity(category))
                     if (response.code == 0) {
-                        category.synced = Constant.STATUS_SYNCED
+                        category.synced =  STATUS_SYNCED
                         categoryDao.update(category)
                     }
                 }
@@ -74,7 +72,7 @@ class DataSyncWork {
     }
 
     private suspend fun categoryDelete() {
-        val deleteCategory = categoryDao.findCategoryByStatic(Constant.STATUS_DELETE)
+        val deleteCategory = categoryDao.findCategoryByStatic( STATUS_DELETE)
         if (deleteCategory.isNotEmpty()) {
             deleteCategory.forEach { category ->
                 val response = network.categoryDelete(category.id)
@@ -86,7 +84,7 @@ class DataSyncWork {
     }
 
     private suspend fun billDelete() {
-        val deleteBills = billDao.findByStatus(Constant.STATUS_DELETE)
+        val deleteBills = billDao.findByStatus( STATUS_DELETE)
         if (deleteBills.isNotEmpty()) {
             deleteBills.forEach { bill ->
                 var response = network.billDelete(bill.id)
@@ -98,12 +96,12 @@ class DataSyncWork {
     }
 
     private suspend fun billsUpdate() {
-        val updateBills = billDao.findByStatus(Constant.STATUS_UPDATE)
+        val updateBills = billDao.findByStatus( STATUS_UPDATE)
         if (updateBills.isNotEmpty()) {
             updateBills.forEach { bill ->
                 val response = network.billUpdate(BillEntity(bill))
                 if (response.code == 0) {
-                    bill.synced = Constant.STATUS_SYNCED
+                    bill.synced =  STATUS_SYNCED
                     AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
                     billDao.delete(bill)
                 }
@@ -112,7 +110,7 @@ class DataSyncWork {
     }
 
     private suspend fun billsPush() {
-        val pushBills = billDao.findByStatus(Constant.STATUS_NOT_SYNC)
+        val pushBills = billDao.findByStatus( STATUS_NOT_SYNC)
         if (pushBills.isNotEmpty()) {
             pushBills.forEach { bill ->
                 billRepository.pushBill(BillEntity(bill))
@@ -141,7 +139,7 @@ class DataSyncWork {
                             image.onlinePath = entity._id.toString()
                             image.ext = entity.ext
                             image.billImageID = serverBill.id
-                            image.synced = Constant.STATUS_SYNCED
+                            image.synced =  STATUS_SYNCED
                             AppDatabase.getInstance().imageDao().install(image)
                             LogUtils.i("账单图片信息已保存 $image")
                         }

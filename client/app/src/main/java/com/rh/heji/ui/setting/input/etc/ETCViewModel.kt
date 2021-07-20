@@ -12,7 +12,7 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
-import com.rh.heji.data.db.Constant
+import com.rh.heji.data.db.STATUS_NOT_SYNC
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.setting.input.etc.HBETCEntity.DataBean.OrderArrBean
@@ -49,7 +49,7 @@ class ETCViewModel : BaseViewModel() {
             val category: Category
             if (categories.isEmpty()) {
                 category = Category(category = "过路费", level = 0, type = BillType.EXPENDITURE.type())
-                category.synced = Constant.STATUS_NOT_SYNC
+                category.synced = STATUS_NOT_SYNC
                   AppDatabase.getInstance().categoryDao().insert(category)
             } else {
                 category = categories[0]

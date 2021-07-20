@@ -6,7 +6,7 @@ import com.rh.heji.AppCache
 import com.rh.heji.FILE_LENGTH_1M
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Constant
+import com.rh.heji.data.db.STATUS_SYNCED
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
@@ -32,7 +32,7 @@ class BillRepository {
         if (response.code == 0) {
             response.data.let {
                 var bill = billEntity.toBill()
-                bill.synced = Constant.STATUS_SYNCED
+                bill.synced = STATUS_SYNCED
                 billDao.update(bill)//已上传
                 uploadImage(bill.id)
             }
@@ -53,7 +53,7 @@ class BillRepository {
         var response = hejiNetwork.billUpdate(billEntity)
         response.data.let {
             val toBill = billEntity.toBill()
-            toBill.synced = Constant.STATUS_SYNCED
+            toBill.synced = STATUS_SYNCED
             billDao.update(toBill) //已上传
         }
     }
@@ -96,7 +96,7 @@ class BillRepository {
                     image.onlinePath = response.data._id.toString()
                     image.md5 = response.data.md5
                     image.id = response.data._id
-                    image.synced = Constant.STATUS_SYNCED
+                    image.synced = STATUS_SYNCED
                     LogUtils.d("账单图片上传成功：$image")
                     image.onlinePath?.let {
                         var count =   AppDatabase.getInstance().imageDao().updateOnlinePath(image.id,it , image.synced)

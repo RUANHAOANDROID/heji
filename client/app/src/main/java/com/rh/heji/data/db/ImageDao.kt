@@ -42,7 +42,7 @@ interface ImageDao {
     @Query("SELECT * FROM image WHERE id =:id")
     fun findById(id: String ): MutableList<Image >
 
-    @Query("SELECT * FROM image WHERE _bid =:billId AND sync_status==" + Constant.Companion.STATUS_NOT_SYNC)
+    @Query("SELECT * FROM image WHERE _bid =:billId AND sync_status==$STATUS_NOT_SYNC")
     fun findByBillIdNotAsync(billId: String): MutableList<Image>
 
     @Query("SELECT * FROM image WHERE (img_path ISNULL OR img_path=='') AND(img_online_path!='' OR img_online_path != NULL)")

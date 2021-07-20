@@ -5,7 +5,6 @@ import androidx.room.*
 import com.rh.heji.AppCache
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
-import com.rh.heji.data.db.Constant.Companion.STATUS_DELETE
 import com.rh.heji.data.db.query.CategoryPercentage
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.data.db.query.IncomeTime
@@ -114,7 +113,7 @@ interface BillDao {
     fun findAllBillWhitImage(): MutableList<BillWithImage>
 
     @Transaction
-    @Query("SELECT * FROM bill WHERE img_count > 0 AND sync_status==" + Constant.STATUS_NOT_SYNC)
+    @Query("SELECT * FROM bill WHERE img_count > 0 AND sync_status==$STATUS_NOT_SYNC")
     fun findNotSyncBillWhitImage(): MutableList<BillWithImage>
 
     @Query("SELECT * FROM bill WHERE  sync_status==:syncStatus")
@@ -221,8 +220,5 @@ interface BillDao {
     @Delete
     fun delete(bill: Bill)
 
-    companion object {
-        const val NOT_REDELETE = "sync_status!=" + STATUS_DELETE
-        const val YEARMONTH = "strftime('%Y-%m',\${})"
-    }
+
 }

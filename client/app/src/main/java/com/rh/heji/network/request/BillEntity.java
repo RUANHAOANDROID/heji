@@ -2,11 +2,12 @@ package com.rh.heji.network.request;
 
 import com.rh.heji.data.converters.DateConverters;
 import com.rh.heji.data.db.Bill;
-import com.rh.heji.data.db.Constant;
 import com.rh.heji.data.db.Image;
+import com.rh.heji.data.db.STATUS;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 
 /**
  * Date: 2020/9/23
@@ -59,7 +60,7 @@ public class BillEntity {
         bill.setCategory(category);
         bill.setCreateTime(createTime);
         bill.setBillTime(DateConverters.str2Date(time));
-        bill.setSynced(Constant.STATUS_SYNCED);
+        bill.setSynced(STATUS.SYNCED);
         bill.setUpdateTime(updateTime);
         bill.setCreateUser(createUser);
         if (images != null) {

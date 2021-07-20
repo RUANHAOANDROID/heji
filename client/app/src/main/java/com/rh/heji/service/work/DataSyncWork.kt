@@ -34,12 +34,12 @@ class DataSyncWork {
     }
 
     private suspend fun categoryUpdate() {
-        val updateCategory = categoryDao.findCategoryByStatic( STATUS_UPDATE)
+        val updateCategory = categoryDao.findCategoryByStatic( STATUS.UPDATED)
             if (updateCategory.isNotEmpty()) {
                 updateCategory.forEach { category ->
                     val response = network.categoryPush(CategoryEntity(category))
                     if (response.code == 0) {
-                        category.synced =  STATUS_SYNCED
+                        category.synced =  STATUS.SYNCED
                         categoryDao.update(category)
                     }
                 }
@@ -47,12 +47,12 @@ class DataSyncWork {
     }
 
     private suspend fun categoryPush() {
-        val pushCategory = categoryDao.findCategoryByStatic( STATUS_UPDATE)
+        val pushCategory = categoryDao.findCategoryByStatic( STATUS.UPDATED)
             if (pushCategory.isNotEmpty()) {
                 pushCategory.forEach { category ->
                     val response = network.categoryPush(CategoryEntity(category))
                     if (response.code == 0) {
-                        category.synced =  STATUS_SYNCED
+                        category.synced =  STATUS.SYNCED
                         categoryDao.update(category)
                     }
                 }
@@ -72,7 +72,7 @@ class DataSyncWork {
     }
 
     private suspend fun categoryDelete() {
-        val deleteCategory = categoryDao.findCategoryByStatic( STATUS_DELETE)
+        val deleteCategory = categoryDao.findCategoryByStatic( STATUS.DELETED)
         if (deleteCategory.isNotEmpty()) {
             deleteCategory.forEach { category ->
                 val response = network.categoryDelete(category.id)
@@ -84,7 +84,7 @@ class DataSyncWork {
     }
 
     private suspend fun billDelete() {
-        val deleteBills = billDao.findByStatus( STATUS_DELETE)
+        val deleteBills = billDao.findByStatus( STATUS.DELETED)
         if (deleteBills.isNotEmpty()) {
             deleteBills.forEach { bill ->
                 var response = network.billDelete(bill.id)
@@ -96,12 +96,12 @@ class DataSyncWork {
     }
 
     private suspend fun billsUpdate() {
-        val updateBills = billDao.findByStatus( STATUS_UPDATE)
+        val updateBills = billDao.findByStatus( STATUS.UPDATED)
         if (updateBills.isNotEmpty()) {
             updateBills.forEach { bill ->
                 val response = network.billUpdate(BillEntity(bill))
                 if (response.code == 0) {
-                    bill.synced =  STATUS_SYNCED
+                    bill.synced =  STATUS.SYNCED
                     AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
                     billDao.delete(bill)
                 }
@@ -110,7 +110,7 @@ class DataSyncWork {
     }
 
     private suspend fun billsPush() {
-        val pushBills = billDao.findByStatus( STATUS_NOT_SYNC)
+        val pushBills = billDao.findByStatus( STATUS.NOT_SYNCED)
         if (pushBills.isNotEmpty()) {
             pushBills.forEach { bill ->
                 billRepository.pushBill(BillEntity(bill))
@@ -139,7 +139,7 @@ class DataSyncWork {
                             image.onlinePath = entity._id.toString()
                             image.ext = entity.ext
                             image.billImageID = serverBill.id
-                            image.synced =  STATUS_SYNCED
+                            image.synced =  STATUS.SYNCED
                             AppDatabase.getInstance().imageDao().install(image)
                             LogUtils.i("账单图片信息已保存 $image")
                         }

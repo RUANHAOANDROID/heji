@@ -29,7 +29,7 @@ interface BillDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun install(billTab: Bill): Long
 
-    @Query("update bill set sync_status = $STATUS_DELETE where id=:billId")
+    @Query("update bill set sync_status = ${STATUS.DELETED} where id=:billId")
     fun preDelete(billId: String): Int
 
     @Transaction
@@ -89,7 +89,7 @@ interface BillDao {
      * @return
      */
     @TypeConverters(MoneyConverters::class)
-    @Query("SELECT SUM(money) AS value FROM Bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (book_id=:bookId) AND (type = :sz) AND (sync_status != $STATUS_DELETE)")
+    @Query("SELECT SUM(money) AS value FROM Bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (book_id=:bookId) AND (type = :sz) AND (sync_status !=  ${STATUS.DELETED})")
     fun findTotalMoneyByTime(start: String, end: String, sz: Int,bookId: String?=AppCache.getInstance().currentBook.id): LiveData<Double>
 
     @TypeConverters(MoneyConverters::class)
@@ -113,7 +113,7 @@ interface BillDao {
     fun findAllBillWhitImage(): MutableList<BillWithImage>
 
     @Transaction
-    @Query("SELECT * FROM bill WHERE img_count > 0 AND sync_status==$STATUS_NOT_SYNC")
+    @Query("SELECT * FROM bill WHERE img_count > 0 AND sync_status== ${STATUS.NOT_SYNCED}")
     fun findNotSyncBillWhitImage(): MutableList<BillWithImage>
 
     @Query("SELECT * FROM bill WHERE  sync_status==:syncStatus")
@@ -125,7 +125,7 @@ interface BillDao {
      * @param date
      * @return
      */
-    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND sync_status!=$STATUS_DELETE group by date(bill_time)")
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND sync_status!= ${STATUS.DELETED} group by date(bill_time)")
     fun findByMonth(date: String,bookId: String?=AppCache.getInstance().currentBook.id): MutableList<Bill>
 
     /**
@@ -134,7 +134,7 @@ interface BillDao {
      * @param date
      * @return
      */
-    @Query("SELECT * FROM bill WHERE strftime('%Y-%m-%d',bill_time) ==:date AND book_id=:bookId AND sync_status!=$STATUS_DELETE AND type=:type order by date(bill_time)")
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m-%d',bill_time) ==:date AND book_id=:bookId AND sync_status!= ${STATUS.DELETED} AND type=:type order by date(bill_time)")
     fun findByDay(date: String, type: Int,bookId: String?=AppCache.getInstance().currentBook.id): MutableList<Bill>
 
     /**
@@ -143,7 +143,7 @@ interface BillDao {
      * @param date
      * @return
      */
-    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND type=:type AND sync_status!=$STATUS_DELETE group by date(bill_time)")
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND type=:type AND sync_status!= ${STATUS.DELETED} group by date(bill_time)")
     fun findByMonthGroupByDay(date: String, type: Int,bookId: String?=AppCache.getInstance().currentBook.id): MutableList<Bill>
 
     /**
@@ -152,7 +152,7 @@ interface BillDao {
      * @param date
      * @return
      */
-    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND type =:type AND sync_status!=$STATUS_DELETE group by category")
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND type =:type AND sync_status!= ${STATUS.DELETED} group by category")
     fun findByMonthGroupByCategory(date: String, type: Int,bookId: String=AppCache.getInstance().currentBook.id): MutableList<Bill>
 
     /**
@@ -161,7 +161,7 @@ interface BillDao {
      * @param date
      * @return
      */
-    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND category=:category AND type =:type AND sync_status!=$STATUS_DELETE")
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND category=:category AND type =:type AND sync_status!= ${STATUS.DELETED}")
     fun findByCategoryAndMonth(category: String, date: String, type: Int,bookId: String?=AppCache.getInstance().currentBook.id): MutableList<Bill>
 
     //---------------统计----------------//

@@ -69,7 +69,7 @@ data class Category(
     var isSelected: Boolean = false
 
     @ColumnInfo(name = "sync_status", defaultValue = "0")
-    var synced: Int = STATUS_NOT_SYNC
+    var synced: Int = STATUS.NOT_SYNCED
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

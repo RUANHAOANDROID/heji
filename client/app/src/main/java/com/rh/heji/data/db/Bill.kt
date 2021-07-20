@@ -86,7 +86,7 @@ data class Bill(
     var imgCount: Int = 0,
 
     @ColumnInfo(name = "sync_status")
-    var synced: Int = STATUS_NOT_SYNC
+    var synced: Int = STATUS.NOT_SYNCED
 
 ) {
 

@@ -22,10 +22,10 @@ interface CategoryDao {
     @Query("select * from category where category=:name and type=:type")
     fun findByNameAndType(name: String  , type: Int): MutableList<Category  >
 
-    @Query("select * from  category where type =:type AND sync_status !=" + Constant.Companion.STATUS_DELETE + " ORDER BY `index` DESC,_id DESC ")
+    @Query("select * from  category where type =:type AND sync_status !=$STATUS_DELETE ORDER BY `index` DESC,_id DESC ")
     fun findIncomeOrExpenditure(type: Int): LiveData<MutableList<Category>>
 
-    @Query("select * from  category where sync_status ==" + Constant.Companion.STATUS_DELETE + " or sync_status ==" + Constant.Companion.STATUS_NOT_SYNC)
+    @Query("select * from  category where sync_status ==$STATUS_DELETE or sync_status ==$STATUS_NOT_SYNC")
     fun observeNotUploadOrDelete(): LiveData<MutableList<Category  >  >
 
     @Query("select * from category where category =:category")

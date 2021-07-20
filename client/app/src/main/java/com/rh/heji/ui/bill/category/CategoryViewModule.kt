@@ -8,7 +8,8 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
-import com.rh.heji.data.db.Constant
+import com.rh.heji.data.db.STATUS_DELETE
+import com.rh.heji.data.db.STATUS_NOT_SYNC
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
@@ -78,7 +79,7 @@ class CategoryViewModule : BaseViewModel() {
         }
         launchIO({
             val category = Category(category = name,type = type,level = 0)
-            category.synced = Constant.STATUS_NOT_SYNC
+            category.synced = STATUS_NOT_SYNC
             val categories = categoryDao.findByNameAndType(name, type)
             if (categories.size > 0) {
                 val _id = categories[0].id
@@ -94,7 +95,7 @@ class CategoryViewModule : BaseViewModel() {
     fun deleteCategory(category: Category): LiveData<Boolean> {
 
         launchIO({
-            category.synced = Constant.STATUS_DELETE
+            category.synced = STATUS_DELETE
             categoryDao.update(category)
             deleteLiveData.postValue(true)
         }, {})

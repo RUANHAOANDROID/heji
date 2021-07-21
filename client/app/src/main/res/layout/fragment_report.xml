@@ -194,6 +194,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
+                    android:id="@+id/layoutTypeSwitchTab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -203,15 +204,16 @@
                     app:layout_constraintTop_toBottomOf="@+id/lineChart">
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_select_consume"
+                        android:id="@+id/tvTypeExpenditure"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/analysis_dia_title_left"
+                        android:background="@drawable/shape_tag_left_blue"
                         android:paddingLeft="10dp"
                         android:paddingTop="3dp"
                         android:paddingRight="10dp"
                         android:paddingBottom="3dp"
                         android:text="支出"
+                        android:textColor="@color/white"
                         android:textSize="13sp" />
 
                     <View
@@ -220,13 +222,14 @@
                         android:background="@color/app_text_color_light" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_select_income"
+                        android:id="@+id/tvTypeIncome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
                         android:paddingTop="3dp"
                         android:paddingRight="10dp"
                         android:paddingBottom="3dp"
+                        android:textColor="@color/textRemark"
                         android:text="收入"
                         android:textSize="13sp" />
 
@@ -236,13 +239,14 @@
                         android:background="@color/app_text_color_light" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_select_inconsume"
+                        android:id="@+id/tvTypeAll"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="10dp"
                         android:paddingTop="3dp"
                         android:paddingRight="10dp"
                         android:paddingBottom="3dp"
+                        android:textColor="@color/textRemark"
                         android:text="全部"
                         android:textSize="13sp" />
                 </LinearLayout>

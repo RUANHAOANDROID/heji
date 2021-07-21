@@ -2,6 +2,7 @@ package com.rh.heji.ui.report
 
 import android.text.SpannableString
 import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.github.mikephil.charting.data.*
@@ -69,6 +70,9 @@ class ReportFragment : BaseFragment() {
         binding = FragmentReportBinding.bind(rootView)
         incomeExpenditureInfo()
         lineChartStyle(binding.lineChart)
+        binding.tvTypeExpenditure.setOnClickListener { lineChartSelectType(0) }
+        binding.tvTypeIncome.setOnClickListener { lineChartSelectType(1) }
+        binding.tvTypeAll.setOnClickListener { lineChartSelectType(2) }
         pieChartStyle(binding.pieChartCategory)
         initCategoryListView()
         initTotalTitleView()
@@ -108,7 +112,7 @@ class ReportFragment : BaseFragment() {
                 binding.tvIncomeValue.text = money.income.toString()
                 binding.tvExpenditureValue.text = money.expenditure.toString()
                 val jieYu = money.income!!.minus(money.expenditure!!)//结余
-                binding.tvJieYuValue.text = jieYu.toString()
+                binding.tvJieYuValue.text = jieYu.toPlainString()
                 val dayCount = MyTimeUtils.lastDayOfMonth(
                     reportViewModel.yearMonth.year,
                     reportViewModel.yearMonth.month
@@ -241,5 +245,42 @@ class ReportFragment : BaseFragment() {
             binding.nestedSccrollView.visibility = View.VISIBLE
         }
     }
+    private fun lineChartSelectType(type:Int){
+        binding.tvTypeExpenditure.let {
+            it.setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
+            it.setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
+        }
 
+        binding.tvTypeIncome.let {
+            it.setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
+            it.setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
+        }
+
+
+        binding.tvTypeAll.let {
+            it.setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
+            it.setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
+        }
+
+        when(type){
+            0-> {
+                binding.tvTypeExpenditure.let {
+                    it.background = resources.getDrawable(R.drawable.shape_tag_left_blue,mainActivity.theme)
+                    it.setTextColor(resources.getColor(R.color.white,mainActivity.theme))
+                }
+            }
+            1-> {
+                    binding.tvTypeIncome.let {
+                    it.setBackgroundColor(resources.getColor(R.color.colorPrimary,mainActivity.theme))
+                    it.setTextColor(resources.getColor(R.color.white,mainActivity.theme))
+                }
+            }
+            2 -> {
+                binding.tvTypeAll.let {
+                    it.background = resources.getDrawable(R.drawable.shape_tag_right_blue,mainActivity.theme)
+                    it.setTextColor(resources.getColor(R.color.white,mainActivity.theme))
+                }
+            }
+        }
+    }
 }

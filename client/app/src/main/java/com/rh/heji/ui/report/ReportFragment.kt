@@ -2,7 +2,6 @@ package com.rh.heji.ui.report
 
 import android.text.SpannableString
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.github.mikephil.charting.data.*
@@ -23,6 +22,7 @@ import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.DividerItemDecorator
 import java.math.BigDecimal
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -70,15 +70,35 @@ class ReportFragment : BaseFragment() {
         binding = FragmentReportBinding.bind(rootView)
         incomeExpenditureInfo()
         lineChartStyle(binding.lineChart)
-        binding.tvTypeExpenditure.setOnClickListener { lineChartSelectType(0) }
-        binding.tvTypeIncome.setOnClickListener { lineChartSelectType(1) }
-        binding.tvTypeAll.setOnClickListener { lineChartSelectType(2) }
+        binding.tvTypeExpenditure.setOnClickListener {
+            reportViewModel.expenditure()
+            lineChartSelectType(0) }
+        binding.tvTypeIncome.setOnClickListener {
+            reportViewModel.income()
+            lineChartSelectType(1) }
+        binding.tvTypeAll.setOnClickListener {
+            reportViewModel.incomeAndExpenditure()
+            lineChartSelectType(2) }
         pieChartStyle(binding.pieChartCategory)
         initCategoryListView()
         initTotalTitleView()
         initTotalListView()
         reportViewModel.everyNodeIncomeExpenditure.observe(this, {
-            setLineChartNodes(reportViewModel.yearMonth,it)
+            //setLineChartNodes(reportViewModel.yearMonth,it,BillType.EXPENDITURE)
+            it.apply {
+                if (key==BillType.EXPENDITURE.type()){
+                    setExpenditureLineChartNodes(reportViewModel.yearMonth, value as MutableList<Bill>)
+                }
+                if (key ==BillType.INCOME.type()){
+                    setIncomeLineChartNodes(reportViewModel.yearMonth,value as MutableList<Bill>)
+                }
+                if (key==BillType.ALL.type()){
+                    val arrays= value as ArrayList<MutableList<Bill>>
+                    setIELineChartNodes(reportViewModel.yearMonth,expenditures = arrays[0],incomes = arrays[1])
+                }
+            }
+
+
         })
         reportViewModel.categoryProportion
             .observe(this, { categoryDataList ->
@@ -124,7 +144,7 @@ class ReportFragment : BaseFragment() {
                 showEmptyView()
 
                 //----列表标题年/月平均值
-                var avg = if (reportViewModel.isAllYear) {
+                var avg = if (reportViewModel.yearMonth.isYear()) {
                     var month12 = BigDecimal(12)
                     "月均支出：${
                         money.expenditure!!.divide(
@@ -218,7 +238,7 @@ class ReportFragment : BaseFragment() {
      * 报表标题【日期】-【收入】-【指出】-【结余】
      */
     private fun initTotalTitleView() {
-        val year = reportViewModel.isAllYear
+        val year = reportViewModel.yearMonth.isYear()
         if (year) {
             binding.layoutTotalList.tvDate.text = "月份"
         }
@@ -246,39 +266,39 @@ class ReportFragment : BaseFragment() {
         }
     }
     private fun lineChartSelectType(type:Int){
-        binding.tvTypeExpenditure.let {
-            it.setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
-            it.setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
+        binding.tvTypeExpenditure.apply {
+            setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
+            setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
         }
 
-        binding.tvTypeIncome.let {
-            it.setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
-            it.setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
+        binding.tvTypeIncome.apply {
+            setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
+            setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
         }
 
 
-        binding.tvTypeAll.let {
-            it.setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
-            it.setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
+        binding.tvTypeAll.apply {
+            setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
+            setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
         }
 
         when(type){
             0-> {
-                binding.tvTypeExpenditure.let {
-                    it.background = resources.getDrawable(R.drawable.shape_tag_left_blue,mainActivity.theme)
-                    it.setTextColor(resources.getColor(R.color.white,mainActivity.theme))
+                binding.tvTypeExpenditure.apply {
+                    background = resources.getDrawable(R.drawable.shape_tag_left_blue,mainActivity.theme)
+                    setTextColor(resources.getColor(R.color.white,mainActivity.theme))
                 }
             }
             1-> {
-                    binding.tvTypeIncome.let {
-                    it.setBackgroundColor(resources.getColor(R.color.colorPrimary,mainActivity.theme))
-                    it.setTextColor(resources.getColor(R.color.white,mainActivity.theme))
+                    binding.tvTypeIncome.apply {
+                    setBackgroundColor(resources.getColor(R.color.colorPrimary,mainActivity.theme))
+                    setTextColor(resources.getColor(R.color.white,mainActivity.theme))
                 }
             }
             2 -> {
-                binding.tvTypeAll.let {
-                    it.background = resources.getDrawable(R.drawable.shape_tag_right_blue,mainActivity.theme)
-                    it.setTextColor(resources.getColor(R.color.white,mainActivity.theme))
+                binding.tvTypeAll.apply {
+                    background = resources.getDrawable(R.drawable.shape_tag_right_blue,mainActivity.theme)
+                    setTextColor(resources.getColor(R.color.white,mainActivity.theme))
                 }
             }
         }

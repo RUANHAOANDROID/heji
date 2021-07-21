@@ -3,6 +3,7 @@ package com.rh.heji.data.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.rh.heji.AppCache
+import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.query.CategoryPercentage
@@ -125,8 +126,8 @@ interface BillDao {
      * @param date
      * @return
      */
-    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND sync_status!= ${STATUS.DELETED} group by date(bill_time)")
-    fun findByMonth(date: String,bookId: String?=AppCache.getInstance().currentBook.id): MutableList<Bill>
+    @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND type=:type AND sync_status!= ${STATUS.DELETED} group by date(bill_time)")
+    fun findByMonth(date: String,type: Int?,bookId: String?=AppCache.getInstance().currentBook.id): MutableList<Bill>
 
     /**
      * 根据月份查询账单

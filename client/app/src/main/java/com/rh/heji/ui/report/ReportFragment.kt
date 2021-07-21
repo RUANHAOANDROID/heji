@@ -19,6 +19,7 @@ import com.github.mikephil.charting.utils.MPPointF
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
 import com.rh.heji.R
+import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
@@ -103,8 +104,7 @@ class ReportFragment : BaseFragment() {
             showEmptyView()
 
             //----列表标题年/月平均值
-            var avg = "0.00"
-            avg = if (reportViewModel.isAllYear) {
+            var  avg = if (reportViewModel.isAllYear) {
                 var month12 = BigDecimal(12)
                 "月均支出：${
                     money.expenditure!!.divide(
@@ -184,7 +184,10 @@ class ReportFragment : BaseFragment() {
         var markerView: MarkerView = object : MarkerView(mainActivity, R.layout.marker_linechart) {
             val markerContext = findViewById<TextView>(R.id.tvContext)
             override fun refreshContent(e: Entry, highlight: Highlight?) {
-                val spannableString = SpannableString("${e.x.toInt()}日\n${e.data}:${e.y}")
+                var sourceString = "${e.x.toInt()}日\n${e.data}:${e.y}"
+                if(e.y==0f)
+                    sourceString= "${e.x.toInt()}日\n无记录"
+                val spannableString = SpannableString(sourceString)
                 markerContext.text = spannableString
                 super.refreshContent(e, highlight)
             }
@@ -212,32 +215,35 @@ class ReportFragment : BaseFragment() {
     }
 
     /**
-     * 设置 折线图节点数据
+     * 设置 折线图节点数据 (月起始至当天)
      */
     private fun setLineChartNodes(bills: List<Bill>) {
-        val xAxisInConsume = binding.lineChart.xAxis
-        val dayCount = MyTimeUtils.getMonthLastDay(
+        var dayCount = MyTimeUtils.getMonthLastDay(
             reportViewModel.yearMonth.year,
             reportViewModel.yearMonth.month
         )
-        val list = mutableListOf<Entry>()
-        val dayMap = mutableMapOf<Int, Entry>()
-        for (day in 0..dayCount) {
-            dayMap.replace(day, Entry(0f, 0f))
+
+        if (currentYearMonth == reportViewModel.yearMonth) {
+            dayCount = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         }
-        list.clear()
-        val entries = bills.stream().map {
-            val day =
-                DateConverters.date2Str(it.billTime)!!.split(" ")[0].split("-")[2].toFloat()
+        val dayMap = mutableMapOf<String, Entry>()
+        for (day in 1..dayCount) {
+            val x = if (day < 10) "0$day" else day.toString()
+            val entry = Entry(x.toFloat(), 0f)
+            dayMap[x] = entry
+        }
+        bills.stream().map {
+            val day = DateConverters.date2Str(it.billTime)!!.split(" ")[0].split("-")[2]
             val type = if (it.type == -1) "支出" else "收入"
-            dayMap.replace(day.toInt(), Entry(day, it.money.toFloat(), type))
-            return@map Entry(day, it.money.toFloat(), type)
+            dayMap.replace(day, Entry(day.toFloat(), it.money.toFloat(), type))
+            return@map Entry(day.toFloat(), it.money.toFloat(), type)
         }.collect(Collectors.toList())
 
-        val set1 = LineDataSet(entries, "收入")
-
-        val data = LineData(set1)
-        binding.lineChart.data = data
+        val entries = dayMap.values.toMutableList()
+        val dataSet = LineDataSet(entries, "收入")
+        dataSet.setDrawFilled(true)
+        dataSet.fillDrawable = resources.getDrawable(R.drawable.shape_gradient_expenditure, mainActivity.theme)
+        binding.lineChart.data = LineData(dataSet)
         binding.lineChart.invalidate()
     }
 

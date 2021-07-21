@@ -21,16 +21,16 @@ class ReportViewModel : BaseViewModel() {
     val incomeExpenditure: LiveData<Income>
         get() = incomeExpenditureLiveData
 
-    private var categoryLiveData = MutableLiveData<List<PieEntry>>()
-    val categoryProportion: LiveData<List<PieEntry>>
+    private var categoryLiveData = MutableLiveData<MutableList<PieEntry>>()
+    val categoryProportion: LiveData<MutableList<PieEntry>>
         get() = categoryLiveData
 
     private var reportBillsLiveData = MutableLiveData<MutableList<IncomeTimeSurplus>>()
     val reportBillsList: LiveData<MutableList<IncomeTimeSurplus>>
         get() = reportBillsLiveData
 
-    private var everyNodeIncomeExpenditureLiveData = MutableLiveData<List<Bill>>()
-    val everyNodeIncomeExpenditure: LiveData<List<Bill>>
+    private var everyNodeIncomeExpenditureLiveData = MutableLiveData<MutableList<Bill>>()
+    val everyNodeIncomeExpenditure: LiveData<MutableList<Bill>>
         get() = everyNodeIncomeExpenditureLiveData
 
 

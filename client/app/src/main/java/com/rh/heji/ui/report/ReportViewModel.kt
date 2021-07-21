@@ -4,16 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.github.mikephil.charting.data.PieEntry
+import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.query.Income
 import com.rh.heji.data.db.query.IncomeTimeSurplus
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.utlis.KeyValue
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.reflect.KVariance
 
 class ReportViewModel : BaseViewModel() {
 
@@ -29,16 +32,12 @@ class ReportViewModel : BaseViewModel() {
     val reportBillsList: LiveData<MutableList<IncomeTimeSurplus>>
         get() = reportBillsLiveData
 
-    private var everyNodeIncomeExpenditureLiveData = MutableLiveData<MutableList<Bill>>()
-    val everyNodeIncomeExpenditure: LiveData<MutableList<Bill>>
-        get() = everyNodeIncomeExpenditureLiveData
-
-
-    init {
-
-    }
-
-    var isAllYear: Boolean = false
+    private var everyNodeIncomeExpenditureLiveData = MutableLiveData<KeyValue>()
+    val everyNodeIncomeExpenditure: LiveData<KeyValue>
+        get() {
+            expenditure()
+            return everyNodeIncomeExpenditureLiveData
+        }
 
     /**
      * 是否是全年统计
@@ -55,22 +54,17 @@ class ReportViewModel : BaseViewModel() {
     var totalType = BillType.EXPENDITURE.type()
         set(value) {
             field = value
-            isAllYear = true
             LogUtils.d("Type $value")
         }
 
     /**
      * 日期
      */
-    var yearMonth: YearMonth = YearMonth(
-        Calendar.getInstance().get(Calendar.YEAR),
-        Calendar.getInstance().get(Calendar.MONTH) + 1
-    )
+    var yearMonth: YearMonth = currentYearMonth
         set(value) {
             field = value
-            isAllYear = false
             monthIncomeExpenditure()
-            monthEveryNodeIncomeExpenditure()
+            expenditure()
             monthCategoryProportion()
             monthReportList()
 
@@ -79,26 +73,56 @@ class ReportViewModel : BaseViewModel() {
 
     fun refreshData(type: Int) {
         monthIncomeExpenditure()
-        monthEveryNodeIncomeExpenditure()
+        expenditure()
         monthCategoryProportion()
         monthReportList()
     }
+
     private fun monthIncomeExpenditure() {
         launchIO({
             val monthIncomeExpenditureData =
-                  AppDatabase.getInstance().billDao().sumMonthIncomeExpenditure(yearMonth.toString())
+                AppDatabase.getInstance().billDao().sumMonthIncomeExpenditure(yearMonth.toString())
             incomeExpenditureLiveData.postValue(monthIncomeExpenditureData)
         }, {})
 
     }
 
-    private fun monthEveryNodeIncomeExpenditure() {
+    fun income() {
         launchIO({
-            everyNodeIncomeExpenditureLiveData.postValue(
-                  AppDatabase.getInstance().billDao().findByMonth(yearMonth.toString())
+            val keyValue = KeyValue(
+                BillType.INCOME.type(),
+                AppDatabase.getInstance().billDao()
+                    .findByMonth(yearMonth.toString(), BillType.INCOME.type())
             )
+            everyNodeIncomeExpenditureLiveData.postValue(keyValue)
         }, {})
+    }
 
+    fun expenditure() {
+        launchIO({
+            val keyValue = KeyValue(
+                BillType.EXPENDITURE.type(),
+                AppDatabase.getInstance().billDao()
+                    .findByMonth(yearMonth.toString(), BillType.EXPENDITURE.type())
+            )
+            everyNodeIncomeExpenditureLiveData.postValue(keyValue)
+        }, {})
+    }
+
+    fun incomeAndExpenditure() {
+        launchIO({
+            val arrays = arrayListOf(
+                AppDatabase.getInstance().billDao()
+                    .findByMonth(yearMonth.toString(), BillType.EXPENDITURE.type()),
+                AppDatabase.getInstance().billDao()
+                    .findByMonth(yearMonth.toString(), BillType.INCOME.type())
+            )
+            val keyValue = KeyValue(
+                BillType.ALL.type(),
+                arrays
+            )
+            everyNodeIncomeExpenditureLiveData.postValue(keyValue)
+        }, {})
     }
 
     /**
@@ -107,7 +131,7 @@ class ReportViewModel : BaseViewModel() {
      */
     private fun monthCategoryProportion() {
         launchIO({
-            val list =   AppDatabase.getInstance().billDao().reportCategory(-1, yearMonth.toString())
+            val list = AppDatabase.getInstance().billDao().reportCategory(-1, yearMonth.toString())
                 .stream().map {
                     return@map PieEntry(it.percentage, it.category, it.money)
                 }.collect(Collectors.toList())
@@ -133,7 +157,7 @@ class ReportViewModel : BaseViewModel() {
      */
     private fun monthReportList() {
         launchIO({
-            var data =   AppDatabase.getInstance().billDao()
+            var data = AppDatabase.getInstance().billDao()
                 .listIncomeExpSurplusByMonth(yearMonth.toString())
             reportBillsLiveData.postValue(data)
         }, {})

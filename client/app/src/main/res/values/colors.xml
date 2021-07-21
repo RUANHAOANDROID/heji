@@ -16,8 +16,11 @@
     <color name="tv_normal">#333333</color>
     <color name="expenditure">#ffff4444</color>
     <color name="expenditure_bf">#A8ff4444</color>
+    <color name="expenditure_transparent05">#80ff4444</color>
+    <color name="expenditure_transparent03">#4Dff4444</color>
     <color name="income">#ff99cc00</color>
     <color name="income_bf">#A899cc00</color>
+    <color name="income_transparent05">#8099cc00</color>
     <color name="app_text_color_light">#93A8B1</color>
     <color name="app_text_color_dark">#566974</color>
 

@@ -123,13 +123,12 @@ class BillInfoPop(
             val mainActivity = context as MainActivity
             mainActivity.lifecycleScope.launch(Dispatchers.Default) {
                 val user = getUser(AppCache.getInstance().token.tokenString)
-                if (bill.createUser == null || bill.createUser == user.username) {
-                    popClickListener?.let {
+                if (bill.createUser == user.username) {
+                    popClickListener.apply {
                         mainActivity.runOnUiThread {
-                            it.delete(bill)
+                            this.delete(bill)
                             dismiss()
                         }
-
                     }
                 } else {
                     ToastUtils.showLong("只有账单创建人有权删除该账单")

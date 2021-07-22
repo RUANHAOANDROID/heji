@@ -93,7 +93,6 @@ class CardDecoration(val padding: Int = 8) : ItemDecoration() {
             (position == adapter!!.itemCount - 1)
 
     private fun getPadding(resources: Resources): Int {
-        val size16dp = padding * 1f
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size16dp, resources.displayMetrics).toInt()
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,  padding * 1f, resources.displayMetrics).toInt()
     }
 }

@@ -3,7 +3,6 @@ package com.rh.heji.ui.report
 import android.text.SpannableString
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.github.mikephil.charting.data.*
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
@@ -22,7 +21,6 @@ import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.DividerItemDecorator
 import java.math.BigDecimal
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
@@ -53,13 +51,11 @@ class ReportFragment : BaseFragment() {
         toolBar.title = "统计"
         showYearMonthTitle(
             selected = { year, month ->
-
                 if (month == 0) {//全年
                     reportViewModel.allYear = year
                 } else {//单月
                     reportViewModel.yearMonth = YearMonth(year, month)
                 }
-
             },
             year = reportViewModel.yearMonth.year,
             month = reportViewModel.yearMonth.month,
@@ -84,7 +80,6 @@ class ReportFragment : BaseFragment() {
         initTotalTitleView()
         initTotalListView()
         reportViewModel.everyNodeIncomeExpenditure.observe(this, {
-            //setLineChartNodes(reportViewModel.yearMonth,it,BillType.EXPENDITURE)
             it.apply {
                 if (key==BillType.EXPENDITURE.type()){
                     setExpenditureLineChartNodes(reportViewModel.yearMonth, value as MutableList<Bill>)
@@ -97,8 +92,6 @@ class ReportFragment : BaseFragment() {
                     setIELineChartNodes(reportViewModel.yearMonth,expenditures = arrays[0],incomes = arrays[1])
                 }
             }
-
-
         })
         reportViewModel.categoryProportion
             .observe(this, { categoryDataList ->
@@ -184,9 +177,9 @@ class ReportFragment : BaseFragment() {
     private fun initCategoryListView() {
         binding.recyclerCategory.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerCategory.adapter = categoryTotalAdapter
-        categoryTotalAdapter.setOnItemClickListener(OnItemClickListener { adapter, view, position ->
+        categoryTotalAdapter.setOnItemClickListener { adapter, view, position ->
             val categoryItem: PieEntry = adapter.getItem(position) as PieEntry
-            val bills =   AppDatabase.getInstance().billDao().findByCategoryAndMonth(
+            val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(
                 categoryItem.label,
                 reportViewModel.yearMonth.toString(),
                 BillType.EXPENDITURE.type()
@@ -197,7 +190,7 @@ class ReportFragment : BaseFragment() {
                 .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
                 .asCustom(bottomListPop)
                 .show()
-        })
+        }
     }
 
     /**

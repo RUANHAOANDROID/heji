@@ -1,6 +1,7 @@
 package com.rh.heji.ui.report
 
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.text.SpannableString
 import android.widget.TextView
 import com.github.mikephil.charting.animation.Easing
@@ -8,6 +9,7 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.LargeValueFormatter
@@ -68,9 +70,13 @@ fun ReportFragment.lineChartStyle(lineChart: LineChart) {
     //xAxis.labelCount = 11//强制显示X 不设置则缩
     xAxis.labelRotationAngle = 45f
     lineChart.axisRight.isEnabled = false
-    lineChart.extraLeftOffset=6f
+    lineChart.extraLeftOffset = 6f
     lineChart.axisLeft.valueFormatter = LargeValueFormatter()
     lineChart.xAxis.valueFormatter = IndexAxisValueFormatter()
+}
+
+private fun lineDataSetStyle() {
+
 }
 
 private fun lineChartConvertAdapter(bills: List<Bill>, yearMonth: YearMonth): LineDataSet {
@@ -82,7 +88,7 @@ private fun lineChartConvertAdapter(bills: List<Bill>, yearMonth: YearMonth): Li
             map[x] = entry
         }
         bills.stream().map {
-            val month = DateConverters.date2Str(it.billTime)!!.split(" ")[0].split("-")[1]
+            val month = DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[1]
             map.replace(
                 month,
                 Entry(month.toFloat(), it.money.toFloat(), BillType.transform(it.type).text())
@@ -110,7 +116,7 @@ private fun lineChartConvertAdapter(bills: List<Bill>, yearMonth: YearMonth): Li
             map[x] = entry
         }
         bills.stream().map {
-            val day = DateConverters.date2Str(it.billTime)!!.split(" ")[0].split("-")[2]
+            val day = DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2]
             map.replace(
                 day,
                 Entry(day.toFloat(), it.money.toFloat(), BillType.transform(it.type).text())
@@ -125,17 +131,7 @@ private fun lineChartConvertAdapter(bills: List<Bill>, yearMonth: YearMonth): Li
 
 fun ReportFragment.setIncomeLineChartNodes(yearMonth: YearMonth, bills: List<Bill>) {
     lineChartConvertAdapter(bills, yearMonth).apply {
-        color=resources.getColor(R.color.income)
-        mode=LineDataSet.Mode.LINEAR
-        circleRadius=1f
-        circleHoleRadius=0f
-        circleColors= this.values.stream().map {
-            return@map  if (it.y>0) resources.getColor(R.color.income)
-            else resources.getColor(R.color.transparent) }.collect(Collectors.toList())
-        valueTextSize=12f
-        setValueTextColors(circleColors)
-        setDrawFilled(true)
-        fillDrawable = resources.getDrawable(R.drawable.shape_gradient_income, mainActivity.theme)
+        lineDataSetStyle(this, R.color.income, R.drawable.shape_gradient_income)
         binding.lineChart.data = LineData(this)
         binding.lineChart.invalidate()
     }
@@ -143,17 +139,7 @@ fun ReportFragment.setIncomeLineChartNodes(yearMonth: YearMonth, bills: List<Bil
 
 fun ReportFragment.setExpenditureLineChartNodes(yearMonth: YearMonth, bills: List<Bill>) {
     lineChartConvertAdapter(bills, yearMonth).apply {
-        color=resources.getColor(R.color.expenditure)
-        mode=LineDataSet.Mode.LINEAR
-        circleRadius=1f
-        circleHoleRadius=0f
-        circleColors= this.values.stream().map {
-            return@map  if (it.y>0) resources.getColor(R.color.expenditure)
-            else resources.getColor(R.color.transparent) }.collect(Collectors.toList())
-        valueTextSize=12f
-        setValueTextColors(circleColors)
-        setDrawFilled(true)
-        fillDrawable = resources.getDrawable(R.drawable.shape_gradient_expenditure, mainActivity.theme)
+        lineDataSetStyle(this, R.color.expenditure, R.drawable.shape_gradient_expenditure)
         binding.lineChart.data = LineData(this)
         binding.lineChart.invalidate()
     }
@@ -164,37 +150,34 @@ fun ReportFragment.setIELineChartNodes(
     expenditures: List<Bill>,
     incomes: List<Bill>
 ) {
-	val expenditureDataSet=lineChartConvertAdapter(expenditures, yearMonth).apply {
-
-        color=resources.getColor(R.color.expenditure)
-        mode=LineDataSet.Mode.LINEAR
-        circleRadius=1f
-        circleHoleRadius=0f
-        circleColors= this.values.stream().map {
-            return@map  if (it.y>0) resources.getColor(R.color.expenditure)
-            else resources.getColor(R.color.transparent) }.collect(Collectors.toList())
-        valueTextSize=12f
-        setValueTextColors(circleColors)
-        setDrawFilled(true)
-        fillDrawable = resources.getDrawable(R.drawable.shape_gradient_expenditure, mainActivity.theme)
-        //fillColor =resources.getColor(R.color.expenditure)
+    val expenditureDataSet = lineChartConvertAdapter(expenditures, yearMonth).apply {
+        lineDataSetStyle(this, R.color.expenditure, R.drawable.shape_gradient_expenditure)
     }
-	val incomeDataSet=lineChartConvertAdapter(incomes, yearMonth).apply {
-        color=resources.getColor(R.color.income)
-        mode=LineDataSet.Mode.LINEAR
-        circleRadius=1f
-        circleHoleRadius=0f
-        circleColors= this.values.stream().map {
-            return@map  if (it.y>0) resources.getColor(R.color.income)
-            else resources.getColor(R.color.transparent) }.collect(Collectors.toList())
-        valueTextSize=12f
-        setValueTextColors(circleColors)
-        setDrawFilled(true)
-        fillDrawable = resources.getDrawable(R.drawable.shape_gradient_income, mainActivity.theme)
-        //fillColor =resources.getColor(R.color.income)
+    val incomeDataSet = lineChartConvertAdapter(incomes, yearMonth).apply {
+        lineDataSetStyle(this, R.color.income, R.drawable.shape_gradient_income)
     }
-    binding.lineChart.data = LineData(expenditureDataSet,incomeDataSet )
+    binding.lineChart.data = LineData(expenditureDataSet, incomeDataSet)
     binding.lineChart.invalidate()
+}
+
+private fun ReportFragment.lineDataSetStyle(
+    lineDataSet: LineDataSet,
+    colorRes: Int,
+    fillDrawableRes: Int
+) {
+    lineDataSet.color = resources.getColor(colorRes,mainActivity.theme)
+    lineDataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+    lineDataSet.circleRadius = 2f
+    lineDataSet.setCircleColor(resources.getColor(colorRes,mainActivity.theme))
+    //lineDataSet.setDrawCircles(false)//开启节点小圆点 false
+    lineDataSet.valueTextSize = 8f
+    var valuesTestColors = lineDataSet.values.stream().map {
+        return@map if (it.y > 0) resources.getColor(colorRes,mainActivity.theme)
+        else resources.getColor(R.color.transparent,mainActivity.theme)
+    }.collect(Collectors.toList())
+    lineDataSet.setValueTextColors(valuesTestColors)
+    lineDataSet.setDrawFilled(true)
+    lineDataSet.fillDrawable = resources.getDrawable(fillDrawableRes, mainActivity.theme)
 }
 
 /**

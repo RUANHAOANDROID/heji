@@ -1,5 +1,6 @@
 package com.rh.heji.network
 
+import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
@@ -24,6 +25,10 @@ interface HeJiServer {
 
     @POST("user/auth")
     fun auth(@Query("token") token: String): Call<BaseResponse<String>>
+
+    @POST("book/create")
+    fun bookCreate(@Body book: Book): Call<BaseResponse<String>>
+
 
     @POST("bill/add")
     fun saveBill(@Body entity: BillEntity): Call<BaseResponse<String>>

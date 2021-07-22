@@ -1,6 +1,7 @@
 package com.rh.heji.network
 
 import com.rh.heji.AppCache
+import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
@@ -19,7 +20,6 @@ class HejiNetwork {
 
     suspend fun register(registerUser:RegisterUser) = hejiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) = hejiServer.login(username, password).await()
-
     suspend fun billPush(billEntity: BillEntity) = hejiServer.saveBill(billEntity).await()
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
     suspend fun billUpdate(billEntity: BillEntity) = hejiServer.updateBill(billEntity).await()

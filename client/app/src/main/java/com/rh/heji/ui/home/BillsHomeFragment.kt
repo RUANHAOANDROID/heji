@@ -164,7 +164,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         //binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity(),LinearLayoutManager.HORIZONTAL,false));
         binding.homeRecycler.layoutManager = LinearLayoutManager(mainActivity)
         binding.homeRecycler.adapter = adapter
-        binding.homeRecycler.addItemDecoration(CardDecoration())
+        binding.homeRecycler.addItemDecoration(CardDecoration(8))
         class Diff : ItemCallback<BaseNode>() {
             override fun areItemsTheSame(oldItem: BaseNode, newItem: BaseNode): Boolean {
                 if (oldItem is DayIncomeNode && newItem is DayIncomeNode) {

@@ -8,7 +8,12 @@ import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service("BookService")
 public class BookServiceImpl extends BaseMongoTemplate implements BookService {
@@ -16,26 +21,6 @@ public class BookServiceImpl extends BaseMongoTemplate implements BookService {
 
     public BookServiceImpl(MBookRepository mBookRepository) {
         this.mBookRepository = mBookRepository;
-    }
-
-    @Override
-    public void addBook(MBook book) {
-        mBookRepository.save(book);
-    }
-
-    @Override
-    public void removeBook(String _id) {
-        mBookRepository.deleteById(_id);
-    }
-
-    @Override
-    public MBook findBook(String _id) {
-        return mBookRepository.findById(_id).get();
-    }
-
-    @Override
-    public MBook updateBook(MBook book) {
-        return mBookRepository.save(book);
     }
 
     @Override
@@ -47,4 +32,50 @@ public class BookServiceImpl extends BaseMongoTemplate implements BookService {
             indexOpe.ensureIndex(new CompoundIndexDefinition(new Document("_id", "hashed")));
         }
     }
+
+    @Override
+    public void createBook(MBook book) {
+        mBookRepository.save(book);
+    }
+
+    @Override
+    public void removeBook(String _id) {
+        mBookRepository.delete(new MBook().set_id(_id));
+    }
+
+    @Override
+    public MBook findBook(String _id) {
+        return mBookRepository.findById(_id).get();
+    }
+
+    @Override
+    public List<MBook> findBooks(String userId) {
+        Query query = Query.query(Criteria.where("users").is(userId));
+        List<MBook> myBooks =getMongoTemplate().find(query,  MBook.class);
+        //List<MBook> books2= mBookRepository.findMBookByUsers(userId);
+        return myBooks;
+    }
+
+    @Override
+    public MBook updateBook(MBook book) {
+        return mBookRepository.save(book);
+    }
+
+    @Override
+    public void addBookUser(MBook book, String userId) {
+        Query query = Query.query(Criteria.where("_id").is(book.get_id()));
+        Update update = new Update();
+        update.addToSet("users", userId);
+        getMongoTemplate().upsert(query, update, MBook.class);
+    }
+
+    @Override
+    public void removeBookUser(MBook book, String userId) {
+        Query query = Query.query(Criteria.where("_id").is(book.get_id()));
+        Update update = new Update();
+        update.pull("users", userId);
+        getMongoTemplate().updateFirst(query, update, MBook.class);
+    }
+
+
 }

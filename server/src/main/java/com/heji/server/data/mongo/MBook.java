@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.List;
+
 import static com.heji.server.data.mongo.MBook.COLLATION_NAME;
 
 /**
@@ -20,10 +22,13 @@ public class MBook {
     public static final String COLLATION_NAME = "book";
     @Id
     String _id;
-    @Field("book_name")
-    String bookName;
+    @Field("name")
+    String name;
 
     String createUser;
 
-    byte[] cover;
+    String type;
+    List<String> users;
+    byte[] banner;
+
 }

@@ -74,6 +74,16 @@ public class BillServiceImpl extends BaseMongoTemplate implements BillService {
     }
 
     @Override
+    public String removeImage(String _id, String imageId) {
+        Criteria cr = Criteria.where("_id").is(_id);
+        Query query = Query.query(cr);
+        Update update = new Update().pull("images", imageId);
+        // 执行更新，如果没有找到匹配查询的文档，则创建并插入一个新文档
+        UpdateResult updateResult = getMongoTemplate().updateFirst(query, update, MBill.class, BILL);
+        return _id;
+    }
+
+    @Override
     public List<MBill> getBills(long startDate, long endDate) {
         if (startDate == 0 || endDate == 0)
             return mBillRepository.findAll();

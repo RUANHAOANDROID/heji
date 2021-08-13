@@ -2,6 +2,7 @@ package com.rh.heji.data.db
 
 import androidx.room.*
 import com.rh.heji.AppCache
+import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.mongo.ObjectId
@@ -13,37 +14,37 @@ import java.util.*
  * Author: 锅得铁
  * #
  */
-@Entity(tableName = "bill",    foreignKeys = [ForeignKey(
-    entity = Book::class,
-    parentColumns = [Book.COLUMN_ID],
-    childColumns = [Bill.COLUMN_BOOK_ID],
-    onDelete = ForeignKey.CASCADE,
-    onUpdate = ForeignKey.CASCADE
-)],indices = [Index(value = ["id","book_id"],unique = true)])
+@Entity(
+    tableName = "bill", foreignKeys = [ForeignKey(
+        entity = Book::class,
+        parentColumns = [Book.COLUMN_ID],
+        childColumns = [Bill.COLUMN_BOOK_ID],
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE
+    )], indices = [Index(value = ["id", "book_id"], unique = true)]
+)
 data class Bill(
     @PrimaryKey
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
 
     @ColumnInfo(name = COLUMN_BOOK_ID)
-    var bookId:String=AppCache.getInstance().currentBook.id!!,
+    var bookId: String = AppCache.getInstance().currentBook.id!!,
     /**
      * 钱
      */
     @TypeConverters(MoneyConverters::class)
-    @ColumnInfo(name = "money")
     var money: BigDecimal = BigDecimal.ZERO,
 
     /**
      * 收支类型 s|z
      */
-    @ColumnInfo(name = "type")
-    var type: Int = 0,
+    var type: Int = BillType.EXPENDITURE.type(),
 
     /**
      * 类别
      */
-    @ColumnInfo(name = "category")
+
     var category: String? = null,
 
     /**
@@ -57,29 +58,25 @@ data class Bill(
      * 创建时间
      */
     @ColumnInfo(name = "create_time")
-    var createTime //记账时间
-    : Long = 0,
+    var createTime: Long? = 0,
 
     /**
      * 更新时间
      */
     @ColumnInfo(name = "update_time")
-    var updateTime //记账时间
-    : Long = 0,
+    var updateTime: Long? = 0,
 
     /**
      * 用户标签，费用产生人
      */
-    @ColumnInfo(name = "dealer")
     var dealer: String? = null,
 
     @ColumnInfo(name = "create_user")
-    var createUser: String=AppCache.getInstance().currentUser.username,
+    var createUser: String = AppCache.getInstance().currentUser.username,
 
     /**
      * 备注
      */
-    @ColumnInfo(name = "remark")
     var remark: String? = null,
 
     @ColumnInfo(name = "img_count")
@@ -89,7 +86,6 @@ data class Bill(
     var synced: Int = STATUS.NOT_SYNCED
 
 ) {
-
     @Ignore
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

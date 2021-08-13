@@ -3,6 +3,7 @@ package com.rh.heji.ui.report
 import android.text.SpannableString
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.LogUtils
 import com.github.mikephil.charting.data.*
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
@@ -11,7 +12,8 @@ import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.query.IncomeTimeSurplus
+import com.rh.heji.data.db.d2o.BillTotal
+import com.rh.heji.data.db.d2o.IncomeTimeSurplus
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.report.pop.BottomListPop
@@ -35,7 +37,7 @@ class ReportFragment : BaseFragment() {
     lateinit var binding: FragmentReportBinding
 
     val colors = ColorUtils.groupColors()
-
+    private lateinit var emptyView: View
     override fun onStart() {
         super.onStart()
         reportViewModel.yearMonth = mainActivity.mainViewModel.globalYearMonth
@@ -62,34 +64,45 @@ class ReportFragment : BaseFragment() {
             showAllYear = true
         )
     }
+
     override fun initView(rootView: View) {
         binding = FragmentReportBinding.bind(rootView)
         incomeExpenditureInfo()
         lineChartStyle(binding.lineChart)
         binding.tvTypeExpenditure.setOnClickListener {
             reportViewModel.expenditure()
-            lineChartSelectType(0) }
+            lineChartSelectType(0)
+        }
         binding.tvTypeIncome.setOnClickListener {
             reportViewModel.income()
-            lineChartSelectType(1) }
+            lineChartSelectType(1)
+        }
         binding.tvTypeAll.setOnClickListener {
             reportViewModel.incomeAndExpenditure()
-            lineChartSelectType(2) }
+            lineChartSelectType(2)
+        }
         pieChartStyle(binding.pieChartCategory)
         initCategoryListView()
         initTotalTitleView()
         initTotalListView()
         reportViewModel.everyNodeIncomeExpenditure.observe(this, {
             it.apply {
-                if (key==BillType.EXPENDITURE.type()){
-                    setExpenditureLineChartNodes(reportViewModel.yearMonth, value as MutableList<Bill>)
+                if (key == BillType.EXPENDITURE.type()) {
+                    setExpenditureLineChartNodes(
+                        reportViewModel.yearMonth,
+                        value as MutableList<BillTotal>
+                    )
                 }
-                if (key ==BillType.INCOME.type()){
-                    setIncomeLineChartNodes(reportViewModel.yearMonth,value as MutableList<Bill>)
+                if (key == BillType.INCOME.type()) {
+                    setIncomeLineChartNodes(reportViewModel.yearMonth, value as MutableList<BillTotal>)
                 }
-                if (key==BillType.ALL.type()){
-                    val arrays= value as ArrayList<MutableList<Bill>>
-                    setIELineChartNodes(reportViewModel.yearMonth,expenditures = arrays[0],incomes = arrays[1])
+                if (key == BillType.ALL.type()) {
+                    val arrays = value as ArrayList<MutableList<BillTotal>>
+                    setIELineChartNodes(
+                        reportViewModel.yearMonth,
+                        expenditures = arrays[0],
+                        incomes = arrays[1]
+                    )
                 }
             }
         })
@@ -108,7 +121,8 @@ class ReportFragment : BaseFragment() {
             }
         })
         binding.emptyStub.setOnInflateListener { stub, inflated ->
-
+            emptyView =inflated
+            LogUtils.d("empty view inflated")
         }
     }
 
@@ -117,58 +131,58 @@ class ReportFragment : BaseFragment() {
      */
     private fun incomeExpenditureInfo() {
         reportViewModel.incomeExpenditure.observe(this,
-        {
+            {
 
-            it?.let { money ->
-                if (money.income == null) money.income = MoneyConverters.ZERO_00()
-                if (money.expenditure == null) money.expenditure = MoneyConverters.ZERO_00()
-                binding.tvIncomeValue.text = money.income.toString()
-                binding.tvExpenditureValue.text = money.expenditure.toString()
-                val jieYu = money.income!!.minus(money.expenditure!!)//结余
-                binding.tvJieYuValue.text = jieYu.toPlainString()
-                val dayCount = MyTimeUtils.lastDayOfMonth(
-                    reportViewModel.yearMonth.year,
-                    reportViewModel.yearMonth.month
-                )
-                    .split("-")[2].toInt()//月份天数
-                binding.tvDayAVGValue.text =
-                    jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
-
-                showEmptyView()
-
-                //----列表标题年/月平均值
-                var avg = if (reportViewModel.yearMonth.isYear()) {
-                    var month12 = BigDecimal(12)
-                    "月均支出：${
-                        money.expenditure!!.divide(
-                            month12,
-                            2,
-                            BigDecimal.ROUND_DOWN
-                        )
-                    }  收入：${money.expenditure!!.div(month12)}"
-                } else {
-                    val monthDayCount = BigDecimal(
-                        MyTimeUtils.getMonthLastDay(
-                            reportViewModel.yearMonth.year,
-                            reportViewModel.yearMonth.month
-                        )
+                it?.let { money ->
+                    if (money.income == null) money.income = MoneyConverters.ZERO_00()
+                    if (money.expenditure == null) money.expenditure = MoneyConverters.ZERO_00()
+                    binding.tvIncomeValue.text = money.income.toString()
+                    binding.tvExpenditureValue.text = money.expenditure.toString()
+                    val jieYu = money.income!!.minus(money.expenditure!!)//结余
+                    binding.tvJieYuValue.text = jieYu.toPlainString()
+                    val dayCount = MyTimeUtils.lastDayOfMonth(
+                        reportViewModel.yearMonth.year,
+                        reportViewModel.yearMonth.month
                     )
-                    "日均支出：${
-                        money.expenditure!!.divide(
-                            monthDayCount,
-                            2,
-                            BigDecimal.ROUND_DOWN
-                        )
-                    }  收入：${
-                        money.income!!.div(
-                            monthDayCount
-                        )
-                    }"
-                }
-                binding.tvYearMonthAVG.text = SpannableString.valueOf(avg)
-            }
+                        .split("-")[2].toInt()//月份天数
+                    binding.tvDayAVGValue.text =
+                        jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
 
-        })
+                    showEmptyView()
+
+                    //----列表标题年/月平均值
+                    var avg = if (reportViewModel.yearMonth.isYear()) {
+                        var month12 = BigDecimal(12)
+                        "月均支出：${
+                            money.expenditure!!.divide(
+                                month12,
+                                2,
+                                BigDecimal.ROUND_DOWN
+                            )
+                        }  收入：${money.expenditure!!.div(month12)}"
+                    } else {
+                        val monthDayCount = BigDecimal(
+                            MyTimeUtils.getMonthLastDay(
+                                reportViewModel.yearMonth.year,
+                                reportViewModel.yearMonth.month
+                            )
+                        )
+                        "日均支出：${
+                            money.expenditure!!.divide(
+                                monthDayCount,
+                                2,
+                                BigDecimal.ROUND_DOWN
+                            )
+                        }  收入：${
+                            money.income!!.div(
+                                monthDayCount
+                            )
+                        }"
+                    }
+                    binding.tvYearMonthAVG.text = SpannableString.valueOf(avg)
+                }
+
+            })
     }
 
     /**
@@ -181,7 +195,7 @@ class ReportFragment : BaseFragment() {
             val categoryItem: PieEntry = adapter.getItem(position) as PieEntry
             val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(
                 categoryItem.label,
-                reportViewModel.yearMonth.toString(),
+                reportViewModel.yearMonth.toYearMonth(),
                 BillType.EXPENDITURE.type()
             )
             val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
@@ -200,23 +214,26 @@ class ReportFragment : BaseFragment() {
         //basic
         val linearLayoutManager = LinearLayoutManager(activity)
         linearLayoutManager.isSmoothScrollbarEnabled = true
-        binding.recyclerBaobiao.layoutManager = linearLayoutManager
-        binding.recyclerBaobiao.adapter = monthYearBillsAdapter
-        binding.recyclerBaobiao.setHasFixedSize(true)
-        binding.recyclerBaobiao.isNestedScrollingEnabled = false
-        binding.recyclerBaobiao.addItemDecoration(
-            DividerItemDecorator(
-                resources.getDrawable(
-                    R.drawable.inset_recyclerview_divider,
-                    mainActivity.theme
+        binding.recyclerBaobiao.apply {
+            layoutManager = linearLayoutManager
+            adapter = monthYearBillsAdapter
+            setHasFixedSize(true)
+            isNestedScrollingEnabled = false
+            addItemDecoration(
+                DividerItemDecorator(
+                    resources.getDrawable(
+                        R.drawable.inset_recyclerview_divider,
+                        mainActivity.theme
+                    )
                 )
             )
-        )
+        }
+
         //listener
         monthYearBillsAdapter.setOnItemClickListener { adapter, view, position ->
             val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
             val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
-            val bills =   AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
+            val bills = AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
             val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
             bottomListPop.titleView.text = "$yearMonthDay (${bills.size}条)"
             XPopup.Builder(requireContext())
@@ -232,18 +249,17 @@ class ReportFragment : BaseFragment() {
      */
     private fun initTotalTitleView() {
         val year = reportViewModel.yearMonth.isYear()
-        if (year) {
-            binding.layoutTotalList.tvDate.text = "月份"
-        }
-        val textColor = resources.getColor(
-            R.color.textRemark,
-            mainActivity.theme
-        )
-        binding.layoutTotalList.tvSurplus.setTextColor(textColor)
-        binding.layoutTotalList.tvIncome.setTextColor(textColor)
-        binding.layoutTotalList.tvExpenditure.setTextColor(textColor)
-        binding.layoutTotalList.tvDate.setTextColor(textColor)
 
+        binding.layoutTotalList.apply {
+            if (year) {
+                tvDate.text = "月份"
+            }
+            val textColor = resources.getColor(R.color.textRemark, mainActivity.theme)
+            tvSurplus.setTextColor(textColor)
+            tvIncome.setTextColor(textColor)
+            tvExpenditure.setTextColor(textColor)
+            tvDate.setTextColor(textColor)
+        }
     }
 
     /**
@@ -252,46 +268,55 @@ class ReportFragment : BaseFragment() {
     private fun showEmptyView() {
         if (binding.tvDayAVGValue.text.equals("0.00")) {
             binding.emptyStub.visibility = View.VISIBLE
+//            if (this::emptyView.isInitialized) {
+//                emptyView.visibility =View.VISIBLE
+//            }
             binding.nestedSccrollView.visibility = View.GONE
         } else {
             binding.emptyStub.visibility = View.GONE
+//            if (this::emptyView.isInitialized) {
+//                emptyView.visibility =View.GONE
+//            }
             binding.nestedSccrollView.visibility = View.VISIBLE
         }
     }
-    private fun lineChartSelectType(type:Int){
+
+    private fun lineChartSelectType(type: Int) {
         binding.tvTypeExpenditure.apply {
-            setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
-            setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
+            setBackgroundColor(resources.getColor(R.color.transparent, mainActivity.theme))
+            setTextColor(resources.getColor(R.color.textRemark, mainActivity.theme))
         }
 
         binding.tvTypeIncome.apply {
-            setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
-            setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
+            setBackgroundColor(resources.getColor(R.color.transparent, mainActivity.theme))
+            setTextColor(resources.getColor(R.color.textRemark, mainActivity.theme))
         }
 
 
         binding.tvTypeAll.apply {
-            setBackgroundColor(resources.getColor(R.color.transparent,mainActivity.theme))
-            setTextColor(resources.getColor(R.color.textRemark,mainActivity.theme))
+            setBackgroundColor(resources.getColor(R.color.transparent, mainActivity.theme))
+            setTextColor(resources.getColor(R.color.textRemark, mainActivity.theme))
         }
 
-        when(type){
-            0-> {
+        when (type) {
+            0 -> {
                 binding.tvTypeExpenditure.apply {
-                    background = resources.getDrawable(R.drawable.shape_tag_left_blue,mainActivity.theme)
-                    setTextColor(resources.getColor(R.color.white,mainActivity.theme))
+                    background =
+                        resources.getDrawable(R.drawable.shape_tag_left_blue, mainActivity.theme)
+                    setTextColor(resources.getColor(R.color.white, mainActivity.theme))
                 }
             }
-            1-> {
-                    binding.tvTypeIncome.apply {
-                    setBackgroundColor(resources.getColor(R.color.colorPrimary,mainActivity.theme))
-                    setTextColor(resources.getColor(R.color.white,mainActivity.theme))
+            1 -> {
+                binding.tvTypeIncome.apply {
+                    setBackgroundColor(resources.getColor(R.color.colorPrimary, mainActivity.theme))
+                    setTextColor(resources.getColor(R.color.white, mainActivity.theme))
                 }
             }
             2 -> {
                 binding.tvTypeAll.apply {
-                    background = resources.getDrawable(R.drawable.shape_tag_right_blue,mainActivity.theme)
-                    setTextColor(resources.getColor(R.color.white,mainActivity.theme))
+                    background =
+                        resources.getDrawable(R.drawable.shape_tag_right_blue, mainActivity.theme)
+                    setTextColor(resources.getColor(R.color.white, mainActivity.theme))
                 }
             }
         }

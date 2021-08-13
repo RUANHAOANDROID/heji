@@ -16,7 +16,7 @@ import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.query.Income
+import com.rh.heji.data.db.d2o.Income
 import com.rh.heji.databinding.FragmentBillsHomeBinding
 import com.rh.heji.databinding.LayoutBillsTopBinding
 import com.rh.heji.ui.base.BaseFragment

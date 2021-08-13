@@ -4,7 +4,7 @@ import androidx.core.content.ContextCompat
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.rh.heji.R
-import com.rh.heji.data.db.query.IncomeTimeSurplus
+import com.rh.heji.data.db.d2o.IncomeTimeSurplus
 import com.rh.heji.databinding.ItemMonthYearBillBinding
 import java.math.BigDecimal
 

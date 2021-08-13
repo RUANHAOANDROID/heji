@@ -1,7 +1,6 @@
 package com.rh.heji.ui.report
 
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.text.SpannableString
 import android.widget.TextView
 import com.github.mikephil.charting.animation.Easing
@@ -9,7 +8,6 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.LargeValueFormatter
@@ -20,11 +18,9 @@ import com.github.mikephil.charting.utils.MPPointF
 import com.rh.heji.R
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.BillType
-import com.rh.heji.data.converters.DateConverters
-import com.rh.heji.data.db.Bill
+import com.rh.heji.data.db.d2o.BillTotal
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
-import java.math.BigDecimal
 import java.util.*
 import java.util.stream.Collectors
 
@@ -79,7 +75,7 @@ private fun lineDataSetStyle() {
 
 }
 
-private fun lineChartConvertAdapter(bills: List<Bill>, yearMonth: YearMonth): LineDataSet {
+private fun lineChartConvertAdapter(bills: List<BillTotal>, yearMonth: YearMonth): LineDataSet {
     val map = mutableMapOf<String, Entry>()
     if (yearMonth.isYear()) {
         for (day in 1..12) {
@@ -88,7 +84,7 @@ private fun lineChartConvertAdapter(bills: List<Bill>, yearMonth: YearMonth): Li
             map[x] = entry
         }
         bills.stream().map {
-            val month = DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[1]
+            val month = it.time.split("-")[1]
             map.replace(
                 month,
                 Entry(month.toFloat(), it.money.toFloat(), BillType.transform(it.type).text())
@@ -100,14 +96,13 @@ private fun lineChartConvertAdapter(bills: List<Bill>, yearMonth: YearMonth): Li
             )
         }.collect(Collectors.toList())
         val entries = map.values.toMutableList()
-        return LineDataSet(entries, BillType.transform(bills[0].type).text())
+        return LineDataSet(entries, parserBillsType(bills))
     } else {
         var dayCount = MyTimeUtils.getMonthLastDay(
             yearMonth.year,
             yearMonth.month
         )
-
-        if (currentYearMonth == yearMonth) {
+        if (currentYearMonth == yearMonth && bills.last().time.split("-")[2].toInt() < currentYearMonth.day) {
             dayCount = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         }
         for (day in 1..dayCount) {
@@ -116,7 +111,7 @@ private fun lineChartConvertAdapter(bills: List<Bill>, yearMonth: YearMonth): Li
             map[x] = entry
         }
         bills.stream().map {
-            val day = DateConverters.date2Str(it.billTime).split(" ")[0].split("-")[2]
+            val day = it.time.split("-")[2]
             map.replace(
                 day,
                 Entry(day.toFloat(), it.money.toFloat(), BillType.transform(it.type).text())
@@ -125,11 +120,14 @@ private fun lineChartConvertAdapter(bills: List<Bill>, yearMonth: YearMonth): Li
         }.collect(Collectors.toList())
 
         val entries = map.values.toMutableList()
-        return LineDataSet(entries, BillType.transform(bills[0].type).text())
+        return LineDataSet(entries, parserBillsType(bills))
     }
 }
 
-fun ReportFragment.setIncomeLineChartNodes(yearMonth: YearMonth, bills: List<Bill>) {
+private fun parserBillsType(bills: List<BillTotal>) =
+    if (bills.isEmpty()) "" else BillType.transform(bills[0].type).text()
+
+fun ReportFragment.setIncomeLineChartNodes(yearMonth: YearMonth, bills: List<BillTotal>) {
     lineChartConvertAdapter(bills, yearMonth).apply {
         lineDataSetStyle(this, R.color.income, R.drawable.shape_gradient_income)
         binding.lineChart.data = LineData(this)
@@ -137,7 +135,7 @@ fun ReportFragment.setIncomeLineChartNodes(yearMonth: YearMonth, bills: List<Bil
     }
 }
 
-fun ReportFragment.setExpenditureLineChartNodes(yearMonth: YearMonth, bills: List<Bill>) {
+fun ReportFragment.setExpenditureLineChartNodes(yearMonth: YearMonth, bills: List<BillTotal>) {
     lineChartConvertAdapter(bills, yearMonth).apply {
         lineDataSetStyle(this, R.color.expenditure, R.drawable.shape_gradient_expenditure)
         binding.lineChart.data = LineData(this)
@@ -147,8 +145,8 @@ fun ReportFragment.setExpenditureLineChartNodes(yearMonth: YearMonth, bills: Lis
 
 fun ReportFragment.setIELineChartNodes(
     yearMonth: YearMonth,
-    expenditures: List<Bill>,
-    incomes: List<Bill>
+    expenditures: List<BillTotal>,
+    incomes: List<BillTotal>
 ) {
     val expenditureDataSet = lineChartConvertAdapter(expenditures, yearMonth).apply {
         lineDataSetStyle(this, R.color.expenditure, R.drawable.shape_gradient_expenditure)
@@ -165,15 +163,15 @@ private fun ReportFragment.lineDataSetStyle(
     colorRes: Int,
     fillDrawableRes: Int
 ) {
-    lineDataSet.color = resources.getColor(colorRes,mainActivity.theme)
+    lineDataSet.color = resources.getColor(colorRes, mainActivity.theme)
     lineDataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
     lineDataSet.circleRadius = 2f
-    lineDataSet.setCircleColor(resources.getColor(colorRes,mainActivity.theme))
+    lineDataSet.setCircleColor(resources.getColor(colorRes, mainActivity.theme))
     //lineDataSet.setDrawCircles(false)//开启节点小圆点 false
     lineDataSet.valueTextSize = 8f
     var valuesTestColors = lineDataSet.values.stream().map {
-        return@map if (it.y > 0) resources.getColor(colorRes,mainActivity.theme)
-        else resources.getColor(R.color.transparent,mainActivity.theme)
+        return@map if (it.y > 0) resources.getColor(colorRes, mainActivity.theme)
+        else resources.getColor(R.color.transparent, mainActivity.theme)
     }.collect(Collectors.toList())
     lineDataSet.setValueTextColors(valuesTestColors)
     lineDataSet.setDrawFilled(true)

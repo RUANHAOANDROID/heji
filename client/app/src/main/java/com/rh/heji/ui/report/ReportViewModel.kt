@@ -7,16 +7,14 @@ import com.github.mikephil.charting.data.PieEntry
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
-import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.query.Income
-import com.rh.heji.data.db.query.IncomeTimeSurplus
+import com.rh.heji.data.db.d2o.Income
+import com.rh.heji.data.db.d2o.IncomeTimeSurplus
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.KeyValue
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
 import java.util.*
 import java.util.stream.Collectors
-import kotlin.reflect.KVariance
 
 class ReportViewModel : BaseViewModel() {
 
@@ -81,7 +79,7 @@ class ReportViewModel : BaseViewModel() {
     private fun monthIncomeExpenditure() {
         launchIO({
             val monthIncomeExpenditureData =
-                AppDatabase.getInstance().billDao().sumMonthIncomeExpenditure(yearMonth.toString())
+                AppDatabase.getInstance().billDao().sumMonthIncomeExpenditure(yearMonth.toYearMonth())
             incomeExpenditureLiveData.postValue(monthIncomeExpenditureData)
         }, {})
 
@@ -92,7 +90,7 @@ class ReportViewModel : BaseViewModel() {
             val keyValue = KeyValue(
                 BillType.INCOME.type(),
                 AppDatabase.getInstance().billDao()
-                    .findByMonth(yearMonth.toString(), BillType.INCOME.type())
+                    .sumByMonth(yearMonth.toYearMonth(), BillType.INCOME.type())
             )
             everyNodeIncomeExpenditureLiveData.postValue(keyValue)
         }, {})
@@ -100,12 +98,13 @@ class ReportViewModel : BaseViewModel() {
 
     fun expenditure() {
         launchIO({
-            val keyValue = KeyValue(
+            val data = KeyValue(
                 BillType.EXPENDITURE.type(),
                 AppDatabase.getInstance().billDao()
-                    .findByMonth(yearMonth.toString(), BillType.EXPENDITURE.type())
+                    .sumByMonth(yearMonth.toYearMonth(), BillType.EXPENDITURE.type())
             )
-            everyNodeIncomeExpenditureLiveData.postValue(keyValue)
+            everyNodeIncomeExpenditureLiveData.postValue(data)
+            LogUtils.d(data)
         }, {})
     }
 
@@ -113,15 +112,16 @@ class ReportViewModel : BaseViewModel() {
         launchIO({
             val arrays = arrayListOf(
                 AppDatabase.getInstance().billDao()
-                    .findByMonth(yearMonth.toString(), BillType.EXPENDITURE.type()),
+                    .sumByMonth(yearMonth.toYearMonth(), BillType.EXPENDITURE.type()),
                 AppDatabase.getInstance().billDao()
-                    .findByMonth(yearMonth.toString(), BillType.INCOME.type())
+                    .sumByMonth(yearMonth.toYearMonth(), BillType.INCOME.type())
             )
-            val keyValue = KeyValue(
+            val data = KeyValue(
                 BillType.ALL.type(),
                 arrays
             )
-            everyNodeIncomeExpenditureLiveData.postValue(keyValue)
+            everyNodeIncomeExpenditureLiveData.postValue(data)
+            LogUtils.d()
         }, {})
     }
 
@@ -131,7 +131,7 @@ class ReportViewModel : BaseViewModel() {
      */
     private fun monthCategoryProportion() {
         launchIO({
-            val list = AppDatabase.getInstance().billDao().reportCategory(-1, yearMonth.toString())
+            val list = AppDatabase.getInstance().billDao().reportCategory(-1, yearMonth.toYearMonth())
                 .stream().map {
                     return@map PieEntry(it.percentage, it.category, it.money)
                 }.collect(Collectors.toList())
@@ -158,7 +158,7 @@ class ReportViewModel : BaseViewModel() {
     private fun monthReportList() {
         launchIO({
             var data = AppDatabase.getInstance().billDao()
-                .listIncomeExpSurplusByMonth(yearMonth.toString())
+                .listIncomeExpSurplusByMonth(yearMonth.toYearMonth())
             reportBillsLiveData.postValue(data)
         }, {})
 

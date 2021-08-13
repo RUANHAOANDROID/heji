@@ -47,7 +47,7 @@ class BillInfoPop(
     fun setBill() {
         binding.tvMonney.text = bill.money.toString()
         binding.tvType.text = bill.category
-        binding.tvRecordTime.text = TimeUtils.millis2String(bill.createTime)
+        binding.tvRecordTime.text = bill.createTime?.let { TimeUtils.millis2String(it) }
         binding.tvTicketTime.text = DateConverters.date2Str(bill.billTime)
         binding.rePeople.text = bill.dealer
     }

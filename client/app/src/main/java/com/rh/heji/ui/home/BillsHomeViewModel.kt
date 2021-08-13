@@ -9,7 +9,7 @@ import com.chad.library.adapter.base.entity.node.BaseNode
 import com.rh.heji.AppCache
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.BillDao
-import com.rh.heji.data.db.query.Income
+import com.rh.heji.data.db.d2o.Income
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
@@ -33,7 +33,7 @@ class BillsHomeViewModel : BaseViewModel() {
 
             var monthEveryDayIncome = billDao.findEveryDayIncomeByMonth(
                 AppCache.getInstance().currentBook.id,
-                selectYearMonth.toString()
+                selectYearMonth.toYearMonth()
             )
             var listDayNodes = mutableListOf<BaseNode>()
             monthEveryDayIncome.forEach { dayIncome ->
@@ -64,6 +64,6 @@ class BillsHomeViewModel : BaseViewModel() {
 
     fun getIncomeExpense(): LiveData<Income> {
         LogUtils.d("Between by time:$selectYearMonth")
-        return Transformations.distinctUntilChanged(billDao.sumIncome(selectYearMonth.toString()))
+        return Transformations.distinctUntilChanged(billDao.sumIncome(selectYearMonth.toYearMonth()))
     }
 }

@@ -30,7 +30,7 @@ class CalendarNoteViewModule : BaseViewModel() {
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
-            var everyDayIncome = billDao.findEveryDayIncomeByMonth(AppCache.getInstance().currentBook.id,selectYearMonth.toString())
+            var everyDayIncome = billDao.findEveryDayIncomeByMonth(AppCache.getInstance().currentBook.id,selectYearMonth.toYearMonth())
             everyDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
                 if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {

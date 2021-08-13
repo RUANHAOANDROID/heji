@@ -1,5 +1,7 @@
 package com.rh.heji.data.db
 
+import com.rh.heji.AppCache
+
 /**
  * 狀態
  */
@@ -11,5 +13,12 @@ object STATUS {
 }
 
 //----條件
+const val YEAR = "%Y"
+const val MONTH = "%Y-%m"
+const val YEARMONTHDAY = "%Y-%m-%d"
 const val NOT_REDELETE = "sync_status!=${STATUS.DELETED}"//本地預刪除的
 const val YEARMONTH = "strftime('%Y-%m',\${})"
+val currentBookId get() = AppCache.getInstance().currentBook.id
+fun dateFormat(year: String) = "$year"
+fun dateFormat(year: String, month: String) = "${year}-$month"
+fun dateFormat(year: Int, month: Int, day: String) = "${year}-$month-$day"

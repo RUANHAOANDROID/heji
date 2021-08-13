@@ -141,26 +141,27 @@ abstract class BaseFragment : Fragment() {
         month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1, showAllYear: Boolean = false
     ) {
         rootView.post {
-            centerTitle.visibility = View.VISIBLE
-            centerTitle.setCompoundDrawablesWithIntrinsicBounds(
-                null,
-                null,
-                resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null),
-                null
-            )
-            centerTitle.compoundDrawablePadding = 8
-            val yearMonth = "$year.$month"
-            centerTitle.text = yearMonth
-            centerTitle.setOnClickListener { v: View? ->
-                val yearSelectPop = YearSelectPop(mainActivity, { selectYear, selectMonth ->
-                    centerTitle.text = "$selectYear.$selectMonth"
-                    selected.selected(selectYear, selectMonth)
-                }, showAllYear)
-                XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
-                    .hasShadowBg(true)
-                    .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                    .asCustom(yearSelectPop) /*.enableDrag(false)*/
-                    .show();
+            with(centerTitle) {
+                visibility = View.VISIBLE
+                compoundDrawablePadding = 8
+                text = "$year.$month"
+                setCompoundDrawablesWithIntrinsicBounds(
+                    null,
+                    null,
+                    resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null),
+                    null
+                )
+                setOnClickListener { v: View? ->
+                    val yearSelectPop = YearSelectPop(mainActivity, { selectYear, selectMonth ->
+                        text = "$selectYear.$selectMonth"
+                        selected.selected(selectYear, selectMonth)
+                    }, showAllYear)
+                    XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
+                        .hasShadowBg(true)
+                        .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                        .asCustom(yearSelectPop) /*.enableDrag(false)*/
+                        .show();
+                }
             }
         }
 

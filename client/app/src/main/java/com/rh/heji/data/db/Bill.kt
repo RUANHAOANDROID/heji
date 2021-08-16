@@ -1,11 +1,13 @@
 package com.rh.heji.data.db
 
+import android.os.Parcelable
 import androidx.room.*
 import com.rh.heji.AppCache
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.mongo.ObjectId
+import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
 import java.util.*
 
@@ -14,6 +16,7 @@ import java.util.*
  * Author: 锅得铁
  * #
  */
+@Parcelize
 @Entity(
     tableName = "bill", foreignKeys = [ForeignKey(
         entity = Book::class,
@@ -85,7 +88,7 @@ data class Bill(
     @ColumnInfo(name = "sync_status")
     var synced: Int = STATUS.NOT_SYNCED
 
-) {
+): Parcelable {
     @Ignore
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

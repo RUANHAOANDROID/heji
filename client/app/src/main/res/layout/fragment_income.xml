@@ -4,13 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ui.bill.add.AddBillFragment">
 
     <com.rh.heji.widget.KeyBoardView
         android:id="@+id/keyboard"
         android:layout_width="match_parent"
         android:layout_height="260dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
     </com.rh.heji.widget.KeyBoardView>
 
@@ -33,7 +36,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         android:background="@android:color/transparent"
-        android:hint="点击输入备注"
+        android:hint="点此输入备注..."
+        android:textSize="16sp"
         android:lines="1"
         android:textColor="@android:color/holo_blue_dark"
         app:layout_constraintBottom_toTopOf="@+id/tvBillTime"

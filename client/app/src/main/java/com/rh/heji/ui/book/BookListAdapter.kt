@@ -1,17 +1,17 @@
 package com.rh.heji.ui.book
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import com.blankj.utilcode.util.ImageUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookItemBinding
+import com.rh.heji.utlis.ColorUtils
 
 
 /**
@@ -20,11 +20,11 @@ import com.rh.heji.databinding.FragmentBookItemBinding
  * #
  */
 class BookListAdapter :
-
     BaseQuickAdapter<Book, BaseViewHolder>(
         layoutResId = R.layout.fragment_book_item,
         mutableListOf()
     ) {
+    private val colors = ColorUtils.groupColors()
     override fun convert(holder: BaseViewHolder, item: Book) {
         FragmentBookItemBinding.bind(holder.itemView)?.let { binding ->
             binding.tvTitle.text = item.name
@@ -35,10 +35,13 @@ class BookListAdapter :
                     R.drawable.banner_tree
                 )
             )
-            if (holder.layoutPosition==0){
-                binding.root.background = ImageUtils.bitmap2Drawable(ImageUtils.toRoundCorner(bannerBitmap, 10f))
-            }else{
-                binding.root.background = ColorDrawable(Color.rgb(140, 234, 255))
+            if (holder.layoutPosition == 0) {
+                binding.root.background =
+                    ImageUtils.bitmap2Drawable(ImageUtils.toRoundCorner(bannerBitmap, 10f))
+            } else {
+                val colorDrawable = colors[holder.layoutPosition % 24]
+                binding.root.background =
+                    XPopupUtils.createDrawable(colorDrawable, 10f, 10f, 10f, 10f)
             }
 
 
@@ -52,7 +55,4 @@ class BookListAdapter :
             }
         }
     }
-
-
-    val colors = com.rh.heji.utlis.ColorUtils.groupColors()
 }

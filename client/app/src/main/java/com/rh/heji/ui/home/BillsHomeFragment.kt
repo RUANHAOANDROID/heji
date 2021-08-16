@@ -35,8 +35,12 @@ import java.util.*
 
 
 class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
+    companion object {
+        // 两次点击间隔不能少于1000ms
+        private const val FAST_CLICK_DELAY_TIME = 500
+    }
 
-    lateinit var binding: FragmentBillsHomeBinding
+    private lateinit var binding: FragmentBillsHomeBinding
     private lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     val adapter: NodeBillsAdapter by lazy { NodeBillsAdapter() }
@@ -57,7 +61,16 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
                     ).build().toBundle()
                 )
             }
-            initSwipeRefreshLayout()
+            //initSwipeRefreshLayout()
+            toolBar.post {
+                swipeRefreshLayout(binding.refreshLayout){
+                    notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
+                }
+                binding.materialupAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                    val isFullyShow = verticalOffset >= 0
+                    binding.refreshLayout.isEnabled = isFullyShow
+                })
+            }
             AppCache.getInstance().appViewModule.asyncLiveData.observe(
                 this,
                 asyncNotifyObserver(
@@ -186,7 +199,6 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
      */
     private fun initBillsAdapter() {
         adapter.recyclerView = binding.homeRecycler
-        //binding.homeRecycler.setLayoutManager(new LinearLayoutManager(getMainActivity(),LinearLayoutManager.HORIZONTAL,false));
         binding.homeRecycler.layoutManager = LinearLayoutManager(mainActivity)
         binding.homeRecycler.adapter = adapter
         binding.homeRecycler.addItemDecoration(CardDecoration(8))
@@ -298,13 +310,9 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             adapter.setDiffNewData(baseNodes)
         }
         //adapter.loadMoreModule.loadMoreEnd()//单月不分页，直接显示没有跟多
-        binding.refreshLayout.isRefreshing = false
+        hideRefreshing(binding.refreshLayout)
     }
 
-    companion object {
-        // 两次点击间隔不能少于1000ms
-        private const val FAST_CLICK_DELAY_TIME = 500
-    }
 
     override fun onInflate(stub: ViewStub, inflated: View) {
         subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)

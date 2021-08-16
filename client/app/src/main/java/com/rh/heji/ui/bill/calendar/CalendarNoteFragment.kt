@@ -65,8 +65,8 @@ class CalendarNoteFragment : BaseFragment() {
             val day = binding.calendarView.selectedCalendar.day
             val calendar = java.util.Calendar.getInstance()
             calendar.set(year, month - 1, day)
-            val args = AddBillFragmentArgs.Builder(calendar).build()//选择的日期
-            Navigation.findNavController(view).navigate(R.id.nav_income, args.toBundle())
+            val args = AddBillFragmentArgs.Builder(Bill(billTime = calendar.time)).build()//选择的日期
+            Navigation.findNavController(view).navigate(R.id.nav_bill_add, args.toBundle())
         }
         binding.todayFab.setOnClickListener {
             binding.calendarView.scrollToCurrent()

@@ -20,6 +20,8 @@ import com.rh.heji.data.db.d2o.Income
 import com.rh.heji.databinding.FragmentBillsHomeBinding
 import com.rh.heji.databinding.LayoutBillsTopBinding
 import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.base.hideRefreshing
+import com.rh.heji.ui.base.swipeRefreshLayout
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
@@ -37,7 +39,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
     lateinit var binding: FragmentBillsHomeBinding
     private lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
-    val adapter: NodeBillsAdapter by lazy { NodeBillsAdapter()  }
+    val adapter: NodeBillsAdapter by lazy { NodeBillsAdapter() }
 
     //最后点击时间
     private var lastClickTime = 0L
@@ -48,11 +50,21 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         rootView.post {
             initBillsAdapter()
             binding.fab.setOnClickListener {
-                val calendar = Calendar.getInstance() //当前日期
-                Navigation.findNavController(rootView).navigate(R.id.nav_income, AddBillFragmentArgs.Builder(calendar).build().toBundle())
+                val bill = Bill(billTime = Date())
+                Navigation.findNavController(rootView).navigate(
+                    R.id.nav_bill_add, AddBillFragmentArgs.Builder(
+                        bill
+                    ).build().toBundle()
+                )
             }
             initSwipeRefreshLayout()
-            AppCache.getInstance().appViewModule.asyncLiveData.observe(this, asyncNotifyObserver(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month))
+            AppCache.getInstance().appViewModule.asyncLiveData.observe(
+                this,
+                asyncNotifyObserver(
+                    homeViewModel.selectYearMonth.year,
+                    homeViewModel.selectYearMonth.month
+                )
+            )
         }
         binding.total.setOnInflateListener(this)//提前设置避免多次设置
     }
@@ -87,13 +99,21 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
                 homeViewModel.selectYearMonth.year, //默认为当前时间,
                 homeViewModel.selectYearMonth.month//默认为当前月份
             )
-            toolBar.navigationIcon = ResourcesCompat.getDrawable(resources,R.drawable.ic_baseline_dehaze_24, mainActivity.theme)
+            toolBar.navigationIcon = ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.ic_baseline_dehaze_24,
+                mainActivity.theme
+            )
             toolBar.setNavigationOnClickListener {
                 //展开侧滑菜单
                 mainActivity.openDrawer()
             }
-            binding.imgCalendar.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note) }
-            binding.imgTotal.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_report) }
+            binding.imgCalendar.setOnClickListener {
+                Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note)
+            }
+            binding.imgTotal.setOnClickListener {
+                Navigation.findNavController(rootView).navigate(R.id.nav_report)
+            }
         }
 
     }
@@ -103,7 +123,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
     }
 
     private fun asyncNotifyObserver(thisYear: Int, thisMonth: Int): Observer<Any> =
-            Observer { notifyData(thisYear, thisMonth) }
+        Observer { notifyData(thisYear, thisMonth) }
 
     /**
      * 汇总收支
@@ -148,9 +168,14 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             val expenses1 = BigDecimal(tvExpenditure.text.toString())
             val totalRevenue = income1.subtract(expenses1)
             if (totalRevenue.toLong() > 0) {
-                tvSurplus.setTextColor(ContextCompat.getColor(tvSurplus.context,R.color.income))
+                tvSurplus.setTextColor(ContextCompat.getColor(tvSurplus.context, R.color.income))
             } else {
-                tvSurplus.setTextColor(ContextCompat.getColor(tvSurplus.context,R.color.expenditure))
+                tvSurplus.setTextColor(
+                    ContextCompat.getColor(
+                        tvSurplus.context,
+                        R.color.expenditure
+                    )
+                )
             }
             tvSurplus.text = totalRevenue.toPlainString()
         }
@@ -196,8 +221,11 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
                     val dayIncome = dayIncomeNode.dayIncome
                     val calendar = Calendar.getInstance()
                     calendar[dayIncome.year, dayIncome.month - 1] = dayIncome.monthDay
-                    val args = AddBillFragmentArgs.Builder(calendar).build() //选择的日期
-                    Navigation.findNavController(rootView).navigate(R.id.nav_income, args.toBundle())
+
+                    val args =
+                        AddBillFragmentArgs.Builder(Bill(billTime = calendar.time)).build() //选择的日期
+                    Navigation.findNavController(rootView)
+                        .navigate(R.id.nav_bill_add, args.toBundle())
                 } else { //日详细列表ITEM
                     val dayBills = adapter.getItem(position) as DayBillsNode
                     val bill = dayBills.bill
@@ -213,14 +241,9 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
             }
         }
 
-        headView()
         notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
     }
 
-    private fun headView() {
-
-
-    }
 
     /**
      * 显示单条账单
@@ -228,20 +251,23 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
      * @param billTab
      */
     private fun showBillItemPop(billTab: Bill) {
-        val popupView = BillInfoPop(bill = billTab,activity= mainActivity)
+        val popupView = BillInfoPop(bill = billTab, activity = mainActivity)
         popupView.popClickListener = object : BillPopClickListenerImpl() {
             override fun delete(bill: Bill) {
                 super.delete(bill)
                 notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
             }
-            override fun update(bill: Bill) {}
+
+            override fun update(bill: Bill) {
+                super.update(bill)
+            }
         }
         XPopup.Builder(context) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
-                //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
-                //.hasBlurBg(true)//模糊默认false
-                //.hasShadowBg(true)//默认true
-                .asCustom(popupView) /*.enableDrag(false)*/
-                .show()
+            //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+            //.hasBlurBg(true)//模糊默认false
+            //.hasShadowBg(true)//默认true
+            .asCustom(popupView) /*.enableDrag(false)*/
+            .show()
 
 
     }
@@ -253,11 +279,12 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
      * @param month 月
      */
     fun notifyData(year: Int, month: Int) {
-        homeViewModel.selectYearMonth =YearMonth(year,month)
+        homeViewModel.selectYearMonth = YearMonth(year, month)
         homeViewModel.getBillsData().observe(this, billsObserver)
         totalIncomeExpense()
     }
-    private val emptyView: View by lazy {  layoutInflater.inflate(R.layout.layout_empty, null)}
+
+    private val emptyView: View by lazy { layoutInflater.inflate(R.layout.layout_empty, null) }
 
     @SuppressLint("InflateParams")
     private val billsObserver = { baseNodes: MutableList<BaseNode> ->

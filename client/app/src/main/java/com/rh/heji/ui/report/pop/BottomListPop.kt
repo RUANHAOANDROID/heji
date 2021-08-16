@@ -1,7 +1,5 @@
 package com.rh.heji.ui.report.pop
 
-import android.content.Context
-import android.view.MotionEvent
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.lxj.xpopup.XPopup
@@ -10,7 +8,6 @@ import com.lxj.xpopup.util.XPopupUtils
 import com.lxj.xpopup.widget.VerticalRecyclerView
 import com.rh.heji.MainActivity
 import com.rh.heji.R
-import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
 import com.rh.heji.ui.bill.iteminfo.BillInfoPop
 import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
@@ -60,7 +57,7 @@ class BottomListPop(
                 }
 
                 override fun update(bill: Bill) {
-
+                    super.update(bill)
                 }
 
             })

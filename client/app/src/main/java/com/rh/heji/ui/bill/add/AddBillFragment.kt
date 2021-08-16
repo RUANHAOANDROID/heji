@@ -25,6 +25,7 @@ import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
 import com.rh.heji.AppCache
 import com.rh.heji.R
 import com.rh.heji.data.BillType
+import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.mongo.ObjectId
@@ -55,6 +56,7 @@ class AddBillFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
+        billViewModel.bill = AddBillFragmentArgs.fromBundle(requireArguments()).bill
         binding = FragmentIncomeBinding.bind(rootView)
         selectImage()
         selectPerson()
@@ -104,9 +106,7 @@ class AddBillFragment : BaseFragment() {
     }
 
     private fun selectYearAndDay() {
-        val arguments = arguments
-        val calendar = AddBillFragmentArgs.fromBundle(arguments!!).calendar
-        billViewModel.time = TimeUtils.date2String(calendar.time) //设置日历选中的时间
+        billViewModel.time = TimeUtils.date2String(billViewModel.bill.billTime) //设置日历选中的时间
         val nowTime = billViewModel.time
         binding.tvBillTime.text = nowTime
         binding.tvBillTime.setOnClickListener {
@@ -121,12 +121,13 @@ class AddBillFragment : BaseFragment() {
                     setNoteTime(yearTime)
                     selectHourAndMinute(yearTime)
                 }
+            val time = DateConverters.date2Str(billViewModel.bill.billTime).split("-")
             val dialog = DatePickerDialog(
                 mainActivity,
                 onDateSetListener,
-                calendar[Calendar.YEAR],
-                calendar[Calendar.MONTH],
-                calendar[Calendar.DAY_OF_MONTH]
+                time[0].toInt(),
+                time[1].toInt(),
+                time[2].toInt()
             )
             dialog.setOnDateSetListener(onDateSetListener)
             dialog.show()
@@ -209,7 +210,11 @@ class AddBillFragment : BaseFragment() {
                 saveBill(
                     result,
                     categoryViewModule.selectCategory,
-                    Observer { bill: Bill? -> AppCache.getInstance().appViewModule.billPush(BillEntity(bill)) })
+                    Observer { bill: Bill? ->
+                        AppCache.getInstance().appViewModule.billPush(
+                            BillEntity(bill)
+                        )
+                    })
                 clear()
             }
         })
@@ -282,7 +287,7 @@ class AddBillFragment : BaseFragment() {
         super.onResume()
         val stack: Stack<String>? = billViewModel.keyBoardStack
         if (null != stack && !stack.isEmpty()) {
-            binding.keyboard.setStack(stack)
+            binding.keyboard.stack = stack
         }
     }
 

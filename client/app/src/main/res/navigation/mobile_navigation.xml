@@ -21,13 +21,13 @@
             app:destination="@id/nav_export" />
     </fragment>
     <fragment
-        android:id="@+id/nav_income"
+        android:id="@+id/nav_bill_add"
         android:name="com.rh.heji.ui.bill.add.AddBillFragment"
         android:label="@string/income"
         tools:layout="@layout/fragment_income">
         <argument
-            android:name="calendar"
-            app:argType="java.util.Calendar" />
+            android:name="bill"
+            app:argType="com.rh.heji.data.db.Bill" />
         <action
             android:id="@+id/action_nav_income_to_nav_category_tab"
             app:destination="@id/_category_tab" />
@@ -90,7 +90,7 @@
             app:destination="@id/nav_setting" />
         <action
             android:id="@+id/action_nav_home_to_nav_income"
-            app:destination="@id/nav_income" />
+            app:destination="@id/nav_bill_add" />
         <action
             android:id="@+id/action_nav_home_to_nav_calendar_note"
             app:destination="@id/nav_calendar_note" />
@@ -105,7 +105,11 @@
         android:id="@+id/nav_calendar_note"
         android:name="com.rh.heji.ui.bill.calendar.CalendarNoteFragment"
         android:label="日历记账"
-        tools:layout="@layout/fragment_calendar_note"></fragment>
+        tools:layout="@layout/fragment_calendar_note">
+        <action
+            android:id="@+id/action_nav_calendar_note_to_nav_income"
+            app:destination="@id/nav_bill_add" />
+    </fragment>
     <fragment
         android:id="@+id/nav_user_info"
         android:name="com.rh.heji.ui.user.info.UserInfoFragment"
@@ -138,6 +142,9 @@
         <action
             android:id="@+id/action_nav_book_list_to_nav_book_add"
             app:destination="@id/nav_book_add" />
+        <action
+            android:id="@+id/action_nav_book_list_to_nav_book_setting"
+            app:destination="@id/nav_book_setting" />
     </fragment>
     <fragment
         android:id="@+id/nav_banner"
@@ -158,7 +165,11 @@
         android:id="@+id/nav_book_add"
         android:name="com.rh.heji.ui.book.BookAddFragment"
         android:label="add_book_fragment"
-        tools:layout="@layout/fragment_book_add" />
+        tools:layout="@layout/fragment_book_add" >
+        <action
+            android:id="@+id/action_nav_book_add_to_nav_book_setting"
+            app:destination="@id/nav_book_setting" />
+    </fragment>
     <fragment
         android:id="@+id/nav_book_setting"
         android:name="com.rh.heji.ui.book.BookSettingFragment"

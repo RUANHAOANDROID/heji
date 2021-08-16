@@ -29,7 +29,7 @@ class AddBillViewModel : BaseViewModel() {
         }//image list
     var imgUrlsLive = MutableLiveData<List<String>>() // image live
 
-    val bill = Bill()
+    var bill = Bill()
     var time: String? = null
         get() {
             if (TextUtils.isEmpty(field)) field = TimeUtils.getNowString()

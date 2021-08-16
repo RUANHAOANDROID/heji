@@ -1,13 +1,11 @@
 package com.rh.heji.ui.bill.iteminfo
 
-import android.content.Context
 import android.view.View
 import android.widget.ImageView
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -19,19 +17,18 @@ import com.rh.heji.AppCache
 import com.rh.heji.BuildConfig
 import com.rh.heji.MainActivity
 import com.rh.heji.R
-import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.PopBilliInfoBinding
+import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.ui.bill.img.ImageLoader
 import com.rh.heji.ui.user.JWTParse.getUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import kotlinx.coroutines.withContext
 import java.util.function.Function
 import java.util.stream.Collectors
-import kotlin.String as String
 
 /**
  * Date: 2020/9/20
@@ -44,13 +41,6 @@ class BillInfoPop(
     var popClickListener: BillPopClickListenerImpl = BillPopClickListenerImpl(),
 ) : BottomPopupView(activity), Observer<List<Image>> {
     private val imageObservable by lazy { activity.mainViewModel.getBillImages(billId = bill.id) }
-    fun setBill() {
-        binding.tvMonney.text = bill.money.toString()
-        binding.tvType.text = bill.category
-        binding.tvRecordTime.text = bill.createTime?.let { TimeUtils.millis2String(it) }
-        binding.tvTicketTime.text = DateConverters.date2Str(bill.billTime)
-        binding.rePeople.text = bill.dealer
-    }
 
     lateinit var binding: PopBilliInfoBinding
     private var imageAdapter = ImageAdapter()
@@ -62,28 +52,38 @@ class BillInfoPop(
     override fun onCreate() {
         super.onCreate()
         binding = PopBilliInfoBinding.bind(popupContentView.findViewById(R.id.billInfoCard))
-        binding.tvDelete.setOnClickListener { v: View? ->
+        binding.tvDelete.setOnClickListener {
             deleteTip()
         }
-        binding.tvUpdate.setOnClickListener { v: View? ->
+        binding.tvUpdate.setOnClickListener {
             popClickListener?.update(bill)
+            val bundle = AddBillFragmentArgs.Builder(bill).build().toBundle()
+            activity.navController.navigate(R.id.nav_bill_add, bundle)
+            dismiss()
         }
         //设置圆角背景
         popupImplView.background = XPopupUtils.createDrawable(
             resources.getColor(R.color._xpopup_light_color, null),
             popupInfo.borderRadius, popupInfo.borderRadius, 0f, 0f
         )
-        setBill()
+        binding.apply {
+            tvMonney.text = bill.money.toString()
+            tvType.text = bill.category
+            tvRecordTime.text = bill.createTime?.let { TimeUtils.millis2String(it) }
+            tvTicketTime.text = DateConverters.date2Str(bill.billTime)
+            rePeople.text = bill.dealer
+        }
         initBillImageList()//初始化列表和适配器
-        if (bill.imgCount>0){
+        if (bill.imgCount > 0) {
             imageObservable.observeForever(this)
         }
     }
 
     private fun initBillImageList() {
-        binding.ticketRecycler.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding.ticketRecycler.adapter = imageAdapter
+        binding.ticketRecycler.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = imageAdapter
+        }
         imageAdapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View, position: Int ->
             showImage(
                 view,
@@ -121,19 +121,16 @@ class BillInfoPop(
             "删除提示", "确认删除该条账单吗？"
         ) {
             val mainActivity = context as MainActivity
-            mainActivity.lifecycleScope.launch(Dispatchers.Default) {
+            mainActivity.lifecycleScope.launch(Dispatchers.IO) {
                 val user = getUser(AppCache.getInstance().token.tokenString)
-                if (bill.createUser == user.username) {
-                    popClickListener.apply {
-                        mainActivity.runOnUiThread {
-                            this.delete(bill)
-                            dismiss()
-                        }
+                withContext(Dispatchers.Main) {
+                    if (bill.createUser == user.username) {
+                        popClickListener.delete(bill)
+                        dismiss()
+                    } else {
+                        ToastUtils.showLong("只有账单创建人有权删除该账单")
                     }
-                } else {
-                    ToastUtils.showLong("只有账单创建人有权删除该账单")
                 }
-
             }
 
         }.show()
@@ -155,7 +152,7 @@ class BillInfoPop(
 
     override fun onDismiss() {
         super.onDismiss()
-        if (bill.imgCount>0){
+        if (bill.imgCount > 0) {
             imageObservable.removeObserver(this)
         }
     }
@@ -176,7 +173,7 @@ open class BillPopClickListenerImpl : PopClickListener {
     }
 
     override fun update(bill: Bill) {
-
+        LogUtils.d(bill)
     }
 
 }

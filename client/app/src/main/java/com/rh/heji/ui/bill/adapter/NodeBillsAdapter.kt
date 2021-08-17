@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import com.chad.library.adapter.base.BaseNodeAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.chad.library.adapter.base.loadmore.BaseLoadMoreView
+import com.chad.library.adapter.base.module.LoadMoreModule
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import org.jetbrains.annotations.NotNull
 
 
-class NodeBillsAdapter() : BaseNodeAdapter() {
+class NodeBillsAdapter() : BaseNodeAdapter() , LoadMoreModule {
     init {
         addNodeProvider(DayIncomeNodeProvider())
         addNodeProvider(DayBillsNodeProvider())

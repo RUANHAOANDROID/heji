@@ -1,7 +1,7 @@
 package com.rh.heji.data.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Date: 2020/11/19
@@ -46,5 +46,5 @@ interface ImageDao {
     fun findByBillIdNotAsync(billId: String): MutableList<Image>
 
     @Query("SELECT * FROM image WHERE (local_path ISNULL OR local_path=='') AND(online_path!='' OR online_path != NULL)")
-    fun observerNotDownloadImages(): LiveData<MutableList<Image > >
+    fun observerNotDownloadImages(): Flow<MutableList<Image>>
 }

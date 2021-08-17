@@ -4,6 +4,8 @@ import android.text.TextUtils
 import androidx.lifecycle.LiveData
 
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
@@ -57,13 +59,13 @@ class CategoryViewModule : BaseViewModel() {
          * observer 观察变化
          */
         incomeCategory.addSource(
-            categoryDao.findIncomeOrExpenditure(BillType.INCOME.type())
+            categoryDao.findIncomeOrExpenditure(BillType.INCOME.type()).asLiveData(viewModelScope.coroutineContext)
         ) { incomeCategories ->
             incomeCategory.value = incomeCategories
         }
         expenditureCategory.addSource(
             categoryDao
-                .findIncomeOrExpenditure(BillType.EXPENDITURE.type())
+                .findIncomeOrExpenditure(BillType.EXPENDITURE.type()).asLiveData(viewModelScope.coroutineContext)
         ) { expenditureCategories: MutableList<Category> ->
             expenditureCategory.setValue(
                 expenditureCategories

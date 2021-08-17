@@ -46,7 +46,7 @@ public class YearSelectPop extends CenterPopupView implements View.OnClickListen
             years.add(i);
         }
         this.showAllYear = showAllYear;
-        LogUtils.i(years);
+        LogUtils.d(years);
     }
 
 

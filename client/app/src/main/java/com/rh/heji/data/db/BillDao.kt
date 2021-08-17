@@ -110,7 +110,7 @@ interface BillDao {
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income ,date(bill_time) as time from bill  where sync_status!=-1 AND book_id=:bookId AND strftime('%Y-%m',bill_time)=:yearMonth group by date(bill_time) ORDER BY bill_time DESC ,id DESC")
-    fun findEveryDayIncomeByMonth(bookId: String?, yearMonth: String): MutableList<IncomeTime>
+    fun findEveryDayIncomeByMonth(bookId: String?= currentBookId, yearMonth: String): MutableList<IncomeTime>
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',bill_time)=:yearMonth)")

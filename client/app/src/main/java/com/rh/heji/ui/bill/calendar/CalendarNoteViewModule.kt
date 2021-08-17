@@ -46,12 +46,12 @@ class CalendarNoteViewModule : BaseViewModel() {
                 }
             }
             calendarLiveData.postValue(map)
-            LogUtils.i(year, month, "$map")
+            LogUtils.d(year, month, "$map")
         }, {})
     }
 
     fun todayBills(calendar: Calendar) {
-        LogUtils.i(calendar.toString())
+        LogUtils.d(calendar.toString())
         launchIO({
             val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
             val dayBills = billDao.findByDay(dateTime)
@@ -82,7 +82,7 @@ class CalendarNoteViewModule : BaseViewModel() {
                 parentNode.add(DayIncomeNode(childNodes, dayIncome))
             }
             dayBillsLiveData.postValue(parentNode)
-            LogUtils.i(dayIncome.toString())
+            LogUtils.d(dayIncome.toString())
         }, {})
     }
 

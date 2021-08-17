@@ -141,7 +141,7 @@ class DataSyncWork {
                             image.billImageID = serverBill.id
                             image.synced =  STATUS.SYNCED
                             AppDatabase.getInstance().imageDao().install(image)
-                            LogUtils.i("账单图片信息已保存 $image")
+                            LogUtils.d("账单图片信息已保存 $image")
                         }
                         billDao.updateImageCount(response.date.size, serverBill.id)
                     }

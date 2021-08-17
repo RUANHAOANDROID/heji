@@ -1,20 +1,14 @@
 package com.rh.heji.ui.bill.add
 
-import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppCache
-import com.rh.heji.CURRENT_BOOK
-import com.rh.heji.CURRENT_BOOK_ID
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
-import io.reactivex.rxjava3.disposables.Disposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
@@ -83,9 +77,6 @@ class AddBillViewModel : BaseViewModel() {
         })
     }
 
-    fun saveTest(block: () -> Bill) {
-        block()
-    }
 
     fun addImgUrl(imgUrl: String) {
         imgUrls.add(imgUrl)
@@ -105,4 +96,9 @@ class AddBillViewModel : BaseViewModel() {
             return field
         }
 
+    suspend fun getBillImages(bid: String = bill.id): MutableList<Image> {
+        val images = AppDatabase.getInstance().imageDao().findByBillId(bid)
+        bill.imgCount = images.size
+        return images
+    }
 }

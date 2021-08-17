@@ -18,7 +18,7 @@ data class DayIncome(var expected: String,
 /**
  * 日收益Node,子节点为账单List
  */
-class DayIncomeNode(private val dayListNodes: MutableList<BaseNode>, val dayIncome: DayIncome) : BaseNode() {
+data class DayIncomeNode(private val dayListNodes: MutableList<BaseNode>, val dayIncome: DayIncome) : BaseNode() {
     override val childNode: MutableList<BaseNode>?
         get() = dayListNodes
 }
@@ -26,7 +26,7 @@ class DayIncomeNode(private val dayListNodes: MutableList<BaseNode>, val dayInco
 /**
  * 当日账单List
  */
-class DayBillsNode(var bill: Bill) : BaseNode() {
+data class DayBillsNode(var bill: Bill) : BaseNode() {
     override val childNode: MutableList<BaseNode>?
         get() = null//没有子集
 }

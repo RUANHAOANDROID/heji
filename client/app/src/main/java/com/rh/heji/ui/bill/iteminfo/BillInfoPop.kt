@@ -27,8 +27,6 @@ import com.rh.heji.ui.user.JWTParse.getUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.function.Function
-import java.util.stream.Collectors
 
 /**
  * Date: 2020/9/20
@@ -93,16 +91,16 @@ class BillInfoPop(
     }
 
     private fun showImage(itemView: View, itemPosition: Int) {
-        val objects = imageAdapter.data.stream()
-            .map(Function<Image?, Any> { image: Image? -> imageAdapter.getImagePath(image) })
-            .collect(Collectors.toList())
+        val objects = imageAdapter.data
+            .map { image: Image -> imageAdapter.getImagePath(image) }
+            .toList()
         if (objects.isEmpty()) return
         XPopup.Builder(context)
             .asImageViewer(
                 itemView as ImageView,
                 itemPosition,
                 objects,
-                { popupView: ImageViewerPopupView, position1: Int ->
+                { popupView: ImageViewerPopupView, position: Int ->
                     popupView.updateSrcView(
                         imageAdapter.getViewByPosition(itemPosition, R.id.itemImage) as ImageView?
                     )
@@ -139,14 +137,14 @@ class BillInfoPop(
     override fun onChanged(images: List<Image>) {
         if (images.isEmpty()) return
         //服务器返回的是图片的ID、需要加上前缀
-        val imagePaths = images.stream().map { image: Image ->
+        val imagePaths = images.map { image: Image ->
             val onlinePath = image.onlinePath
             if (onlinePath != null && !image.onlinePath!!.contains("http")) { //在线Image路径
                 val path = BuildConfig.HTTP_URL + "/image/" + image.onlinePath
                 image.onlinePath = path
             }
             image
-        }.collect(Collectors.toList())
+        }.toMutableList()
         imageAdapter.setNewInstance(imagePaths)
     }
 

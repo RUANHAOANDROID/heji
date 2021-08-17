@@ -22,8 +22,6 @@ import com.rh.heji.data.db.d2o.BillTotal
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
 import java.util.*
-import java.util.stream.Collectors
-
 
 /**
  * 折线图样式设置
@@ -83,7 +81,7 @@ private fun lineChartConvertAdapter(bills: List<BillTotal>, yearMonth: YearMonth
             val entry = Entry(x.toFloat(), 0f)
             map[x] = entry
         }
-        bills.stream().map {
+        bills.map {
             val month = it.time.split("-")[1]
             map.replace(
                 month,
@@ -94,7 +92,7 @@ private fun lineChartConvertAdapter(bills: List<BillTotal>, yearMonth: YearMonth
                 it.money.toFloat(),
                 BillType.transform(it.type).text()
             )
-        }.collect(Collectors.toList())
+        }.toMutableList()
         val entries = map.values.toMutableList()
         return LineDataSet(entries, parserBillsType(bills))
     } else {
@@ -110,14 +108,14 @@ private fun lineChartConvertAdapter(bills: List<BillTotal>, yearMonth: YearMonth
             val entry = Entry(x.toFloat(), 0f)
             map[x] = entry
         }
-        bills.stream().map {
+        bills.map {
             val day = it.time.split("-")[2]
             map.replace(
                 day,
                 Entry(day.toFloat(), it.money.toFloat(), BillType.transform(it.type).text())
             )
             return@map Entry(day.toFloat(), it.money.toFloat(), BillType.transform(it.type).text())
-        }.collect(Collectors.toList())
+        }.toMutableList()
 
         val entries = map.values.toMutableList()
         return LineDataSet(entries, parserBillsType(bills))
@@ -169,10 +167,10 @@ private fun ReportFragment.lineDataSetStyle(
     lineDataSet.setCircleColor(resources.getColor(colorRes, mainActivity.theme))
     //lineDataSet.setDrawCircles(false)//开启节点小圆点 false
     lineDataSet.valueTextSize = 8f
-    var valuesTestColors = lineDataSet.values.stream().map {
+    var valuesTestColors = lineDataSet.values.map {
         return@map if (it.y > 0) resources.getColor(colorRes, mainActivity.theme)
         else resources.getColor(R.color.transparent, mainActivity.theme)
-    }.collect(Collectors.toList())
+    }.toMutableList()
     lineDataSet.setValueTextColors(valuesTestColors)
     lineDataSet.setDrawFilled(true)
     lineDataSet.fillDrawable = resources.getDrawable(fillDrawableRes, mainActivity.theme)

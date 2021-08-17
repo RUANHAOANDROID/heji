@@ -79,7 +79,8 @@ class ReportViewModel : BaseViewModel() {
     private fun monthIncomeExpenditure() {
         launchIO({
             val monthIncomeExpenditureData =
-                AppDatabase.getInstance().billDao().sumMonthIncomeExpenditure(yearMonth.toYearMonth())
+                AppDatabase.getInstance().billDao()
+                    .sumMonthIncomeExpenditure(yearMonth.toYearMonth())
             incomeExpenditureLiveData.postValue(monthIncomeExpenditureData)
         }, {})
 
@@ -131,10 +132,11 @@ class ReportViewModel : BaseViewModel() {
      */
     private fun monthCategoryProportion() {
         launchIO({
-            val list = AppDatabase.getInstance().billDao().reportCategory(-1, yearMonth.toYearMonth())
-                .stream().map {
-                    return@map PieEntry(it.percentage, it.category, it.money)
-                }.collect(Collectors.toList())
+            val list =
+                AppDatabase.getInstance().billDao().reportCategory(-1, yearMonth.toYearMonth())
+                    .map {
+                        return@map PieEntry(it.percentage, it.category, it.money)
+                    }.toMutableList()
             categoryLiveData.postValue(list)
             LogUtils.d(list)
         }, {})

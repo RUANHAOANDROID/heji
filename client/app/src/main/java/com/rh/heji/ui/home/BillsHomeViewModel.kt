@@ -25,14 +25,11 @@ class BillsHomeViewModel : BaseViewModel() {
     private val billDao: BillDao = AppDatabase.getInstance().billDao()
 
     private val billsNodLiveData = MediatorLiveData<MutableList<BaseNode>>()
-
-    fun getBillsData(): LiveData<MutableList<BaseNode>> {
+    fun monthDataChange(): LiveData<MutableList<BaseNode>> = billsNodLiveData
+    fun refreshMonthData() {
         launchIO({
-
-            var monthEveryDayIncome = billDao.findEveryDayIncomeByMonth(
-                AppCache.getInstance().currentBook.id,
-                selectYearMonth.toYearMonth()
-            )
+            var monthEveryDayIncome =
+                billDao.findEveryDayIncomeByMonth(yearMonth = selectYearMonth.toYearMonth())
             var listDayNodes = mutableListOf<BaseNode>()
             monthEveryDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
@@ -57,7 +54,6 @@ class BillsHomeViewModel : BaseViewModel() {
             LogUtils.d("Select YearMonth:${selectYearMonth}${listDayNodes}")
             billsNodLiveData.postValue(listDayNodes)
         }, {})
-        return billsNodLiveData
     }
 
     fun getIncomeExpense(): LiveData<Income> {

@@ -73,7 +73,7 @@ class ETCFragment : BaseFragment() {
 
             override fun onPageFinished(view1: WebView, url: String) { //加载完成
                 super.onPageFinished(view1, url)
-                LogUtils.i(url)
+                LogUtils.d(url)
                 val showetcsearch = "showetcsearch" //查询页面
                 val showetcacountdetail = "showetcacountdetail" //详情列表
                 val showetcacount = "showetcacount" //月统计页
@@ -134,7 +134,7 @@ class ETCFragment : BaseFragment() {
         webView.loadUrl(functionInput) //写入ETC卡号、车牌号
         //执行
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val stringValueCallback = ValueCallback<String> { value: String? -> LogUtils.i(value) }
+            val stringValueCallback = ValueCallback<String> { value: String? -> LogUtils.d(value) }
             webView.evaluateJavascript("javascript: inputNumber();", stringValueCallback)
         } else {
             webView.loadUrl("javascript: inputNumber();")

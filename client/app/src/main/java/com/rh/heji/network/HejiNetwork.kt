@@ -6,7 +6,9 @@ import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterUser
+import com.rh.heji.utlis.http.basic.ServiceCreator
 import okhttp3.MultipartBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,7 +19,9 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class HejiNetwork {
-    private val hejiServer = AppCache.getInstance().heJiServer
+    val hejiServer: HeJiServer by lazy {
+        ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer
+    }
 
     suspend fun register(registerUser:RegisterUser) = hejiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) = hejiServer.login(username, password).await()
@@ -27,7 +31,7 @@ class HejiNetwork {
     suspend fun billPull(startTime: String, endTime: String) = hejiServer.getBills(startTime, endTime).await()
     suspend fun billImageUpload(@Part part: MultipartBody.Part, _id: String, bill_id: String, time: Long) = hejiServer.uploadImg(part, _id, bill_id, time).await()
     suspend fun billPullImages(_id: String) = hejiServer.getBillImages(_id).await()
-    suspend fun billExport(year:String="0",month: String="0") = hejiServer.exportBills(year,month).await()
+    suspend fun billExport(year:String="0",month: String="0"): Response<ResponseBody> = hejiServer.exportBills(year,month).execute()
 
     suspend fun categoryPush(category: CategoryEntity) = hejiServer.addCategory(category).await()
     suspend fun categoryDelete(_id: String) = hejiServer.deleteCategoryById(_id).await()

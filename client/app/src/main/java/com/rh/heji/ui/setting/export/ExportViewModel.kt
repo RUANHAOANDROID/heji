@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.haibin.calendarview.BaseView
 import com.rh.heji.App
 import com.rh.heji.AppCache
+import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launch
 import com.rh.heji.utlis.launchIO
@@ -28,7 +29,7 @@ class ExportViewModel : BaseViewModel() {
 
     fun exportExcel(fileName: String): MediatorLiveData<String> {
         launchIO({
-            var response = AppCache.getInstance().heJiServer.exportBills("0", "0").execute()
+            var response = HejiNetwork.getInstance().billExport()
             if (response.isSuccessful && response.code() == 200) {
                 val filesDir =
                     AppCache.getInstance().context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)

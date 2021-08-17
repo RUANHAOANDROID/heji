@@ -6,12 +6,10 @@ import android.content.Intent
 import android.net.Uri
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Book
-import com.rh.heji.network.HeJiServer
 import com.rh.heji.security.Token
 import com.rh.heji.ui.user.JWTParse
-import com.rh.heji.utlis.http.basic.ServiceCreator
 import com.tencent.mmkv.MMKV
-import java.io.*
+import java.io.File
 
 /**
  * Date: 2020/11/18
@@ -23,9 +21,7 @@ class AppCache {
     lateinit var context: Context
     val token by lazy { Token(context) }
     val currentUser by lazy { JWTParse.getUser(token.tokenString) }
-    val heJiServer: HeJiServer by lazy {
-        ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer
-    }
+
     lateinit var appViewModule: AppViewModule
     val database: AppDatabase by lazy { AppDatabase.getInstance() }
     val kvStorage: MMKV = MMKV.defaultMMKV()!!

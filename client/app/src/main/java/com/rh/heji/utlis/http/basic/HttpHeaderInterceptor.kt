@@ -14,7 +14,6 @@ import java.io.IOException
  * Header 拦截器
  */
  class HttpHeaderInterceptor : Interceptor {
-    @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         Log.d("OkHttpConfig", "add log interceptor")
         val bearerToken = runBlocking(Dispatchers.IO) {

@@ -149,7 +149,7 @@ class CalendarNoteFragment : BaseFragment() {
             }
 
             override fun update(bill: Bill) {
-                notifyCalendar()
+                super.update(bill)
             }
         }
         val popupView = BillInfoPop(bill=bill,activity = mainActivity,popClickListener=clickListener)

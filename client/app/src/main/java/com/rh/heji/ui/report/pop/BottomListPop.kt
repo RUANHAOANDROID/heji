@@ -58,6 +58,7 @@ class BottomListPop(
 
                 override fun update(bill: Bill) {
                     super.update(bill)
+                    dismiss()
                 }
 
             })

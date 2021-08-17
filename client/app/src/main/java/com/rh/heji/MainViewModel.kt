@@ -2,6 +2,8 @@ package com.rh.heji
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.repository.BillRepository
@@ -39,10 +41,7 @@ class MainViewModel : BaseViewModel() {
     }
 
     fun getBillImages(billId: String): LiveData<MutableList<Image>> {
-        launchIO({
-            imageLiveData.postValue(  AppDatabase.getInstance().imageDao().findByBillId(billId))
-        }, { imageLiveData.postValue(mutableListOf()) })
-
-        return imageLiveData
+        return AppDatabase.getInstance().imageDao().findByBillId(billId)
+            .asLiveData(viewModelScope.coroutineContext)
     }
 }

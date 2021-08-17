@@ -158,7 +158,7 @@ class CalendarNoteFragment : BaseFragment() {
         }
         val popupView =
             BillInfoPop(bill = bill, activity = mainActivity, popClickListener = clickListener)
-        XPopup.Builder(mainActivity) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
+        XPopup.Builder(requireContext()) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
             //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
             //.hasBlurBg(true)//模糊默认false
             //.hasShadowBg(true)//默认true

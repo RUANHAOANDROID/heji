@@ -217,7 +217,7 @@ class AddBillFragment : BaseFragment() {
                 billViewModel.bill.dealer = names[0] //设置默经手人
             }
             binding.tvUserLabel.setOnClickListener {
-                XPopup.Builder(context)
+                XPopup.Builder(requireContext())
                     .maxHeight(binding.keyboard.height)
                     .asBottomList(
                         "请选择经手人", names.toTypedArray()
@@ -286,7 +286,7 @@ class AddBillFragment : BaseFragment() {
         selectImagePou = context?.let { SelectImagePop(it, mainActivity) }
         binding.imgTicket.setOnClickListener {
             if (selectImagePou == null) selectImagePou = SelectImagePop(mainActivity, mainActivity)
-            XPopup.Builder(mainActivity)
+            XPopup.Builder(requireContext())
                 .asCustom(selectImagePou)
                 .show()
             //selectImagePou.getLayoutParams().height = binding.keyboard.getRoot().getHeight();

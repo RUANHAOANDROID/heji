@@ -11,6 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.http.Part
+import java.time.YearMonth
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -26,6 +27,7 @@ class HejiNetwork {
     suspend fun billPull(startTime: String, endTime: String) = hejiServer.getBills(startTime, endTime).await()
     suspend fun billImageUpload(@Part part: MultipartBody.Part, _id: String, bill_id: String, time: Long) = hejiServer.uploadImg(part, _id, bill_id, time).await()
     suspend fun billPullImages(_id: String) = hejiServer.getBillImages(_id).await()
+    suspend fun billExport(year:String="0",month: String="0") = hejiServer.exportBills(year,month).await()
 
     suspend fun categoryPush(category: CategoryEntity) = hejiServer.addCategory(category).await()
     suspend fun categoryDelete(_id: String) = hejiServer.deleteCategoryById(_id).await()

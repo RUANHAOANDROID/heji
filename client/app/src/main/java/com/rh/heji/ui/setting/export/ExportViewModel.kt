@@ -5,8 +5,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.LogUtils
+import com.haibin.calendarview.BaseView
 import com.rh.heji.App
 import com.rh.heji.AppCache
+import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.utlis.launch
+import com.rh.heji.utlis.launchIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okio.buffer
@@ -14,7 +18,7 @@ import okio.sink
 import java.io.File
 
 
-class ExportViewModel : ViewModel() {
+class ExportViewModel : BaseViewModel() {
     var exportLiveData = MediatorLiveData<String>()
 
     init {
@@ -22,13 +26,17 @@ class ExportViewModel : ViewModel() {
 
     }
 
-    fun exportExcel( fileName: String): MediatorLiveData<String> {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun exportExcel(fileName: String): MediatorLiveData<String> {
+        launchIO({
             var response = AppCache.getInstance().heJiServer.exportBills("0", "0").execute()
             if (response.isSuccessful && response.code() == 200) {
-                val filesDir = AppCache.getInstance().context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+                val filesDir =
+                    AppCache.getInstance().context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
                 var attachment = response.headers()["Content-Disposition"]
-                var subFileName = attachment?.substringAfterLast("attachment; filename=", System.currentTimeMillis().toString() + ".xlsx")
+                var subFileName = attachment?.substringAfterLast(
+                    "attachment; filename=",
+                    System.currentTimeMillis().toString() + ".xlsx"
+                )
                 val excelFile = File(filesDir, subFileName)
                 try {
                     val sink = excelFile.sink().buffer()
@@ -44,7 +52,8 @@ class ExportViewModel : ViewModel() {
             } else {
                 exportLiveData.postValue(response.message())
             }
-        }
+        }, {})
+
         return exportLiveData;
     }
 }

@@ -15,6 +15,7 @@ import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.TimePicker
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -36,6 +37,7 @@ import com.rh.heji.ui.bill.category.CategoryTabFragment
 import com.rh.heji.ui.bill.category.CategoryViewModule
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
+import kotlinx.coroutines.flow.conflate
 import java.io.File
 import java.util.*
 import java.util.function.Consumer
@@ -72,17 +74,21 @@ class AddBillFragment : BaseFragment() {
                 binding.eidtRemark.setText(remark)
             }
             (bill.imgCount > 0).let {
-                val images = AppDatabase.getInstance().imageDao().findByBillId(bill.id)
-                val imageUrl =
-                    images.map { img ->
-                        val url =
-                            if (img.localPath.isNullOrEmpty()) img.onlinePath else img.localPath
-                        url?.let { url -> billViewModel.addImgUrl(url) }
-                        return@map url
-                    }.toList()
-                selectImagePou?.setData(imageUrl)
-                if (imageUrl.isNotEmpty())
-                    binding.imgTicket.text = "图片(x" + images.size + ")"
+                billViewModel.getBillImages()
+                    .observe(this,
+                        Observer { images ->
+                            val imageUrl =
+                                images.map { img ->
+                                    val url =
+                                        if (img.localPath.isNullOrEmpty()) img.onlinePath else img.localPath
+                                    url?.let { url -> billViewModel.addImgUrl(url) }
+                                    return@map url
+                                }.toList()
+                            selectImagePou?.setData(imageUrl)
+                            if (imageUrl.isNotEmpty())
+                                binding.imgTicket.text = "图片(x" + images.size + ")"
+                        })
+
             }
             bill.money.toPlainString().let { money ->
                 binding.keyboard.stack.push(

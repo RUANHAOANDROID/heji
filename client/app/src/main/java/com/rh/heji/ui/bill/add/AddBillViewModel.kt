@@ -1,6 +1,6 @@
 package com.rh.heji.ui.bill.add
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppCache
@@ -96,9 +96,8 @@ class AddBillViewModel : BaseViewModel() {
             return field
         }
 
-    suspend fun getBillImages(bid: String = bill.id): MutableList<Image> {
-        val images = AppDatabase.getInstance().imageDao().findByBillId(bid)
-        bill.imgCount = images.size
-        return images
+    fun getBillImages(bid: String = bill.id): LiveData<MutableList<Image>> {
+        return AppDatabase.getInstance().imageDao().findByBillId(bid)
+            .asLiveData(viewModelScope.coroutineContext)
     }
 }

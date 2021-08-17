@@ -37,7 +37,7 @@ interface ImageDao {
     fun deleteById(imgID: String )
 
     @Query("SELECT * FROM image WHERE _bid =:billId")
-    fun findByBillId(billId: String ): MutableList<Image >
+    fun findByBillId(billId: String ): Flow<MutableList<Image>>
 
     @Query("SELECT * FROM image WHERE id =:id")
     fun findById(id: String ): MutableList<Image >

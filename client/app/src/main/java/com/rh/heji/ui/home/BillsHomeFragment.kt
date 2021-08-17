@@ -6,6 +6,7 @@ import android.view.ViewStub
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +31,7 @@ import com.rh.heji.ui.bill.iteminfo.BillInfoPop
 import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
+import kotlinx.coroutines.flow.collect
 import java.math.BigDecimal
 import java.util.*
 
@@ -136,7 +138,6 @@ class BillsHomeFragment : BaseFragment() {
      * @param month 月
      */
     private fun totalIncomeExpense() {
-
         homeViewModel.getIncomeExpense().observe(mainActivity, { incomeExpense: Income? ->
 
             var income = "0"

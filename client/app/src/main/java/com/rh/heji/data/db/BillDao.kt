@@ -1,11 +1,11 @@
 package com.rh.heji.data.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.rh.heji.AppCache
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.d2o.*
+import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import java.util.*
 
@@ -55,7 +55,7 @@ interface BillDao {
      * @return
      */
     @Query("SELECT id FROM bill WHERE sync_status =:syncStatus")
-    fun observeSyncStatus(syncStatus: Int): LiveData<MutableList<String>>
+    fun observeSyncStatus(syncStatus: Int): Flow<MutableList<String>>
 
     /**
      * 根据时间区间查
@@ -102,7 +102,7 @@ interface BillDao {
         end: String,
         sz: Int,
         bookId: String? = AppCache.getInstance().currentBook.id
-    ): LiveData<Double>
+    ): Flow<Double>
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND date(bill_time)=:time")
@@ -114,7 +114,7 @@ interface BillDao {
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',bill_time)=:yearMonth)")
-    fun sumIncome(yearMonth: String, bookId: String? = currentBookId): LiveData<Income>
+    fun sumIncome(yearMonth: String, bookId: String? = currentBookId): Flow<Income>
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',bill_time)=:yearMonth)")

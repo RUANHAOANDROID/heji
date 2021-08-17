@@ -22,7 +22,7 @@ public class ImageLoader implements XPopupImageLoader {
     @Override
     public void loadImage(int position, @NonNull Object url, @NonNull ImageView imageView) {
         Glide.with(imageView).load(url).into(imageView);
-        LogUtils.i(url);
+        LogUtils.d(url);
     }
 
 

@@ -32,7 +32,7 @@ public class ImageAdapter extends BaseQuickAdapter<Image, BaseViewHolder> {
                 .error(R.drawable.ic_baseline_image_load_error_24)
                 .placeholder(R.drawable.ic_baseline_image_24)
                 .into(binding.itemImage);
-        LogUtils.i(image.getLocalPath(), image.getOnlinePath(), path);
+        LogUtils.d(image.getLocalPath(), image.getOnlinePath(), path);
     }
 
     /**

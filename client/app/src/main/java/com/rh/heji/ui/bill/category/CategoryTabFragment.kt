@@ -78,4 +78,15 @@ class CategoryTabFragment : BaseFragment() {
             }
         })
     }
+
+    fun setCategory(category: String, type: Int) {
+        if (type == BillType.EXPENDITURE.type()) {
+            binding.tab.getTabAt(0)?.select()
+            fragments[0].setCategory(category)
+        } else if (type == BillType.INCOME.type()) {
+            binding.tab.getTabAt(1)?.select()
+            fragments[1].setCategory(category)
+        }
+
+    }
 }

@@ -33,7 +33,7 @@ class CategoryRepository {
         val response: BaseResponse<List<CategoryEntity>> = network.categoryPull()
         val categories = response.data
         if (categories.isNotEmpty()) {
-            categories.stream().forEach { entity: CategoryEntity ->
+            categories.forEach { entity: CategoryEntity ->
                 val _id =   AppDatabase.getInstance().categoryDao().findByID(entity.id)
                 if (TextUtils.isEmpty(_id)) {
                     val dbCategory = entity.toDbCategory()

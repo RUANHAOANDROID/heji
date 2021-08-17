@@ -105,7 +105,7 @@ class CalendarNoteFragment : BaseFragment() {
         }
         binding.calendarView.setOnCalendarSelectListener(object : OnCalendarSelectListener {
             override fun onCalendarOutOfRange(calendar: Calendar) {
-                LogUtils.i(calendar.toString())
+                LogUtils.d(calendar.toString())
             }
 
             override fun onCalendarSelect(calendar: Calendar, isClick: Boolean) {//选择日期事件

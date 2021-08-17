@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity() {
 
                         }
                     }
-                    LogUtils.i(destination.label)
+                    LogUtils.d(destination.label)
                 }
             })
     }

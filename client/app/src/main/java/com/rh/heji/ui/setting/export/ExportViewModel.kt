@@ -36,7 +36,7 @@ class ExportViewModel : ViewModel() {
                     sink.flush()
                     sink.close()
                     exportLiveData.postValue(excelFile.absolutePath)
-                    LogUtils.i("下载成功：${excelFile.absolutePath}")
+                    LogUtils.d("下载成功：${excelFile.absolutePath}")
                     AppCache.getInstance().galleryAddPic(excelFile.absolutePath)
                 } catch (e: Exception) {
                     e.printStackTrace()

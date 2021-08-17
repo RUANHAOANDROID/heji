@@ -80,15 +80,18 @@ class AddBillFragment : BaseFragment() {
                         url?.let { url -> billViewModel.addImgUrl(url) }
                         return@map url
                     }.toList()
-
                 selectImagePou?.setData(imageUrl)
-                binding.imgTicket.text = "图片(x" + images.size + ")"
+                if (imageUrl.isNotEmpty())
+                    binding.imgTicket.text = "图片(x" + images.size + ")"
             }
             bill.money.toPlainString().let { money ->
                 binding.keyboard.stack.push(
                     if (money.contains(".00"))
                         money.replace(".00", "") else money
                 )
+            }
+            bill.category?.let {
+                categoryTabFragment.setCategory(it, bill.type)
             }
 
         })
@@ -134,14 +137,13 @@ class AddBillFragment : BaseFragment() {
     }
 
     private fun selectYearAndDay(initialTime: Date = billViewModel.bill.billTime) {
-
         binding.tvBillTime.text = initialTime.string() //设置日历初始选中时间
         binding.tvBillTime.setOnClickListener {
             val onDateSetListener =
                 OnDateSetListener { datePicker: DatePicker?, year: Int, month: Int, dayOfMonth: Int ->
                     val selectCalendar = initialTime.calendar()
                     selectCalendar[year, month] = dayOfMonth
-                    setNoteTime(selectCalendar.time.string())
+                    setBillTime(selectCalendar.time.string())
                     selectHourAndMinute(
                         year = year,
                         month = month + 1,//实际保存时，选择的时间需要+1（month：0-11 ）
@@ -178,8 +180,9 @@ class AddBillFragment : BaseFragment() {
         val onTimeSetListener =
             OnTimeSetListener { timePicker: TimePicker?, hourOfDay: Int, minute: Int ->
                 if (hourOfDay == 0 && minute == 0) return@OnTimeSetListener
-                val selectTime = "${year}-${month}-$dayOfMonth $hourOfDay:$minute:00"
-                setNoteTime(selectTime)
+                val selectTime =
+                    "$year-$month-$dayOfMonth $hourOfDay:$minute:00"//yyyy-MM-dd hh:mm:00
+                setBillTime(selectTime)
             }
         val timePickerDialog =
             TimePickerDialog(mainActivity, onTimeSetListener, hourOfDay, minute, true)
@@ -191,7 +194,7 @@ class AddBillFragment : BaseFragment() {
      *
      * @param selectTime 选中的日期或更精确的
      */
-    private fun setNoteTime(selectTime: String) {
+    private fun setBillTime(selectTime: String) {
         binding.tvBillTime.text = selectTime
         billViewModel.bill.billTime = selectTime.date()
         LogUtils.d(selectTime)
@@ -303,7 +306,7 @@ class AddBillFragment : BaseFragment() {
                 })
                 setImages(mSelected)
                 if (billViewModel.imgUrls.size > 0) {
-                    mSelected.stream().forEach { s: String ->
+                    mSelected.forEach { s: String ->
                         /**
                          * 包含的话就删除重新加
                          */

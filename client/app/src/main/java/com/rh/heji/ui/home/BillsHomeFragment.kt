@@ -45,7 +45,7 @@ class BillsHomeFragment : BaseFragment() {
     private lateinit var stubTotalView: ViewStub
 
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
-    val adapter: NodeBillsAdapter by lazy { NodeBillsAdapter() }
+    private lateinit var adapter: NodeBillsAdapter
 
     //最后点击时间
     private var lastClickTime = 0L
@@ -54,6 +54,7 @@ class BillsHomeFragment : BaseFragment() {
     public override fun initView(rootView: View) {
         binding = FragmentBillsHomeBinding.bind(rootView)
         stubTotalView = rootView.findViewById(R.id.total)
+        adapter = NodeBillsAdapter()
         rootView.post {
             initBillsAdapter()
             binding.fab.setOnClickListener {
@@ -88,6 +89,7 @@ class BillsHomeFragment : BaseFragment() {
         stubTotalView.setOnInflateListener { stub, inflated ->   //提前设置避免多次设置
             subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)
         }
+        homeViewModel.monthDataChange().observe(this, billsObserver)
     }
 
     override fun setUpToolBar() {
@@ -193,24 +195,11 @@ class BillsHomeFragment : BaseFragment() {
         binding.homeRecycler.addItemDecoration(CardDecoration(8))
         class Diff : ItemCallback<BaseNode>() {
             override fun areItemsTheSame(oldItem: BaseNode, newItem: BaseNode): Boolean {
-                if (oldItem is DayIncomeNode && newItem is DayIncomeNode) {
-                    return oldItem.dayIncome == newItem.dayIncome
-                }
-                if (oldItem is DayBillsNode && newItem is DayBillsNode) {
-                    val idSame = oldItem.bill.id == newItem.bill.id
-                    val moneySame = oldItem.bill.money == newItem.bill.money
-                    return idSame && moneySame
-                }
-                return false
+                return oldItem == newItem
             }
 
             override fun areContentsTheSame(oldItem: BaseNode, newItem: BaseNode): Boolean {
-                if (oldItem is DayBillsNode && newItem is DayBillsNode) {
-                    val moneySame = oldItem.bill.money == newItem.bill.money
-                    val remarkSame = oldItem.bill.remark == newItem.bill.remark
-                    return moneySame && remarkSame
-                }
-                return false
+                return oldItem == newItem
             }
         }
         adapter.setDiffCallback(Diff())
@@ -281,7 +270,7 @@ class BillsHomeFragment : BaseFragment() {
      */
     fun notifyData(year: Int, month: Int) {
         homeViewModel.selectYearMonth = YearMonth(year, month)
-        homeViewModel.getBillsData().observe(this, billsObserver)
+        homeViewModel.refreshMonthData()
         totalIncomeExpense()
     }
 

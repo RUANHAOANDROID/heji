@@ -114,8 +114,7 @@ class CategoryFragment : BaseFragment() {
     private fun defSelected() {
         if (labelAdapter.data.isNotEmpty() && labelAdapter.data.size > 0) {
             val count =
-                labelAdapter.data.stream().filter { category: Category -> category.isSelected }
-                    .count()
+                labelAdapter.data.filter { category: Category -> category.isSelected }.count()
             if (count <= 0) {
                 val firstItem = labelAdapter.data.stream().findFirst().get()
                 if (firstItem.category != "管理") {
@@ -142,18 +141,23 @@ class CategoryFragment : BaseFragment() {
     }
 
     private fun addSettingItem(labelAdapter: CategoryAdapter) {
-        val category = Category(category= CategoryAdapter.SETTING,level = 0,type =type.type())
+        val category = Category(category = CategoryAdapter.SETTING, level = 0, type = type.type())
         labelAdapter.addData(labelAdapter.itemCount, category)
     }
 
-    fun setCategory() {
+    fun setCategory(category: String? = null) {
         if (!this::labelAdapter.isInitialized || labelAdapter == null) return
+
         var selectCategory: Category?
-        val selects = labelAdapter.data.stream().filter { category: Category -> category.isSelected }
-            .collect(Collectors.toList())
-        selectCategory = if (selects.size <= 0) labelAdapter.data.stream().findFirst()
-            .get() else selects.stream().findFirst().get()
+        val selects =
+            labelAdapter.data.filter { category: Category -> category.isSelected }.toList()
+        selectCategory = if (selects.isEmpty()) labelAdapter.data.first() else selects.first()
         categoryViewModule.selectCategory = selectCategory
+        if (!category.isNullOrEmpty()) {
+            binding.categoryRecycler.post {
+                labelAdapter.setSelectCategory(category)
+            }
+        }
     }
 
     companion object {

@@ -7,6 +7,7 @@ import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
 import com.rh.heji.AppCache
 import com.rh.heji.R
+import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.ui.base.BaseViewModel
@@ -22,10 +23,7 @@ class CalendarNoteViewModule : BaseViewModel() {
     val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>()
 
 
-    var selectYearMonth = YearMonth(
-        java.util.Calendar.getInstance()[java.util.Calendar.YEAR],
-        java.util.Calendar.getInstance()[java.util.Calendar.MONTH] + 1
-    )
+    var selectYearMonth = currentYearMonth
 
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({

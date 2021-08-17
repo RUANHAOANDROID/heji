@@ -76,7 +76,7 @@ class BookListFragment : BaseFragment() {
             findNavController().popBackStack()
         }
         binding.fab.setOnClickListener {
-            XPopup.Builder(context).asBottomList(
+            XPopup.Builder(requireContext()).asBottomList(
                 "", arrayOf("新建账本", "加入他人账本")
             ) { _, text ->
                 when (text) {

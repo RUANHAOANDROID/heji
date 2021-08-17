@@ -37,7 +37,7 @@ class ExportFragment : BaseFragment() {
         binding.tvExportFormat.setOnClickListener {
 
             val onSelectListener = OnSelectListener { _, text ->
-                var popup = XPopup.Builder(mainActivity).asLoading("正在导出").show()
+                var popup = XPopup.Builder(requireContext()).asLoading("正在导出").show()
                 var path = mainActivity.filesDir.absolutePath + "/" + TimeUtils.getNowString() + ".xlsx"
                 viewModel.exportExcel(path).observe(viewLifecycleOwner, Observer {
                     ToastUtils.showLong(it)
@@ -48,7 +48,7 @@ class ExportFragment : BaseFragment() {
 
                 })
             }
-            var bottomListPopup = XPopup.Builder(mainActivity).asBottomList("选择导出格式", list.toTypedArray(), onSelectListener)
+            var bottomListPopup = XPopup.Builder(requireContext()).asBottomList("选择导出格式", list.toTypedArray(), onSelectListener)
             bottomListPopup.show()
         }
     }

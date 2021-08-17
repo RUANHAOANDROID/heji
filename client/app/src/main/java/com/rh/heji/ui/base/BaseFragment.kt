@@ -152,11 +152,11 @@ abstract class BaseFragment : Fragment() {
                     null
                 )
                 setOnClickListener { v: View? ->
-                    val yearSelectPop = YearSelectPop(mainActivity, { selectYear, selectMonth ->
+                    val yearSelectPop = YearSelectPop(requireContext(), { selectYear, selectMonth ->
                         text = "$selectYear.$selectMonth"
                         selected.selected(selectYear, selectMonth)
                     }, showAllYear)
-                    XPopup.Builder(mainActivity) //.hasBlurBg(true)//模糊
+                    XPopup.Builder(requireContext()) //.hasBlurBg(true)//模糊
                         .hasShadowBg(true)
                         .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .asCustom(yearSelectPop) /*.enableDrag(false)*/

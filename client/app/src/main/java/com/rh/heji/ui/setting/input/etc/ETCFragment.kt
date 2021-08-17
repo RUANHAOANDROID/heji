@@ -144,13 +144,13 @@ class ETCFragment : BaseFragment() {
     private fun requestAlert() {
         if (TextUtils.isEmpty(etcViewModel.etcID) || TextUtils.isEmpty(etcViewModel.carID) || TextUtils.isEmpty(etcViewModel.yearMonth)) {
             selectMonth()
-            XPopup.Builder(context)
+            XPopup.Builder(requireContext())
                     .asConfirm("导入提示", "请先按月份查询账单") { }
                     .show()
         } else {
-            XPopup.Builder(context)
+            XPopup.Builder(requireContext())
                     .asConfirm("导入" + etcViewModel.yearMonth + "账单", "当前账本【${AppCache.getInstance().currentBook.name}】，确认导入吗？") {
-                        val inputLoading = XPopup.Builder(context).asLoading().setTitle("正在导入")
+                        val inputLoading = XPopup.Builder(requireContext()).asLoading().setTitle("正在导入")
                         inputLoading.show()
                         etcViewModel.requestHBGSETCList(etcViewModel.etcID, etcViewModel.yearMonth!!, etcViewModel.carID)
                                 .observe(viewLifecycleOwner, { message: String ->
@@ -166,6 +166,6 @@ class ETCFragment : BaseFragment() {
         val calendar = Calendar.getInstance()
         val year = calendar[Calendar.YEAR]
         val months = arrayOf("$year-01", "$year-02", "$year-03", "$year-04", "$year-05", "$year-06", "$year-07", "$year-08", "$year-09", "$year-10", "$year-11", "$year-12")
-        XPopup.Builder(context).asBottomList("选择月份", months) { position, text -> etcViewModel.yearMonth = text }.show()
+        XPopup.Builder(requireContext()).asBottomList("选择月份", months) { position, text -> etcViewModel.yearMonth = text }.show()
     }
 }

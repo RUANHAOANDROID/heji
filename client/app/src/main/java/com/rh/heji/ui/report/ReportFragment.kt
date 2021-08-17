@@ -2,8 +2,10 @@ package com.rh.heji.ui.report
 
 import android.text.SpannableString
 import android.view.View
+import android.view.ViewStub
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.github.mikephil.charting.data.*
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppCache
@@ -15,6 +17,7 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.d2o.BillTotal
 import com.rh.heji.data.db.d2o.IncomeTimeSurplus
 import com.rh.heji.databinding.FragmentReportBinding
+import com.rh.heji.databinding.LayoutEmptyBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.report.pop.BottomListPop
 import com.rh.heji.utlis.ColorUtils
@@ -33,11 +36,10 @@ class ReportFragment : BaseFragment() {
     private val reportViewModel: ReportViewModel by lazy { getViewModel(ReportViewModel::class.java) }
     private val categoryTotalAdapter: CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
     private val monthYearBillsAdapter: MonthYearBillAdapter = MonthYearBillAdapter(mutableListOf())
-
+    private lateinit var emptyStubView: ViewStub
     lateinit var binding: FragmentReportBinding
 
     val colors = ColorUtils.groupColors()
-    private lateinit var emptyView: View
     override fun onStart() {
         super.onStart()
         reportViewModel.yearMonth = mainActivity.mainViewModel.globalYearMonth
@@ -67,6 +69,7 @@ class ReportFragment : BaseFragment() {
 
     override fun initView(rootView: View) {
         binding = FragmentReportBinding.bind(rootView)
+        emptyStubView = rootView.findViewById(R.id.emptyStub)
         incomeExpenditureInfo()
         lineChartStyle(binding.lineChart)
         binding.tvTypeExpenditure.setOnClickListener {
@@ -94,7 +97,10 @@ class ReportFragment : BaseFragment() {
                     )
                 }
                 if (key == BillType.INCOME.type()) {
-                    setIncomeLineChartNodes(reportViewModel.yearMonth, value as MutableList<BillTotal>)
+                    setIncomeLineChartNodes(
+                        reportViewModel.yearMonth,
+                        value as MutableList<BillTotal>
+                    )
                 }
                 if (key == BillType.ALL.type()) {
                     val arrays = value as ArrayList<MutableList<BillTotal>>
@@ -120,8 +126,12 @@ class ReportFragment : BaseFragment() {
                 reportViewModel.refreshData(BillType.EXPENDITURE.type())
             }
         })
-        binding.emptyStub.setOnInflateListener { stub, inflated ->
-            emptyView =inflated
+        emptyStubView.setOnInflateListener { stub, inflated ->
+            val emptyLayoutBinding = LayoutEmptyBinding.bind(inflated)
+            emptyLayoutBinding.tvContext.text = "加载失败，点击重试加载"
+            emptyLayoutBinding.tvContext.setOnClickListener {
+                ToastUtils.showShort("重试加载失败")
+            }
             LogUtils.d("empty view inflated")
         }
     }
@@ -267,16 +277,10 @@ class ReportFragment : BaseFragment() {
      */
     private fun showEmptyView() {
         if (binding.tvDayAVGValue.text.equals("0.00")) {
-            binding.emptyStub.visibility = View.VISIBLE
-//            if (this::emptyView.isInitialized) {
-//                emptyView.visibility =View.VISIBLE
-//            }
+            emptyStubView.visibility = View.VISIBLE
             binding.nestedSccrollView.visibility = View.GONE
         } else {
-            binding.emptyStub.visibility = View.GONE
-//            if (this::emptyView.isInitialized) {
-//                emptyView.visibility =View.GONE
-//            }
+            emptyStubView.visibility = View.GONE
             binding.nestedSccrollView.visibility = View.VISIBLE
         }
     }

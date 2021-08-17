@@ -23,14 +23,14 @@ interface ImageDao {
     fun deleteBillImage(billID: String )
 
     @Transaction
-    @Query("update image set img_path=:imagePath, sync_status =:status where id =:id")
+    @Query("update image set local_path=:imagePath, sync_status =:status where id =:id")
     fun updateImageLocalPath(id: String , imagePath: String , status: Int): Int
 
     @Transaction
-    @Query("update image set img_online_path=:onlinePath, sync_status=:status  where id =:imgId")
+    @Query("update image set online_path=:onlinePath, sync_status=:status  where id =:imgId")
     fun updateOnlinePath(imgId: String , onlinePath: String , status: Int): Int
 
-    @Query("select * from image where img_online_path=:path")
+    @Query("select * from image where online_path=:path")
     fun findByOnLinePath(path: String ): MutableList<Image >
 
     @Query("DELETE FROM image WHERE " + Image.COLUMN_ID + "=:imgID")
@@ -45,6 +45,6 @@ interface ImageDao {
     @Query("SELECT * FROM image WHERE _bid =:billId AND sync_status== ${STATUS.NOT_SYNCED}")
     fun findByBillIdNotAsync(billId: String): MutableList<Image>
 
-    @Query("SELECT * FROM image WHERE (img_path ISNULL OR img_path=='') AND(img_online_path!='' OR img_online_path != NULL)")
+    @Query("SELECT * FROM image WHERE (local_path ISNULL OR local_path=='') AND(online_path!='' OR online_path != NULL)")
     fun observerNotDownloadImages(): LiveData<MutableList<Image > >
 }

@@ -285,8 +285,6 @@ class BillsHomeFragment : BaseFragment() {
         totalIncomeExpense()
     }
 
-    private val emptyView: View by lazy { layoutInflater.inflate(R.layout.layout_empty, null) }
-
     @SuppressLint("InflateParams")
     private val billsObserver = { baseNodes: MutableList<BaseNode> ->
         if (baseNodes.isNullOrEmpty() || baseNodes.size <= 0) {
@@ -301,5 +299,7 @@ class BillsHomeFragment : BaseFragment() {
         //adapter.loadMoreModule.loadMoreEnd()//单月不分页，直接显示没有跟多
         hideRefreshing(binding.refreshLayout)
     }
+
+    private val emptyView: View by lazy { layoutInflater.inflate(R.layout.layout_empty, null) }
 
 }

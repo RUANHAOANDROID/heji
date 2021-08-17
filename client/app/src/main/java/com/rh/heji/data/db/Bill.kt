@@ -2,6 +2,7 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
+import com.blankj.utilcode.util.TimeUtils
 import com.rh.heji.AppCache
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
@@ -55,7 +56,7 @@ data class Bill(
      */
     @TypeConverters(DateConverters::class)
     @ColumnInfo(name = "bill_time")
-    var billTime: Date? = null,
+    var billTime: Date = Date(),
 
     /**
      * 创建时间
@@ -88,7 +89,7 @@ data class Bill(
     @ColumnInfo(name = "sync_status")
     var synced: Int = STATUS.NOT_SYNCED
 
-): Parcelable {
+) : Parcelable {
     @Ignore
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

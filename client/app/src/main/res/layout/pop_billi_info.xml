@@ -82,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="记录时间"
+        android:text="票据时间"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -92,7 +92,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="票据时间"
+        android:text="记录时间"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
@@ -101,19 +101,19 @@
         android:id="@+id/tvRecordTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2020-09-20 12:04"
+        tools:text="2020-09-20 12:04"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView9" />
+        app:layout_constraintTop_toTopOf="@+id/textView10" />
 
     <TextView
         android:id="@+id/tvTicketTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2020-09-20 12:04"
+        tools:text="2020-09-20 12:04"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView10" />
+        app:layout_constraintTop_toTopOf="@+id/textView9" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ticketRecycler"

@@ -12,6 +12,7 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.DatePicker
+import android.widget.TextView
 import android.widget.TimePicker
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -22,19 +23,18 @@ import com.blankj.utilcode.util.UriUtils
 import com.lxj.xpopup.XPopup
 import com.matisse.Matisse.Companion.obtainResult
 import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
-import com.rh.heji.AppCache
-import com.rh.heji.R
+import com.rh.heji.*
+import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
-import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
-import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.databinding.FragmentIncomeBinding
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.add.adapter.BillPhotoEntity
 import com.rh.heji.ui.bill.category.CategoryTabFragment
 import com.rh.heji.ui.bill.category.CategoryViewModule
+import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
 import java.io.File
 import java.util.*
@@ -64,6 +64,34 @@ class AddBillFragment : BaseFragment() {
         remark()
         category()
         keyboardListener()
+        billViewModel.billChanged().observe(this, { bill ->
+            binding.tvMoney.text = bill.money.toString()
+            binding.tvUserLabel.text = bill.dealer
+            binding.tvBillTime.text = bill.billTime?.string()
+            bill.remark?.let { remark ->
+                binding.eidtRemark.setText(remark)
+            }
+            (bill.imgCount > 0).let {
+                val images = AppDatabase.getInstance().imageDao().findByBillId(bill.id)
+                val imageUrl =
+                    images.map { img ->
+                        val url =
+                            if (img.localPath.isNullOrEmpty()) img.onlinePath else img.localPath
+                        url?.let { url -> billViewModel.addImgUrl(url) }
+                        return@map url
+                    }.toList()
+
+                selectImagePou?.setData(imageUrl)
+                binding.imgTicket.text = "图片(x" + images.size + ")"
+            }
+            bill.money.toPlainString().let { money ->
+                binding.keyboard.stack.push(
+                    if (money.contains(".00"))
+                        money.replace(".00", "") else money
+                )
+            }
+
+        })
     }
 
     override fun setUpToolBar() {
@@ -105,29 +133,30 @@ class AddBillFragment : BaseFragment() {
         })
     }
 
-    private fun selectYearAndDay() {
-        billViewModel.time = TimeUtils.date2String(billViewModel.bill.billTime) //设置日历选中的时间
-        val nowTime = billViewModel.time
-        binding.tvBillTime.text = nowTime
+    private fun selectYearAndDay(initialTime: Date = billViewModel.bill.billTime) {
+
+        binding.tvBillTime.text = initialTime.string() //设置日历初始选中时间
         binding.tvBillTime.setOnClickListener {
             val onDateSetListener =
                 OnDateSetListener { datePicker: DatePicker?, year: Int, month: Int, dayOfMonth: Int ->
-                    val selectCalendar = Calendar.getInstance()
+                    val selectCalendar = initialTime.calendar()
                     selectCalendar[year, month] = dayOfMonth
-                    val yearTime = TimeUtils.date2String(
-                        selectCalendar.time,
-                        "yyyy-MM-dd"
-                    ) + " 00:00" //未选时自动补全
-                    setNoteTime(yearTime)
-                    selectHourAndMinute(yearTime)
+                    setNoteTime(selectCalendar.time.string())
+                    selectHourAndMinute(
+                        year = year,
+                        month = month + 1,//实际保存时，选择的时间需要+1（month：0-11 ）
+                        dayOfMonth = dayOfMonth,
+                        hourOfDay = selectCalendar[Calendar.HOUR_OF_DAY],
+                        minute = selectCalendar[Calendar.MINUTE]
+                    )
                 }
-            val time = DateConverters.date2Str(billViewModel.bill.billTime).split("-")
+            val yearMonth = YearMonth.format(initialTime)
             val dialog = DatePickerDialog(
                 mainActivity,
                 onDateSetListener,
-                time[0].toInt(),
-                time[1].toInt(),
-                time[2].toInt()
+                yearMonth.year,
+                yearMonth.month - 1,
+                yearMonth.day
             )
             dialog.setOnDateSetListener(onDateSetListener)
             dialog.show()
@@ -139,18 +168,21 @@ class AddBillFragment : BaseFragment() {
      *
      * @param yearTime 年份-月份
      */
-    private fun selectHourAndMinute(yearTime: String) {
+    private fun selectHourAndMinute(
+        year: Int,
+        month: Int,
+        dayOfMonth: Int,
+        hourOfDay: Int,
+        minute: Int
+    ) {
         val onTimeSetListener =
             OnTimeSetListener { timePicker: TimePicker?, hourOfDay: Int, minute: Int ->
                 if (hourOfDay == 0 && minute == 0) return@OnTimeSetListener
-                val calendar2 = Calendar.getInstance()
-                calendar2.time = TimeUtils.string2Date(yearTime, "yyyy-MM-dd HH:mm")
-                calendar2[Calendar.HOUR_OF_DAY] = hourOfDay
-                calendar2[Calendar.MINUTE] = minute
-                val dayTime = TimeUtils.date2String(calendar2.time, "yyyy-MM-dd HH:mm")
-                setNoteTime(dayTime)
+                val selectTime = "${year}-${month}-$dayOfMonth $hourOfDay:$minute:00"
+                setNoteTime(selectTime)
             }
-        val timePickerDialog = TimePickerDialog(mainActivity, onTimeSetListener, 0, 0, true)
+        val timePickerDialog =
+            TimePickerDialog(mainActivity, onTimeSetListener, hourOfDay, minute, true)
         timePickerDialog.show()
     }
 
@@ -161,7 +193,7 @@ class AddBillFragment : BaseFragment() {
      */
     private fun setNoteTime(selectTime: String) {
         binding.tvBillTime.text = selectTime
-        billViewModel.time = "$selectTime:00"
+        billViewModel.bill.billTime = selectTime.date()
         LogUtils.d(selectTime)
     }
 
@@ -195,10 +227,14 @@ class AddBillFragment : BaseFragment() {
             override fun save(result: String) {
                 ToastUtils.showLong(result)
                 val category = categoryViewModule.selectCategory
-                saveBill(result, category, Observer { bill: Bill? ->
-                    AppCache.getInstance().appViewModule.billPush(BillEntity(bill))
-                    findNavController().popBackStack()
-                })
+                saveBill(
+                    result,
+                    category,
+                    Observer { bill: Bill? ->
+                        AppCache.getInstance().appViewModule.billPush(BillEntity(bill))
+                        findNavController().popBackStack()
+                    }
+                )
             }
 
             override fun calculation(result: String) {
@@ -225,13 +261,13 @@ class AddBillFragment : BaseFragment() {
         binding.tvMoney.setTextColor(resources.getColor(color, null))
     }
 
-    private fun saveBill(money: String, category: Category, saveObserver: Observer<Bill>) {
+    private fun saveBill(money: String, category: Category, savedState: Observer<Bill>) {
         if (TextUtils.isEmpty(money) || money == "0") {
             ToastUtils.showShort("未填写金额")
             return
         }
         billViewModel.bill.category = category.category
-        billViewModel.save(ObjectId().toString(), money, category).observe(this, saveObserver)
+        billViewModel.save(money, category, savedState)
     }
 
     /**

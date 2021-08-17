@@ -34,19 +34,20 @@ class CalendarNoteFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        viewModel.selectYearMonth=mainActivity.mainViewModel.globalYearMonth
+        viewModel.selectYearMonth = mainActivity.mainViewModel.globalYearMonth
     }
+
     override fun setUpToolBar() {
         super.setUpToolBar()
         //toolBar.title = "日历记账"
         showBlack()
-
-        showYearMonthTitle(selected = { year, month ->
-            binding.calendarView.scrollToCalendar(year, month, 1)
-            viewModel.selectYearMonth.year = year
-            viewModel.selectYearMonth.month = month
-        },year = viewModel.selectYearMonth.year,month = viewModel.selectYearMonth.month)
-
+        viewModel.selectYearMonth.apply {
+            showYearMonthTitle(selected = { year, month ->
+                binding.calendarView.scrollToCalendar(year, month, 1)
+                this.year = year
+                this.month = month
+            }, year = this.year, month = this.month)
+        }
     }
 
     override fun initView(rootView: View) {
@@ -96,8 +97,11 @@ class CalendarNoteFragment : BaseFragment() {
     }
 
     private fun initCalendarView() {
+        viewModel.selectYearMonth.apply {
+            binding.calendarView.scrollToCalendar(year, month, 1)
+        }
         binding.calendarView.setOnMonthChangeListener { year, month -> //月份滑动事件
-            viewModel.selectYearMonth = YearMonth(year,month)
+            viewModel.selectYearMonth = YearMonth(year, month)
             centerTitle.text = "$year.$month"
             notifyCalendar()
             fabShow()
@@ -152,7 +156,8 @@ class CalendarNoteFragment : BaseFragment() {
                 super.update(bill)
             }
         }
-        val popupView = BillInfoPop(bill=bill,activity = mainActivity,popClickListener=clickListener)
+        val popupView =
+            BillInfoPop(bill = bill, activity = mainActivity, popClickListener = clickListener)
         XPopup.Builder(mainActivity) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
             //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
             //.hasBlurBg(true)//模糊默认false

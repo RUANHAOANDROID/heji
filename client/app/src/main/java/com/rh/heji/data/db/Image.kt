@@ -66,8 +66,8 @@ data class Image(
 
     companion object {
         const val COLUMN_ID = "_bid"
-        const val COLUMN_PATH = "img_path"
-        const val COLUMN_ONLINE_PATH = "img_online_path"
+        const val COLUMN_PATH = "local_path"
+        const val COLUMN_ONLINE_PATH = "online_path"
         const val COLUMN_STATUS = "sync_status"
     }
 }

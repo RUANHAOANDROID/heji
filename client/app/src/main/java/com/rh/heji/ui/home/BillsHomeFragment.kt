@@ -281,7 +281,7 @@ class BillsHomeFragment : BaseFragment() {
             adapter.setDiffNewData(mutableListOf())//设置DiffCallback使用setDiffNewData避免setList
             binding.homeRecycler.minimumHeight = getRootViewHeight()//占满一屏
             stubTotalView.visibility = View.GONE
-            adapter.setEmptyView(emptyView)
+            adapter.setEmptyView(R.layout.layout_empty)
         } else {
             stubTotalView.visibility = View.VISIBLE
             adapter.setDiffNewData(baseNodes)
@@ -289,7 +289,4 @@ class BillsHomeFragment : BaseFragment() {
         //adapter.loadMoreModule.loadMoreEnd()//单月不分页，直接显示没有跟多
         hideRefreshing(binding.refreshLayout)
     }
-
-    private val emptyView: View by lazy { layoutInflater.inflate(R.layout.layout_empty, null) }
-
 }

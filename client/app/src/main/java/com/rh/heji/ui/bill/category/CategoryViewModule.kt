@@ -21,7 +21,7 @@ import com.rh.heji.utlis.launchIO
  * # 分类
  */
 class CategoryViewModule : BaseViewModel() {
-    private val categoryDao by lazy{   AppDatabase.getInstance().categoryDao()}
+    private val categoryDao by lazy { AppDatabase.getInstance().categoryDao() }
     var type: BillType = BillType.EXPENDITURE
         set(value) {
             field = value
@@ -37,7 +37,7 @@ class CategoryViewModule : BaseViewModel() {
 
     var selectCategory = Category(category = "管理")
         set(value) {
-            if (value.category =="管理") return
+            if (value.category == "管理") return
             field = value//field 为type本身 (field领域)
             selectCategoryLiveData.postValue(value)
         }
@@ -59,13 +59,15 @@ class CategoryViewModule : BaseViewModel() {
          * observer 观察变化
          */
         incomeCategory.addSource(
-            categoryDao.findIncomeOrExpenditure(BillType.INCOME.type()).asLiveData(viewModelScope.coroutineContext)
+            categoryDao.findIncomeOrExpenditure(BillType.INCOME.type())
+                .asLiveData(viewModelScope.coroutineContext)
         ) { incomeCategories ->
             incomeCategory.value = incomeCategories
         }
         expenditureCategory.addSource(
             categoryDao
-                .findIncomeOrExpenditure(BillType.EXPENDITURE.type()).asLiveData(viewModelScope.coroutineContext)
+                .findIncomeOrExpenditure(BillType.EXPENDITURE.type())
+                .asLiveData(viewModelScope.coroutineContext)
         ) { expenditureCategories: MutableList<Category> ->
             expenditureCategory.setValue(
                 expenditureCategories
@@ -79,7 +81,7 @@ class CategoryViewModule : BaseViewModel() {
             return
         }
         launchIO({
-            val category = Category(category = name,type = type,level = 0)
+            val category = Category(category = name, type = type, level = 0)
             category.synced = STATUS.NOT_SYNCED
             val categories = categoryDao.findByNameAndType(name, type)
             if (categories.size > 0) {

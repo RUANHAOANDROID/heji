@@ -7,6 +7,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.rh.heji.AppCache
+import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.data.db.d2o.Income
@@ -20,10 +21,7 @@ import com.rh.heji.utlis.launchIO
 import java.util.*
 
 class BillsHomeViewModel : BaseViewModel() {
-    var selectYearMonth = YearMonth(
-        Calendar.getInstance()[Calendar.YEAR], //默认为当前时间,
-        Calendar.getInstance()[Calendar.MONTH] + 1//默认为当前月份
-    )
+    var selectYearMonth = currentYearMonth
     private val billDao: BillDao = AppDatabase.getInstance().billDao()
 
     private val billsNodLiveData = MediatorLiveData<MutableList<BaseNode>>()

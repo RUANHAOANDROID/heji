@@ -38,7 +38,7 @@ const val CURRENT_BOOK = "currentBook"
  */
 const val CURRENT_BOOK_ID = "currentBookID"
 
-var currentYearMonth: YearMonth = YearMonth(
+val currentYearMonth: YearMonth = YearMonth(
     year = Calendar.getInstance().get(Calendar.YEAR),
     month = Calendar.getInstance().get(Calendar.MONTH) + 1,
     day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)

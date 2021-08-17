@@ -34,7 +34,7 @@ import java.math.BigDecimal
 import java.util.*
 
 
-class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
+class BillsHomeFragment : BaseFragment() {
     companion object {
         // 两次点击间隔不能少于1000ms
         private const val FAST_CLICK_DELAY_TIME = 500
@@ -42,6 +42,8 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
 
     private lateinit var binding: FragmentBillsHomeBinding
     private lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
+    private lateinit var stubTotalView: ViewStub
+
     val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
     val adapter: NodeBillsAdapter by lazy { NodeBillsAdapter() }
 
@@ -51,6 +53,7 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
 
     public override fun initView(rootView: View) {
         binding = FragmentBillsHomeBinding.bind(rootView)
+        stubTotalView = rootView.findViewById(R.id.total)
         rootView.post {
             initBillsAdapter()
             binding.fab.setOnClickListener {
@@ -61,10 +64,13 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
                     ).build().toBundle()
                 )
             }
-            //initSwipeRefreshLayout()
+
             toolBar.post {
-                swipeRefreshLayout(binding.refreshLayout){
-                    notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
+                swipeRefreshLayout(binding.refreshLayout) {
+                    notifyData(
+                        homeViewModel.selectYearMonth.year,
+                        homeViewModel.selectYearMonth.month
+                    )
                 }
                 binding.materialupAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                     val isFullyShow = verticalOffset >= 0
@@ -79,26 +85,9 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
                 )
             )
         }
-        binding.total.setOnInflateListener(this)//提前设置避免多次设置
-    }
-
-    private fun initSwipeRefreshLayout() {
-        toolBar.post {
-            binding.refreshLayout.setProgressViewOffset(true, 0, 180)//设置缩放，起始位置，最终位置
-            //设置bar头部折叠监听
-            binding.materialupAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-                val isFullyShow = verticalOffset >= 0
-                binding.refreshLayout.isEnabled = isFullyShow
-            })
-            binding.refreshLayout.setOnRefreshListener {
-                binding.refreshLayout.isRefreshing = false
-                notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
-            }
-            //设置刷新提示View颜色（在最后）
-            binding.refreshLayout.setColorSchemeResources(R.color.colorPrimary)
+        stubTotalView.setOnInflateListener { stub, inflated ->   //提前设置避免多次设置
+            subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)
         }
-        //binding.refreshLayout.setDistanceToTriggerSync(toolBar.height*2)
-
     }
 
     override fun setUpToolBar() {
@@ -160,10 +149,10 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
 
             }
 
-            if (income == "0" && expenses == "0") {
-                binding.total.visibility = View.GONE
+            if ((income == "0" && expenses == "0") || (income == "0.00" && expenses == "0.00")) {
+                stubTotalView.visibility = View.GONE
             } else {
-                binding.total.visibility = View.VISIBLE
+                stubTotalView.visibility = View.VISIBLE
                 notifyTotalLayout(expenses, income)
             }
         })
@@ -303,20 +292,14 @@ class BillsHomeFragment : BaseFragment(), ViewStub.OnInflateListener {
         if (baseNodes.isNullOrEmpty() || baseNodes.size <= 0) {
             adapter.setDiffNewData(mutableListOf())//设置DiffCallback使用setDiffNewData避免setList
             binding.homeRecycler.minimumHeight = getRootViewHeight()//占满一屏
-            //adapter.notifyDataSetChanged()
+            stubTotalView.visibility = View.GONE
             adapter.setEmptyView(emptyView)
         } else {
-            binding.total.visibility = View.VISIBLE
+            stubTotalView.visibility = View.VISIBLE
             adapter.setDiffNewData(baseNodes)
         }
         //adapter.loadMoreModule.loadMoreEnd()//单月不分页，直接显示没有跟多
         hideRefreshing(binding.refreshLayout)
     }
-
-
-    override fun onInflate(stub: ViewStub, inflated: View) {
-        subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)
-    }
-
 
 }

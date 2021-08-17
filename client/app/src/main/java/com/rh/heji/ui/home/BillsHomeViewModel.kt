@@ -1,8 +1,6 @@
 package com.rh.heji.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
@@ -18,6 +16,10 @@ import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class BillsHomeViewModel : BaseViewModel() {
@@ -58,6 +60,7 @@ class BillsHomeViewModel : BaseViewModel() {
 
     fun getIncomeExpense(): LiveData<Income> {
         LogUtils.d("Between by time:$selectYearMonth")
-        return Transformations.distinctUntilChanged(billDao.sumIncome(selectYearMonth.toYearMonth()))
+        return billDao.sumIncome(selectYearMonth.toYearMonth())
+            .asLiveData(viewModelScope.coroutineContext)
     }
 }

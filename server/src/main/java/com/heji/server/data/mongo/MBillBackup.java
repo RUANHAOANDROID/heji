@@ -1,6 +1,5 @@
 package com.heji.server.data.mongo;
 
-import com.heji.server.module.BillModule;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -49,20 +48,6 @@ public class MBillBackup {
 
     public MBillBackup() {
 
-    }
-
-    public MBillBackup(BillModule billModule) {
-        _id = billModule.get_id();
-        bookId = billModule.getBookId();
-        money = billModule.getMoney();
-        category = billModule.getCategory();
-        type = billModule.getType();
-        dealer = billModule.getDealer();
-        remark = billModule.getRemark();
-        time = billModule.getTime();
-        createTime = billModule.getCreateTime();
-        updateTime = billModule.getUpdateTime();
-        createUser = billModule.getCreateUser();
     }
 
     public MBillBackup(MBill mBill) {

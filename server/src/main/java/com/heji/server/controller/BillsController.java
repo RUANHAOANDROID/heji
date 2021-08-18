@@ -6,16 +6,12 @@ import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.MBillBackup;
 import com.heji.server.exception.NotFindBillException;
 import com.heji.server.file.StorageService;
-import com.heji.server.module.BillModule;
 import com.heji.server.result.Result;
 import com.heji.server.service.BillBackupServer;
 import com.heji.server.service.BillService;
 import com.heji.server.service.ImageService;
 import com.heji.server.utils.TimeUtils;
-import io.jsonwebtoken.JwtParser;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -52,9 +48,8 @@ public class BillsController {
 
     @ResponseBody
     @PostMapping(value = {"/add"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String addBill(@RequestBody BillModule billModule) {
+    public String addBill(@RequestBody MBill mBill) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        MBill mBill = new MBill(billModule);
         mBill.setCreateUser(username);
         String billID = billService.addBill(mBill);
         return Result.success(billID);

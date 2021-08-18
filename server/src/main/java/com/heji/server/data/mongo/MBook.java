@@ -24,11 +24,22 @@ public class MBook {
     String _id;
     @Field("name")
     String name;
-
+    /**
+     * 创建人
+     */
+    @Field("creat_user")
     String createUser;
-
+    /**
+     * 账本类型
+     */
     String type;
+    /**
+     * 账本用户
+     */
     List<String> users;
+    /**
+     * 账本封面
+     */
     byte[] banner;
 
 }

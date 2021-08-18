@@ -32,7 +32,7 @@ class AddBillViewModel : BaseViewModel() {
             field = value
             billLiveData.postValue(field)
         }
-    var keyBoardStack: Stack<String>? = null
+    var keyBoardStack: Stack<String>? = null//用于保存栈
     private var billLiveData: MutableLiveData<Bill> = MutableLiveData()
 
     fun billChanged(): MutableLiveData<Bill> {

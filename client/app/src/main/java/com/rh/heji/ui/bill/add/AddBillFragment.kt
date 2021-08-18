@@ -34,6 +34,7 @@ import com.rh.heji.ui.bill.category.CategoryViewModule
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
 import java.io.File
+import java.math.BigDecimal
 import java.util.*
 import java.util.function.Consumer
 
@@ -44,7 +45,7 @@ class AddBillFragment : BaseFragment() {
     private val billViewModel by lazy { getViewModel(AddBillViewModel::class.java) }
     val categoryViewModule by lazy { getViewModel(CategoryViewModule::class.java) }
 
-    lateinit var binding: FragmentIncomeBinding
+    private lateinit var binding: FragmentIncomeBinding
     private lateinit var categoryTabFragment: CategoryTabFragment
     var selectImagePou: SelectImagePop? = null//图片弹窗
 
@@ -86,10 +87,14 @@ class AddBillFragment : BaseFragment() {
 
             }
             bill.money.toPlainString().let { money ->
-                binding.keyboard.stack.push(
-                    if (money.contains(".00"))
-                        money.replace(".00", "") else money
-                )
+                if (bill.money.compareTo(BigDecimal.ZERO)==1){
+                    val stack =Stack<String>().apply { push(bill.money.toPlainString()) }
+                    billViewModel.keyBoardStack =stack
+//                    binding.keyboard.stack.push(
+//                        if (money.contains(".00"))
+//                            money.replace(".00", "") else money
+//                    )
+                }
             }
             bill.category?.let {
                 categoryTabFragment.setCategory(it, bill.type)
@@ -317,7 +322,9 @@ class AddBillFragment : BaseFragment() {
         super.onResume()
         val stack: Stack<String>? = billViewModel.keyBoardStack
         if (null != stack && !stack.isEmpty()) {
-            binding.keyboard.stack = stack
+            binding.keyboard.post {
+                binding.keyboard.stack = stack
+            }
         }
     }
 

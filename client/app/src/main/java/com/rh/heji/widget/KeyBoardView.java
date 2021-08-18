@@ -31,7 +31,7 @@ public class KeyBoardView extends ConstraintLayout {
     String defValue = "0";
     private Context context;
     LayoutKeyboardBinding binding;
-    Stack<String> stack = new Stack<>();
+    private Stack<String> stack = new Stack<>();
     private OnKeyboardListener keyboardListener;
     public void setKeyboardListener(OnKeyboardListener keyboardListener) {
         this.keyboardListener = keyboardListener;

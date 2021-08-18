@@ -59,6 +59,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
                     super.onCrash(crashInfo)
                     launchIO({
                         errorLog?.let {
+                            AppDatabase.getInstance().errorLogDao().install(it)
                             HejiNetwork.getInstance().logUpload(it)
                         }
                     }, {})

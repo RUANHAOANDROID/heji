@@ -2,7 +2,6 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
-import com.blankj.utilcode.util.TimeUtils
 import com.rh.heji.AppCache
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
@@ -90,6 +89,10 @@ data class Bill(
     var synced: Int = STATUS.NOT_SYNCED
 
 ) : Parcelable {
+
+    @Ignore
+    var images: Array<String> = arrayOf()
+
     @Ignore
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

@@ -6,8 +6,6 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.viewModelScope
-import androidx.room.Entity
 import com.blankj.utilcode.util.CrashUtils
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.AppDatabase
@@ -21,14 +19,10 @@ import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.data.repository.CategoryRepository
 import com.rh.heji.network.HejiNetwork
-import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.service.work.DataSyncWork
-import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.CrashInfo
 import com.rh.heji.utlis.launchIO
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class AppViewModule(application: Application) : AndroidViewModel(application) {
     val network: HejiNetwork = HejiNetwork.getInstance()
@@ -59,7 +53,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
                     super.onCrash(crashInfo)
                     launchIO({
                         errorLog?.let {
-                            AppDatabase.getInstance().errorLogDao().install(it)
+                            save2DB()
                             HejiNetwork.getInstance().logUpload(it)
                         }
                     }, {})
@@ -68,8 +62,8 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun billPush(billEntity: BillEntity) {
-        launchIO({ billRepository.pushBill(billEntity) })
+    fun billPush(bill: Bill) {
+        launchIO({ billRepository.pushBill(bill) })
 
     }
 
@@ -82,8 +76,8 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
 
     }
 
-    fun billUpdate(billEntity: BillEntity) {
-        launchIO({ billRepository.updateBill(billEntity) })
+    fun billUpdate(bill: Bill) {
+        launchIO({ billRepository.updateBill(bill) })
     }
 
     fun billPull() {

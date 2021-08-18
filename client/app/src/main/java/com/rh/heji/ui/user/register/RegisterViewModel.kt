@@ -38,7 +38,7 @@ class RegisterViewModel : BaseViewModel() {
 
         launch({
             var response = HejiNetwork.getInstance().register(user)
-            registerLiveData.postValue(response.data)
+            registerLiveData.postValue(response.date)
         }, {})
         return registerLiveData;
     }

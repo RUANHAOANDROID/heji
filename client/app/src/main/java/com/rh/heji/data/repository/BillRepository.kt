@@ -8,7 +8,6 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
-import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.response.ImageEntity
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -24,11 +23,10 @@ class BillRepository {
     /**
      * 保存账单至Server
      */
-    suspend fun pushBill(billEntity: BillEntity) {
-        val response = hejiNetwork.billPush(billEntity)
+    suspend fun pushBill(bill: Bill) {
+        val response = hejiNetwork.billPush(bill)
         if (response.code == 0) {
-            response.data.let {
-                var bill = billEntity.toBill()
+            response.date.let {
                 bill.synced = STATUS.SYNCED
                 billDao.update(bill)//已上传
                 uploadImage(bill.id)
@@ -40,27 +38,26 @@ class BillRepository {
 
     suspend fun deleteBill(_id: String) {
         var response = hejiNetwork.billDelete(_id)
-        response.data.let {
+        response.date.let {
               AppDatabase.getInstance().imageDao().deleteBillImage(_id)
             billDao.delete(Bill(_id))
         }
     }
 
-    suspend fun updateBill(billEntity: BillEntity) {
-        var response = hejiNetwork.billUpdate(billEntity)
-        response.data.let {
-            val toBill = billEntity.toBill()
-            toBill.synced = STATUS.SYNCED
-            billDao.update(toBill) //已上传
+    suspend fun updateBill(bill: Bill) {
+        var response = hejiNetwork.billUpdate(bill)
+        response.date.let {
+            bill.synced = STATUS.SYNCED
+            billDao.update(bill) //已上传
         }
     }
 
     suspend fun pullBill(startTime: String = "0", endTime: String = "0") {
         var response = hejiNetwork.billPull(startTime, endTime)
-        response.data.let {
+        response.date.let {
             if (it.isNotEmpty()) {
-                it.forEach { entity ->
-                    billDao.install(entity.toBill())
+                it.forEach { bill ->
+                    billDao.install(bill)
                 }
             }
         }
@@ -90,10 +87,10 @@ class BillRepository {
                 val objectId = image.id
                 val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part,
                     objectId, bill_id, time)
-                response.data.let {
-                    image.onlinePath = response.data._id
-                    image.md5 = response.data.md5
-                    image.id = response.data._id
+                response.date.let {
+                    image.onlinePath = response.date._id
+                    image.md5 = response.date.md5
+                    image.id = response.date._id
                     image.synced = STATUS.SYNCED
                     LogUtils.d("账单图片上传成功：$image")
                     image.onlinePath?.let {

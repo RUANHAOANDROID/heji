@@ -1,8 +1,8 @@
 package com.rh.heji.network
 
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.ErrorLog
-import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.network.response.ImageEntity
 import com.rh.heji.ui.user.register.RegisterUser
@@ -17,6 +17,7 @@ import retrofit2.http.*
  * #
  */
 interface HeJiServer {
+    //----------------------USER---------------------------//
     @POST("user/register")
     fun register(@Body user: Any?): Call<BaseResponse<RegisterUser>>
 
@@ -25,30 +26,36 @@ interface HeJiServer {
 
     @POST("user/auth")
     fun auth(@Query("token") token: String): Call<BaseResponse<String>>
-
+    //----------------------BOOK---------------------------//
     @POST("book/create")
     fun bookCreate(@Body book: Book): Call<BaseResponse<String>>
+    @POST("book/addBookUser")
+    fun bookUserAdd(@Body book: Book): Call<BaseResponse<String>>
+    @POST("book/removeBookUser")
+    fun bookRemove(@Body book: Book): Call<BaseResponse<String>>
+    @POST("book/getBooks")
+    fun bookGet(@Body book: Book): Call<BaseResponse<String>>
 
-
+    //----------------------BILL---------------------------//
     @POST("bill/add")
-    fun saveBill(@Body entity: BillEntity): Call<BaseResponse<String>>
+    fun saveBill(@Body entity: Bill): Call<BaseResponse<String>>
 
     @POST("bill/update")
-    fun updateBill(@Body entity: BillEntity): Call<BaseResponse<String>>
+    fun updateBill(@Body entity: Bill): Call<BaseResponse<String>>
 
     @POST("bill/addBills")
-    fun saveBills(@Body entity: List<BillEntity>): Call<BaseResponse<String>>
+    fun saveBills(@Body entity: List<Bill>): Call<BaseResponse<String>>
 
     @GET("bill/delete")
     fun deleteBill(@Query("_id") uid: String): Call<BaseResponse<String>>
 
     @POST("bill/getBills")
     fun getBills(@Query("startTime") startTime: String?,
-                 @Query("endTime") endTime: String?): Call<BaseResponse<List<BillEntity>>>
+                 @Query("endTime") endTime: String?): Call<BaseResponse<List<Bill>>>
 
     @POST("bill/export")
     fun exportBills(@Query("year") year: String?, @Query("month") month: String?): Call<ResponseBody>
-
+    //----------------------CATEGORY---------------------------//
     @POST("category/addCategories")
     fun addCategories(@Body categories: List<CategoryEntity>): Call<BaseResponse<String>>
 
@@ -60,7 +67,7 @@ interface HeJiServer {
 
     @GET("category/getByBookId")//获取基础的类别
     fun getCategories(@Query("book_id") book_id: String): Call<BaseResponse<List<CategoryEntity>>>
-
+    //----------------------FILE IMAGE---------------------------//
     /**
      * @param part
      * @param billId 账单ID
@@ -95,6 +102,7 @@ interface HeJiServer {
     @GET("image/{imageId}")
     fun getImage(@Path("imageId") _id: String): Call<ResponseBody>
 
+    //----------------------LOG FILE---------------------------//
     @POST("log/upload")
     fun logUpload(@Body errorLog: ErrorLog):Call<BaseResponse<String>>
 }

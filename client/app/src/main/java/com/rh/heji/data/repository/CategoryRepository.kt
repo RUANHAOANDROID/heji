@@ -31,7 +31,7 @@ class CategoryRepository {
 
     suspend fun pullCategory() {
         val response: BaseResponse<List<CategoryEntity>> = network.categoryPull()
-        val categories = response.data
+        val categories = response.date
         if (categories.isNotEmpty()) {
             categories.forEach { entity: CategoryEntity ->
                 val _id =   AppDatabase.getInstance().categoryDao().findByID(entity.id)

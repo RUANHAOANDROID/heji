@@ -12,10 +12,8 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.DatePicker
-import android.widget.TextView
 import android.widget.TimePicker
 import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -25,19 +23,16 @@ import com.lxj.xpopup.XPopup
 import com.matisse.Matisse.Companion.obtainResult
 import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
 import com.rh.heji.*
-import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentIncomeBinding
-import com.rh.heji.network.request.BillEntity
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.add.adapter.BillPhotoEntity
 import com.rh.heji.ui.bill.category.CategoryTabFragment
 import com.rh.heji.ui.bill.category.CategoryViewModule
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
-import kotlinx.coroutines.flow.conflate
 import java.io.File
 import java.util.*
 import java.util.function.Consumer
@@ -236,14 +231,7 @@ class AddBillFragment : BaseFragment() {
             override fun save(result: String) {
                 ToastUtils.showLong(result)
                 val category = categoryViewModule.selectCategory
-                saveBill(
-                    result,
-                    category,
-                    Observer { bill: Bill? ->
-                        AppCache.getInstance().appViewModule.billPush(BillEntity(bill))
-                        findNavController().popBackStack()
-                    }
-                )
+                saveBill(result, category, close = true)
             }
 
             override fun calculation(result: String) {
@@ -252,14 +240,7 @@ class AddBillFragment : BaseFragment() {
 
             override fun saveAgain(result: String) {
                 ToastUtils.showLong(result)
-                saveBill(
-                    result,
-                    categoryViewModule.selectCategory,
-                    Observer { bill: Bill? ->
-                        AppCache.getInstance().appViewModule.billPush(
-                            BillEntity(bill)
-                        )
-                    })
+                saveBill(result, categoryViewModule.selectCategory, close = false)
                 clear()
             }
         })
@@ -270,13 +251,17 @@ class AddBillFragment : BaseFragment() {
         binding.tvMoney.setTextColor(resources.getColor(color, null))
     }
 
-    private fun saveBill(money: String, category: Category, savedState: Observer<Bill>) {
+    private fun saveBill(money: String, category: Category, close: Boolean) {
         if (TextUtils.isEmpty(money) || money == "0") {
             ToastUtils.showShort("未填写金额")
             return
         }
         billViewModel.bill.category = category.category
-        billViewModel.save(money, category, savedState)
+        billViewModel.save(money, category) { bill: Bill ->
+            AppCache.getInstance().appViewModule.billPush(bill)
+            if (close)
+                findNavController().popBackStack()
+        }
     }
 
     /**

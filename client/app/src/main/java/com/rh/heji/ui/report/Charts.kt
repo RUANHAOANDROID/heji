@@ -65,8 +65,16 @@ fun ReportFragment.lineChartStyle(lineChart: LineChart) {
     xAxis.labelRotationAngle = 45f
     lineChart.axisRight.isEnabled = false
     lineChart.extraLeftOffset = 6f
-    lineChart.axisLeft.valueFormatter = LargeValueFormatter()
+    lineChart.axisLeft.valueFormatter = object : LargeValueFormatter() {
+        override fun getFormattedValue(value: Float): String {
+            if (value < 1000) return value.toString()//金额小于1K不格式化
+            return super.getFormattedValue(value)
+        }
+    }
     lineChart.xAxis.valueFormatter = IndexAxisValueFormatter()
+    lineChart.axisLeft.axisMinimum = 0f//设置不显示负数
+    lineChart.axisRight.axisMinimum = 0f
+    lineChart.description.isEnabled = false//不显示description label
 }
 
 private fun lineDataSetStyle() {
@@ -123,9 +131,9 @@ private fun lineChartConvertAdapter(bills: List<BillTotal>, yearMonth: YearMonth
 }
 
 private fun parserBillsType(bills: List<BillTotal>) =
-    if (bills.isEmpty()) "" else BillType.transform(bills[0].type).text()
+    if (bills.isEmpty()) "收入" else BillType.transform(bills[0].type).text()
 
-fun ReportFragment.setIncomeLineChartNodes(yearMonth: YearMonth, bills: List<BillTotal>) {
+fun ReportFragment.setIncomeLineChartNodes(yearMonth: YearMonth, bills: MutableList<BillTotal>) {
     lineChartConvertAdapter(bills, yearMonth).apply {
         lineDataSetStyle(this, R.color.income, R.drawable.shape_gradient_income)
         binding.lineChart.data = LineData(this)
@@ -162,7 +170,7 @@ private fun ReportFragment.lineDataSetStyle(
     fillDrawableRes: Int
 ) {
     lineDataSet.color = resources.getColor(colorRes, mainActivity.theme)
-    lineDataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+    lineDataSet.mode = LineDataSet.Mode.LINEAR
     lineDataSet.circleRadius = 2f
     lineDataSet.setCircleColor(resources.getColor(colorRes, mainActivity.theme))
     //lineDataSet.setDrawCircles(false)//开启节点小圆点 false

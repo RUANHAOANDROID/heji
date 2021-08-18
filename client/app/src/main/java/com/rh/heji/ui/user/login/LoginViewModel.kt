@@ -16,12 +16,12 @@ class LoginViewModel : BaseViewModel() {
     fun login(username: String, password: String): LiveData<String> {
         launch({
             var requestBody = HejiNetwork.getInstance().login(username, password)
-            var token = requestBody.data
+            var token = requestBody.date
             loginLiveData.value = token
             withContext(Dispatchers.IO) {
                 AppCache.getInstance().token.save(token)
             }
-            ToastUtils.showLong(requestBody.data)
+            ToastUtils.showLong(requestBody.date)
             LogUtils.w(token)
         }, {
             ToastUtils.showLong("登陆错误:${it.message}")

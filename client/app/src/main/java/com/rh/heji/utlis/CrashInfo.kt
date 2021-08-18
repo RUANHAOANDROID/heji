@@ -48,7 +48,7 @@ open class CrashInfo() : CrashUtils.OnCrashListener {
         return stringWriter.toString()
     }
 
-    fun save2DB() {
+    suspend fun save2DB() {
         AppCache.getInstance().database.errorLogDao().install(errorLog)
     }
 

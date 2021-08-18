@@ -1,7 +1,7 @@
 package com.rh.heji.network
 
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.ErrorLog
-import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterUser
 import com.rh.heji.utlis.http.basic.ServiceCreator
@@ -22,9 +22,9 @@ class HejiNetwork {
 
     suspend fun register(registerUser:RegisterUser) = hejiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) = hejiServer.login(username, password).await()
-    suspend fun billPush(billEntity: BillEntity) = hejiServer.saveBill(billEntity).await()
+    suspend fun billPush(bill: Bill) = hejiServer.saveBill(bill).await()
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
-    suspend fun billUpdate(billEntity: BillEntity) = hejiServer.updateBill(billEntity).await()
+    suspend fun billUpdate(bill: Bill) = hejiServer.updateBill(bill).await()
     suspend fun billPull(startTime: String, endTime: String) = hejiServer.getBills(startTime, endTime).await()
     suspend fun billImageUpload(@Part part: MultipartBody.Part, _id: String, bill_id: String, time: Long) = hejiServer.uploadImg(part, _id, bill_id, time).await()
     suspend fun billPullImages(_id: String) = hejiServer.getBillImages(_id).await()

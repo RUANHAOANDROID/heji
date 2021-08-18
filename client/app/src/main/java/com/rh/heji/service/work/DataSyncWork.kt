@@ -5,7 +5,6 @@ import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.*
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.network.HejiNetwork
-import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.request.CategoryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -62,7 +61,7 @@ class DataSyncWork {
     private suspend fun categoryPull() {
         val categoryResponse = network.categoryPull()
         if (categoryResponse.code == 0) {
-            val data = categoryResponse.data
+            val data = categoryResponse.date
             if (data.isNotEmpty()) {
                 data.forEach { categoryEntity ->
                     categoryDao.insert(categoryEntity.toDbCategory())
@@ -99,7 +98,7 @@ class DataSyncWork {
         val updateBills = billDao.findByStatus( STATUS.UPDATED)
         if (updateBills.isNotEmpty()) {
             updateBills.forEach { bill ->
-                val response = network.billUpdate(BillEntity(bill))
+                val response = network.billUpdate(bill)
                 if (response.code == 0) {
                     bill.synced =  STATUS.SYNCED
                     AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
@@ -113,21 +112,21 @@ class DataSyncWork {
         val pushBills = billDao.findByStatus( STATUS.NOT_SYNCED)
         if (pushBills.isNotEmpty()) {
             pushBills.forEach { bill ->
-                billRepository.pushBill(BillEntity(bill))
+                billRepository.pushBill(bill)
             }
         }
     }
 
     private suspend fun billsPull() {
         val pullBillsResponse = network.billPull("0", "0")
-        var data = pullBillsResponse.data
+        var data = pullBillsResponse.date
         data?.let { serverBills ->
             if (serverBills.isNotEmpty()) {
                 serverBills.forEach { serverBill ->
                     val existCount = billDao.countById(serverBill.id)//本地的
 
                     if (existCount == 0) {//不存在直接存入
-                        billDao.install(serverBill.toBill())
+                        billDao.install(serverBill)
                     }
                     var imagesId = serverBill.images//云图片
                     if (null != imagesId && imagesId.size > 0) {//有图片

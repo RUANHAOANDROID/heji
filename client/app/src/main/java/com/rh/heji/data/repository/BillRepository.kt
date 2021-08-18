@@ -1,20 +1,17 @@
 package com.rh.heji.data.repository
 
 import com.blankj.utilcode.util.LogUtils
-import com.rh.heji.App
 import com.rh.heji.AppCache
 import com.rh.heji.FILE_LENGTH_1M
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.STATUS
-import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.BillEntity
 import com.rh.heji.network.response.ImageEntity
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import top.zibin.luban.Luban
 import java.io.File
@@ -91,9 +88,10 @@ class BillRepository {
                 val part: MultipartBody.Part = MultipartBody.Part.createFormData("file", fileName, requestBody)
                 val time = imgFile.lastModified()
                 val objectId = image.id
-                val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part, objectId.toString(), bill_id, time)
+                val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part,
+                    objectId, bill_id, time)
                 response.data.let {
-                    image.onlinePath = response.data._id.toString()
+                    image.onlinePath = response.data._id
                     image.md5 = response.data.md5
                     image.id = response.data._id
                     image.synced = STATUS.SYNCED

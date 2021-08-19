@@ -2,18 +2,11 @@ package com.rh.heji.ui.setting.export
 
 import android.os.Environment
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.LogUtils
-import com.haibin.calendarview.BaseView
 import com.rh.heji.App
-import com.rh.heji.AppCache
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
-import com.rh.heji.utlis.launch
 import com.rh.heji.utlis.launchIO
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import okio.buffer
 import okio.sink
 import java.io.File
@@ -32,7 +25,7 @@ class ExportViewModel : BaseViewModel() {
             var response = HejiNetwork.getInstance().billExport()
             if (response.isSuccessful && response.code() == 200) {
                 val filesDir =
-                    AppCache.getInstance().context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+                    App.getInstance().context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
                 var attachment = response.headers()["Content-Disposition"]
                 var subFileName = attachment?.substringAfterLast(
                     "attachment; filename=",
@@ -46,7 +39,7 @@ class ExportViewModel : BaseViewModel() {
                     sink.close()
                     exportLiveData.postValue(excelFile.absolutePath)
                     LogUtils.d("下载成功：${excelFile.absolutePath}")
-                    AppCache.getInstance().galleryAddPic(excelFile.absolutePath)
+                    App.getInstance().galleryAddPic(excelFile.absolutePath)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

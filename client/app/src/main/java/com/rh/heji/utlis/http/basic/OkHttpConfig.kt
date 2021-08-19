@@ -1,5 +1,6 @@
 package com.rh.heji.utlis.http.basic
 
+import com.rh.heji.App
 import com.rh.heji.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -31,7 +32,7 @@ object OkHttpConfig {
                 logging.redactHeader("Authorization")
                 logging.redactHeader("Cookie")
             }
-            val headerInterceptor = HttpHeaderInterceptor()
+            val headerInterceptor = HttpHeaderInterceptor(App.getInstance().currentUser.token)
             return OkHttpClient.Builder()
                 .addInterceptor(headerInterceptor)
                 .addInterceptor(logging)
@@ -39,5 +40,4 @@ object OkHttpConfig {
                 .writeTimeout(writeTimeout, TimeUnit.SECONDS)
                 .readTimeout(readTimeout, TimeUnit.SECONDS)
         }
-
 }

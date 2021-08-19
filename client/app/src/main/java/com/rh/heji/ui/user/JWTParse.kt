@@ -7,9 +7,12 @@ import org.json.JSONObject
 
 object JWTParse {
 
-    data class User(val username: String, val auth: List<String>)
+    data class User(val username: String, val auth: List<String>, val token: String)
+
+    private val localUser = User("localUser", mutableListOf(), "")
 
     fun getUser(jwt: String): User {
+        if (jwt == "") return localUser
         val token = resolveToken(jwt)
         //val index = token.lastIndexOf(".")
         //var withoutSignature = token.substring(0, index)
@@ -20,7 +23,7 @@ object JWTParse {
         val username = jsonObject.opt("sub") as String
         val auth: String = jsonObject.opt("auth") as String
         val roles = auth.split(",")
-        return User(username , roles)
+        return User(username, roles, jwt)
     }
 
     private fun resolveToken(token: String): String {

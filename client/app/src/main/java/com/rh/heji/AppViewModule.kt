@@ -22,6 +22,8 @@ import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.service.work.DataSyncWork
 import com.rh.heji.utlis.CrashInfo
+import com.rh.heji.utlis.MyTimeUtils
+import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
 
 class AppViewModule(application: Application) : AndroidViewModel(application) {
@@ -44,11 +46,11 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
 
     fun initCrashTool() {
         if (ActivityCompat.checkSelfPermission(
-                AppCache.getInstance().context,
+                App.getInstance().context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            CrashUtils.init(AppCache.getInstance().storage("Crash"), object : CrashInfo() {
+            CrashUtils.init(App.getInstance().storage("Crash"), object : CrashInfo() {
                 override fun onCrash(crashInfo: CrashUtils.CrashInfo) {
                     super.onCrash(crashInfo)
                     launchIO({
@@ -81,7 +83,14 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     }
 
     fun billPull() {
-        launchIO({ billRepository.pullBill() })
+        currentYearMonth.let {
+            val currentLastDay = MyTimeUtils.getMonthLastDay(it.year, it.month);
+            val statDate = YearMonth(it.year, it.month, 1).toYearMonthDay()
+            val endDate = YearMonth(it.year, it.month, currentLastDay).toYearMonthDay()
+            launchIO({ billRepository.pullBill(statDate,endDate) })
+        }
+
+
     }
 
     fun categoryPush(categoryEntity: CategoryEntity) {
@@ -122,7 +131,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
         AppDatabase.getInstance().dealerDao().insert(u4)
         AppDatabase.getInstance().dealerDao().insert(u5)
 
-        val startCount = AppCache.getInstance().kvStorage?.decodeInt("start", 0)//首次启动
+        val startCount = App.getInstance().mmkv?.decodeInt("start", 0)//首次启动
         if (startCount == 1) {
             val c0_0 = Category(ObjectId().toString(), "其他", 0, -1)
             val c0_1 = Category(ObjectId().toString(), "其他", 0, 1)
@@ -130,7 +139,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
             AppDatabase.getInstance().categoryDao().insert(c0_1)
             val book = Book(name = "个人账本")
             AppDatabase.getInstance().bookDao().createNewBook(book)
-            AppCache.getInstance().currentBook = book
+            App.getInstance().currentBook = book
         }
         if (startCount == 1) {
             val c1 = Category(ObjectId().toString(), "吃饭", 0, -1)

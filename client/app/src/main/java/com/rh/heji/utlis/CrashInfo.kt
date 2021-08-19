@@ -4,7 +4,7 @@ import com.blankj.utilcode.util.CrashUtils
 import com.blankj.utilcode.util.DeviceUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.NetworkUtils
-import com.rh.heji.AppCache
+import com.rh.heji.App
 import com.rh.heji.BuildConfig
 import com.rh.heji.data.db.ErrorLog
 import java.io.PrintWriter
@@ -29,7 +29,7 @@ open class CrashInfo() : CrashUtils.OnCrashListener {
         val errorLog = ErrorLog()
         errorLog.appVersionCode = BuildConfig.VERSION_CODE.toString()
         errorLog.appVersionName = BuildConfig.VERSION_NAME
-        errorLog.userid = AppCache.getInstance().currentUser.username
+        errorLog.userid = App.getInstance().currentUser.username
         errorLog.deviceModel = DeviceUtils.getModel()
         errorLog.isEmulator = DeviceUtils.isEmulator()
         errorLog.isTablet = DeviceUtils.isTablet()
@@ -49,7 +49,7 @@ open class CrashInfo() : CrashUtils.OnCrashListener {
     }
 
     suspend fun save2DB() {
-        AppCache.getInstance().database.errorLogDao().install(errorLog)
+        App.getInstance().database.errorLogDao().install(errorLog)
     }
 
     companion object {

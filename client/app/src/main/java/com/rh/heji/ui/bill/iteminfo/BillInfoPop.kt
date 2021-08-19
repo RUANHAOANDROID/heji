@@ -13,7 +13,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.core.ImageViewerPopupView
 import com.lxj.xpopup.util.XPopupUtils
-import com.rh.heji.AppCache
+import com.rh.heji.App
 import com.rh.heji.BuildConfig
 import com.rh.heji.MainActivity
 import com.rh.heji.R
@@ -23,7 +23,6 @@ import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.PopBilliInfoBinding
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.ui.bill.img.ImageLoader
-import com.rh.heji.ui.user.JWTParse.getUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -120,9 +119,8 @@ class BillInfoPop(
         ) {
             val mainActivity = context as MainActivity
             mainActivity.lifecycleScope.launch(Dispatchers.IO) {
-                val user = getUser(AppCache.getInstance().token.tokenString)
                 withContext(Dispatchers.Main) {
-                    if (bill.createUser == user.username) {
+                    if (bill.createUser == App.getInstance().currentUser.username) {
                         popClickListener.delete(bill)
                         dismiss()
                     } else {
@@ -167,7 +165,7 @@ private interface PopClickListener {
 open class BillPopClickListenerImpl : PopClickListener {
 
     override fun delete(bill: Bill) {
-        AppCache.getInstance().appViewModule.billDelete(bill)
+        App.getInstance().appViewModule.billDelete(bill)
     }
 
     override fun update(bill: Bill) {

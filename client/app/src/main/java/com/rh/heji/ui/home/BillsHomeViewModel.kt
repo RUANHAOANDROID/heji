@@ -4,7 +4,6 @@ import androidx.lifecycle.*
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
-import com.rh.heji.AppCache
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.BillDao
@@ -14,13 +13,7 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
-import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
-import java.util.*
 
 class BillsHomeViewModel : BaseViewModel() {
     var selectYearMonth = currentYearMonth

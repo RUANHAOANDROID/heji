@@ -5,7 +5,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
-import com.rh.heji.AppCache
+import com.rh.heji.App
 import com.rh.heji.R
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
@@ -14,7 +14,6 @@ import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
-import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
 
 class CalendarNoteViewModule : BaseViewModel() {
@@ -28,7 +27,7 @@ class CalendarNoteViewModule : BaseViewModel() {
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
-            var everyDayIncome = billDao.findEveryDayIncomeByMonth(AppCache.getInstance().currentBook.id,selectYearMonth.toYearMonth())
+            var everyDayIncome = billDao.findEveryDayIncomeByMonth(App.getInstance().currentBook.id,selectYearMonth.toYearMonth())
             everyDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
                 if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {
@@ -105,7 +104,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         if (expenditure != "0") {
             val expenditureScheme = Calendar.Scheme()
             expenditureScheme.type = -1
-            expenditureScheme.shcemeColor = AppCache.getInstance().context.getColor(R.color.expenditure)
+            expenditureScheme.shcemeColor = App.getInstance().context.getColor(R.color.expenditure)
             expenditureScheme.obj = "-$expenditure"
             calendar.addScheme(expenditureScheme)
         }
@@ -113,7 +112,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         if (income != "0") {
             val incomeScheme = Calendar.Scheme()
             incomeScheme.type = 1
-            incomeScheme.shcemeColor = AppCache.getInstance().context.getColor(R.color.income)
+            incomeScheme.shcemeColor = App.getInstance().context.getColor(R.color.income)
             incomeScheme.obj = "+$income"
             calendar.addScheme(incomeScheme)
         }

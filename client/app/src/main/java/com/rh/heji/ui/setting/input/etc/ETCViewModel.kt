@@ -6,14 +6,13 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.gson.Gson
-import com.rh.heji.AppCache
+import com.rh.heji.App
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
-import com.rh.heji.data.db.STATUS.NOT_SYNCED
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.setting.input.etc.HBETCEntity.DataBean.OrderArrBean
@@ -95,7 +94,7 @@ class ETCViewModel : BaseViewModel() {
                 }
             })
             etcLive.postValue("导入完成")
-            AppCache.getInstance().appViewModule.asyncData()
+            App.getInstance().appViewModule.asyncData()
         } else {
             ToastUtils.showShort("导入失败")
             etcLive.postValue("导入失败")

@@ -1,11 +1,14 @@
 package com.rh.heji.service.work
 
 import com.blankj.utilcode.util.LogUtils
+import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.*
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.CategoryEntity
+import com.rh.heji.utlis.MyTimeUtils
+import com.rh.heji.utlis.YearMonth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -16,11 +19,16 @@ class DataSyncWork {
     private val billRepository = BillRepository()
     suspend fun asyncBills() {
         withContext(Dispatchers.IO) {
+            bookPull()
             billDelete()
             billsUpdate()
             billsPush()
             billsPull()
         }
+    }
+
+    suspend fun bookPull() {
+        HejiNetwork.getInstance().hejiServer.bookGet()
     }
 
     suspend fun asyncCategory() {
@@ -118,7 +126,10 @@ class DataSyncWork {
     }
 
     private suspend fun billsPull() {
-        val pullBillsResponse = network.billPull("0", "0")
+        val currentLastDay = MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month);
+        val statDate = YearMonth(currentYearMonth.year, currentYearMonth.month, 1).toYearMonthDay()
+        val endDate = YearMonth(currentYearMonth.year, currentYearMonth.month, currentLastDay).toYearMonthDay()
+        val pullBillsResponse = network.billPull(currentBookId,statDate, endDate)
         var data = pullBillsResponse.date
         data?.let { serverBills ->
             if (serverBills.isNotEmpty()) {

@@ -1,12 +1,11 @@
 package com.rh.heji.ui.user.login
 
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.AppCache
+import com.rh.heji.App
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentLoginBinding
 import com.rh.heji.ui.base.BaseFragment
@@ -32,10 +31,10 @@ class LoginFragment : BaseFragment() {
             val username = binding.editUser.text.toString()
             val password = binding.editPassword.text.toString()
             viewModel.login(username, password)
-                    .observe(this.viewLifecycleOwner, Observer { token ->
+                    .observe(this.viewLifecycleOwner, { token ->
                         findNavController().popBackStack()
                         findNavController().navigate(R.id.nav_home)
-                        AppCache.getInstance().appViewModule.asyncData()
+                        App.getInstance().appViewModule.asyncData()
                         LogUtils.d(token)
                     })
         }

@@ -3,6 +3,14 @@ package com.rh.heji.utlis.http.basic;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.rh.heji.data.converters.MoneyConverters;
+
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -36,6 +44,9 @@ public class HttpRetrofit {
     public static <T> T create(String url, final Class<T> service) {
         Gson gson =new GsonBuilder().serializeNulls()
                 .setDateFormat("yyyy-mm-dd HH:mm:ss")
+                .registerTypeAdapter(BigDecimal.class, (JsonDeserializer<String>) (json, typeOfT, context) -> {
+                    return json.getAsJsonPrimitive().getAsString();
+                })
                 .create();
         Retrofit rt = new Retrofit.Builder()
                 .baseUrl(url)

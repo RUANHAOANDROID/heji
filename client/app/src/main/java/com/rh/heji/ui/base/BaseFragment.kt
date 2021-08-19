@@ -32,6 +32,12 @@ import java.util.*
  */
 abstract class BaseFragment : Fragment() {
     lateinit var rootView: View
+    var enableDrawer = true
+        set(value) {
+            if (value)
+                mainActivity.enableDrawer() else mainActivity.disableDrawer()
+            field = value
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +46,7 @@ abstract class BaseFragment : Fragment() {
     ): View {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         rootView = inflater.inflate(layoutId(), container, false)
+        enableDrawer = true
         initView(rootView)
         setHasOptionsMenu(true)
         return rootView

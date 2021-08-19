@@ -31,18 +31,19 @@ class LoginFragment : BaseFragment() {
             val username = binding.editUser.text.toString()
             val password = binding.editPassword.text.toString()
             viewModel.login(username, password)
-                    .observe(this.viewLifecycleOwner, { token ->
-                        findNavController().popBackStack()
-                        findNavController().navigate(R.id.nav_home)
-                        App.getInstance().appViewModule.asyncData()
-                        LogUtils.d(token)
-                    })
+                .observe(this.viewLifecycleOwner, { token ->
+                    findNavController().popBackStack()
+                    findNavController().navigate(R.id.nav_home)
+                    App.getInstance().appViewModule.asyncData()
+                    LogUtils.d(token)
+                })
         }
+        enableDrawer = false
     }
 
     override fun onResume() {
         super.onResume()
-        registerBackPressed{
+        registerBackPressed {
             mainActivity.finish()
         }
         arguments?.let {

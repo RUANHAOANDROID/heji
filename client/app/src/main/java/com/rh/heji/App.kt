@@ -13,6 +13,7 @@ import com.rh.heji.security.Token
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.http.basic.HttpRetrofit
 import com.rh.heji.utlis.http.basic.OkHttpConfig
+import com.rh.heji.utlis.launchIO
 import com.tencent.mmkv.MMKV
 import java.io.File
 
@@ -76,17 +77,27 @@ class App : Application() {
             lateinit var context: Context
             lateinit var database: AppDatabase
             lateinit var token: Token
-            lateinit var currentUser: JWTParse.User
+            val mmkv: MMKV = MMKV.defaultMMKV()!!
             lateinit var appViewModule: AppViewModule
 
-            val mmkv: MMKV = MMKV.defaultMMKV()!!
+            //------------Async Init----------
+            var jwtString: String? = null
+            var currentUser: JWTParse.User = JWTParse.User("local", mutableListOf(), "")
+
             fun init(context: Context) {
                 this.context = context
-                database = AppDatabase.getInstance(context)
                 token = Token(context)
-                currentUser = JWTParse.getUser(token.readTokenFile())
+                database = AppDatabase.getInstance(context)
                 HttpRetrofit.initClient(OkHttpConfig.clientBuilder.build())
                 appViewModule = AppViewModule(context as Application)
+                appViewModule.run {
+                    launchIO({
+                        jwtString = token.decodeToken()
+                        jwtString?.let {
+                            currentUser = JWTParse.getUser(it)
+                        }
+                    })
+                }
             }
 
             /**

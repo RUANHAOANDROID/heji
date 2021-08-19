@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initDrawerLayout()
         lifecycleScope.launch(Dispatchers.IO) {
-            val token = App.getInstance().token.readTokenFile()
+            val token = App.getInstance().token.decodeToken()
             withContext(Dispatchers.Main) {
                 if (TextUtils.isEmpty(token)) {
                     navController.navigate(R.id.nav_login)
@@ -85,6 +85,18 @@ class MainActivity : AppCompatActivity() {
                         navController.popBackStack()
                     }
                 }
+                when (navController.currentDestination?.id) {
+                    R.id.nav_login -> {
+                        disableDrawer()
+                    }
+                    R.id.nav_register -> {
+                        disableDrawer()
+                    }
+                    else -> {
+                        enableDrawer()
+                    }
+                }
+
             }
         })
     }
@@ -226,7 +238,7 @@ class MainActivity : AppCompatActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
-     val fragments: List<Fragment>
+    val fragments: List<Fragment>
         get() {
             val navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment

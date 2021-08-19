@@ -41,6 +41,7 @@ class RegisterFragment : BaseFragment() {
                 Navigation.findNavController(rootView).navigate(R.id.nav_login, mBundle)
             })
         }
+        enableDrawer = false
     }
 
 

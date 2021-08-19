@@ -71,29 +71,27 @@ class AddBillFragment : BaseFragment() {
             }
             (bill.imgCount > 0).let {
                 billViewModel.getBillImages()
-                    .observe(this,
-                        Observer { images ->
-                            val imageUrl =
-                                images.map { img ->
-                                    val url =
-                                        if (img.localPath.isNullOrEmpty()) img.onlinePath else img.localPath
-                                    url?.let { url -> billViewModel.addImgUrl(url) }
-                                    return@map url
-                                }.toList()
-                            selectImagePou?.setData(imageUrl)
-                            if (imageUrl.isNotEmpty())
-                                binding.imgTicket.text = "图片(x" + images.size + ")"
-                        })
+                    .observe(this) { images ->
+                        val imageUrl =
+                            images.map { img ->
+                                val url =
+                                    if (img.localPath.isNullOrEmpty()) img.onlinePath else img.localPath
+                                url?.let { url -> billViewModel.addImgUrl(url) }
+                                return@map url
+                            }.toList()
+                        selectImagePou?.setData(imageUrl)
+                        if (imageUrl.isNotEmpty())
+                            binding.imgTicket.text = "图片(x" + images.size + ")"
+                    }
 
             }
             bill.money.toPlainString().let { money ->
-                if (bill.money.compareTo(BigDecimal.ZERO)==1){
-                    val stack =Stack<String>().apply { push(bill.money.toPlainString()) }
-                    billViewModel.keyBoardStack =stack
-//                    binding.keyboard.stack.push(
-//                        if (money.contains(".00"))
-//                            money.replace(".00", "") else money
-//                    )
+                if (bill.money.compareTo(BigDecimal.ZERO) == 1) {
+                    val inputString = if (money.contains(".00"))
+                        money.replace(".00", "") else money
+                    inputString.forEach { element ->
+                        binding.keyboard.input(element.toString())
+                    }
                 }
             }
             bill.category?.let {

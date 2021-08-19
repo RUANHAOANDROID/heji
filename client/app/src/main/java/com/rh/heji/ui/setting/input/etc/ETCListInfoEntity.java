@@ -1,6 +1,6 @@
 package com.rh.heji.ui.setting.input.etc;
 
-import com.google.gson.annotations.SerializedName;
+import com.squareup.moshi.Json;
 
 import java.util.List;
 
@@ -10,27 +10,27 @@ import java.util.List;
  * #
  */
 public class ETCListInfoEntity {
-    @SerializedName("status")
+    @Json(name ="status")
     public String status;
-    @SerializedName("data")
+    @Json(name ="data")
     public List<Info> data;
 
     public static class Info {
-        @SerializedName("cardNo")
+       // @Json(name ="cardNo")
         public String cardNo;
-        @SerializedName("payCardType")
+        @Json(name ="payCardType")
         public String payCardType;
-        @SerializedName("etcPrice")
+        @Json(name ="etcPrice")
         public int etcPrice;
-        @SerializedName("exchargetime")
+        @Json(name ="exchargetime")
         public String exchargetime;
-        @SerializedName("ex_enStationName")
+        @Json(name ="ex_enStationName")
         public String exEnStationName;
-        @SerializedName("vehplate")
+        @Json(name ="vehplate")
         public String vehplate;
-        @SerializedName("province")
+        @Json(name ="province")
         public String province;
-        @SerializedName("type")
+        @Json(name ="type")
         public int type;
     }
 }

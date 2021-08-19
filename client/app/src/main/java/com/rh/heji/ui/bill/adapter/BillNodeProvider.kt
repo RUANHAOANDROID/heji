@@ -7,6 +7,7 @@ import com.chad.library.adapter.base.provider.BaseNodeProvider
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.rh.heji.R
 import com.rh.heji.widget.CircleView
+import com.squareup.moshi.Moshi
 
 class DayIncomeNodeProvider : BaseNodeProvider() {
     override val itemViewType: Int
@@ -15,7 +16,7 @@ class DayIncomeNodeProvider : BaseNodeProvider() {
     override val layoutId: Int
         get() = R.layout.item_bill_dayincom
 
-    override fun convert(helper: BaseViewHolder, item: BaseNode) {
+    override fun convert(helper: BaseViewHolder, item: BaseNode) {Moshi.Builder()
         // 数据类型需要自己强转
         var entity: DayIncomeNode = item as DayIncomeNode
         helper.setText(R.id.text1, "${entity.dayIncome.month}月${entity.dayIncome.monthDay}日")

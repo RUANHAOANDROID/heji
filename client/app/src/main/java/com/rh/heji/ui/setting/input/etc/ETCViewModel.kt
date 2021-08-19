@@ -5,18 +5,23 @@ import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.google.gson.Gson
+
 import com.rh.heji.App
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
+import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
+import com.rh.heji.moshi
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.setting.input.etc.HBETCEntity.DataBean.OrderArrBean
 import com.rh.heji.utlis.http.basic.OkHttpConfig
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -64,8 +69,13 @@ class ETCViewModel : BaseViewModel() {
      * @return
      */
     private fun saveToDB(strBody: String) {
-        val gson = Gson()
-        val etcListInfo = gson.fromJson(strBody, ETCListInfoEntity::class.java)
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .add(DateConverters)
+            .add(MoneyConverters)
+            .build()
+        val jsonAdapter: JsonAdapter<ETCListInfoEntity> = moshi.adapter(ETCListInfoEntity::class.java)
+        val etcListInfo = jsonAdapter.fromJson(strBody)
         if (etcListInfo?.data != null && etcListInfo.data.size > 0) {
             val data = etcListInfo.data
             data.forEach(Consumer { info: ETCListInfoEntity.Info ->
@@ -134,8 +144,8 @@ class ETCViewModel : BaseViewModel() {
                                 val error = jsonObject.getString("msg")
                                 ToastUtils.showLong(error)
                             } else if (status == "OK") {
-                                val gson = Gson()
-                                val hbetcEntity = gson.fromJson(strBody, HBETCEntity::class.java)
+                                val jsonAdapter: JsonAdapter<HBETCEntity> = moshi.adapter(HBETCEntity::class.java)
+                                val hbetcEntity = jsonAdapter.fromJson(strBody)
                                 if (hbetcEntity?.data != null && hbetcEntity.data.orderArr.size > 0) {
                                     val data = hbetcEntity.data.orderArr
                                     data.forEach(Consumer { info: OrderArrBean -> saveToBillDB(info) })

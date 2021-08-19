@@ -1,10 +1,11 @@
 package com.rh.heji.network
 
+import com.rh.heji.BuildConfig
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterUser
-import com.rh.heji.utlis.http.basic.ServiceCreator
+import com.rh.heji.utlis.http.basic.HttpRetrofit
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -16,9 +17,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class HejiNetwork {
-    val hejiServer: HeJiServer by lazy {
-        ServiceCreator.getInstance().createService(HeJiServer::class.java) as HeJiServer
-    }
+    val hejiServer=HttpRetrofit.create(BuildConfig.HTTP_URL, HeJiServer::class.java);
 
     suspend fun register(registerUser:RegisterUser) = hejiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) = hejiServer.login(username, password).await()

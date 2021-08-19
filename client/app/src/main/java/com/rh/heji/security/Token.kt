@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
+import com.rh.heji.App
 import com.rh.heji.network.HejiNetwork
 import java.io.*
 import java.nio.charset.StandardCharsets
@@ -11,6 +12,14 @@ import java.nio.charset.StandardCharsets
 class Token(val context: Context) {
     companion object {
         const val TOKEN_FILE_NAME = "TOKEN"
+    }
+
+    fun decodeToken(): String {
+        var jwtTokenString = ""
+        App.instance.mmkv.decodeString(TOKEN_FILE_NAME, "")?.let {
+            jwtTokenString = it
+        }
+        return jwtTokenString
     }
 
     fun readTokenFile(): String {
@@ -60,14 +69,23 @@ class Token(val context: Context) {
         }
     }
 
+    fun encodeToken(jwtToken: String?) {
+        App.instance.mmkv.encode(TOKEN_FILE_NAME, EncodeUtils.base64Encode(jwtToken))
+    }
+
     fun delete() {
+        App.instance.mmkv.removeValueForKey(TOKEN_FILE_NAME)
+        deleteTokenFile()
+    }
+
+    fun deleteTokenFile() {
         val fileName = "TokenFile"
         val file = File(context.filesDir.absolutePath)
         val tokenFile = File(file, fileName)
         FileUtils.delete(tokenFile)
     }
 
-     fun isLogin(): Boolean {
+    fun isLogin(): Boolean {
         return !TextUtils.isEmpty(readTokenFile())
     }
 

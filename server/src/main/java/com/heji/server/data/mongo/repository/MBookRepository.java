@@ -9,4 +9,6 @@ import java.util.List;
 public interface MBookRepository extends MongoRepository<MBook, String> {
 
     List<MBook> findMBookByUsers(String userId);
+
+    boolean existsMBookBy_id(String book_id);
 }

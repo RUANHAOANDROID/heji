@@ -15,7 +15,7 @@ public interface BillService {
 
     String removeImage(String _id, String imageId);
 
-    List<MBill> getBills(long startDate, long endDate);
+    List<MBill> getBills(String book_id,String startDate, String endDate);
 
     MBill getBillInfo(String billId);
 

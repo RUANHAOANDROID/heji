@@ -18,6 +18,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import sun.text.resources.FormatData;
 
 import java.util.List;
 
@@ -84,15 +86,17 @@ public class BillServiceImpl extends BaseMongoTemplate implements BillService {
     }
 
     @Override
-    public List<MBill> getBills(long startDate, long endDate) {
-        if (startDate == 0 || endDate == 0)
-            return mBillRepository.findAll();
-        // 创建条件对象
-        Criteria criteria = Criteria.where("time").gte(startDate).lte(endDate);
-        // 创建查询对象，然后将条件对象添加到其中，然后根据指定字段进行排序
-        Query query = new Query(criteria).with(Sort.by("time"));
-        List<MBill> documentList = getMongoTemplate().find(query, MBill.class, BILL);
-        return documentList;
+    public List<MBill> getBills(String book_id, String startDate, String endDate) {
+        if (startDate.equals("0") || endDate.equals("0"))
+            return mBillRepository.findMBillsByBookId(book_id);
+        return mBillRepository.findMBillsByBookIdAndTimeBetween(book_id,startDate,endDate);
+//        // 创建条件对象
+//        Criteria criteria = Criteria.where("book_id").is(book_id)
+//                .where("time").gte(startDate).lte(endDate);
+//        // 创建查询对象，然后将条件对象添加到其中，然后根据指定字段进行排序
+//        Query query = new Query(criteria).with(Sort.by("time"));
+//        List<MBill> documentList = getMongoTemplate().find(query, MBill.class, BILL);
+//        return documentList;
     }
 
     @Override

@@ -85,18 +85,6 @@ class MainActivity : AppCompatActivity() {
                         navController.popBackStack()
                     }
                 }
-                when (navController.currentDestination?.id) {
-                    R.id.nav_login -> {
-                        disableDrawer()
-                    }
-                    R.id.nav_register -> {
-                        disableDrawer()
-                    }
-                    else -> {
-                        enableDrawer()
-                    }
-                }
-
             }
         })
     }

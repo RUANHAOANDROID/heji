@@ -15,10 +15,37 @@ class AppInitializer : Initializer<Unit> {
         LogUtils.d("AppInitializer", "MMK")
         MMKV.initialize(context)
         LogUtils.d("AppInitializer", "AppDatabase")
-        AppDatabase.getInstance(context).bookDao().createNewBook(Book(name = "AppInitalizer"))
+        startCount()
+        initBook(context)
+    }
+
+    private fun initBook(context: Context) {
+        AppDatabase.getInstance(context).let {
+            val bookDao = it.bookDao()
+            if (it.bookDao().count() == 0) {
+                bookDao.createNewBook(
+                    Book(
+                        id = "0",
+                        name = "个人账本",
+                        createUser = "local",
+                        type = "日常账本"
+                    )
+                )
+            }
+        }
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
         return mutableListOf()
+    }
+
+    /**
+     * 统计启动次数
+     */
+    private fun startCount() {
+        val key = "start"
+        val startCount = App.instance.mmkv!!.decodeInt(key, 0)
+        LogUtils.d(startCount)
+        App.instance.mmkv?.encode(key, startCount + 1)
     }
 }

@@ -2,6 +2,7 @@ package com.rh.heji.ui.base
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,7 +65,7 @@ abstract class BaseFragment : Fragment() {
                 .fullScreen(false)
                 .init();
         } catch (e: Exception) {
-            LogUtils.w(e.message)
+            Log.d("BaseFragment", "ImmersionBar: {${e.message}}")
         }
     }
 
@@ -90,7 +91,7 @@ abstract class BaseFragment : Fragment() {
         try {
             toolBar.menu.clear()
         } catch (e: Exception) {
-            LogUtils.w(e.message)
+            Log.d("BaseFragment", "setUpToolBar: {${e.message}}")
         }
     }
 

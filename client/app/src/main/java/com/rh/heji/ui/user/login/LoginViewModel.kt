@@ -20,7 +20,7 @@ class LoginViewModel : BaseViewModel() {
             var token = requestBody.date
             loginLiveData.value = token
             withContext(Dispatchers.IO) {
-                App.getInstance().token.writeTokenFile(token)
+                App.getInstance().token.encodeToken(token)
                 App.getInstance().currentUser = JWTParse.getUser(token)
             }
             ToastUtils.showLong(requestBody.date)

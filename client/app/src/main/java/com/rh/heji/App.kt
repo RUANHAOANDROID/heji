@@ -43,19 +43,7 @@ class App : Application() {
                     .build()
             )
         }
-        startup(this)
         instance.init(this)
-    }
-
-    private fun startup(app: App) {
-        startCount()
-    }
-
-    private fun startCount() {
-        val key = "start"
-        val startCount = instance.mmkv!!.decodeInt(key, 0)
-        LogUtils.d(startCount)
-        instance.mmkv?.encode(key, startCount + 1)
     }
 
     override fun onTerminate() {

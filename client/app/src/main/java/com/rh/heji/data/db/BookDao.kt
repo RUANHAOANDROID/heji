@@ -19,5 +19,8 @@ interface BookDao {
 
     @Transaction
     @Query("select * from book where name =:bookName")
-    fun findBookWhitBills(bookName: String):MutableList<BookWithBills>
+    fun findBookWhitBills(bookName: String): MutableList<BookWithBills>
+
+    @Query("select count(0) from book")
+    fun count(): Int
 }

@@ -17,7 +17,7 @@ class Token(val context: Context) {
     fun decodeToken(): String {
         var jwtTokenString = ""
         App.instance.mmkv.decodeString(TOKEN_FILE_NAME, "")?.let {
-            jwtTokenString = it
+            jwtTokenString = String(EncodeUtils.base64Decode(it))
         }
         return jwtTokenString
     }

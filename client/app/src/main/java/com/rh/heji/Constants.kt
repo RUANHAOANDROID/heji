@@ -43,5 +43,5 @@ val currentYearMonth: YearMonth = YearMonth(
     month = Calendar.getInstance().get(Calendar.MONTH) + 1,
     day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
 )
-const val TOKEN: String =
+const val TEST_TOKEN: String =
     "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxOTkyMTk2OTU4NiIsImF1dGgiOiJST0xFX1VTRVIsUk9MRV9BRE1JTiIsInRlbCI6IjE5OTIxOTY5NTg2IiwiZXhwIjoxNjI2ODY1NTI0fQ.GRievBu9VR-5vUrrQaVhwXMdnxfglBTnGeP-78S3Wx875XZdLAHqewa7_jzn9L2wiaElV-_X60vjTL9X2X1CbA"

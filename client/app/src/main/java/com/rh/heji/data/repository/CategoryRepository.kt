@@ -2,13 +2,10 @@ package com.rh.heji.data.repository
 
 import android.text.TextUtils
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.CategoryEntity
-import retrofit2.Response
-import java.io.IOException
 
 class CategoryRepository {
     val network = HejiNetwork.getInstance()

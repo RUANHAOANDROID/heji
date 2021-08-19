@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.rh.heji.AppCache
+import com.rh.heji.App
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.*
@@ -35,8 +35,8 @@ abstract class AppDatabase : RoomDatabase() {
 
         //.addMigrations(MIGRATION_1_2)
         //默认数据库名称
-        fun getInstance(): AppDatabase = INSTANCE ?: synchronized(this) {
-            INSTANCE ?: buildDatabase(AppCache.getInstance().context, "heji.db").also { INSTANCE = it }
+        fun getInstance(context: Context= App.getInstance().context): AppDatabase = INSTANCE ?: synchronized(this) {
+            INSTANCE ?: buildDatabase(context, "heji.db").also { INSTANCE = it }
         }
 
         private fun buildDatabase(

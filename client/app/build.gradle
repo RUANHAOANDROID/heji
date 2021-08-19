@@ -22,7 +22,7 @@ android {
     //buildToolsVersion project.buildToolsVersion
     defaultConfig {
         applicationId "com.rh.heji"
-        minSdkVersion 24
+        minSdkVersion project.minSdkVersion
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -172,4 +172,5 @@ dependencies {
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
     // kotlin扩展（可选）
     implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
+    implementation "androidx.startup:startup-runtime:1.1.0"
 }

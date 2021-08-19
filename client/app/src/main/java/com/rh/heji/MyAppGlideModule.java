@@ -11,7 +11,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.AppGlideModule;
 import com.rh.heji.App;
-import com.rh.heji.AppCache;
+import com.rh.heji.App;
 import com.rh.heji.utlis.http.basic.OkHttpConfig;
 
 import java.io.File;
@@ -28,7 +28,7 @@ public final class MyAppGlideModule extends AppGlideModule {
     public static void loadImageFile(Context context, String pathName, ImageView imgView) {
         // 加载本地图片
         File file = new File(pathName);
-        Glide.with(AppCache.Companion.getInstance().getContext()).load(file).into(imgView);
+        Glide.with(App.Companion.getInstance().getContext()).load(file).into(imgView);
     }
 
     public static void loadImageRes(Context context, int resource, ImageView imgView) {

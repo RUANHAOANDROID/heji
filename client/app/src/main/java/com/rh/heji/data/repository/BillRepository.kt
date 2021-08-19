@@ -1,11 +1,12 @@
 package com.rh.heji.data.repository
 
 import com.blankj.utilcode.util.LogUtils
-import com.rh.heji.AppCache
+import com.rh.heji.App
 import com.rh.heji.FILE_LENGTH_1M
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.STATUS
+import com.rh.heji.data.db.currentBookId
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.response.ImageEntity
@@ -53,7 +54,7 @@ class BillRepository {
     }
 
     suspend fun pullBill(startTime: String = "0", endTime: String = "0") {
-        var response = hejiNetwork.billPull(startTime, endTime)
+        var response = hejiNetwork.billPull(currentBookId,startTime, endTime)
         response.date.let {
             if (it.isNotEmpty()) {
                 it.forEach { bill ->
@@ -75,7 +76,7 @@ class BillRepository {
                 LogUtils.d("图片大小", length)
                 if (length > FILE_LENGTH_1M * 3) { //图片超过设定值则压缩
                     LogUtils.d("图片大小超过2M,压缩图片", FILE_LENGTH_1M * 3)
-                    val fileList = Luban.with(AppCache.getInstance().context).load(imgFile).get()
+                    val fileList = Luban.with(App.getInstance().context).load(imgFile).get()
                     if (fileList.isNotEmpty() && fileList.size > 0) {
                         imgFile = fileList[0]
                     }

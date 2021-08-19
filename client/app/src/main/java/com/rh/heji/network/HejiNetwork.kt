@@ -25,7 +25,7 @@ class HejiNetwork {
     suspend fun billPush(bill: Bill) = hejiServer.saveBill(bill).await()
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
     suspend fun billUpdate(bill: Bill) = hejiServer.updateBill(bill).await()
-    suspend fun billPull(startTime: String, endTime: String) = hejiServer.getBills(startTime, endTime).await()
+    suspend fun billPull(book_id:String,startTime: String, endTime: String) = hejiServer.getBills(book_id,startTime, endTime).await()
     suspend fun billImageUpload(@Part part: MultipartBody.Part, _id: String, bill_id: String, time: Long) = hejiServer.uploadImg(part, _id, bill_id, time).await()
     suspend fun billPullImages(_id: String) = hejiServer.getBillImages(_id).await()
     suspend fun billExport(year:String="0",month: String="0"): Response<ResponseBody> = hejiServer.exportBills(year,month).execute()

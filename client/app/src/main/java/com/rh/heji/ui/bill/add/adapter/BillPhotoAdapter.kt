@@ -3,7 +3,7 @@ package com.rh.heji.ui.bill.add.adapter
 import android.view.View
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
-import com.rh.heji.AppCache
+import com.rh.heji.App
 import com.rh.heji.MyAppGlideModule
 import com.rh.heji.R
 import com.rh.heji.databinding.ItemPopSelectTicketImageBinding
@@ -23,7 +23,7 @@ class BillPhotoAdapter :
             binding.imgTicket.setImageDrawable(context.resources.getDrawable(R.drawable.ic_add_image_red_32dp))
             binding.imgDelete.visibility = View.INVISIBLE
         } else {
-            MyAppGlideModule.loadImageFile(AppCache.getInstance().context, item, binding.imgTicket)
+            MyAppGlideModule.loadImageFile(App.getInstance().context, item, binding.imgTicket)
             binding.imgDelete.visibility = View.VISIBLE
         }
     }

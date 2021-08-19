@@ -6,11 +6,9 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.Space
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -50,20 +48,20 @@ class MainActivity : AppCompatActivity() {
         permitDiskReads { super.onCreate(savedInstanceState) }//StrictMode policy violation; ~duration=127 ms: android.os.strictmode.DiskReadViolation by XiaoMi
         checkPermissions(this) { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
             //初始化一些需要权限的功能
-            AppCache.getInstance().appViewModule.initCrashTool()
+            App.getInstance().appViewModule.initCrashTool()
             Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
         }
         setContentView(R.layout.activity_main)
         initDrawerLayout()
         lifecycleScope.launch(Dispatchers.IO) {
-            val token = AppCache.getInstance().token.tokenString
+            val token = App.getInstance().token.readTokenFile()
             withContext(Dispatchers.Main) {
                 if (TextUtils.isEmpty(token)) {
                     navController.navigate(R.id.nav_login)
                 } else {
                     val user = getUser(token)
                     setDrawerLayout(user)
-                    AppCache.getInstance().appViewModule.asyncData()
+                    App.getInstance().appViewModule.asyncData()
                 }
             }
         }
@@ -107,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.menu
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener { item: MenuItem? ->
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                runBlocking(Dispatchers.IO) { AppCache.getInstance().token.delete() }
+                runBlocking(Dispatchers.IO) { App.getInstance().token.delete() }
                 finish()
             }.show()
             false
@@ -125,7 +123,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
-        setCurrentBook(AppCache.getInstance().currentBook.name)
+        setCurrentBook(App.getInstance().currentBook.name)
     }
 
     private fun navigationDrawerController() {
@@ -228,7 +226,7 @@ class MainActivity : AppCompatActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
-    val fragments: List<Fragment>
+     val fragments: List<Fragment>
         get() {
             val navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment

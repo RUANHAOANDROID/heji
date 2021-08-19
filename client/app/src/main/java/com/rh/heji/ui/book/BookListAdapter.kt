@@ -7,7 +7,7 @@ import com.blankj.utilcode.util.ImageUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.util.XPopupUtils
-import com.rh.heji.AppCache
+import com.rh.heji.App
 import com.rh.heji.R
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookItemBinding
@@ -45,7 +45,7 @@ class BookListAdapter :
             }
 
 
-            if (item.id == AppCache.getInstance().currentBook.id) {
+            if (item.id == App.getInstance().currentBook.id) {
                 binding.imgSelected.visibility = View.VISIBLE
             } else {
                 binding.imgSelected.visibility = View.INVISIBLE

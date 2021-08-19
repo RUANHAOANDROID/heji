@@ -1,7 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
-import com.rh.heji.AppCache
+import com.rh.heji.App
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.d2o.*
@@ -44,7 +44,7 @@ interface BillDao {
         time: Date,
         money: BigDecimal,
         remark: String,
-        bookId: String = AppCache.getInstance().currentBook.id
+        bookId: String = App.getInstance().currentBook.id
     ): MutableList<String>
 
     @Query("select count(*)  from bill where id =:id")
@@ -82,7 +82,7 @@ interface BillDao {
     fun findHaveBillDays(
         start: String,
         end: String,
-        bookId: String? = AppCache.getInstance().currentBook.id
+        bookId: String? = App.getInstance().currentBook.id
     ): MutableList<String>
 
     @Query("SELECT * FROM bill WHERE date(bill_time) =:time AND book_id=:bookId AND sync_status!=-1")
@@ -101,7 +101,7 @@ interface BillDao {
         start: String,
         end: String,
         sz: Int,
-        bookId: String? = AppCache.getInstance().currentBook.id
+        bookId: String? = App.getInstance().currentBook.id
     ): Flow<Double>
 
     @TypeConverters(MoneyConverters::class)

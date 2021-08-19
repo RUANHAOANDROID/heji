@@ -2,17 +2,9 @@ package com.rh.heji.ui.user.register
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.App
-import com.rh.heji.AppCache
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launch
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.Serializable
 
 class RegisterViewModel : BaseViewModel() {

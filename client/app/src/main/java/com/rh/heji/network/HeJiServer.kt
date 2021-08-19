@@ -34,7 +34,7 @@ interface HeJiServer {
     @POST("book/removeBookUser")
     fun bookRemove(@Body book: Book): Call<BaseResponse<String>>
     @POST("book/getBooks")
-    fun bookGet(@Body book: Book): Call<BaseResponse<String>>
+    fun bookGet(): Call<BaseResponse<Book>>
 
     //----------------------BILL---------------------------//
     @POST("bill/add")
@@ -50,7 +50,7 @@ interface HeJiServer {
     fun deleteBill(@Query("_id") uid: String): Call<BaseResponse<String>>
 
     @POST("bill/getBills")
-    fun getBills(@Query("startTime") startTime: String?,
+    fun getBills(@Query("book_id")book_id: String,@Query("startTime") startTime: String?,
                  @Query("endTime") endTime: String?): Call<BaseResponse<List<Bill>>>
 
     @POST("bill/export")

@@ -37,9 +37,9 @@ ext {
     rxAndroid = 'io.reactivex.rxjava3:rxandroid:3.0.0'
     retrofit ="2.9.0"
     work_version = "2.5.0"
-    compileSdkVersion = 29
-    buildToolsVersion = '29'
-    minSdk = 21
+    compileSdkVersion = 30 //编译SDK版本
+    buildToolsVersion = '30' //构建工具版本
+    minSdkVersion = 24 //最小兼容
     targetSDKVersion = 28
     room_version = "2.3.0"
     appcompat = '1.2.0'

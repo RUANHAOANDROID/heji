@@ -32,7 +32,7 @@ object OkHttpConfig {
                 logging.redactHeader("Authorization")
                 logging.redactHeader("Cookie")
             }
-            val headerInterceptor = HttpHeaderInterceptor(App.getInstance().currentUser.token)
+            val headerInterceptor = HttpHeaderInterceptor()
             return OkHttpClient.Builder()
                 .addInterceptor(headerInterceptor)
                 .addInterceptor(logging)

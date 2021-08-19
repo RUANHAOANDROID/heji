@@ -1,10 +1,9 @@
 package com.rh.heji.data.db
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 import com.rh.heji.data.db.mongo.ObjectId
+import com.squareup.moshi.Json
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -19,10 +18,10 @@ data class ErrorLog(
 ) {
 
 
-    @SerializedName("timeOfCrash")
+    @Json(name = "timeOfCrash")
     var timeOfCrash: Long = System.currentTimeMillis()
 
-    @SerializedName("uid")
+    @Json(name = "uid")
     var userid: String? = null
     var deviceModel: String? = null
     var sdkVersionName: String? = null

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
-import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Book
 import com.rh.heji.security.Token

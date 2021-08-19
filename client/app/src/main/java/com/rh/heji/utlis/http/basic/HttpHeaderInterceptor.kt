@@ -2,6 +2,7 @@ package com.rh.heji.utlis.http.basic
 
 import android.text.TextUtils
 import android.util.Log
+import com.rh.heji.App
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -9,11 +10,12 @@ import okhttp3.Response
 /**
  * Header 拦截器
  */
-class HttpHeaderInterceptor(val bearerToken: String) : Interceptor {
+class HttpHeaderInterceptor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        Log.d("OkHttpConfig", bearerToken)
+        var bearerToken: String = App.instance.token.decodeToken()
+        Log.d("OKHTTP", "HttpHeaderInterceptor $bearerToken")
         if (TextUtils.isEmpty(bearerToken)) {
-            Log.d("OkHttpConfig", "not login")
+            Log.d("OKHTTP", "HttpHeaderInterceptor:{not login}")
         }
         val request: Request = chain.request().newBuilder()
             //.header("Content-Type", "application/json")

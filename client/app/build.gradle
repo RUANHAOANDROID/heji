@@ -122,8 +122,9 @@ dependencies {
     //网络请求相关
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofit"
-    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofit"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofit"
+    //implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofit"
+    //implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofit"
+    implementation "com.squareup.retrofit2:converter-moshi:$rootProject.retrofit"
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
     //图片加载
     //annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
@@ -173,4 +174,6 @@ dependencies {
     // kotlin扩展（可选）
     implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
     implementation "androidx.startup:startup-runtime:1.1.0"
+    //implementation("com.squareup.moshi:moshi:1.12.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
 }

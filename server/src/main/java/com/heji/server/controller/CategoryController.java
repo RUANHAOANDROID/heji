@@ -1,8 +1,8 @@
 package com.heji.server.controller;
 
 import com.heji.server.data.mongo.MCategory;
-import com.heji.server.exception.DeleteException;
 import com.heji.server.exception.NotFindException;
+import com.heji.server.exception.OperationsException;
 import com.heji.server.result.Result;
 import com.heji.server.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +62,7 @@ public class CategoryController {
     public String deleteCategory(@RequestParam() String _id) {
         boolean isOk = categoryService.delete(_id);
         if (!isOk) {
-            throw new DeleteException("删除失败");
+            throw new OperationsException("删除失败");
         }
         return Result.success("删除成功");
     }

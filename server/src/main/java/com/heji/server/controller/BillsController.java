@@ -4,11 +4,12 @@ import com.alibaba.excel.EasyExcel;
 import com.heji.server.data.bean.QianjiExcelBean;
 import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.MBillBackup;
-import com.heji.server.exception.NotFindBillException;
+import com.heji.server.exception.NotFindException;
 import com.heji.server.file.StorageService;
 import com.heji.server.result.Result;
 import com.heji.server.service.BillBackupServer;
 import com.heji.server.service.BillService;
+import com.heji.server.service.BookService;
 import com.heji.server.service.ImageService;
 import com.heji.server.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -34,14 +35,15 @@ public class BillsController {
     //本地存储
     final StorageService storageService;
     //备份(目前是删除的做备份)
-    final
-    BillBackupServer billBackupServer;
+    final BookService bookService;
+    final BillBackupServer billBackupServer;
     //账单照片存储
     final ImageService imageService;
 
-    public BillsController(BillService billService, StorageService storageService, ImageService imageService, BillBackupServer billBackupServer) {
+    public BillsController(BillService billService, StorageService storageService, BookService bookService, ImageService imageService, BillBackupServer billBackupServer) {
         this.billService = billService;
         this.storageService = storageService;
+        this.bookService = bookService;
         this.imageService = imageService;
         this.billBackupServer = billBackupServer;
     }
@@ -49,10 +51,16 @@ public class BillsController {
     @ResponseBody
     @PostMapping(value = {"/add"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String addBill(@RequestBody MBill mBill) {
+        checkBookExists(mBill.getBookId());
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         mBill.setCreateUser(username);
         String billID = billService.addBill(mBill);
         return Result.success(billID);
+    }
+
+    private void checkBookExists(String book_id) {
+        if (!bookService.exists(book_id))
+            throw new NotFindException("账本不存在:" + book_id);
     }
 
     @ResponseBody
@@ -65,9 +73,9 @@ public class BillsController {
 
     @ResponseBody
     @PostMapping(value = {"/getBills"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getBills(@RequestParam long startTime, @RequestParam long endTime) {
-        //TODO 根据时间段查账单
-        List<MBill> bills = billService.getBills(startTime, startTime);
+    public String getBills(@RequestParam String book_id, @RequestParam String startTime, @RequestParam String endTime) {
+        checkBookExists(book_id);
+        List<MBill> bills = billService.getBills(book_id, startTime, endTime);
         return Result.success(bills);
     }
 
@@ -89,7 +97,7 @@ public class BillsController {
 
         boolean isDeleted = billService.removeBill(_id);//删除账单
         if (isDeleted) {//删除成功,写入备份表(回收站)
-            MBillBackup backupBill=  new MBillBackup(mBill);
+            MBillBackup backupBill = new MBillBackup(mBill);
             billBackupServer.backup(backupBill);
         }
         return Result.success("删除成功:", _id);
@@ -105,10 +113,10 @@ public class BillsController {
 
     @PostMapping("/export")
     @ResponseBody
-    public ResponseEntity<Resource> exportBills(@RequestParam(defaultValue = "0") long startDateTime, @RequestParam(defaultValue = "0") long endDateTime) {
-        List<MBill> bills = billService.getBills(startDateTime, endDateTime);
+    public ResponseEntity<Resource> exportBills(@RequestParam String book_id, @RequestParam(defaultValue = "0") String startDateTime, @RequestParam(defaultValue = "0") String endDateTime) {
+        List<MBill> bills = billService.getBills(book_id, startDateTime, endDateTime);
         if (Objects.isNull(bills) && bills.size() <= 0)
-            throw new NotFindBillException("No bill");
+            throw new NotFindException("No bill");
         List<QianjiExcelBean> excelData = bill2QianJiExcel(bills);
         SimpleDateFormat dateFormat = TimeUtils.getDateFormat("yyyy_MM_dd_HH_mm_ss");
         String filename = TimeUtils.getNowString(dateFormat) + ".xlsx";

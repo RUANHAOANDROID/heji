@@ -1,10 +1,13 @@
 package com.heji.server.data.mongo;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -36,7 +39,7 @@ public class MBill {
     private String remark;
 
     private String[] images;
-
+    @SerializedName("billTime")
     private String time;//选择的时间
 
     @CreatedDate

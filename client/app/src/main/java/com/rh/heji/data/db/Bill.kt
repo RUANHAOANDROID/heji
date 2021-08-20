@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.*
 import com.rh.heji.AppViewModule
 import com.rh.heji.currentBook
+import com.rh.heji.currentUser
 //import com.rh.heji.App
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
@@ -77,7 +78,7 @@ data class Bill(
     var dealer: String? = null,
 
     @ColumnInfo(name = "create_user")
-    var createUser: String = "App.getInstance().currentUser.username",
+    var createUser: String = currentUser.username,
 
     /**
      * 备注

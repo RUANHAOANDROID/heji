@@ -1,9 +1,11 @@
 package com.rh.heji.service.work
 
 import com.blankj.utilcode.util.LogUtils
+import com.rh.heji.currentUser
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.*
+import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.CategoryEntity
@@ -13,22 +15,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DataSyncWork {
+    private val bookDao = AppDatabase.getInstance().bookDao()
     private val billDao = AppDatabase.getInstance().billDao()
     private val categoryDao = AppDatabase.getInstance().categoryDao()
     private val network = HejiNetwork.getInstance()
     private val billRepository = BillRepository()
     suspend fun asyncBills() {
         withContext(Dispatchers.IO) {
-            bookPull()
             billDelete()
             billsUpdate()
             billsPush()
             billsPull()
         }
-    }
-
-    suspend fun bookPull() {
-        HejiNetwork.getInstance().hejiServer.bookGet()
     }
 
     suspend fun asyncCategory() {
@@ -41,29 +39,29 @@ class DataSyncWork {
     }
 
     private suspend fun categoryUpdate() {
-        val updateCategory = categoryDao.findCategoryByStatic( STATUS.UPDATED)
-            if (updateCategory.isNotEmpty()) {
-                updateCategory.forEach { category ->
-                    val response = network.categoryPush(CategoryEntity(category))
-                    if (response.code == 0) {
-                        category.synced =  STATUS.SYNCED
-                        categoryDao.update(category)
-                    }
+        val updateCategory = categoryDao.findCategoryByStatic(STATUS.UPDATED)
+        if (updateCategory.isNotEmpty()) {
+            updateCategory.forEach { category ->
+                val response = network.categoryPush(CategoryEntity(category))
+                if (response.code == 0) {
+                    category.synced = STATUS.SYNCED
+                    categoryDao.update(category)
                 }
             }
+        }
     }
 
     private suspend fun categoryPush() {
-        val pushCategory = categoryDao.findCategoryByStatic( STATUS.UPDATED)
-            if (pushCategory.isNotEmpty()) {
-                pushCategory.forEach { category ->
-                    val response = network.categoryPush(CategoryEntity(category))
-                    if (response.code == 0) {
-                        category.synced =  STATUS.SYNCED
-                        categoryDao.update(category)
-                    }
+        val pushCategory = categoryDao.findCategoryByStatic(STATUS.UPDATED)
+        if (pushCategory.isNotEmpty()) {
+            pushCategory.forEach { category ->
+                val response = network.categoryPush(CategoryEntity(category))
+                if (response.code == 0) {
+                    category.synced = STATUS.SYNCED
+                    categoryDao.update(category)
                 }
             }
+        }
     }
 
     private suspend fun categoryPull() {
@@ -79,7 +77,7 @@ class DataSyncWork {
     }
 
     private suspend fun categoryDelete() {
-        val deleteCategory = categoryDao.findCategoryByStatic( STATUS.DELETED)
+        val deleteCategory = categoryDao.findCategoryByStatic(STATUS.DELETED)
         if (deleteCategory.isNotEmpty()) {
             deleteCategory.forEach { category ->
                 val response = network.categoryDelete(category.id)
@@ -91,7 +89,7 @@ class DataSyncWork {
     }
 
     private suspend fun billDelete() {
-        val deleteBills = billDao.findByStatus( STATUS.DELETED)
+        val deleteBills = billDao.findByStatus(STATUS.DELETED)
         if (deleteBills.isNotEmpty()) {
             deleteBills.forEach { bill ->
                 var response = network.billDelete(bill.id)
@@ -103,12 +101,12 @@ class DataSyncWork {
     }
 
     private suspend fun billsUpdate() {
-        val updateBills = billDao.findByStatus( STATUS.UPDATED)
+        val updateBills = billDao.findByStatus(STATUS.UPDATED)
         if (updateBills.isNotEmpty()) {
             updateBills.forEach { bill ->
                 val response = network.billUpdate(bill)
                 if (response.code == 0) {
-                    bill.synced =  STATUS.SYNCED
+                    bill.synced = STATUS.SYNCED
                     AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
                     billDao.delete(bill)
                 }
@@ -117,7 +115,7 @@ class DataSyncWork {
     }
 
     private suspend fun billsPush() {
-        val pushBills = billDao.findByStatus( STATUS.NOT_SYNCED)
+        val pushBills = billDao.findByStatus(STATUS.NOT_SYNCED)
         if (pushBills.isNotEmpty()) {
             pushBills.forEach { bill ->
                 billRepository.pushBill(bill)
@@ -126,9 +124,14 @@ class DataSyncWork {
     }
 
     private suspend fun billsPull() {
-        val currentLastDay = MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month);
+        val currentLastDay =
+            MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month);
         val statDate = YearMonth(currentYearMonth.year, currentYearMonth.month, 1).toYearMonthDay()
-        val endDate = YearMonth(currentYearMonth.year, currentYearMonth.month, currentLastDay).toYearMonthDay()
+        val endDate = YearMonth(
+            currentYearMonth.year,
+            currentYearMonth.month,
+            currentLastDay
+        ).toYearMonthDay()
         val pullBillsResponse = network.billPull(statDate, endDate)
         var data = pullBillsResponse.date
         data?.let { serverBills ->
@@ -149,7 +152,7 @@ class DataSyncWork {
                             image.onlinePath = entity._id.toString()
                             image.ext = entity.ext
                             image.billImageID = serverBill.id
-                            image.synced =  STATUS.SYNCED
+                            image.synced = STATUS.SYNCED
                             AppDatabase.getInstance().imageDao().install(image)
                             LogUtils.d("账单图片信息已保存 $image")
                         }
@@ -159,6 +162,19 @@ class DataSyncWork {
             }
         }
 
+    }
+
+    suspend fun asyncBooks() {
+        val notAsyncBooks = bookDao.books()
+        for (book in notAsyncBooks) {
+            book.synced = STATUS.UPDATED
+            book.createUser = currentUser.username
+            HejiNetwork.getInstance().bookPush(book)
+            val count = bookDao.update(book)
+            if (count > 0) {
+                LogUtils.d("本地账本同步成功{$book}")
+            }
+        }
     }
 
 }

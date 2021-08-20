@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.rh.heji.data.db.mongo.ObjectId
+import com.squareup.moshi.Json
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -13,6 +14,8 @@ import org.jetbrains.annotations.NotNull
  */
 @Entity(tableName = "book")
 data class Book(
+
+    @Json(name = "_id")
     @PrimaryKey()
     @NotNull
     @ColumnInfo(name = COLUMN_ID)

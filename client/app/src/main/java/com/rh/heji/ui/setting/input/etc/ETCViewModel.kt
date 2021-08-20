@@ -6,7 +6,6 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 
-import com.rh.heji.App
 import com.rh.heji.AppViewModule
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
@@ -19,7 +18,7 @@ import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.moshi
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.setting.input.etc.HBETCEntity.DataBean.OrderArrBean
-import com.rh.heji.utlis.http.basic.OkHttpConfig
+import com.rh.heji.utlis.http.basic.HttpRetrofit
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -132,7 +131,7 @@ class ETCViewModel : BaseViewModel() {
                 .addHeader("X-Requested-With", "XMLHttpRequest")
                 .post(requestBody)
                 .build()
-        OkHttpConfig.clientBuilder.build().newCall(request).enqueue(object : Callback {
+        HttpRetrofit.okHttpClient().newCall(request).enqueue(object : Callback {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
@@ -199,7 +198,7 @@ class ETCViewModel : BaseViewModel() {
                 .addHeader("X-Requested-With", "XMLHttpRequest")
                 .post(requestBody)
                 .build()
-        OkHttpConfig.clientBuilder.build().newCall(request).enqueue(object : Callback {
+        HttpRetrofit.okHttpClient().newCall(request).enqueue(object : Callback {
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {

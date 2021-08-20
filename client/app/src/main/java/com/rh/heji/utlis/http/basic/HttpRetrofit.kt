@@ -1,9 +1,12 @@
 package com.rh.heji.utlis.http.basic
 
+import com.rh.heji.BuildConfig
 import com.rh.heji.moshi
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -12,14 +15,35 @@ import retrofit2.converter.moshi.MoshiConverterFactory
  * -Retrofit实例化
  */
 object HttpRetrofit {
-    private var sClient: OkHttpClient? = null
+
 
     /**
      * 初始化OkHttpClient
      * @param client
      */
-    fun initClient(client: OkHttpClient?) {
-        sClient = client
+    fun okHttpClient(
+        connectTimeout: Long = 10,
+        readTimeout: Long = 10,
+        writeTimeout: Long = 10,
+        bufferSize: Long = 1028 * 8,
+        servletDownloadUserHeadImg: String = ""
+    ): OkHttpClient {
+
+
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BODY
+        if (!BuildConfig.DEBUG) {
+            logging.redactHeader("Authorization")
+            logging.redactHeader("Cookie")
+        }
+        val headerInterceptor = HttpHeaderInterceptor()
+        return OkHttpClient.Builder()
+            .addInterceptor(headerInterceptor)
+            .addInterceptor(logging)
+            .connectTimeout(connectTimeout, TimeUnit.SECONDS)
+            .writeTimeout(writeTimeout, TimeUnit.SECONDS)
+            .readTimeout(readTimeout, TimeUnit.SECONDS)
+            .build()
     }
 
     /**
@@ -33,10 +57,9 @@ object HttpRetrofit {
 //        Gson gson =new GsonBuilder().serializeNulls()
 //                .setDateFormat("yyyy-mm-dd HH:mm:ss")
 //                .create();
-
         val rt = Retrofit.Builder()
             .baseUrl(url)
-            .client(sClient)
+            .client(okHttpClient())
             //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             //.addConverterFactory(GsonConverterFactory.create(gson))
             .addConverterFactory(MoshiConverterFactory.create(moshi))

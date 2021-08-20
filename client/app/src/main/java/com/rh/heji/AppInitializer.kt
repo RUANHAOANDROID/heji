@@ -19,7 +19,6 @@ import com.rh.heji.network.HejiNetwork
 import com.rh.heji.utlis.CrashInfo
 import com.rh.heji.utlis.MyUtils
 import com.rh.heji.utlis.http.basic.HttpRetrofit
-import com.rh.heji.utlis.http.basic.OkHttpConfig
 import com.rh.heji.utlis.launchIO
 import com.rh.heji.utlis.mmkv
 import com.tencent.mmkv.MMKV

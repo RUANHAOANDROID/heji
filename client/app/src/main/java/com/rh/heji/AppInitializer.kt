@@ -63,14 +63,7 @@ class AppInitializer : Initializer<Unit> {
             val bookDao = it.bookDao()
             val categoryDao = it.categoryDao()
             if (bookDao.count() == 0) {
-                bookDao.createNewBook(
-                    Book(
-                        id = "0",
-                        name = "个人账本",
-                        createUser = "local",
-                        type = "日常账本"
-                    )
-                )
+                bookDao.createNewBook(currentBook)
             }
             if (categoryDao.count() == 0) {
                 categoryDao.insert(incomeDefaultCategory)
@@ -92,6 +85,7 @@ class AppInitializer : Initializer<Unit> {
         val startCount = mmkv()!!.decodeInt(key, 0)
         mmkv()!!.encode(key, startCount + 1)
     }
+
     fun fakeData() {
         val u1 = Dealer("锅得铁")
         val u2 = Dealer("谢大脚")

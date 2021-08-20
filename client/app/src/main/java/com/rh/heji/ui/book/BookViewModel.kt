@@ -39,7 +39,7 @@ class BookViewModel : BaseViewModel() {
 
     fun getBookList(): LiveData<MutableList<Book>> {
         launchIO({
-            bookListLiveData.postValue(AppDatabase.getInstance().bookDao().books()) }, {})
+            bookListLiveData.postValue(AppDatabase.getInstance().bookDao().allBooks()) }, {})
         return bookListLiveData
     }
 }

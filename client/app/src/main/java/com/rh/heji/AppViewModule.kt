@@ -83,6 +83,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     fun asyncData() {
         launchIO({
             var dataAsyncWork = DataSyncWork()
+            dataAsyncWork.asyncBooks()
             //DataSyncWork 方法执行在IO线程
             dataAsyncWork.asyncBills()
             dataAsyncWork.asyncCategory()

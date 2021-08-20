@@ -10,6 +10,7 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.mongo.ObjectId
+import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
 import java.util.*
@@ -30,6 +31,7 @@ import java.util.*
     )], indices = [Index(value = ["id", "book_id"], unique = true)]
 )
 data class Bill(
+    @Json(name = "_id")
     @PrimaryKey
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),

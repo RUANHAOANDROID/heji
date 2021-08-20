@@ -94,7 +94,7 @@ object Token {
     }
 
     suspend fun authToken(token: String) {
-        HejiNetwork.getInstance().hejiServer.auth(token)
+        HejiNetwork.getInstance().auth(token)
     }
 
 }

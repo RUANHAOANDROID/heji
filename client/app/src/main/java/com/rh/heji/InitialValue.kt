@@ -4,11 +4,9 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.Category
 import com.rh.heji.ui.user.JWTParse
-import com.rh.heji.utlis.mmkv
 
 
 var currentBook = Book(
-    id = "0",
     name = "个人账本",
     createUser = "local",
     type = "日常账本"

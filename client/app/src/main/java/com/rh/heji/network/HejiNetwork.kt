@@ -3,6 +3,7 @@ package com.rh.heji.network
 import com.rh.heji.BuildConfig
 import com.rh.heji.currentBook
 import com.rh.heji.data.db.Bill
+import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterUser
@@ -18,10 +19,13 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class HejiNetwork {
-    val hejiServer=HttpRetrofit.create(BuildConfig.HTTP_URL, HeJiServer::class.java);
+    private val hejiServer=HttpRetrofit.create(BuildConfig.HTTP_URL, HeJiServer::class.java);
 
     suspend fun register(registerUser:RegisterUser) = hejiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) = hejiServer.login(username, password).await()
+    suspend fun auth(token: String) = hejiServer.auth(token).await()
+    suspend fun bookPush(book:Book) = hejiServer.bookCreate(book).await()
+
     suspend fun billPush(bill: Bill) = hejiServer.saveBill(bill).await()
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
     suspend fun billUpdate(bill: Bill) = hejiServer.updateBill(bill).await()

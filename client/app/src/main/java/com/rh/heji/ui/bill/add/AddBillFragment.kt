@@ -208,11 +208,14 @@ class AddBillFragment : BaseFragment() {
      * 选择经手人
      */
     private fun selectPerson() {
-        billViewModel.dealersLiveDatabase.observe(this, Observer { names ->
+        billViewModel.dealersLiveDatabase.observe(this, { names ->
             //经手人名单
             if (names.size > 0) {
                 binding.tvUserLabel.text = "经手人:" + names[0] //默认经手人
                 billViewModel.bill.dealer = names[0] //设置默经手人
+            }else{
+                binding.tvUserLabel.text = "经手人:" + currentUser.username//默认经手人
+                billViewModel.bill.dealer = currentUser.username //设置默经手人
             }
             binding.tvUserLabel.setOnClickListener {
                 XPopup.Builder(requireContext())
@@ -261,7 +264,7 @@ class AddBillFragment : BaseFragment() {
         }
         billViewModel.bill.category = category.category
         billViewModel.save(money, category) { bill: Bill ->
-            App.getInstance().appViewModule.billPush(bill)
+            AppViewModule.get().billPush(bill)
             if (close)
                 findNavController().popBackStack()
         }

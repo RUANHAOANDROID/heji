@@ -129,7 +129,7 @@ class DataSyncWork {
         val currentLastDay = MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month);
         val statDate = YearMonth(currentYearMonth.year, currentYearMonth.month, 1).toYearMonthDay()
         val endDate = YearMonth(currentYearMonth.year, currentYearMonth.month, currentLastDay).toYearMonthDay()
-        val pullBillsResponse = network.billPull(currentBookId,statDate, endDate)
+        val pullBillsResponse = network.billPull(statDate, endDate)
         var data = pullBillsResponse.date
         data?.let { serverBills ->
             if (serverBills.isNotEmpty()) {

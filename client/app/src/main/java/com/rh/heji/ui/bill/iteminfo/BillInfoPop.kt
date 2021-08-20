@@ -13,10 +13,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.core.ImageViewerPopupView
 import com.lxj.xpopup.util.XPopupUtils
-import com.rh.heji.App
-import com.rh.heji.BuildConfig
-import com.rh.heji.MainActivity
-import com.rh.heji.R
+import com.rh.heji.*
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
@@ -120,7 +117,7 @@ class BillInfoPop(
             val mainActivity = context as MainActivity
             mainActivity.lifecycleScope.launch(Dispatchers.IO) {
                 withContext(Dispatchers.Main) {
-                    if (bill.createUser == App.getInstance().currentUser.username) {
+                    if (bill.createUser == currentUser.username) {
                         popClickListener.delete(bill)
                         dismiss()
                     } else {
@@ -165,7 +162,7 @@ private interface PopClickListener {
 open class BillPopClickListenerImpl : PopClickListener {
 
     override fun delete(bill: Bill) {
-        App.getInstance().appViewModule.billDelete(bill)
+        AppViewModule.get().billDelete(bill)
     }
 
     override fun update(bill: Bill) {

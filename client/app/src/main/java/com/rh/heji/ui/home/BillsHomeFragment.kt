@@ -14,6 +14,7 @@ import com.chad.library.adapter.base.entity.node.BaseNode
 import com.google.android.material.appbar.AppBarLayout
 import com.lxj.xpopup.XPopup
 import com.rh.heji.App
+import com.rh.heji.AppViewModule
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.d2o.Income
@@ -78,7 +79,7 @@ class BillsHomeFragment : BaseFragment() {
                     binding.refreshLayout.isEnabled = isFullyShow
                 })
             }
-            App.getInstance().appViewModule.asyncLiveData.observe(
+            AppViewModule.get().asyncLiveData.observe(
                 this,
                 asyncNotifyObserver(
                     homeViewModel.selectYearMonth.year,

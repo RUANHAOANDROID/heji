@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
+import com.rh.heji.AppViewModule
+import com.rh.heji.currentUser
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.mongo.ObjectId
@@ -24,7 +26,7 @@ class BookViewModel : BaseViewModel() {
                     id = ObjectId().toHexString(),
                     name = name,
                     type = type,
-                    createUser = App.getInstance().currentUser.username
+                    createUser = currentUser.username
                 )
                 AppDatabase.getInstance().bookDao().createNewBook(book)
                 bookLiveData.postValue(book)

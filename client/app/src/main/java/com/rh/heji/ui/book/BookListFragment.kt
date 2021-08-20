@@ -9,12 +9,15 @@ import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.lxj.xpopup.XPopup
 import com.rh.heji.App
+import com.rh.heji.AppViewModule
 import com.rh.heji.R
+import com.rh.heji.currentBook
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookListBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.hideRefreshing
 import com.rh.heji.ui.base.swipeRefreshLayout
+import com.tencent.mmkv.MMKV
 
 /**
  * Date: 2021/7/9
@@ -68,10 +71,10 @@ class BookListFragment : BaseFragment() {
 
     private fun listener() {
         adapter.setOnItemClickListener { adapter, view, position ->
-            App.getInstance().mmkv?.let {
+            MMKV.defaultMMKV()?.let {
                 val book: Book = adapter.getItem(position) as Book
                 mainActivity.setCurrentBook(book.name)
-                App.getInstance().currentBook = book
+               currentBook = book
             }
             findNavController().popBackStack()
         }

@@ -4,25 +4,26 @@ import android.content.Context
 import android.text.TextUtils
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
-import com.rh.heji.App
 import com.rh.heji.network.HejiNetwork
+import com.tencent.mmkv.MMKV
 import java.io.*
 import java.nio.charset.StandardCharsets
 
-class Token(val context: Context) {
-    companion object {
-        const val TOKEN_FILE_NAME = "TOKEN"
-    }
+object Token {
+    private val mmkv: MMKV = MMKV.defaultMMKV()!!
+
+    private const val TOKEN_FILE_NAME = "TOKEN"
 
     fun decodeToken(): String {
         var jwtTokenString = ""
-        App.instance.mmkv.decodeString(TOKEN_FILE_NAME, "")?.let {
+        mmkv.decodeString(TOKEN_FILE_NAME, "")?.let {
             jwtTokenString = String(EncodeUtils.base64Decode(it))
         }
         return jwtTokenString
     }
 
-    fun readTokenFile(): String {
+    @Deprecated("使用mmkv实现", replaceWith = ReplaceWith("decodeToken()"))
+    fun readTokenFile(context: Context): String {
         val tokenFile = File(context.filesDir, TOKEN_FILE_NAME)
         var token = ""
         if (tokenFile.exists()) {
@@ -51,7 +52,11 @@ class Token(val context: Context) {
         return String(EncodeUtils.base64Decode(token))
     }
 
-    fun writeTokenFile(token: String?) {
+    @Deprecated(
+        "使用 encodeToken 由mmkv实现",
+        replaceWith = ReplaceWith("encodeToken(jwtToken: String)")
+    )
+    fun writeTokenFile(context: Context, token: String?) {
 
         val file = File(context.filesDir.absolutePath)
         val tokenFile = File(file, TOKEN_FILE_NAME)
@@ -70,15 +75,14 @@ class Token(val context: Context) {
     }
 
     fun encodeToken(jwtToken: String?) {
-        App.instance.mmkv.encode(TOKEN_FILE_NAME, EncodeUtils.base64Encode(jwtToken))
+        mmkv.encode(TOKEN_FILE_NAME, EncodeUtils.base64Encode(jwtToken))
     }
 
-    fun delete() {
-        App.instance.mmkv.removeValueForKey(TOKEN_FILE_NAME)
-        deleteTokenFile()
+    fun delete(context: Context) {
+        mmkv.removeValueForKey(TOKEN_FILE_NAME)
     }
 
-    fun deleteTokenFile() {
+    private fun deleteTokenFile(context: Context) {
         val fileName = "TokenFile"
         val file = File(context.filesDir.absolutePath)
         val tokenFile = File(file, fileName)
@@ -86,7 +90,7 @@ class Token(val context: Context) {
     }
 
     fun isLogin(): Boolean {
-        return !TextUtils.isEmpty(readTokenFile())
+        return !TextUtils.isEmpty(decodeToken())
     }
 
     suspend fun authToken(token: String) {

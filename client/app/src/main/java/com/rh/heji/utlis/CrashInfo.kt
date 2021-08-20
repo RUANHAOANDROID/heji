@@ -5,7 +5,10 @@ import com.blankj.utilcode.util.DeviceUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.rh.heji.App
+import com.rh.heji.AppViewModule
 import com.rh.heji.BuildConfig
+import com.rh.heji.currentUser
+import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.ErrorLog
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -16,20 +19,20 @@ import java.io.StringWriter
  *#
  */
 open class CrashInfo() : CrashUtils.OnCrashListener {
-    var errorLog: ErrorLog? = null
     override fun onCrash(crashInfo: CrashUtils.CrashInfo) {
         crashInfo.addExtraHead(isTablet, DeviceUtils.isTablet().toString())
         crashInfo.addExtraHead(isEmulator, DeviceUtils.isEmulator().toString())
         crashInfo.addExtraHead(uniqueDeviceId, DeviceUtils.getUniqueDeviceId().toString())
         crashInfo.addExtraHead(networkType, NetworkUtils.getNetworkType().toString())
-        errorLog = errorLogEntity(crashInfo)
+        var errorLog = errorLogEntity(crashInfo)
+        save2DB(errorLog)
     }
 
     private fun errorLogEntity(crashInfo: CrashUtils.CrashInfo): ErrorLog {
         val errorLog = ErrorLog()
         errorLog.appVersionCode = BuildConfig.VERSION_CODE.toString()
         errorLog.appVersionName = BuildConfig.VERSION_NAME
-        errorLog.userid = App.getInstance().currentUser.username
+        errorLog.userid = currentUser.username
         errorLog.deviceModel = DeviceUtils.getModel()
         errorLog.isEmulator = DeviceUtils.isEmulator()
         errorLog.isTablet = DeviceUtils.isTablet()
@@ -38,7 +41,7 @@ open class CrashInfo() : CrashUtils.OnCrashListener {
         errorLog.sdkVersionCode = DeviceUtils.getSDKVersionCode().toString()
         errorLog.sdkVersionName = DeviceUtils.getSDKVersionName()
         LogUtils.e(crashInfo.throwable)
-        errorLog.crashContent = getExceptionToString(crashInfo . throwable)
+        errorLog.crashContent = getExceptionToString(crashInfo.throwable)
         return errorLog;
     }
 
@@ -48,8 +51,8 @@ open class CrashInfo() : CrashUtils.OnCrashListener {
         return stringWriter.toString()
     }
 
-    suspend fun save2DB() {
-        App.getInstance().database.errorLogDao().install(errorLog)
+    private fun save2DB(errorLog: ErrorLog) {
+        AppDatabase.getInstance().errorLogDao().install(errorLog)
     }
 
     companion object {

@@ -7,6 +7,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 
 import com.rh.heji.App
+import com.rh.heji.AppViewModule
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
@@ -104,7 +105,7 @@ class ETCViewModel : BaseViewModel() {
                 }
             })
             etcLive.postValue("导入完成")
-            App.getInstance().appViewModule.asyncData()
+            AppViewModule.get().asyncData()
         } else {
             ToastUtils.showShort("导入失败")
             etcLive.postValue("导入失败")

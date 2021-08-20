@@ -35,7 +35,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         //.addMigrations(MIGRATION_1_2)
         //默认数据库名称
-        fun getInstance(context: Context= App.getInstance().context): AppDatabase = INSTANCE ?: synchronized(this) {
+        fun getInstance(context: Context= App.context()): AppDatabase = INSTANCE ?: synchronized(this) {
             INSTANCE ?: buildDatabase(context, "heji.db").also { INSTANCE = it }
         }
 

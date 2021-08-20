@@ -23,7 +23,7 @@ class BillPhotoAdapter :
             binding.imgTicket.setImageDrawable(context.resources.getDrawable(R.drawable.ic_add_image_red_32dp))
             binding.imgDelete.visibility = View.INVISIBLE
         } else {
-            MyAppGlideModule.loadImageFile(App.getInstance().context, item, binding.imgTicket)
+            MyAppGlideModule.loadImageFile(App.context(), item, binding.imgTicket)
             binding.imgDelete.visibility = View.VISIBLE
         }
     }

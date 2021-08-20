@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.App
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.utlis.MyUtils
 import com.rh.heji.utlis.launchIO
 import okio.buffer
 import okio.sink
@@ -25,7 +26,7 @@ class ExportViewModel : BaseViewModel() {
             var response = HejiNetwork.getInstance().billExport()
             if (response.isSuccessful && response.code() == 200) {
                 val filesDir =
-                    App.getInstance().context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+                    App.context().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
                 var attachment = response.headers()["Content-Disposition"]
                 var subFileName = attachment?.substringAfterLast(
                     "attachment; filename=",
@@ -39,7 +40,7 @@ class ExportViewModel : BaseViewModel() {
                     sink.close()
                     exportLiveData.postValue(excelFile.absolutePath)
                     LogUtils.d("下载成功：${excelFile.absolutePath}")
-                    App.getInstance().galleryAddPic(excelFile.absolutePath)
+                    MyUtils.galleryAddPic(App.context(),excelFile.absolutePath)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

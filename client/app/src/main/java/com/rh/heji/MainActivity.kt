@@ -21,15 +21,18 @@ import androidx.navigation.*
 import androidx.navigation.NavController.OnDestinationChangedListener
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.blankj.utilcode.util.CrashUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
 import com.rh.heji.databinding.HeaderMainNavBinding
+import com.rh.heji.security.Token
 import com.rh.heji.ui.home.DrawerSlideListener
 import com.rh.heji.ui.home.HomeDrawerListener
 import com.rh.heji.ui.user.JWTParse
-import com.rh.heji.ui.user.JWTParse.getUser
+import com.rh.heji.utlis.CrashInfo
+import com.rh.heji.utlis.MyUtils
 import com.rh.heji.utlis.checkPermissions
 import com.rh.heji.utlis.permitDiskReads
 import kotlinx.coroutines.*
@@ -48,20 +51,22 @@ class MainActivity : AppCompatActivity() {
         permitDiskReads { super.onCreate(savedInstanceState) }//StrictMode policy violation; ~duration=127 ms: android.os.strictmode.DiskReadViolation by XiaoMi
         checkPermissions(this) { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
             //初始化一些需要权限的功能
-            App.getInstance().appViewModule.initCrashTool()
+            lifecycleScope.launch(Dispatchers.Default) {
+                MyUtils.initCrashTool(this@MainActivity, CrashInfo())
+            }
             Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
         }
         setContentView(R.layout.activity_main)
         initDrawerLayout()
         lifecycleScope.launch(Dispatchers.IO) {
-            val token = App.getInstance().token.decodeToken()
+            val token = Token.decodeToken()
+            currentUser = JWTParse.getUser(token)
             withContext(Dispatchers.Main) {
                 if (TextUtils.isEmpty(token)) {
                     navController.navigate(R.id.nav_login)
                 } else {
-                    val user = getUser(token)
-                    setDrawerLayout(user)
-                    App.getInstance().appViewModule.asyncData()
+                    setDrawerLayout(currentUser)
+                    AppViewModule.get().asyncData()
                 }
             }
         }
@@ -105,7 +110,7 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.menu
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener { item: MenuItem? ->
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                runBlocking(Dispatchers.IO) { App.getInstance().token.delete() }
+                runBlocking(Dispatchers.IO) { Token.delete(context = this@MainActivity) }
                 finish()
             }.show()
             false
@@ -123,7 +128,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
-        setCurrentBook(App.getInstance().currentBook.name)
+        setCurrentBook(currentBook.name)
     }
 
     private fun navigationDrawerController() {

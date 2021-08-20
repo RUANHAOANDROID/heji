@@ -2,6 +2,8 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
+import com.rh.heji.AppViewModule
+import com.rh.heji.currentBook
 //import com.rh.heji.App
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
@@ -29,10 +31,10 @@ import java.util.*
 data class Bill(
     @PrimaryKey
     @ColumnInfo(name = COLUMN_ID)
-    var id: String = "ObjectId().toHexString()",
+    var id: String = ObjectId().toHexString(),
 
     @ColumnInfo(name = COLUMN_BOOK_ID)
-    var bookId: String = "App.getInstance().currentBook.id!!",
+    var bookId: String = currentBook.id,
     /**
      * 钱
      */

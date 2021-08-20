@@ -22,6 +22,9 @@ data class Book(
     var type: String? = null,
     var bannerUrl: String? = null
 ) {
+    @ColumnInfo(name = "sync_status")
+    var synced: Int = STATUS.NOT_SYNCED
+
     companion object {
         const val COLUMN_ID = "id"
     }

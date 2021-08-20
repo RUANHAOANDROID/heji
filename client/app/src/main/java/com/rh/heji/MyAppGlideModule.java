@@ -10,7 +10,7 @@ import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.AppGlideModule;
-import com.rh.heji.utlis.http.basic.OkHttpConfig;
+import com.rh.heji.utlis.http.basic.HttpRetrofit;
 
 import java.io.File;
 import java.io.InputStream;
@@ -48,9 +48,14 @@ public final class MyAppGlideModule extends AppGlideModule {
         // 加载Uri对象
         Glide.with(context).load(imageUri).into(imgView);
     }
+
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {
-        final OkHttpClient.Builder builder = OkHttpConfig.getClientBuilder();
+        final OkHttpClient.Builder builder = HttpRetrofit.INSTANCE.okHttpClient(10,
+                10,
+                10,
+                1024 * 8,
+                "").newBuilder();
         registry.append(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(builder.build()));
     }
 

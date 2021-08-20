@@ -3,7 +3,6 @@ package com.rh.heji
 import android.app.Application
 import android.content.Context
 import com.rh.heji.utlis.http.basic.HttpRetrofit
-import com.rh.heji.utlis.http.basic.OkHttpConfig
 
 /**
  * Date: 2020/8/28
@@ -35,6 +34,5 @@ class App : Application() {
     }
 
     private fun init() {
-        HttpRetrofit.initClient(OkHttpConfig.clientBuilder.build())
     }
 }

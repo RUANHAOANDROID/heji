@@ -43,8 +43,8 @@ public class BookController {
 
     @ResponseBody
     @PostMapping(value = {"/addBookUser"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String addBookUser(@RequestParam String bookId, @RequestParam String userId) {
-        bookService.addBookUser(new MBook().set_id(bookId), userId);
+    public String addBookUser(@RequestParam String bookId,Authentication auth) {
+        bookService.addBookUser(new MBook().set_id(bookId), auth.getName());
         return Result.success(bookId);
     }
 

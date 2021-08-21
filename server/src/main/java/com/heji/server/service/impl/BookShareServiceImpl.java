@@ -47,8 +47,8 @@ public class BookShareServiceImpl extends BaseMongoTemplate implements BookShare
         MongoTemplate mongoTemplate = getMongoTemplate();
         if (!mongoTemplate.collectionExists(MBookShare.COLLATION_NAME)) {
             mongoTemplate.createCollection(MBookShare.COLLATION_NAME);
-            IndexOperations indexOpe = mongoTemplate.indexOps(MBookShare.COLLATION_NAME);
-            indexOpe.ensureIndex(new CompoundIndexDefinition(new Document("_id", "hashed")));
+//            IndexOperations indexOpe = mongoTemplate.indexOps(MBookShare.COLLATION_NAME);
+//            indexOpe.ensureIndex(new CompoundIndexDefinition(new Document("_id", "hashed")));
 //            //邀请保留有效期，效能同：@Indexed(name = "expiredTime" ,expireAfterSeconds = 60)
             getMongoTemplate().getCollection(MBookShare.COLLATION_NAME).
                     createIndex(Indexes.ascending("expiredTime"),

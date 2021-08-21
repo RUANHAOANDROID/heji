@@ -25,6 +25,7 @@ class HejiNetwork {
     suspend fun login(username: String, password: String) = hejiServer.login(username, password).await()
     suspend fun auth(token: String) = hejiServer.auth(token).await()
     suspend fun bookPush(book:Book) = hejiServer.bookCreate(book).await()
+    suspend fun bookPull() = hejiServer.bookGet().await()
 
     suspend fun billPush(bill: Bill) = hejiServer.saveBill(bill).await()
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()

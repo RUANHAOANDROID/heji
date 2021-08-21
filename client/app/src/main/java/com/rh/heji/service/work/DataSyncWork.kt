@@ -4,21 +4,23 @@ import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.currentUser
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.db.*
-import com.rh.heji.data.db.mongo.ObjectId
+import com.rh.heji.data.db.Image
+import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.CategoryEntity
+import com.rh.heji.security.Token
+import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DataSyncWork {
+    private val network = HejiNetwork.getInstance()
     private val bookDao = AppDatabase.getInstance().bookDao()
     private val billDao = AppDatabase.getInstance().billDao()
     private val categoryDao = AppDatabase.getInstance().categoryDao()
-    private val network = HejiNetwork.getInstance()
     private val billRepository = BillRepository()
     suspend fun asyncBills() {
         withContext(Dispatchers.IO) {
@@ -165,16 +167,31 @@ class DataSyncWork {
     }
 
     suspend fun asyncBooks() {
-        val notAsyncBooks = bookDao.books()
-        for (book in notAsyncBooks) {
-            book.synced = STATUS.UPDATED
-            book.createUser = currentUser.username
-            HejiNetwork.getInstance().bookPush(book)
-            val count = bookDao.update(book)
-            if (count > 0) {
-                LogUtils.d("本地账本同步成功{$book}")
+        network.bookPull().let {
+            if (it.code == 0) {
+                it.date.forEach { book ->
+                    val localBoos = bookDao.findBook(book.id)
+                    if (localBoos.isEmpty()) {
+                        bookDao.insert(book)
+                    } else {
+                        bookDao.update(book)
+                    }
+                }
             }
         }
+        val notAsyncBooks = bookDao.books(STATUS.NOT_SYNCED)
+        for (book in notAsyncBooks) {
+            book.synced = STATUS.SYNCED
+            book.createUser = JWTParse.getUser(Token.decodeToken()).username
+            val response = network.bookPush(book)
+            if (response.code == 0) {
+                val count = bookDao.update(book)
+                if (count > 0) {
+                    LogUtils.d("本地账本同步成功{$book}")
+                }
+            }
+        }
+
     }
 
 }

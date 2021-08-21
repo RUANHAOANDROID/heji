@@ -6,13 +6,10 @@ import androidx.room.*
 interface BookDao {
 
     @Insert
-    fun createNewBook(book: Book): Long
+    fun insert(book: Book): Long
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update(entity = Book::class, onConflict = OnConflictStrategy.REPLACE)
     fun update(book: Book): Int
-
-    @Query("update book set id=:newId where id=:oldId")
-    fun updateId(oldId: String, newId: String): Int
 
     @Query("select count() from book  where name=:name")
     fun countByName(name: String): Int
@@ -21,7 +18,7 @@ interface BookDao {
     fun allBooks(): MutableList<Book>
 
     @Query("select * from book where sync_status=:status")
-    fun books(status: Int = STATUS.NOT_SYNCED): MutableList<Book>
+    fun books(status: Int): MutableList<Book>
 
     @Transaction
     @Query("select * from book where name =:bookName")
@@ -29,4 +26,7 @@ interface BookDao {
 
     @Query("select count(0) from book")
     fun count(): Int
+
+    @Query("select * from book where id =:id")
+    fun findBook(id: String): MutableList<Book>
 }

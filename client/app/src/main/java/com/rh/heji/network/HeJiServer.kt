@@ -34,7 +34,7 @@ interface HeJiServer {
     @POST("book/removeBookUser")
     fun bookRemove(@Body book: Book): Call<BaseResponse<String>>
     @POST("book/getBooks")
-    fun bookGet(): Call<BaseResponse<Book>>
+    fun bookGet(): Call<BaseResponse<MutableList<Book>>>
 
     //----------------------BILL---------------------------//
     @POST("bill/add")

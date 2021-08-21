@@ -1,25 +1,13 @@
 package com.rh.heji
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.StrictMode
-import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.startup.Initializer
-import com.blankj.utilcode.util.CrashUtils
-import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.Dealer
 import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.network.HejiNetwork
-import com.rh.heji.utlis.CrashInfo
-import com.rh.heji.utlis.MyUtils
-import com.rh.heji.utlis.http.basic.HttpRetrofit
-import com.rh.heji.utlis.launchIO
 import com.rh.heji.utlis.mmkv
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.Dispatchers
@@ -63,7 +51,7 @@ class AppInitializer : Initializer<Unit> {
             val bookDao = it.bookDao()
             val categoryDao = it.categoryDao()
             if (bookDao.count() == 0) {
-                bookDao.createNewBook(currentBook)
+                bookDao.insert(currentBook)
             }
             if (categoryDao.count() == 0) {
                 categoryDao.insert(incomeDefaultCategory)
@@ -105,7 +93,7 @@ class AppInitializer : Initializer<Unit> {
             AppDatabase.getInstance().categoryDao().insert(c0_0)
             AppDatabase.getInstance().categoryDao().insert(c0_1)
             val book = Book(name = "个人账本")
-            AppDatabase.getInstance().bookDao().createNewBook(book)
+            AppDatabase.getInstance().bookDao().insert(book)
             currentBook = book
         }
         if (startCount == 1) {

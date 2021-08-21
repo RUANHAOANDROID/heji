@@ -66,11 +66,12 @@ class AddBillViewModel : BaseViewModel() {
             AppDatabase.getInstance().imageDao().install(images)
             bill.imgCount = images.size
             AppDatabase.getInstance().billDao().update(bill)
-            withContext(Dispatchers.Main) {
-                observer.onChanged(bill)
-            }
             if (count > 0) {
                 ToastUtils.showShort("已保存: ${bill.category + money}  ")
+            }
+            withContext(Dispatchers.Main) {
+                observer.onChanged(bill)
+                bill.id=ObjectId.get().toHexString()//保存重新赋值ID
             }
         }, {
             ToastUtils.showShort(it.message)

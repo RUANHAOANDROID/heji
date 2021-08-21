@@ -350,7 +350,7 @@ class AddBillFragment : BaseFragment() {
         binding.keyboard.clear()
         binding.eidtRemark.setText("")
         binding.tvMoney.text = "0"
-        billViewModel.imgUrls = ArrayList()
+        billViewModel.imgUrls = mutableListOf()
         selectImagePou!!.clear()
     }
 

@@ -16,6 +16,9 @@ public interface BookService {
     MBook updateBook(MBook book);
 
     void addBookUser(MBook book, String userId);
+
     void removeBookUser(MBook book, String userId);
+
     boolean exists(String book_id);
+
 }

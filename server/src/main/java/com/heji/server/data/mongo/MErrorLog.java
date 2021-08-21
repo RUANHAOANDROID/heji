@@ -14,13 +14,13 @@ import static com.heji.server.data.mongo.MErrorLog.COLLECTION_NAME;
 @Accessors(chain = true)
 @Document(COLLECTION_NAME)
 public class MErrorLog {
-    public static final String COLLECTION_NAME = "errorLog";
+    public static final String COLLECTION_NAME = "error_log";
     @Id
     String _id;
     String uid;
     String tel;
-    String timeOfCrash ;
-    String romInfo ;
+    String timeOfCrash;
+    String romInfo;
     String deviceManufacturer;
     String deviceModel;
     String sdkVersionCode;

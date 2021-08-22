@@ -114,7 +114,7 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MVVM模式
 *   immersionbar 多机型强大Toobar的封装适配
 
 ## 服务端
-服务端使用Java Springboot框架，数据库采用MongoDB，目前打包为jar程序直接运行
+服务端使用Java Springboot框架，数据库采用MongoDB
 ### 数据集设计
 #### 用户（MUser）
 列名| 类型| 说 明 

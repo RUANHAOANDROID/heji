@@ -41,7 +41,10 @@ class BookListFragment : BaseFragment() {
     override fun initView(rootView: View) {
         binding = FragmentBookListBinding.bind(rootView)
 
-        adapter = BookListAdapter()
+        adapter = BookListAdapter {
+            findNavController().navigate(R.id.nav_book_setting)
+            ToastUtils.showLong(it.name)
+        }
         adapter.recyclerView = binding.list
         binding.list.layoutManager = LinearLayoutManager(mainActivity)
         binding.list.adapter = adapter
@@ -74,7 +77,7 @@ class BookListFragment : BaseFragment() {
             MMKV.defaultMMKV()?.let {
                 val book: Book = adapter.getItem(position) as Book
                 mainActivity.setCurrentBook(book.name)
-               currentBook = book
+                currentBook = book
             }
             findNavController().popBackStack()
         }
@@ -86,7 +89,7 @@ class BookListFragment : BaseFragment() {
                     "新建账本" ->
                         findNavController().navigate(R.id.nav_book_add)
                     "加入他人账本" ->
-                      ToastUtils.showShort("join Boot")
+                        ToastUtils.showShort("join Boot")
                 }
 
             }.show()

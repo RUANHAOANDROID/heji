@@ -14,7 +14,7 @@ interface BookDao {
     @Query("select count() from book  where name=:name")
     fun countByName(name: String): Int
 
-    @Query("select * from book")
+    @Query("SELECT * FROM book ORDER BY id")
     fun allBooks(): MutableList<Book>
 
     @Query("select * from book where sync_status=:status")
@@ -26,6 +26,9 @@ interface BookDao {
 
     @Query("select count(0) from book")
     fun count(): Int
+
+    @Query("select count(0) from book WHERE id=:bookId")
+    fun exist(bookId: String): Int
 
     @Query("select * from book where id =:id")
     fun findBook(id: String): MutableList<Book>

@@ -92,7 +92,7 @@ class AppInitializer : Initializer<Unit> {
             val c0_1 = Category(ObjectId().toString(), "其他", 0, 1)
             AppDatabase.getInstance().categoryDao().insert(c0_0)
             AppDatabase.getInstance().categoryDao().insert(c0_1)
-            val book = Book(name = "个人账本")
+            val book = Book(name = "个人账本",createUser = currentUser.username)
             AppDatabase.getInstance().bookDao().insert(book)
             currentBook = book
         }

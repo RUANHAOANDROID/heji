@@ -2,6 +2,7 @@ package com.heji.server.controller;
 
 import com.heji.server.data.mongo.MBook;
 import com.heji.server.data.mongo.MBookShare;
+import com.heji.server.data.mongo.MBookUser;
 import com.heji.server.exception.OperationsException;
 import com.heji.server.result.Result;
 import com.heji.server.service.BookService;
@@ -11,7 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @RestController//json controller
@@ -29,30 +32,41 @@ public class BookController {
     @ResponseBody
     @PostMapping(value = {"/create"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String createBook(@RequestBody MBook book, Authentication authentication) {
-        book.setUsers(Collections.singletonList(authentication.getName()));
+        List<MBookUser> users = new ArrayList<>();
+        MBookUser bookUser = new MBookUser().setName(authentication.getName()).setAuthority("CREATE");
+        users.add(bookUser);
+        book.setUsers(users);
         bookService.createBook(book);
-//        bookService.addBookUser(book, authentication.getName());
         return Result.success(book.get_id());
     }
 
     @ResponseBody
     @PostMapping(value = {"/getBooks"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getBooks(Authentication authentication) {
-        return Result.success(bookService.findBooks(authentication.getName()));
+        return Result.success(bookService.getBooks(new MBookUser().setName(authentication.getName())));
     }
 
     @ResponseBody
     @PostMapping(value = {"/addBookUser"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String addBookUser(@RequestParam String bookId,Authentication auth) {
-        bookService.addBookUser(new MBook().set_id(bookId), auth.getName());
+    public String addBookUser(@RequestParam String bookId, Authentication auth) {
+        MBookUser bookUser = new MBookUser().setName(auth.getName()).setAuthority("USER");
+        bookService.addBookUser(new MBook().set_id(bookId), bookUser);
         return Result.success(bookId);
+    }
+
+    @ResponseBody
+    @PostMapping(value = {"/getBookUsers"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getBookUsers(@RequestParam String bookId, Authentication auth) {
+        //校验操作用户是否是账本创建人
+        List<MBookUser> users = bookService.getBookUsers(bookId);
+        return Result.success(users);
     }
 
     @ResponseBody
     @PostMapping(value = {"/removeBookUser"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String removeBookUser(@RequestParam String bookId, @RequestParam String userId, Authentication auth) {
         //校验操作用户是否是账本创建人
-        if (auth.getName() != bookService.findBook(bookId).getCreateUser()) {
+        if (auth.getName() != bookService.findBook(bookId).getUsers().get(0).getName()) {
             throw new OperationsException("移除失败，账本权限不匹配");
         }
         bookService.removeBookUser(new MBook().set_id(bookId), userId);
@@ -63,7 +77,7 @@ public class BookController {
     @PostMapping(value = {"/share"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String shareBook(@RequestParam String bookId, Authentication auth) {
         //校验操作用户是否是账本创建人
-        String createUser = bookService.findBook(bookId).getCreateUser();
+        String createUser = bookService.findBook(bookId).getUsers().get(0).getName();
         if (!auth.getName().equals(createUser)) {
             throw new OperationsException("分享失败，账本权限不匹配");
         }

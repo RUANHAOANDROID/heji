@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:background="@color/white"
+    android:padding="8dp"
+    tools:context=".ui.book.BookSettingFragment">
+
+
+    <TextView
+        android:id="@+id/tvCreateUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="用户名"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgHead"
+        app:layout_constraintTop_toTopOf="@+id/imgHead" />
+
+    <ImageView
+        android:id="@+id/imgHead"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/ic_user_blue_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAuthtroy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="成员"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgHead"
+        app:layout_constraintStart_toStartOf="@+id/tvCreateUser" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

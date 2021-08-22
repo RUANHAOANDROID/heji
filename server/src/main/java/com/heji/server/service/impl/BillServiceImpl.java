@@ -41,7 +41,7 @@ public class BillServiceImpl extends BaseMongoTemplate implements BillService {
     @Override
     public String addBill(MBill bill) {
         MBill saveBill = getMongoTemplate().save(bill, BILL);
-        return saveBill.get_id().toString();
+        return saveBill.get_id();
     }
 
     @Override

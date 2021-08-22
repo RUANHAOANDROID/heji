@@ -1,6 +1,7 @@
 package com.heji.server.data.mongo.repository;
 
 import com.heji.server.data.mongo.MBook;
+import com.heji.server.data.mongo.MBookUser;
 import com.heji.server.data.mongo.MCategory;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -10,5 +11,10 @@ public interface MBookRepository extends MongoRepository<MBook, String> {
 
     List<MBook> findMBookByUsers(String userId);
 
+    List<MBook> findMBookByUsers(MBookUser users);
+
     boolean existsMBookBy_id(String book_id);
+
+    MBook findMBookBy_id(String book_id);
+
 }

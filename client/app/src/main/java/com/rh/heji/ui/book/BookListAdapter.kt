@@ -21,11 +21,12 @@ import com.rh.heji.utlis.ColorUtils
  * Author: 锅得铁
  * #
  */
-class BookListAdapter :
+class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :
     BaseQuickAdapter<Book, BaseViewHolder>(
         layoutResId = R.layout.fragment_book_item,
         mutableListOf()
     ) {
+
     private val colors = ColorUtils.groupColors()
     override fun convert(holder: BaseViewHolder, item: Book) {
         FragmentBookItemBinding.bind(holder.itemView)?.let { binding ->
@@ -53,7 +54,7 @@ class BookListAdapter :
                 binding.imgSelected.visibility = View.INVISIBLE
             }
             binding.imgSetting.setOnClickListener {
-                Navigation.findNavController(binding.root).navigate(R.id.nav_book_setting)
+                settingClickListener(item)
             }
         }
     }

@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch(Dispatchers.Default) {
                 MyUtils.initCrashTool(this@MainActivity, CrashInfo())
             }
-            Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
         }
         setContentView(R.layout.activity_main)
         initDrawerLayout()

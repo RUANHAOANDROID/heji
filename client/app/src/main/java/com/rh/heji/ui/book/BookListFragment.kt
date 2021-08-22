@@ -3,10 +3,12 @@ package com.rh.heji.ui.book
 import android.graphics.Rect
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.entity.node.BaseNode
 import com.lxj.xpopup.XPopup
 import com.rh.heji.App
 import com.rh.heji.AppViewModule
@@ -18,6 +20,7 @@ import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.hideRefreshing
 import com.rh.heji.ui.base.swipeRefreshLayout
 import com.tencent.mmkv.MMKV
+import androidx.recyclerview.widget.DiffUtil.ItemCallback as ItemCallback
 
 /**
  * Date: 2021/7/9
@@ -42,13 +45,35 @@ class BookListFragment : BaseFragment() {
         binding = FragmentBookListBinding.bind(rootView)
 
         adapter = BookListAdapter {
-            findNavController().navigate(R.id.nav_book_setting)
-            ToastUtils.showLong(it.name)
+            findNavController().navigate(
+                R.id.nav_book_setting,
+                BookSettingFragmentArgs.Builder(it).build().toBundle()
+            )
         }
-        adapter.recyclerView = binding.list
-        binding.list.layoutManager = LinearLayoutManager(mainActivity)
-        binding.list.adapter = adapter
-        binding.list.addItemDecoration(object : RecyclerView.ItemDecoration() {
+        val diffItemCallBack = object : ItemCallback<Book>() {
+            override fun areItemsTheSame(oldItem: Book, newItem: Book): Boolean {
+                return diff(oldItem, newItem)
+            }
+
+            override fun areContentsTheSame(oldItem: Book, newItem: Book): Boolean {
+                return diff(oldItem, newItem)
+            }
+
+            private fun diff(
+                oldItem: Book,
+                newItem: Book
+            ): Boolean {
+                val idSame = oldItem.id == newItem.id
+                val nameSame = oldItem.name == newItem.name
+                val typeSame = oldItem.type == newItem.type
+                return idSame && nameSame && typeSame
+            }
+        }
+        adapter.setDiffCallback(diffItemCallBack)
+        adapter.recyclerView = binding.recycler
+        binding.recycler.layoutManager = LinearLayoutManager(mainActivity)
+        binding.recycler.adapter = adapter
+        binding.recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(
                 outRect: Rect,
                 view: View,
@@ -62,11 +87,11 @@ class BookListFragment : BaseFragment() {
                 //super.getItemOffsets(outRect, view, parent, state)
             }
         })
-        adapter.animationEnable = true
-        adapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.SlideInBottom)
+//        adapter.animationEnable = true
+//        adapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.SlideInRight)
         swipeRefreshLayout(binding.refreshLayout) { bookViewModel.getBookList() }
         bookViewModel.getBookList().observe(this, {
-            adapter.setList(it)
+            adapter.setDiffNewData(it)
             hideRefreshing(binding.refreshLayout)
         })
         listener()

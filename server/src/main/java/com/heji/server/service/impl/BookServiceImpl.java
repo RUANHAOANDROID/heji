@@ -2,9 +2,11 @@ package com.heji.server.service.impl;
 
 import com.heji.server.data.mongo.BaseMongoTemplate;
 import com.heji.server.data.mongo.MBook;
+import com.heji.server.data.mongo.MBookUser;
 import com.heji.server.data.mongo.repository.MBookRepository;
 import com.heji.server.service.BookService;
 import org.bson.Document;
+import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
@@ -49,10 +51,10 @@ public class BookServiceImpl extends BaseMongoTemplate implements BookService {
     }
 
     @Override
-    public List<MBook> findBooks(String userId) {
-        Query query = Query.query(Criteria.where("users").is(userId));
+    public List<MBook> getBooks(MBookUser user) {
+        Query query = Query.query(Criteria.where("users.name").is(user.getName()));
         List<MBook> myBooks = getMongoTemplate().find(query, MBook.class);
-        //List<MBook> books2= mBookRepository.findMBookByUsers(userId);
+        List<MBook> books2= mBookRepository.findMBookByUsers(user);
         return myBooks;
     }
 
@@ -62,11 +64,16 @@ public class BookServiceImpl extends BaseMongoTemplate implements BookService {
     }
 
     @Override
-    public void addBookUser(MBook book, String userId) {
+    public void addBookUser(MBook book, MBookUser user) {
         Query query = Query.query(Criteria.where("_id").is(book.get_id()));
         Update update = new Update();
-        update.addToSet("users", userId);
+        update.addToSet("users", user);
         getMongoTemplate().upsert(query, update, MBook.class);
+    }
+
+    @Override
+    public List<MBookUser> getBookUsers(String book_id) {
+        return mBookRepository.findMBookBy_id(book_id).getUsers();
     }
 
     @Override

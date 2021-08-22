@@ -26,7 +26,7 @@ public class ImageServiceImpl extends BaseMongoTemplate implements ImageService 
 
     @Override
     public String saveImage(MBillImage image) {
-        String _id = getMongoTemplate().save(image, MBillImage.COLLECTION_NAME).get_id().toString();
+        String _id = getMongoTemplate().save(image, MBillImage.COLLECTION_NAME).get_id();
         return _id;
     }
 

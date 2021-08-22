@@ -18,7 +18,7 @@
             app:layout_constraintTop_toTopOf="parent"></include>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
+            android:id="@+id/recycler"
             android:name="com.rh.heji.ui.book.BookListFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"

@@ -1,5 +1,6 @@
 package com.rh.heji.ui.book
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.ToastUtils
@@ -8,10 +9,14 @@ import com.rh.heji.AppViewModule
 import com.rh.heji.currentUser
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Book
+import com.rh.heji.data.db.BookUser
 import com.rh.heji.data.db.mongo.ObjectId
+import com.rh.heji.network.HeJiServer
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class BookViewModel : BaseViewModel() {
     private val bookLiveData = MediatorLiveData<Book>()
@@ -42,8 +47,33 @@ class BookViewModel : BaseViewModel() {
 
     fun getBookList(): LiveData<MutableList<Book>> {
         launchIO({
-            bookListLiveData.postValue(bookDao.allBooks())
+            val allBooks = bookDao.allBooks()
+            bookListLiveData.postValue(allBooks)
+            val response = HejiNetwork.getInstance().bookPull()
+            val netBooks = response.date
+            if (netBooks.isNotEmpty()) {
+                bookListLiveData.postValue(netBooks)
+                for (book in netBooks) {
+                    if (bookDao.exist(book.id) > 0) {
+                        bookDao.update(book)
+                    } else {
+                        bookDao.insert(book)
+                    }
+                }
+            }
         }, {})
         return bookListLiveData
+    }
+
+    fun getBookUsers(bookId: String, @MainThread call: (MutableList<BookUser>) -> Unit) {
+        launchIO({
+            val response = HejiNetwork.getInstance().bookGetUsers(bookId)
+            if (response.date.isNotEmpty()) {
+                withContext(Dispatchers.Main) {
+                    call(response.date)
+                }
+            }
+        })
+
     }
 }

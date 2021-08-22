@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -26,18 +25,13 @@ public class MBook {
     @Field("name")
     String name;
     /**
-     * 创建人
-     */
-    @Field("creat_user")
-    String createUser;
-    /**
      * 账本类型
      */
     String type;
     /**
      * 账本用户
      */
-    List<String> users;
+    List<MBookUser> users;
     /**
      * 账本封面
      */

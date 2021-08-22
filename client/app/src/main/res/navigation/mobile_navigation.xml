@@ -174,7 +174,11 @@
         android:id="@+id/nav_book_setting"
         android:name="com.rh.heji.ui.book.BookSettingFragment"
         tools:layout="@layout/fragment_book_setting"
-        android:label="BookSettingFragment" />
+        android:label="BookSettingFragment">
+        <argument android:name="book"
+            app:argType="com.rh.heji.data.db.Book"
+            />
+    </fragment>
 
 
 </navigation>

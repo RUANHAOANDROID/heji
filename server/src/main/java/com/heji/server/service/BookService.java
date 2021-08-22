@@ -1,6 +1,7 @@
 package com.heji.server.service;
 
 import com.heji.server.data.mongo.MBook;
+import com.heji.server.data.mongo.MBookUser;
 
 import java.util.List;
 
@@ -11,11 +12,13 @@ public interface BookService {
 
     MBook findBook(String _id);
 
-    List<MBook> findBooks(String userId);
+    List<MBook> getBooks(MBookUser user);
 
     MBook updateBook(MBook book);
 
-    void addBookUser(MBook book, String userId);
+    void addBookUser(MBook book, MBookUser user);
+
+    List<MBookUser> getBookUsers(String book_id);
 
     void removeBookUser(MBook book, String userId);
 

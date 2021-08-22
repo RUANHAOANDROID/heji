@@ -5,10 +5,12 @@ import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.Category
+import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.YearMonth
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.tencent.mmkv.MMKV
 import java.util.*
 
 /**
@@ -51,31 +53,33 @@ val currentYearMonth: YearMonth = YearMonth(
     month = Calendar.getInstance().get(Calendar.MONTH) + 1,
     day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
 )
-var currentBook = Book(
-    name = "个人账本",
-    createUser = "local",
-    type = "日常账本"
-)
+//var currentBook = Book(
+//    name = "个人账本",
+//    createUser = "local",
+//    type = "日常账本"
+//)
 var currentUser: JWTParse.User = JWTParse.User("local", mutableListOf(), "")
 
 val incomeDefaultCategory = Category(category = "其他", level = 0, type = BillType.INCOME.type())
 val expenditureDefaultCategory =
     Category(category = "其他", level = 0, type = BillType.EXPENDITURE.type())
 
-///**
-// * 当前账本
-// */
-//var currentBook = Book(
-//    id = mmkv()!!.decodeString(CURRENT_BOOK_ID).toString(),
-//    name = mmkv()!!.decodeString(CURRENT_BOOK).toString()
-//)
-//    set(value) {
-//        mmkv().let { mmkv ->
-//            mmkv!!.encode(CURRENT_BOOK_ID, value.id)
-//            mmkv!!.encode(CURRENT_BOOK, value.name)
-//        }
-//        field = value
-//    }
+/**
+ * 当前账本
+ */
+var currentBook = Book(
+    id = MMKV.defaultMMKV()!!.decodeString(CURRENT_BOOK_ID,ObjectId.get().toHexString()).toString(),
+    name = MMKV.defaultMMKV()!!.decodeString(CURRENT_BOOK,"个人账本").toString(),
+    createUser = currentUser.username,
+    type = "日常账本"
+)
+    set(value) {
+        MMKV.defaultMMKV().let { mmkv ->
+            mmkv!!.encode(CURRENT_BOOK_ID, value.id)
+            mmkv!!.encode(CURRENT_BOOK, value.name)
+        }
+        field = value
+    }
 val TEST_TOKEN: String =
     "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxOTkyMTk2OTU4NiIsImF1dGgiOiJST0xFX1VTRVIsUk9MRV9BRE1JTiIsInRlbCI6IjE5OTIxOTY5NTg2IiwiZXhwIjoxNjI2ODY1NTI0fQ.GRievBu9VR-5vUrrQaVhwXMdnxfglBTnGeP-78S3Wx875XZdLAHqewa7_jzn9L2wiaElV-_X60vjTL9X2X1CbA"
 

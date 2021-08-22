@@ -2,6 +2,7 @@ package com.rh.heji.network
 
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Book
+import com.rh.heji.data.db.BookUser
 import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.network.response.ImageEntity
@@ -31,10 +32,15 @@ interface HeJiServer {
     fun bookCreate(@Body book: Book): Call<BaseResponse<String>>
     @POST("book/addBookUser")
     fun bookUserAdd(@Body book: Book): Call<BaseResponse<String>>
+
     @POST("book/removeBookUser")
-    fun bookRemove(@Body book: Book): Call<BaseResponse<String>>
+    fun bookRemoveUser(@Body book: Book): Call<BaseResponse<String>>
+
     @POST("book/getBooks")
     fun bookGet(): Call<BaseResponse<MutableList<Book>>>
+
+    @POST("book/getBookUsers")
+    fun bookGetBookUsers(@Query("bookId") bookId: String): Call<BaseResponse<MutableList<BookUser>>>
 
     //----------------------BILL---------------------------//
     @POST("bill/add")

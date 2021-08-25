@@ -2,7 +2,6 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
-import com.rh.heji.data.db.mongo.ObjectId
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 import org.jetbrains.annotations.NotNull
@@ -19,15 +18,18 @@ import org.jetbrains.annotations.NotNull
 )
 data class BookUser(
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NotNull
     @ColumnInfo(name = COLUMN_ID)
-    @Json(name = "name")
-    val name: String,//主键也是用户名
+    @Transient//moshi 忽略字段
+    val id: Long = 0,
 
+    //主键也是用户名
+    @Json(name = "name")
+    var name: String,
     @Transient//moshi 忽略字段
     @ColumnInfo(name = COLUMN_FOREIGN_ID)
-    val bookId: String,//外键Book ID
+    var bookId: String? = null,//外键Book ID
 
     @Json(name = "authority")
     val authority: String

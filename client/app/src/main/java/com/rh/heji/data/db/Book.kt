@@ -32,6 +32,10 @@ data class Book(
     @ColumnInfo(name = "sync_status")
     var synced: Int = STATUS.NOT_SYNCED
 
+    @Json(name = "users")
+    @Ignore//not create db
+    var users: List<BookUser>? = null
+
     companion object {
         const val COLUMN_ID = "id"
     }

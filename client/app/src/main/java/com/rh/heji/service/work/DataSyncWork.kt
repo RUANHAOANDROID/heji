@@ -4,6 +4,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.currentUser
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.db.BookUser
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
@@ -169,17 +170,28 @@ class DataSyncWork {
     suspend fun asyncBooks() {
         network.bookPull().let {
             if (it.code == 0) {
-                it.date.forEach { book ->
-                    val localBoos = bookDao.findBook(book.id)
+                it.date.forEach { netBook ->
+                    val localBoos = bookDao.findBook(netBook.id)
                     if (localBoos.isEmpty()) {
-                        bookDao.insert(book)
+                        bookDao.insert(netBook)
                     } else {
-                        bookDao.update(book)
+                        bookDao.update(netBook)
+                    }
+                    netBook.users?.let { users -> //set createUser
+                        if (users.isNotEmpty()) {
+                            users.forEach { user ->
+                                if (user.authority == "CREATE") {
+                                    netBook.createUser = user.name;
+                                }
+                                user.bookId = netBook.id
+                                AppDatabase.getInstance().bookUserDao().insert(user)
+                            }
+                        }
                     }
                 }
             }
         }
-        val notAsyncBooks = bookDao.books(STATUS.NOT_SYNCED)
+        val notAsyncBooks = bookDao.books(STATUS.NOT_SYNCED)//未上传同步的账本
         for (book in notAsyncBooks) {
             book.synced = STATUS.SYNCED
             book.createUser = JWTParse.getUser(Token.decodeToken()).username

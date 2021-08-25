@@ -25,27 +25,18 @@ data class Book(
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
     var name: String,
-    var createUser: String?=null,
+    var createUser: String? = null,
     var type: String? = null,
     var bannerUrl: String? = null,
 ) : Parcelable {
     @ColumnInfo(name = "sync_status")
     var synced: Int = STATUS.NOT_SYNCED
 
-    @Ignore
-    var users: List<BookUser>? = null
-
     companion object {
         const val COLUMN_ID = "id"
     }
 }
 
-class BookUser(val name: String, val authority: String) {
-    fun fromAuthority(): String {
-        if (authority == "CREATE") return "创建者"
-        if (authority == "USER") return "用户"
-        return authority
-    }
-}
+
 
 

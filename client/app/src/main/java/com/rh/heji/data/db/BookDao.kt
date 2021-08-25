@@ -32,4 +32,10 @@ interface BookDao {
 
     @Query("select * from book where id =:id")
     fun findBook(id: String): MutableList<Book>
+
+//    //~~~~~~~~~~~~~~~~~~~~~~~~book whit users~~~~~~~~~~~~~~~~~~~~~~~~~~//
+//    @Transaction
+//    @Query("select * from book")
+//    fun booksWhitUsers(): MutableList<BookWhitUsers>
+
 }

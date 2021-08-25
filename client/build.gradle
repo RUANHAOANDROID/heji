@@ -4,7 +4,6 @@ buildscript {
     ext.nav_version = "2.3.5"
     repositories {
         google()
-        //jcenter()
         mavenCentral()
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     }
@@ -20,7 +19,6 @@ buildscript {
 allprojects {
     repositories {
         google()
-        //jcenter()
         mavenCentral()
         maven { url 'https://jitpack.io' }
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }

@@ -37,9 +37,7 @@ class BookAddFragment : BaseFragment() {
                 ToastUtils.showShort("请选择填写账本名称")
                 return@setOnClickListener
             }
-            if (type.isEmpty()
-            /**||type=="未设置"**/
-            ) {
+            if (type.isEmpty()||type=="未设置") {
                 ToastUtils.showShort("请选择账本类型")
                 return@setOnClickListener
             }

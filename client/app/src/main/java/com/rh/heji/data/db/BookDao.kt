@@ -1,12 +1,17 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
+import org.jetbrains.annotations.NotNull
 
 @Dao
 interface BookDao {
 
     @Insert
     fun insert(book: Book): Long
+
+    @NotNull
+    @Insert(entity = Book::class,onConflict =  OnConflictStrategy.REPLACE)
+    fun upsert( book: Book): Long
 
     @Update(entity = Book::class, onConflict = OnConflictStrategy.REPLACE)
     fun update(book: Book): Int

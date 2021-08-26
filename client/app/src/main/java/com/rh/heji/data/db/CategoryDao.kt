@@ -13,6 +13,9 @@ interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(category: Category)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsert(category: Category)
+
     @Query("select count(0) from category")
     fun count(): Int
 

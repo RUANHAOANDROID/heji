@@ -1,14 +1,17 @@
 package com.heji.server.controller;
 
 import com.heji.server.data.mongo.MCategory;
+import com.heji.server.data.mongo.MOperateLog;
 import com.heji.server.exception.NotFindException;
 import com.heji.server.exception.OperationsException;
 import com.heji.server.result.Result;
 import com.heji.server.service.CategoryService;
+import com.heji.server.service.OperateLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,9 +22,10 @@ import java.util.Objects;
 public class CategoryController {
 
     final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
+    final OperateLogService operateLogService;
+    public CategoryController(CategoryService categoryService, OperateLogService operateLogService) {
         this.categoryService = categoryService;
+        this.operateLogService = operateLogService;
     }
 
 
@@ -64,6 +68,12 @@ public class CategoryController {
         if (!isOk) {
             throw new OperationsException("删除失败");
         }
+        //写入操作日志
+        operateLogService.addOperateLog(new MOperateLog()
+                .setTargetId(_id)
+                .setType(MOperateLog.DELETE)
+                .setDate(new Date())
+                .setOptClass(MOperateLog.CATEGORY));
         return Result.success("删除成功");
     }
 }

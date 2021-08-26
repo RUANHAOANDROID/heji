@@ -8,6 +8,8 @@ import java.util.List;
 public interface BookService {
     void createBook(MBook book);
 
+    void deleteBook(String book_id);
+
     void removeBook(String _id);
 
     MBook findBook(String _id);

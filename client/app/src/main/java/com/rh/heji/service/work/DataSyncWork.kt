@@ -1,6 +1,8 @@
 package com.rh.heji.service.work
 
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.NetworkUtils
+import com.rh.heji.currentBook
 import com.rh.heji.currentUser
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
@@ -8,8 +10,10 @@ import com.rh.heji.data.db.BookUser
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
+import com.rh.heji.moshi
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.CategoryEntity
+import com.rh.heji.network.response.OperateLog
 import com.rh.heji.security.Token
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.MyTimeUtils
@@ -23,8 +27,40 @@ class DataSyncWork {
     private val billDao = AppDatabase.getInstance().billDao()
     private val categoryDao = AppDatabase.getInstance().categoryDao()
     private val billRepository = BillRepository()
+
+    /**
+     * 根据服务器账本删除日志，同步删除本地数据
+     */
+    suspend fun asyncDelete() {
+        val response = HejiNetwork.getInstance().operateLogGetDelete(currentBook.id)
+        if (response.code == 0 && response.date.isNotEmpty()) {
+            val operates = response.date
+            for (opt in operates) {
+                when (opt.optClass) {
+                    OperateLog.BOOK -> {
+                        if (opt.type==OperateLog.DELETE){
+                            bookDao.deleteById(opt.targetId)
+                        }
+                    }
+                    OperateLog.BILL -> {
+                        if (opt.type==OperateLog.DELETE){
+                            billDao.deleteById(opt.targetId)
+                        }
+                    }
+                    OperateLog.CATEGORY -> {
+                        if (opt.type==OperateLog.DELETE){
+                            categoryDao.deleteById(opt.targetId)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     suspend fun asyncBills() {
+
         withContext(Dispatchers.IO) {
+            asyncDelete()
             billDelete()
             billsUpdate()
             billsPush()
@@ -172,7 +208,7 @@ class DataSyncWork {
             if (it.code == 0) {
                 it.date.forEach { netBook ->
                     val localBoos = bookDao.findBook(netBook.id)
-                    netBook.synced=STATUS.SYNCED
+                    netBook.synced = STATUS.SYNCED
                     if (localBoos.isEmpty()) {
                         bookDao.insert(netBook)
                     } else {

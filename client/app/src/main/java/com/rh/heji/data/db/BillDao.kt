@@ -28,6 +28,9 @@ interface BillDao {
     @Query("update bill set sync_status = ${STATUS.DELETED} where id=:billId")
     fun preDelete(billId: String): Int
 
+    @Query("delete from bill where id=:billId")
+    fun deleteById(billId: String): Int
+
     @Transaction
     @Query("update bill set img_count=:count where id=:id")
     fun updateImageCount(count: Int, id: String): Int
@@ -51,6 +54,9 @@ interface BillDao {
 
     @Query("select count(*)  from bill where id =:id")
     fun countById(id: String): Int
+
+    @Query("select count(*)  from bill where book_id =:bookId")
+    fun countByBookId(bookId: String): Int
 
     /**
      * @param syncStatus 同步状态

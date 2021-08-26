@@ -4,13 +4,11 @@ import com.alibaba.excel.EasyExcel;
 import com.heji.server.data.bean.QianjiExcelBean;
 import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.MBillBackup;
+import com.heji.server.data.mongo.MOperateLog;
 import com.heji.server.exception.NotFindException;
 import com.heji.server.file.StorageService;
 import com.heji.server.result.Result;
-import com.heji.server.service.BillBackupServer;
-import com.heji.server.service.BillService;
-import com.heji.server.service.BookService;
-import com.heji.server.service.ImageService;
+import com.heji.server.service.*;
 import com.heji.server.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -21,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -39,13 +38,15 @@ public class BillsController {
     final BillBackupServer billBackupServer;
     //账单照片存储
     final ImageService imageService;
+    final OperateLogService operateLogService;
 
-    public BillsController(BillService billService, StorageService storageService, BookService bookService, ImageService imageService, BillBackupServer billBackupServer) {
+    public BillsController(BillService billService, StorageService storageService, BookService bookService, ImageService imageService, BillBackupServer billBackupServer, OperateLogService operateLogService) {
         this.billService = billService;
         this.storageService = storageService;
         this.bookService = bookService;
         this.imageService = imageService;
         this.billBackupServer = billBackupServer;
+        this.operateLogService = operateLogService;
     }
 
     @ResponseBody
@@ -100,6 +101,12 @@ public class BillsController {
             MBillBackup backupBill = new MBillBackup(mBill);
             billBackupServer.backup(backupBill);
         }
+        operateLogService.addOperateLog(
+                new MOperateLog()
+                        .setTargetId(_id)
+                        .setDate(new Date())
+                        .setOptClass(MOperateLog.BILL)
+                        .setType(MOperateLog.DELETE));
         return Result.success("删除成功:", _id);
         //return Result.success(_id);
     }
@@ -108,6 +115,11 @@ public class BillsController {
     @PostMapping(value = {"update"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateBill(@RequestBody MBill bill) {
         billService.updateBill(bill);
+        operateLogService.addOperateLog(new MOperateLog()
+                .setTargetId(bill.get_id())
+                .setType(MOperateLog.DELETE)
+                .setDate(new Date())
+                .setOptClass(MOperateLog.BILL));
         return Result.success("更新成功", bill.get_id());
     }
 

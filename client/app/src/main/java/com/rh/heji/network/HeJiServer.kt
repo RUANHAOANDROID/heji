@@ -6,6 +6,7 @@ import com.rh.heji.data.db.BookUser
 import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.network.response.ImageEntity
+import com.rh.heji.network.response.OperateLog
 import com.rh.heji.ui.user.register.RegisterUser
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -27,15 +28,30 @@ interface HeJiServer {
 
     @POST("user/auth")
     fun auth(@Query("token") token: String): Call<BaseResponse<String>>
+
+    @POST("operateLog/getDelete")
+    fun operateLogGetDelete(@Query("bookId") bookId: String): Call<BaseResponse<MutableList<OperateLog>>>
+
     //----------------------BOOK---------------------------//
     @POST("book/create")
     fun bookCreate(@Body book: Book): Call<BaseResponse<String>>
+
+    @POST("book/findBook")
+    fun bookFind(@Query("bookId") bookId: String): Call<BaseResponse<Book>>
 
     @POST("book/addBookUser")
     fun bookUserAdd(@Query("bookId") bookId: String): Call<BaseResponse<String>>
 
     @POST("book/removeBookUser")
     fun bookRemoveUser(@Body book: Book): Call<BaseResponse<String>>
+
+    @POST("book/updateBook")
+    fun bookUpdate(@Query("bookId")  bookId:String,
+                   @Query("bookName") bookName:String,
+                   @Query("bookType")  bookType:String):Call<BaseResponse<String>>
+
+    @POST("book/deleteBook")
+    fun bookDelete(@Query("bookId") book: String): Call<BaseResponse<String>>
 
     @POST("book/getBooks")
     fun bookGet(): Call<BaseResponse<MutableList<Book>>>

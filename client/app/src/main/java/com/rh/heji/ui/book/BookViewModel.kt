@@ -56,7 +56,7 @@ class BookViewModel : BaseViewModel() {
             if (netBooks.isNotEmpty()) {
                 bookListLiveData.postValue(netBooks)
                 for (book in netBooks) {
-                    book.synced =STATUS.SYNCED
+                    book.synced = STATUS.SYNCED
                     if (bookDao.exist(book.id) > 0) {
                         bookDao.update(book)
                     } else {
@@ -89,6 +89,18 @@ class BookViewModel : BaseViewModel() {
                     call(shareCode)
                 }
             }
+        })
+    }
+
+    fun deleteBook(id: String, function: (Boolean) -> Unit) {
+        launchIO({
+            val response =HejiNetwork.getInstance().bookDelete(id)
+            val billsCount = AppDatabase.getInstance().billDao().countByBookId(id)
+            if (billsCount > 0) {
+                function(false)//删除失败
+                ToastUtils.showLong("该账本下存在账单，无法直接删除")
+            }
+            AppDatabase.getInstance().bookDao().deleteById(id)
         })
     }
 }

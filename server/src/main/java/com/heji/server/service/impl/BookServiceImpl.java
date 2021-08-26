@@ -41,6 +41,11 @@ public class BookServiceImpl extends BaseMongoTemplate implements BookService {
     }
 
     @Override
+    public void deleteBook(String book_id) {
+        mBookRepository.deleteById(book_id);
+    }
+
+    @Override
     public void removeBook(String _id) {
         mBookRepository.delete(new MBook().set_id(_id));
     }

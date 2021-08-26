@@ -62,7 +62,7 @@ class BookSettingFragment : BaseFragment() {
 
     private fun deleteBook() {
         binding.tvDeleteBook.setOnClickListener {
-
+            viewModel.deleteBook(book.id,{})
         }
     }
 

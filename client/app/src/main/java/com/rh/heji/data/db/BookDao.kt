@@ -10,11 +10,14 @@ interface BookDao {
     fun insert(book: Book): Long
 
     @NotNull
-    @Insert(entity = Book::class,onConflict =  OnConflictStrategy.REPLACE)
-    fun upsert( book: Book): Long
+    @Insert(entity = Book::class, onConflict = OnConflictStrategy.REPLACE)
+    fun upsert(book: Book): Long
 
     @Update(entity = Book::class, onConflict = OnConflictStrategy.REPLACE)
     fun update(book: Book): Int
+
+    @Query("delete from book  where id=:bookId")
+    fun deleteById(bookId: String)
 
     @Query("select count() from book  where name=:name")
     fun countByName(name: String): Int

@@ -30,8 +30,9 @@ interface HeJiServer {
     //----------------------BOOK---------------------------//
     @POST("book/create")
     fun bookCreate(@Body book: Book): Call<BaseResponse<String>>
+
     @POST("book/addBookUser")
-    fun bookUserAdd(@Body book: Book): Call<BaseResponse<String>>
+    fun bookUserAdd(@Query("bookId") bookId: String): Call<BaseResponse<String>>
 
     @POST("book/removeBookUser")
     fun bookRemoveUser(@Body book: Book): Call<BaseResponse<String>>

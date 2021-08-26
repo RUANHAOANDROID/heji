@@ -7,15 +7,10 @@ import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.google.android.material.tabs.TabLayout;
 import com.lxj.xpopup.core.CenterPopupView;
 import com.rh.heji.R;
-import com.rh.heji.databinding.PopYearMonthBinding;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.rh.heji.databinding.PopLayoutYearMonthBinding;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,16 +23,16 @@ import static com.google.android.material.tabs.TabLayout.MODE_AUTO;
  * Author: 锅得铁
  * #
  */
-public class YearSelectPop extends CenterPopupView implements View.OnClickListener {
+public class PopYearSelect extends CenterPopupView implements View.OnClickListener {
 
     private OnTabSelected onTabSelected;
     final List<Integer> years;
     int earliestYear = 2016;
-    private PopYearMonthBinding binding;
+    private PopLayoutYearMonthBinding binding;
     private int selectYear;
     private boolean showAllYear;
 
-    public YearSelectPop(@NonNull Context context, OnTabSelected onTabSelected, boolean showAllYear) {
+    public PopYearSelect(@NonNull Context context, OnTabSelected onTabSelected, boolean showAllYear) {
         super(context);
         this.onTabSelected = onTabSelected;
         Calendar calendar = Calendar.getInstance();
@@ -53,7 +48,8 @@ public class YearSelectPop extends CenterPopupView implements View.OnClickListen
     @Override
     protected void onCreate() {
         super.onCreate();
-        binding = PopYearMonthBinding.bind(getPopupContentView().findViewById(R.id.pop_card_year_month));
+        //root CardView id binding
+        binding = PopLayoutYearMonthBinding.bind(getPopupContentView().findViewById(R.id.pop_card_year_month));
         binding.y1.setOnClickListener(this);
         binding.y2.setOnClickListener(this);
         binding.y3.setOnClickListener(this);
@@ -124,6 +120,6 @@ public class YearSelectPop extends CenterPopupView implements View.OnClickListen
 
     @Override
     protected int getImplLayoutId() {
-        return R.layout.pop_year_month;
+        return R.layout.pop_layout_year_month;
     }
 }

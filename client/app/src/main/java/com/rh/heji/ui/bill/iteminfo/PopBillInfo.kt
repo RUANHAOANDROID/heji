@@ -17,7 +17,7 @@ import com.rh.heji.*
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
-import com.rh.heji.databinding.PopBilliInfoBinding
+import com.rh.heji.databinding.PopLayoutBilliInfoBinding
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.ui.bill.img.ImageLoader
 import kotlinx.coroutines.Dispatchers
@@ -29,23 +29,23 @@ import kotlinx.coroutines.withContext
  * Author: 锅得铁
  * #
  */
-class BillInfoPop(
+class PopBillInfo(
     val activity: MainActivity,
     val bill: Bill,
     var popClickListener: BillPopClickListenerImpl = BillPopClickListenerImpl(),
 ) : BottomPopupView(activity), Observer<List<Image>> {
     private val imageObservable by lazy { activity.mainViewModel.getBillImages(billId = bill.id) }
 
-    lateinit var binding: PopBilliInfoBinding
+    lateinit var binding: PopLayoutBilliInfoBinding
     private var imageAdapter = ImageAdapter()
 
     override fun getImplLayoutId(): Int {
-        return R.layout.pop_billi_info
+        return R.layout.pop_layout_billi_info
     }
 
     override fun onCreate() {
         super.onCreate()
-        binding = PopBilliInfoBinding.bind(popupContentView.findViewById(R.id.billInfoCard))
+        binding = PopLayoutBilliInfoBinding.bind(popupContentView.findViewById(R.id.billInfoCard))
         binding.tvDelete.setOnClickListener {
             deleteTip()
         }

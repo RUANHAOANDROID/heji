@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.blankj.utilcode.util.KeyboardUtils
-import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
@@ -23,7 +22,7 @@ import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
 import com.rh.heji.MainActivity
 import com.rh.heji.R
-import com.rh.heji.ui.bill.YearSelectPop
+import com.rh.heji.ui.bill.PopYearSelect
 import java.util.*
 
 /**
@@ -144,7 +143,7 @@ abstract class BaseFragment : Fragment() {
      * 该Menu属于全局所以在这里控制
      */
     fun showYearMonthTitle(
-        selected: YearSelectPop.OnTabSelected,
+        selected: PopYearSelect.OnTabSelected,
         year: Int = Calendar.getInstance().get(Calendar.YEAR),
         month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1, showAllYear: Boolean = false
     ) {
@@ -160,10 +159,14 @@ abstract class BaseFragment : Fragment() {
                     null
                 )
                 setOnClickListener { v: View? ->
-                    val yearSelectPop = YearSelectPop(requireContext(), { selectYear, selectMonth ->
-                        text = "$selectYear.$selectMonth"
-                        selected.selected(selectYear, selectMonth)
-                    }, showAllYear)
+                    val yearSelectPop = PopYearSelect(
+                        requireContext(),
+                        { selectYear, selectMonth ->
+                            text = "$selectYear.$selectMonth"
+                            selected.selected(selectYear, selectMonth)
+                        },
+                        showAllYear
+                    )
                     XPopup.Builder(requireContext()) //.hasBlurBg(true)//模糊
                         .hasShadowBg(true)
                         .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个

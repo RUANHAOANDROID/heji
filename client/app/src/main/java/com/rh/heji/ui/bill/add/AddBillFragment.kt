@@ -47,7 +47,7 @@ class AddBillFragment : BaseFragment() {
 
     private lateinit var binding: FragmentIncomeBinding
     private lateinit var categoryTabFragment: CategoryTabFragment
-    var selectImagePou: SelectImagePop? = null//图片弹窗
+    var pouSelectImage: PopSelectImage? = null//图片弹窗
 
     override fun layoutId(): Int {
         return R.layout.fragment_income
@@ -79,7 +79,7 @@ class AddBillFragment : BaseFragment() {
                                 url?.let { url -> billViewModel.addImgUrl(url) }
                                 return@map url
                             }.toList()
-                        selectImagePou?.setData(imageUrl)
+                        pouSelectImage?.setData(imageUrl)
                         if (imageUrl.isNotEmpty())
                             binding.imgTicket.text = "图片(x" + images.size + ")"
                     }
@@ -274,21 +274,30 @@ class AddBillFragment : BaseFragment() {
      * 票据图片
      */
     private fun selectImage() {
-        selectImagePou = context?.let { SelectImagePop(it, mainActivity) }
+        pouSelectImage = context?.let {
+            PopSelectImage(
+                it,
+                mainActivity
+            )
+        }
         binding.imgTicket.setOnClickListener {
-            if (selectImagePou == null) selectImagePou = SelectImagePop(mainActivity, mainActivity)
+            if (pouSelectImage == null) pouSelectImage =
+                PopSelectImage(
+                    mainActivity,
+                    mainActivity
+                )
             XPopup.Builder(requireContext())
-                .asCustom(selectImagePou)
+                .asCustom(pouSelectImage)
                 .show()
             //selectImagePou.getLayoutParams().height = binding.keyboard.getRoot().getHeight();
-            selectImagePou?.setDeleteClickListener { data: List<String> ->
+            pouSelectImage?.setDeleteClickListener { data: List<String> ->
                 billViewModel.imgUrls = data as MutableList<String>
             }
-            selectImagePou?.setData(ArrayList())
+            pouSelectImage?.setData(ArrayList())
         }
         val imgObserver = Observer { data: List<String?> ->
             binding.imgTicket.text = "图片(x" + data.size + ")"
-            selectImagePou?.setData(data)
+            pouSelectImage?.setData(data)
         }
         billViewModel.imgUrlsLive.observe(this, imgObserver)
     }
@@ -351,7 +360,7 @@ class AddBillFragment : BaseFragment() {
         binding.eidtRemark.setText("")
         binding.tvMoney.text = "0"
         billViewModel.imgUrls = mutableListOf()
-        selectImagePou!!.clear()
+        pouSelectImage!!.clear()
     }
 
     companion object {

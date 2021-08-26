@@ -9,7 +9,7 @@ import com.lxj.xpopup.widget.VerticalRecyclerView
 import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
-import com.rh.heji.ui.bill.iteminfo.BillInfoPop
+import com.rh.heji.ui.bill.iteminfo.PopBillInfo
 import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
 
 /**
@@ -32,7 +32,7 @@ class BottomListPop(
     val titleView: TextView by lazy { findViewById(R.id.tvTitle) }
 
     override fun getImplLayoutId(): Int {
-        return R.layout.layout_bills
+        return R.layout.pop_layout_bills
     }
 
     override fun onCreate() {
@@ -45,7 +45,7 @@ class BottomListPop(
         )
         adapter.setOnItemClickListener { adapter, view, position ->
             val item = adapter.getItem(position) as Bill
-            val billInfoPop = BillInfoPop(activity= activity,bill = item, object : BillPopClickListenerImpl() {
+            val billInfoPop = PopBillInfo(activity= activity,bill = item, object : BillPopClickListenerImpl() {
                 override fun delete(bill: Bill) {
                     super.delete(bill)
                     adapter.removeAt(position)

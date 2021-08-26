@@ -15,6 +15,7 @@ import com.rh.heji.network.HeJiServer
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
+import com.rh.heji.utlis.runMainThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -75,5 +76,17 @@ class BookViewModel : BaseViewModel() {
             }
         })
 
+    }
+
+    fun addBookUser(bookId: String, @MainThread call: (String) -> Unit) {
+        launchIO({
+            val response = HejiNetwork.getInstance().bookAddUser(book_id = bookId)
+            if (response.date.isNotEmpty()) {
+                val shareCode = response.date as String
+                runMainThread {
+                    call(shareCode)
+                }
+            }
+        })
     }
 }

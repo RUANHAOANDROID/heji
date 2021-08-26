@@ -8,6 +8,9 @@ interface BookUserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg users: BookUser)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsert(vararg users: BookUser)
+
     @Update(entity = BookUser::class, onConflict = OnConflictStrategy.REPLACE)
     fun update(vararg users: BookUser)
 

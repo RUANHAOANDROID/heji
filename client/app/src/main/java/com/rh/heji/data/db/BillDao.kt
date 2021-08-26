@@ -19,11 +19,11 @@ interface BillDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun install(billTab: Bill): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsert(billTab: Bill): Long
+
     @Update(entity =Bill::class ,onConflict = OnConflictStrategy.REPLACE)
     fun update(bill: Bill): Int
-
-    @Query("update bill set id =:newBookId where id=:oldBookId")
-    fun update(oldBookId:String,newBookId:String): Int
 
     @Query("update bill set sync_status = ${STATUS.DELETED} where id=:billId")
     fun preDelete(billId: String): Int

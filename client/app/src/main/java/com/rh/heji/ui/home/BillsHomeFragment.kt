@@ -27,7 +27,7 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
-import com.rh.heji.ui.bill.iteminfo.BillInfoPop
+import com.rh.heji.ui.bill.iteminfo.PopBillInfo
 import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
@@ -241,7 +241,7 @@ class BillsHomeFragment : BaseFragment() {
      * @param billTab
      */
     private fun showBillItemPop(billTab: Bill) {
-        val popupView = BillInfoPop(bill = billTab, activity = mainActivity)
+        val popupView = PopBillInfo(bill = billTab, activity = mainActivity)
         popupView.popClickListener = object : BillPopClickListenerImpl() {
             override fun delete(bill: Bill) {
                 super.delete(bill)

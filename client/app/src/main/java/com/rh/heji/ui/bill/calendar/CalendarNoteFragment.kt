@@ -17,7 +17,7 @@ import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
-import com.rh.heji.ui.bill.iteminfo.BillInfoPop
+import com.rh.heji.ui.bill.iteminfo.PopBillInfo
 import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
@@ -157,7 +157,7 @@ class CalendarNoteFragment : BaseFragment() {
             }
         }
         val popupView =
-            BillInfoPop(bill = bill, activity = mainActivity, popClickListener = clickListener)
+            PopBillInfo(bill = bill, activity = mainActivity, popClickListener = clickListener)
         XPopup.Builder(requireContext()) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
             //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
             //.hasBlurBg(true)//模糊默认false

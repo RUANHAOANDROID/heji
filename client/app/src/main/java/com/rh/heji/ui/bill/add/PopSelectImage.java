@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * Author: 锅得铁
  * #
  */
-public class SelectImagePop extends BottomPopupView {
+public class PopSelectImage extends BottomPopupView {
     private int MAX_SELECT_COUNT = 3;
     private BillPhotoAdapter ticketAdpater = new BillPhotoAdapter();
     ;
@@ -39,7 +39,7 @@ public class SelectImagePop extends BottomPopupView {
 
     private OnDeleteClickListener onDeleteClickListener;
 
-    public SelectImagePop(@NonNull Context context, MainActivity activity) {
+    public PopSelectImage(@NonNull Context context, MainActivity activity) {
         super(context);
         this.activity = activity;
     }
@@ -53,7 +53,7 @@ public class SelectImagePop extends BottomPopupView {
 
     @Override
     protected int getImplLayoutId() {
-        return R.layout.pop_select_ticket_image;
+        return R.layout.pop_layout_select_ticket_image;
     }
 
     @Override

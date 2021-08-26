@@ -214,6 +214,7 @@
                     android:padding="16dp"
                     android:text="邀请成员"
                     android:textColor="@color/black"
+                    style="@style/TextSelectedBackground"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/recycler" />

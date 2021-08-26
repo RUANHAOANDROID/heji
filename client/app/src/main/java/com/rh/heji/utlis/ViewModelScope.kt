@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
 
 /**
  *Date: 2021/7/15
@@ -33,6 +34,12 @@ fun ViewModel.launch(
         error(e)
         e.printStackTrace()
     }
+}
+
+suspend fun runMainThread(
+    block: suspend () -> Unit
+) = withContext(Dispatchers.Main) {
+    block()
 }
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi

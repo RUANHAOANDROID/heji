@@ -172,6 +172,7 @@ class DataSyncWork {
             if (it.code == 0) {
                 it.date.forEach { netBook ->
                     val localBoos = bookDao.findBook(netBook.id)
+                    netBook.synced=STATUS.SYNCED
                     if (localBoos.isEmpty()) {
                         bookDao.insert(netBook)
                     } else {

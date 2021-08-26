@@ -10,6 +10,7 @@ import com.rh.heji.currentUser
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.BookUser
+import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.HeJiServer
 import com.rh.heji.network.HejiNetwork
@@ -55,6 +56,7 @@ class BookViewModel : BaseViewModel() {
             if (netBooks.isNotEmpty()) {
                 bookListLiveData.postValue(netBooks)
                 for (book in netBooks) {
+                    book.synced =STATUS.SYNCED
                     if (bookDao.exist(book.id) > 0) {
                         bookDao.update(book)
                     } else {

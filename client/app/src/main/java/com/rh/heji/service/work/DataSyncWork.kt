@@ -33,8 +33,8 @@ class DataSyncWork {
      */
     suspend fun asyncDelete() {
         val response = HejiNetwork.getInstance().operateLogGetDelete(currentBook.id)
-        if (response.code == 0 && response.date.isNotEmpty()) {
-            val operates = response.date
+        if (response.code == 0 && response.data.isNotEmpty()) {
+            val operates = response.data
             for (opt in operates) {
                 when (opt.optClass) {
                     OperateLog.BOOK -> {
@@ -106,7 +106,7 @@ class DataSyncWork {
     private suspend fun categoryPull() {
         val categoryResponse = network.categoryPull()
         if (categoryResponse.code == 0) {
-            val data = categoryResponse.date
+            val data = categoryResponse.data
             if (data.isNotEmpty()) {
                 data.forEach { categoryEntity ->
                     categoryDao.insert(categoryEntity.toDbCategory())
@@ -172,7 +172,7 @@ class DataSyncWork {
             currentLastDay
         ).toYearMonthDay()
         val pullBillsResponse = network.billPull(statDate, endDate)
-        var data = pullBillsResponse.date
+        var data = pullBillsResponse.data
         data?.let { serverBills ->
             if (serverBills.isNotEmpty()) {
                 serverBills.forEach { serverBill ->
@@ -184,7 +184,7 @@ class DataSyncWork {
                     var imagesId = serverBill.images//云图片
                     if (null != imagesId && imagesId.size > 0) {//有图片
                         var response = network.billPullImages(serverBill.id)
-                        response.date?.forEach { entity ->
+                        response.data?.forEach { entity ->
                             var image = Image(entity._id, billImageID = serverBill.id)
                             image.id = entity._id
                             image.md5 = entity.md5
@@ -195,7 +195,7 @@ class DataSyncWork {
                             AppDatabase.getInstance().imageDao().install(image)
                             LogUtils.d("账单图片信息已保存 $image")
                         }
-                        billDao.updateImageCount(response.date.size, serverBill.id)
+                        billDao.updateImageCount(response.data.size, serverBill.id)
                     }
                 }
             }
@@ -206,7 +206,7 @@ class DataSyncWork {
     suspend fun asyncBooks() {
         network.bookPull().let {
             if (it.code == 0) {
-                it.date.forEach { netBook ->
+                it.data.forEach { netBook ->
                     val localBoos = bookDao.findBook(netBook.id)
                     netBook.synced = STATUS.SYNCED
                     if (localBoos.isEmpty()) {

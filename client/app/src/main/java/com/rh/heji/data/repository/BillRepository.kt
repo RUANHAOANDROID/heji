@@ -26,7 +26,7 @@ class BillRepository {
     suspend fun pushBill(bill: Bill) {
         val response = hejiNetwork.billPush(bill)
         if (response.code == 0) {
-            response.date.let {
+            response.data.let {
                 bill.synced = STATUS.SYNCED
                 billDao.update(bill)//已上传
                 uploadImage(bill.id)
@@ -38,7 +38,7 @@ class BillRepository {
 
     suspend fun deleteBill(_id: String) {
         var response = hejiNetwork.billDelete(_id)
-        response.date.let {
+        response.data.let {
               AppDatabase.getInstance().imageDao().deleteBillImage(_id)
             billDao.delete(Bill(_id))
         }
@@ -46,7 +46,7 @@ class BillRepository {
 
     suspend fun updateBill(bill: Bill) {
         var response = hejiNetwork.billUpdate(bill)
-        response.date.let {
+        response.data.let {
             bill.synced = STATUS.SYNCED
             billDao.update(bill) //已上传
         }
@@ -54,7 +54,7 @@ class BillRepository {
 
     suspend fun pullBill(startTime: String = "0", endTime: String = "0") {
         var response = hejiNetwork.billPull(startTime, endTime)
-        response.date.let {
+        response.data.let {
             if (it.isNotEmpty()) {
                 it.forEach { bill ->
                     billDao.install(bill)
@@ -87,10 +87,10 @@ class BillRepository {
                 val objectId = image.id
                 val response: BaseResponse<ImageEntity> = hejiNetwork.billImageUpload(part,
                     objectId, bill_id, time)
-                response.date.let {
-                    image.onlinePath = response.date._id
-                    image.md5 = response.date.md5
-                    image.id = response.date._id
+                response.data.let {
+                    image.onlinePath = response.data._id
+                    image.md5 = response.data.md5
+                    image.id = response.data._id
                     image.synced = STATUS.SYNCED
                     LogUtils.d("账单图片上传成功：$image")
                     image.onlinePath?.let {

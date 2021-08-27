@@ -33,12 +33,12 @@ public class BaseResponse<T> {
         this.msg = msg;
     }
 
-    public T getDate() {
+    public T getData() {
         return data;
     }
 
-    public void setDate(T date) {
-        this.data = date;
+    public void setData(T data) {
+        this.data = data;
     }
 
     @Override

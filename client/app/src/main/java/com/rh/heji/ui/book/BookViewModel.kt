@@ -52,7 +52,7 @@ class BookViewModel : BaseViewModel() {
             val allBooks = bookDao.allBooks()
             bookListLiveData.postValue(allBooks)
             val response = HejiNetwork.getInstance().bookPull()
-            val netBooks = response.date
+            val netBooks = response.data
             if (netBooks.isNotEmpty()) {
                 bookListLiveData.postValue(netBooks)
                 for (book in netBooks) {
@@ -71,9 +71,9 @@ class BookViewModel : BaseViewModel() {
     fun getBookUsers(bookId: String, @MainThread call: (MutableList<BookUser>) -> Unit) {
         launchIO({
             val response = HejiNetwork.getInstance().bookGetUsers(bookId)
-            if (response.date.isNotEmpty()) {
+            if (response.data.isNotEmpty()) {
                 withContext(Dispatchers.Main) {
-                    call(response.date)
+                    call(response.data)
                 }
             }
         })
@@ -83,8 +83,8 @@ class BookViewModel : BaseViewModel() {
     fun addBookUser(bookId: String, @MainThread call: (String) -> Unit) {
         launchIO({
             val response = HejiNetwork.getInstance().bookAddUser(book_id = bookId)
-            if (response.date.isNotEmpty()) {
-                val shareCode = response.date as String
+            if (response.data.isNotEmpty()) {
+                val shareCode = response.data as String
                 runMainThread {
                     call(shareCode)
                 }

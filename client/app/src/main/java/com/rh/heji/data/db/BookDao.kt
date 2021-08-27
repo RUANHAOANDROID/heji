@@ -19,10 +19,13 @@ interface BookDao {
     @Query("delete from book  where id=:bookId")
     fun deleteById(bookId: String)
 
+    @Query("update book set sync_status = ${STATUS.DELETED} where id=:book_id")
+    fun preDelete(book_id: String): Int
+
     @Query("select count() from book  where name=:name")
     fun countByName(name: String): Int
 
-    @Query("SELECT * FROM book ORDER BY id")
+    @Query("SELECT * FROM book WHERE sync_status!=${STATUS.DELETED} ORDER BY id")
     fun allBooks(): MutableList<Book>
 
     @Query("select * from book where sync_status=:status")

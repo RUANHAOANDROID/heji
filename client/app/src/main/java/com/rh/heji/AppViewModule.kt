@@ -9,19 +9,11 @@ import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.CRUD
 import com.rh.heji.data.DBObservable
 import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Book
-import com.rh.heji.data.db.Category
-import com.rh.heji.data.db.Dealer
-import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.data.repository.CategoryRepository
 import com.rh.heji.network.HejiNetwork
-import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.service.work.DataSyncWork
-import com.rh.heji.utlis.MyTimeUtils
-import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
-import com.rh.heji.utlis.mmkv
 
 class AppViewModule(application: Application) : AndroidViewModel(application) {
     val network: HejiNetwork = HejiNetwork.getInstance()
@@ -55,29 +47,6 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
             billRepository.deleteBill(bill.id)
         })
 
-    }
-
-    fun billUpdate(bill: Bill) {
-        launchIO({ billRepository.updateBill(bill) })
-    }
-
-    fun billPull() {
-        currentYearMonth.let {
-            val currentLastDay = MyTimeUtils.getMonthLastDay(it.year, it.month);
-            val statDate = YearMonth(it.year, it.month, 1).toYearMonthDay()
-            val endDate = YearMonth(it.year, it.month, currentLastDay).toYearMonthDay()
-            launchIO({ billRepository.pullBill(statDate, endDate) })
-        }
-
-
-    }
-
-    fun categoryPush(categoryEntity: CategoryEntity) {
-        launchIO({ categoryRepository.pushCategory(categoryEntity) })
-    }
-
-    fun categoryPull() {
-        launchIO({ categoryRepository.pullCategory() })
     }
 
     fun asyncData() {

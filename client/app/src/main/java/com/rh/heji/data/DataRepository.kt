@@ -1,5 +1,6 @@
 package com.rh.heji.data
 
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.network.HejiNetwork
@@ -29,58 +30,15 @@ import kotlinx.coroutines.flow.flow
  *  DATE UPDATE -->UPSERT TO LOCAL DB
  *  ····························
  */
-class DataRepository {
+open class DataRepository {
     companion object NETWORK {
         const val OK = 0;
     }
 
-    private val network = HejiNetwork.getInstance()
-    private val database = AppDatabase.getInstance()
-    private val bookDao = database.bookDao()
-    private val billDao = database.billDao()
-    private val categoryDao = database.categoryDao()
-
-    suspend fun addBook(book: Book) {
-        bookDao.insert(book)
-        network.bookUpdate(book.id, book.name, book.type!!).apply {
-            if (code == OK) {
-                book.synced = STATUS.SYNCED
-                bookDao.update(book)
-            }
-        }
-    }
-
-    suspend fun deleteBoo(book_id: String) {
-        bookDao.preDelete(book_id)
-        network.bookDelete(book_id).apply {
-            if (code == OK) {
-                bookDao.deleteById(book_id);
-            }
-        }
-    }
-
-    suspend fun updateBook(book: Book) {
-        book.synced = STATUS.UPDATED
-        bookDao.update(book)
-        network.bookUpdate(book.id, book.name, book.type!!).apply {
-            if (code == OK) {
-                book.synced = STATUS.SYNCED
-                bookDao.update(book)
-            }
-        }
-    }
-
-    suspend fun queryBook(): Flow<MutableList<Book>> {
-        return flow<MutableList<Book>> {
-            emit(bookDao.allBooks())
-            network.bookPull().apply {
-                if (code == OK && data.isNotEmpty()) {
-                    emit(data)
-                    data.forEach {
-                        bookDao.upsert(it)
-                    }
-                }
-            }
-        }
-    }
+    protected val network = HejiNetwork.getInstance()
+    protected val database = AppDatabase.getInstance()
+    protected val bookDao = database.bookDao()
+    protected val billDao = database.billDao()
+    protected val categoryDao = database.categoryDao()
+    val imgDao =   AppDatabase.getInstance().imageDao()
 }

@@ -13,18 +13,18 @@ class BookTest : TestCase() {
     @Test
     fun myTest() {
         // Context of the app under test.
-        var appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        var book = Book(name = "test1")
-
-        var createUser = BookUser(id = 1,bookId = book.id, name = "RH", authority = "CREATE")
-        var bookUser = BookUser(id = 2,bookId = book.id, name = "ZY", authority = "USER")
-
-        AppDatabase.getInstance(appContext).bookDao().insert(book)
-        AppDatabase.getInstance(appContext).bookUserDao().insert(createUser, bookUser)
-        book.name = "ABC"
-        AppDatabase.getInstance(appContext).bookDao().update(book)
-        book.synced = STATUS.SYNCED
-        AppDatabase.getInstance(appContext).bookDao().upsert(book)
+//        var appContext = InstrumentationRegistry.getInstrumentation().targetContext
+//        var book = Book(name = "test1")
+//
+//        var createUser = BookUser(id = 1,bookId = book.id, name = "RH", authority = "CREATE")
+//        var bookUser = BookUser(id = 2,bookId = book.id, name = "ZY", authority = "USER")
+//
+//        AppDatabase.getInstance(appContext).bookDao().insert(book)
+//        AppDatabase.getInstance(appContext).bookUserDao().insert(createUser, bookUser)
+//        book.name = "ABC"
+//        AppDatabase.getInstance(appContext).bookDao().update(book)
+//        book.synced = STATUS.SYNCED
+//        AppDatabase.getInstance(appContext).bookDao().upsert(book)
 
         //var bookWhitUsers = BookWhitUsers(book = book, users = users)
     }

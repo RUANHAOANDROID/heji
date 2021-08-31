@@ -59,7 +59,6 @@ public class BookServiceImpl extends BaseMongoTemplate implements BookService {
     public List<MBook> getBooks(MBookUser user) {
         Query query = Query.query(Criteria.where("users.name").is(user.getName()));
         List<MBook> myBooks = getMongoTemplate().find(query, MBook.class);
-        List<MBook> books2= mBookRepository.findMBookByUsers(user);
         return myBooks;
     }
 
@@ -69,8 +68,8 @@ public class BookServiceImpl extends BaseMongoTemplate implements BookService {
     }
 
     @Override
-    public void addBookUser(MBook book, MBookUser user) {
-        Query query = Query.query(Criteria.where("_id").is(book.get_id()));
+    public void joinBook(String bookId, MBookUser user) {
+        Query query = Query.query(Criteria.where("_id").is(bookId));
         Update update = new Update();
         update.addToSet("users", user);
         getMongoTemplate().upsert(query, update, MBook.class);

@@ -55,13 +55,7 @@ public class BookController {
         return Result.success(bookService.findBook(bookId));
     }
 
-    @ResponseBody
-    @PostMapping(value = {"/addBookUser"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String addBookUser(@RequestParam String bookId, Authentication auth) {
-        MBookUser bookUser = new MBookUser().setName(auth.getName()).setAuthority("USER");
-        bookService.addBookUser(new MBook().set_id(bookId), bookUser);
-        return Result.success(bookId);
-    }
+
     @ResponseBody
     @PostMapping(value = {"/updateBook"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String updateBook(@RequestParam String bookId,
@@ -116,8 +110,8 @@ public class BookController {
     }
 
     @ResponseBody
-    @PostMapping(value = {"/share"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String shareBook(@RequestParam String bookId, Authentication auth) {
+    @PostMapping(value = {"/shared"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String sharedBook(@RequestParam String bookId, Authentication auth) {
         //校验操作用户是否是账本创建人
         String createUser = bookService.findBook(bookId).getUsers().get(0).getName();
         if (!auth.getName().equals(createUser)) {
@@ -126,11 +120,13 @@ public class BookController {
         String code = bookShareService.generateCode(bookId);
         return Result.success(code);
     }
-
     @ResponseBody
-    @PostMapping(value = {"/getShareBook"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getShareBook(@RequestParam String code, Authentication auth) {
-        MBookShare shareBook = bookShareService.getShareBook(code);
-        return Result.success(shareBook);
+    @PostMapping(value = {"/join"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String joinBook(@RequestParam String sharedCode, Authentication auth) {
+        MBookUser bookUser = new MBookUser().setName(auth.getName()).setAuthority("USER");
+        MBookShare sharedBook = bookShareService.getShareBook(sharedCode);
+        bookService.joinBook(sharedBook.getBookId(), bookUser);
+        return Result.success(sharedBook);
     }
+
 }

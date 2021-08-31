@@ -18,7 +18,7 @@ public interface BookService {
 
     MBook updateBook(MBook book);
 
-    void addBookUser(MBook book, MBookUser user);
+    void joinBook(String bookId, MBookUser user);
 
     List<MBookUser> getBookUsers(String book_id);
 

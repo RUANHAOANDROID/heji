@@ -4,15 +4,13 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.App
-import com.rh.heji.AppViewModule
 import com.rh.heji.currentUser
 import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.Result
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.BookUser
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.network.HeJiServer
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
@@ -80,18 +78,6 @@ class BookViewModel : BaseViewModel() {
 
     }
 
-    fun addBookUser(bookId: String, @MainThread call: (String) -> Unit) {
-        launchIO({
-            val response = HejiNetwork.getInstance().bookAddUser(book_id = bookId)
-            if (response.data.isNotEmpty()) {
-                val shareCode = response.data as String
-                runMainThread {
-                    call(shareCode)
-                }
-            }
-        })
-    }
-
     fun deleteBook(id: String, function: (Boolean) -> Unit) {
         launchIO({
             val response =HejiNetwork.getInstance().bookDelete(id)
@@ -102,5 +88,26 @@ class BookViewModel : BaseViewModel() {
             }
             AppDatabase.getInstance().bookDao().deleteById(id)
         })
+    }
+
+    fun sharedBook(bookId: String, @MainThread call: (Result<String>) -> Unit) {
+        launchIO({
+            val response = HejiNetwork.getInstance().bookShared(book_id = bookId)
+            if (response.data.isNotEmpty()) {
+                val shareCode = response.data as String
+                runMainThread {
+                    call(Result.Success(shareCode))
+                }
+            }
+        },{
+            call(Result.Error(it))
+        })
+    }
+
+    fun joinBook(code :String, call: (Result<String>) -> Unit){
+        launchIO({
+            val response =HejiNetwork.getInstance().bookJoin(code)
+        })
+
     }
 }

@@ -3,11 +3,12 @@ package com.rh.heji.ui.book
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ClickUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.*
+import com.rh.heji.data.Result
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.BookUser
@@ -15,6 +16,8 @@ import com.rh.heji.databinding.FragmentBookSettingBinding
 import com.rh.heji.databinding.ItemBookUsersBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.book.pop.BottomSharePop
+import com.rh.heji.utlis.runMainThread
+import kotlinx.coroutines.flow.collect
 
 class BookSettingFragment : BaseFragment() {
 
@@ -62,7 +65,7 @@ class BookSettingFragment : BaseFragment() {
 
     private fun deleteBook() {
         binding.tvDeleteBook.setOnClickListener {
-            viewModel.deleteBook(book.id,{})
+            viewModel.deleteBook(book.id, {})
         }
     }
 
@@ -76,10 +79,16 @@ class BookSettingFragment : BaseFragment() {
         //防止多次点击
         val clickListener = object : ClickUtils.OnDebouncingClickListener() {
             override fun onDebouncingClick(v: View?) {
-                viewModel.addBookUser(bookId = book.id) {
-                    XPopup.Builder(requireContext()).asCustom(BottomSharePop(requireContext(), it))
-                        .show()
+                viewModel.sharedBook(bookId = book.id) {
+                    when (it) {
+                        is Result.Success -> XPopup.Builder(requireContext())
+                            .asCustom(BottomSharePop(requireContext(), it.data))
+                            .show()
+                        is Result.Error -> ToastUtils.showLong(it.exception.message)
+                        is Result.Loading -> null
+                    }
                 }
+
             }
         }
         binding.tvAddBookUser.setOnClickListener(clickListener)

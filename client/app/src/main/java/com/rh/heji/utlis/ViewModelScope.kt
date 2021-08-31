@@ -2,10 +2,7 @@ package com.rh.heji.utlis
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 /**
  *Date: 2021/7/15
@@ -41,6 +38,8 @@ suspend fun runMainThread(
 ) = withContext(Dispatchers.Main) {
     block()
 }
+
+suspend fun <T> (() -> T).runMainThread() =withContext(Dispatchers.Main) { invoke() }
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 fun ViewModel.launchNewThread(block: suspend () -> Unit, error: suspend (Throwable) -> Unit) =

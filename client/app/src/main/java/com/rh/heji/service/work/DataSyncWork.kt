@@ -1,16 +1,12 @@
 package com.rh.heji.service.work
 
 import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.NetworkUtils
 import com.rh.heji.currentBook
-import com.rh.heji.currentUser
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.db.BookUser
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
-import com.rh.heji.moshi
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.network.response.OperateLog
@@ -213,17 +209,6 @@ class DataSyncWork {
                         bookDao.insert(netBook)
                     } else {
                         bookDao.update(netBook)
-                    }
-                    netBook.users?.let { users -> //set createUser
-                        if (users.isNotEmpty()) {
-                            users.forEach { user ->
-                                if (user.authority == "CREATE") {
-                                    netBook.createUser = user.name;
-                                }
-                                user.bookId = netBook.id
-                                AppDatabase.getInstance().bookUserDao().insert(user)
-                            }
-                        }
                     }
                 }
             }

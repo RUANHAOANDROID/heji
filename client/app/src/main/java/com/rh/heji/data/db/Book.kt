@@ -1,10 +1,8 @@
 package com.rh.heji.data.db
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
+import com.rh.heji.data.converters.BookUsersConverters
 import com.rh.heji.data.db.mongo.ObjectId
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
@@ -33,7 +31,9 @@ data class Book(
     var synced: Int = STATUS.NOT_SYNCED
 
     @Json(name = "users")
-    @Ignore//not create db
+    @ColumnInfo(name = "users")
+    @TypeConverters(BookUsersConverters::class)
+    //@Ignore
     var users: List<BookUser>? = null
 
     companion object {
@@ -41,6 +41,12 @@ data class Book(
     }
 }
 
-
-
-
+@Parcelize
+class BookUser(val name: String, val authority: String) : Parcelable {
+    @Ignore
+    fun fromAuthority(): String {
+        if (authority == "CREATE") return "创建者"
+        if (authority == "USER") return "用户"
+        return authority
+    }
+}

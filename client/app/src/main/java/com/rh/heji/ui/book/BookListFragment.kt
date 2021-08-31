@@ -2,6 +2,7 @@ package com.rh.heji.ui.book
 
 import android.graphics.Rect
 import android.view.View
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.rh.heji.App
 import com.rh.heji.AppViewModule
 import com.rh.heji.R
 import com.rh.heji.currentBook
+import com.rh.heji.data.Result
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookListBinding
 import com.rh.heji.ui.base.BaseFragment
@@ -61,7 +63,7 @@ class BookListFragment : BaseFragment() {
 
             private fun diff(
                 oldItem: Book,
-                newItem: Book
+                newItem: Book,
             ): Boolean {
                 val idSame = oldItem.id == newItem.id
                 val nameSame = oldItem.name == newItem.name
@@ -78,7 +80,7 @@ class BookListFragment : BaseFragment() {
                 outRect: Rect,
                 view: View,
                 parent: RecyclerView,
-                state: RecyclerView.State
+                state: RecyclerView.State,
             ) {
                 outRect.left = 16
                 outRect.top = 16
@@ -113,11 +115,30 @@ class BookListFragment : BaseFragment() {
                 when (text) {
                     "新建账本" ->
                         findNavController().navigate(R.id.nav_book_add)
-                    "加入他人账本" ->
-                        ToastUtils.showShort("join Boot")
+                    "加入他人账本" -> {
+                        showJoinBookPop()
+                    }
+
                 }
 
             }.show()
         }
+    }
+
+    private fun showJoinBookPop() {
+        XPopup.Builder(requireContext()).asInputConfirm("请输入账本邀请码", "") { inputText ->
+            ToastUtils.showShort(inputText)
+            bookViewModel.joinBook(inputText){
+                when(it){
+                    is  Result.Success ->{
+                        bookViewModel.getBookList()
+                    }
+                    is Result.Error ->{
+                        ToastUtils.showLong(it.exception.message)
+                    }
+                    Result.Loading -> null
+                }
+            }
+        }.show()
     }
 }

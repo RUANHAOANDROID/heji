@@ -5,11 +5,13 @@ import com.rh.heji.currentBook
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.ErrorLog
+import com.rh.heji.moshi
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterUser
 import com.rh.heji.utlis.http.basic.HttpRetrofit
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,9 +31,10 @@ class HejiNetwork {
     suspend fun bookPush(book:Book) = hejiServer.bookCreate(book).await()
     suspend fun bookPull() = hejiServer.bookGet().await()
     suspend fun bookGetUsers(book_id:String) = hejiServer.bookGetBookUsers(book_id).await()
-    suspend fun bookAddUser(book_id:String) = hejiServer.bookUserAdd(book_id).await()
+    suspend fun bookShared(book_id:String) = hejiServer.bookShared(book_id).await()
     suspend fun bookDelete(book_id:String) = hejiServer.bookDelete(book_id).await()
     suspend fun bookUpdate(book_id:String,bookName:String,bookType:String) = hejiServer.bookUpdate(book_id,bookName ,bookType).await()
+    suspend fun bookJoin(sharedCode:String) = hejiServer.bookJoin(sharedCode).await()
 
     suspend fun billPush(bill: Bill) = hejiServer.saveBill(bill).await()
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
@@ -44,6 +47,7 @@ class HejiNetwork {
     suspend fun categoryPush(category: CategoryEntity) = hejiServer.addCategory(category).await()
     suspend fun categoryDelete(_id: String) = hejiServer.deleteCategoryById(_id).await()
     suspend fun categoryPull(_id: String = "0") = hejiServer.getCategories(_id).await()
+    suspend fun categoryUpdate(_id: String = "0") = hejiServer.getCategories(_id).await()
     suspend fun logUpload(errorLog: ErrorLog) = hejiServer.logUpload(errorLog).await()
 
 
@@ -60,14 +64,24 @@ class HejiNetwork {
                     val body = response.body()
                     val errorBody = response.errorBody()
                     when {
-                        body != null -> continuation.resume(body)//正常恢复
-                        errorBody != null -> continuation.resumeWithException(RuntimeException(errorBody.string()))
-                        else -> continuation.resumeWithException(RuntimeException("response body is null"))
+                        body != null -> {
+                            continuation.resume(body)//正常恢复
+                        }
+                        errorBody != null ->{//error body 仅仅适用于服务器统一返回的错误格式，在服务端错误信息同样返回{code,message,data}格式
+                            val errorData:String =JSONObject(errorBody.string()).get("data").toString()
+                          if (errorData.isNotEmpty()){
+                              continuation.resumeWithException(RuntimeException(errorData))
+                          }else{
+                              continuation.resumeWithException(RuntimeException(errorBody.string()))
+                          }
+                        }
+                        else ->{ continuation.resumeWithException(RuntimeException("response body is null"))}
                     }
                 }
             })
         }
     }
+
 
     companion object {
 

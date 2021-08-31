@@ -39,8 +39,11 @@ interface HeJiServer {
     @POST("book/findBook")
     fun bookFind(@Query("bookId") bookId: String): Call<BaseResponse<Book>>
 
-    @POST("book/addBookUser")
-    fun bookUserAdd(@Query("bookId") bookId: String): Call<BaseResponse<String>>
+    @POST("book/shared")
+    fun bookShared(@Query("bookId") bookId: String): Call<BaseResponse<String>>
+
+    @POST("book/join")
+    fun bookJoin(@Query("sharedCode") sharedCode: String): Call<BaseResponse<String>>
 
     @POST("book/removeBookUser")
     fun bookRemoveUser(@Body book: Book): Call<BaseResponse<String>>
@@ -90,6 +93,9 @@ interface HeJiServer {
 
     @GET("category/getByBookId")//获取基础的类别
     fun getCategories(@Query("book_id") book_id: String): Call<BaseResponse<List<CategoryEntity>>>
+
+    @GET("category/update")//获取基础的类别
+    fun categoryUpdate(@Query("book_id") book_id: String): Call<BaseResponse<List<CategoryEntity>>>
     //----------------------FILE IMAGE---------------------------//
     /**
      * @param part

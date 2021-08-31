@@ -8,11 +8,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface MBookRepository extends MongoRepository<MBook, String> {
-
-    List<MBook> findMBookByUsers(String userId);
-
-    List<MBook> findMBookByUsers(MBookUser users);
-
     boolean existsMBookBy_id(String book_id);
 
     MBook findMBookBy_id(String book_id);

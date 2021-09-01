@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -21,9 +22,10 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class MyExceptionHandler {
     //处理自定义的业务异常
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)//Http状态码设置为500
     @ResponseBody  //异常信息返回给接口
     @ExceptionHandler(value = GlobalException.class)// 仅仅拦截value对应的异常
-    public String handle(Exception e,HttpServletRequest request) {
+    public String handle(GlobalException e,HttpServletRequest request) {
         if (e instanceof GlobalException) {
             GlobalException ge = (GlobalException) e;
             return Result.error(ge.getCode(), ge.getMessage(),"error");

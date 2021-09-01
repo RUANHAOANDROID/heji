@@ -7,10 +7,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.interfaces.OnCancelListener
+import com.lxj.xpopup.interfaces.OnInputConfirmListener
 import com.rh.heji.App
 import com.rh.heji.AppViewModule
 import com.rh.heji.R
@@ -126,19 +129,27 @@ class BookListFragment : BaseFragment() {
     }
 
     private fun showJoinBookPop() {
-        XPopup.Builder(requireContext()).asInputConfirm("请输入账本邀请码", "") { inputText ->
+        val codeEditPop =
+            XPopup.Builder(requireContext()).asInputConfirm("请输入账本邀请码", ""){}
+        val confirmListener = OnInputConfirmListener { inputText ->
             ToastUtils.showShort(inputText)
-            bookViewModel.joinBook(inputText){
-                when(it){
-                    is  Result.Success ->{
+            bookViewModel.joinBook(inputText) {
+                when (it) {
+                    is Result.Success -> {
                         bookViewModel.getBookList()
                     }
-                    is Result.Error ->{
+                    is Result.Error -> {
                         ToastUtils.showLong(it.exception.message)
                     }
                     Result.Loading -> null
                 }
             }
-        }.show()
+            KeyboardUtils.hideSoftInput(mainActivity)
+        }
+        val cancelListener = OnCancelListener {
+            KeyboardUtils.hideSoftInput(mainActivity)
+        }
+        codeEditPop.setListener(confirmListener, cancelListener)
+        codeEditPop.show()
     }
 }

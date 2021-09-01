@@ -1,17 +1,13 @@
 package com.rh.heji.ui.bill.iteminfo
 
-import android.view.View
-import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
-import com.lxj.xpopup.core.ImageViewerPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.*
 import com.rh.heji.data.converters.DateConverters
@@ -19,7 +15,6 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.PopLayoutBilliInfoBinding
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
-import com.rh.heji.ui.bill.img.ImageLoader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -78,34 +73,8 @@ class PopBillInfo(
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = imageAdapter
         }
-        imageAdapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View, position: Int ->
-            showImage(
-                view,
-                position
-            )
-        }
     }
 
-    private fun showImage(itemView: View, itemPosition: Int) {
-        val objects = imageAdapter.data
-            .map { image: Image -> imageAdapter.getImagePath(image) }
-            .toList()
-        if (objects.isEmpty()) return
-        XPopup.Builder(context)
-            .asImageViewer(
-                itemView as ImageView,
-                itemPosition,
-                objects,
-                { popupView: ImageViewerPopupView, position: Int ->
-                    popupView.updateSrcView(
-                        imageAdapter.getViewByPosition(itemPosition, R.id.itemImage) as ImageView?
-                    )
-                },
-                ImageLoader()
-            )
-            .isShowSaveButton(false)
-            .show()
-    }
 
     /**
      * 删除该条账单

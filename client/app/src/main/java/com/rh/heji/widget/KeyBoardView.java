@@ -1,7 +1,8 @@
 package com.rh.heji.widget;
 
+import static java.math.BigDecimal.ZERO;
+
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.blankj.utilcode.util.ClickUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.rh.heji.R;
 import com.rh.heji.data.BillType;
@@ -17,8 +19,6 @@ import com.rh.heji.databinding.LayoutKeyboardBinding;
 
 import java.math.BigDecimal;
 import java.util.Stack;
-
-import static java.math.BigDecimal.ZERO;
 
 /**
  * Date: 2020/11/19
@@ -94,14 +94,20 @@ public class KeyBoardView extends ConstraintLayout {
         binding.kDelete.setOnClickListener(delete -> {
             delete();
         });
-        binding.kSaveAgain.setOnClickListener(saveAgain -> {
-            if (keyboardListener != null)
-                keyboardListener.saveAgain(finalCompute());
-        });
-        binding.kSave.setOnClickListener(save -> {
-            if (keyboardListener != null)
-                keyboardListener.save(finalCompute());
 
+        binding.kSaveAgain.setOnClickListener(new ClickUtils.OnDebouncingClickListener(500){
+            @Override
+            public void onDebouncingClick(View v) {
+                if (keyboardListener != null)
+                    keyboardListener.saveAgain(finalCompute());
+            }
+        });
+        binding.kSave.setOnClickListener(new ClickUtils.OnDebouncingClickListener() {
+            @Override
+            public void onDebouncingClick(View v) {
+                if (keyboardListener != null)
+                    keyboardListener.save(finalCompute());
+            }
         });
     }
 

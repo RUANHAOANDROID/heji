@@ -156,9 +156,9 @@ dependencies {
     //spinner
     //implementation 'com.github.arcadefire:nice-spinner:1.4.4'
     //工具框架
-    implementation 'com.blankj:utilcode:1.30.5'
+    implementation 'com.blankj:utilcodex:1.30.6'
     //xpopup
-    implementation 'com.github.li-xiaojun:XPopup:2.4.0'
+    implementation 'com.github.li-xiaojun:XPopup:2.5.15'
     //图片压缩
     implementation 'top.zibin:Luban:1.1.8'
     //日历
@@ -176,4 +176,5 @@ dependencies {
     implementation "androidx.startup:startup-runtime:1.1.0"
     //implementation("com.squareup.moshi:moshi:1.12.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 }

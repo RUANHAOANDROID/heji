@@ -5,7 +5,7 @@ import com.heji.server.data.bean.QianjiExcelBean;
 import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.MBillBackup;
 import com.heji.server.data.mongo.MOperateLog;
-import com.heji.server.exception.NotFindException;
+import com.heji.server.exception.NotFoundException;
 import com.heji.server.file.StorageService;
 import com.heji.server.result.Result;
 import com.heji.server.service.*;
@@ -61,7 +61,7 @@ public class BillsController {
 
     private void checkBookExists(String book_id) {
         if (!bookService.exists(book_id))
-            throw new NotFindException("账本不存在:" + book_id);
+            throw new NotFoundException("账本不存在:" + book_id);
     }
 
     @ResponseBody
@@ -128,7 +128,7 @@ public class BillsController {
     public ResponseEntity<Resource> exportBills(@RequestParam String book_id, @RequestParam(defaultValue = "0") String startDateTime, @RequestParam(defaultValue = "0") String endDateTime) {
         List<MBill> bills = billService.getBills(book_id, startDateTime, endDateTime);
         if (Objects.isNull(bills) && bills.size() <= 0)
-            throw new NotFindException("No bill");
+            throw new NotFoundException("No bill");
         List<QianjiExcelBean> excelData = bill2QianJiExcel(bills);
         SimpleDateFormat dateFormat = TimeUtils.getDateFormat("yyyy_MM_dd_HH_mm_ss");
         String filename = TimeUtils.getNowString(dateFormat) + ".xlsx";

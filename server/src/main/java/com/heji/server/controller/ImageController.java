@@ -2,7 +2,7 @@ package com.heji.server.controller;
 
 import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.MBillImage;
-import com.heji.server.exception.NotFindException;
+import com.heji.server.exception.NotFoundException;
 import com.heji.server.exception.NullFileException;
 import com.heji.server.result.Result;
 import com.heji.server.service.BillService;
@@ -44,7 +44,7 @@ public class ImageController {
     public byte[] getImage(@PathVariable String imageId) throws IOException {
         MBillImage img = imageService.getImage(imageId);
         if (Objects.isNull(img))
-            throw new NotFindException("账单图片没找到");
+            throw new NotFoundException("账单图片没找到");
         byte[] imgBytes = img.getData();
         return imgBytes;
     }
@@ -59,7 +59,7 @@ public class ImageController {
     public String getBillImages(@RequestParam String bill_id) throws IOException {
         List<MBillImage> img = imageService.getBillImages(bill_id);
         if (img.isEmpty() || img.size() == 0)
-            throw new NotFindException("账单图片没找到");
+            throw new NotFoundException("账单图片没找到");
         return Result.success(img);
     }
 
@@ -75,7 +75,7 @@ public class ImageController {
             time = TimeUtils.getNowMills();
         MBill bill = billService.getBillInfo(billId);
         if (Objects.isNull(bill))
-            throw new NotFindException("账单不存在");
+            throw new NotFoundException("账单不存在");
         String md5 = MD5Util.getMD5(imageFile.getInputStream());
         MBillImage image = new MBillImage().set_id(_id);
         String fileName =imageFile.getOriginalFilename();
@@ -109,7 +109,7 @@ public class ImageController {
         if (images.size() <= 0)
             throw new NullFileException("上传文件为空");
         if (!billService.exists(billId))
-            throw new NotFindException("账单不存在");
+            throw new NotFoundException("账单不存在");
         List<String> imageIds = new ArrayList<>();
         for (int i = 0; i < images.size(); i++) {
             MultipartFile imageFile = images.get(i);

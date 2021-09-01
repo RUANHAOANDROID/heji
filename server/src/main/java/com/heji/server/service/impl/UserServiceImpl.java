@@ -4,7 +4,7 @@ import com.heji.server.data.mongo.MAuthority;
 import com.heji.server.data.mongo.BaseMongoTemplate;
 import com.heji.server.data.mongo.MUser;
 import com.heji.server.data.mongo.repository.MUserRepository;
-import com.heji.server.exception.NotFindException;
+import com.heji.server.exception.NotFoundException;
 import com.heji.server.security.TokenProvider;
 import com.heji.server.service.UserService;
 import com.heji.server.service.CodeService;
@@ -79,7 +79,7 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
             MUser newUser = mUserRepository.save(mUser);
             //mVerificationService.deleteCode(code);
         } else {
-            throw new NotFindException(" verification not find");
+            throw new NotFoundException(" verification not find");
         }
     }
 
@@ -93,7 +93,7 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
     @Override
     public String login(String username, String password) {
         MUser user0 = mUserRepository.findMUserByTel(username);
-        if (null == user0) throw new NotFindException("用户不存在");
+        if (null == user0) throw new NotFoundException("用户不存在");
         boolean success = bCryptPasswordEncoder.matches(password, user0.getPassword());
         UsernamePasswordAuthenticationToken authentication2 = new UsernamePasswordAuthenticationToken(
                 username,//电话号码

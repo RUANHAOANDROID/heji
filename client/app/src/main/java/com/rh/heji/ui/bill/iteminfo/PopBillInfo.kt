@@ -1,6 +1,7 @@
 package com.rh.heji.ui.bill.iteminfo
 
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
@@ -10,6 +11,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.*
+import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
@@ -29,7 +31,8 @@ class PopBillInfo(
     val bill: Bill,
     var popClickListener: BillPopClickListenerImpl = BillPopClickListenerImpl(),
 ) : BottomPopupView(activity), Observer<List<Image>> {
-    private val imageObservable by lazy { activity.mainViewModel.getBillImages(billId = bill.id) }
+    //观察 当前账单下图片
+    private val imageObservable by lazy { AppDatabase.getInstance().imageDao().findByBillId(billId = bill.id).asLiveData() }
 
     lateinit var binding: PopLayoutBilliInfoBinding
     private var imageAdapter = ImageAdapter()
@@ -63,7 +66,7 @@ class PopBillInfo(
             rePeople.text = bill.dealer
         }
         initBillImageList()//初始化列表和适配器
-        if (bill.imgCount > 0) {
+        if (bill.images.isNotEmpty()) {
             imageObservable.observeForever(this)
         }
     }
@@ -114,7 +117,7 @@ class PopBillInfo(
 
     override fun onDismiss() {
         super.onDismiss()
-        if (bill.imgCount > 0) {
+        if (bill.images.isNotEmpty()) {
             imageObservable.removeObserver(this)
         }
     }

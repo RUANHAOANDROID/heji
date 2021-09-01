@@ -31,10 +31,6 @@ interface BillDao {
     @Query("delete from bill where id=:billId")
     fun deleteById(billId: String): Int
 
-    @Transaction
-    @Query("update bill set img_count=:count where id=:id")
-    fun updateImageCount(count: Int, id: String): Int
-
     /**
      * 根据精确时间datetime(),money,remark查询
      *
@@ -131,10 +127,6 @@ interface BillDao {
     @Transaction
     @Query("SELECT * FROM bill")
     fun findAllBillWhitImage(): MutableList<BillWithImage>
-
-    @Transaction
-    @Query("SELECT * FROM bill WHERE img_count > 0 AND sync_status== ${STATUS.NOT_SYNCED}")
-    fun findNotSyncBillWhitImage(): MutableList<BillWithImage>
 
     @Query("SELECT * FROM bill WHERE  sync_status==:syncStatus")
     fun findByStatus(syncStatus: Int): MutableList<Bill>

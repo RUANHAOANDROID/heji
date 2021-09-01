@@ -1,6 +1,9 @@
 package com.rh.heji.ui.home
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
@@ -18,13 +21,16 @@ import com.rh.heji.utlis.launchIO
 class BillsHomeViewModel : BaseViewModel() {
     var selectYearMonth = currentYearMonth
     private val billDao: BillDao = AppDatabase.getInstance().billDao()
+    private val imageDao = AppDatabase.getInstance().imageDao()
 
     private val billsNodLiveData = MediatorLiveData<MutableList<BaseNode>>()
     fun monthDataChange(): LiveData<MutableList<BaseNode>> = billsNodLiveData
     fun refreshMonthData() {
         launchIO({
+            //根据月份查询收入的日子
             var monthEveryDayIncome =
                 billDao.findEveryDayIncomeByMonth(yearMonth = selectYearMonth.toYearMonth())
+            //日节点
             var listDayNodes = mutableListOf<BaseNode>()
             monthEveryDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
@@ -39,8 +45,10 @@ class BillsHomeViewModel : BaseViewModel() {
                         TimeUtils.getSafeDateFormat(MyTimeUtils.PATTERN_DAY)
                     )
                 )
+                //日节点下子账单
                 val dayListNodes = mutableListOf<BaseNode>()
                 billDao.findByDay(dayIncome.time!!).forEach {
+                    it.images = imageDao.findImagesId(it.id)
                     dayListNodes.add(DayBillsNode(it))
                 }
                 var dayItemNode = DayIncomeNode(dayListNodes, incomeNode)

@@ -70,6 +70,7 @@ class CalendarNoteViewModule : BaseViewModel() {
             var parentNode = mutableListOf<BaseNode>()//天节点
             var childNodes = emptyList<BaseNode>().toMutableList()//天收支节点
             dayBills.forEach {
+                it.images =AppDatabase.getInstance().imageDao().findImagesId(it.id)//查询账单下照片ID
                 var billsNode = DayBillsNode(it)
                 childNodes.add(billsNode)
             }

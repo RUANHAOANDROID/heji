@@ -191,7 +191,6 @@ class DataSyncWork {
                             AppDatabase.getInstance().imageDao().install(image)
                             LogUtils.d("账单图片信息已保存 $image")
                         }
-                        billDao.updateImageCount(response.data.size, serverBill.id)
                     }
                 }
             }

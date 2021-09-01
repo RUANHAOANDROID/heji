@@ -1,16 +1,15 @@
 package com.rh.heji.ui.bill.add
 
 import androidx.lifecycle.*
-import androidx.lifecycle.Observer
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.currentBook
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
+import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.rh.heji.utlis.runMainThread
 import java.math.BigDecimal
 import java.util.*
 import java.util.function.Consumer
@@ -20,12 +19,16 @@ import java.util.stream.Collectors
  * 账单添加页ViewModel 不要在其他页面应用该ViewModel
  */
 class AddBillViewModel : BaseViewModel() {
+    private val billRepository =BillRepository()
+
     var imgUrls = mutableListOf<String>()
         set(value) {
             field = value
             imgUrlsLive.postValue(imgUrls)
-        }//image list
-    var imgUrlsLive = MutableLiveData<List<String>>() // image live
+        }
+
+    private var imgUrlsLive = MutableLiveData<MutableList<String>>() // image live
+    fun imagesChanged()=imgUrlsLive
 
     var bill: Bill = Bill()
         set(value) {
@@ -45,7 +48,7 @@ class AddBillViewModel : BaseViewModel() {
      * @param billType
      * @return
      */
-    fun save(money: String, category: Category, observer: Observer<Bill>) {
+    fun save(money: String, category: Category,saveCall: (Bill) -> Unit) {
         val images = imgUrls.stream().map { s: String? ->
             val image = Image(ObjectId().toString(), bill.id)
             image.localPath = s
@@ -56,23 +59,19 @@ class AddBillViewModel : BaseViewModel() {
             //id = billId
             this.money = BigDecimal(money)
             createTime = System.currentTimeMillis()
-            //Image count
-            bill.imgCount = images.size
             bill.type = category.type
             bill.category = category.category
         }
         launchIO({
-            val count = AppDatabase.getInstance().billDao().install(bill)
-            AppDatabase.getInstance().imageDao().install(images)
-            bill.imgCount = images.size
-            AppDatabase.getInstance().billDao().update(bill)
+            var count =billRepository.addBill(bill,images)
             if (count > 0) {
                 ToastUtils.showShort("已保存: ${bill.category + money}  ")
             }
-            withContext(Dispatchers.Main) {
-                observer.onChanged(bill)
-                bill.id=ObjectId.get().toHexString()//保存重新赋值ID
-            }
+          runMainThread {
+              saveCall(bill)
+              bill.id=ObjectId.get().toHexString()//保存重新赋值ID
+          }
+
         }, {
             ToastUtils.showShort(it.message)
         })

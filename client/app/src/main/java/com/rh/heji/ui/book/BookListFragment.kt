@@ -129,27 +129,22 @@ class BookListFragment : BaseFragment() {
     }
 
     private fun showJoinBookPop() {
-        val codeEditPop =
-            XPopup.Builder(requireContext()).asInputConfirm("请输入账本邀请码", ""){}
-        val confirmListener = OnInputConfirmListener { inputText ->
-            ToastUtils.showShort(inputText)
-            bookViewModel.joinBook(inputText) {
-                when (it) {
-                    is Result.Success -> {
-                        bookViewModel.getBookList()
+        XPopup.Builder(requireContext())
+            .hasStatusBarShadow(false)
+            .autoOpenSoftInput(true)
+            .asInputConfirm("请输入账本邀请码", "") { text ->
+                bookViewModel.joinBook(text) {
+                    when (it) {
+                        is Result.Success -> {
+                            bookViewModel.getBookList()
+                        }
+                        is Result.Error -> {
+                            ToastUtils.showLong(it.exception.message)
+                        }
+                        Result.Loading -> null
                     }
-                    is Result.Error -> {
-                        ToastUtils.showLong(it.exception.message)
-                    }
-                    Result.Loading -> null
                 }
-            }
-            KeyboardUtils.hideSoftInput(mainActivity)
-        }
-        val cancelListener = OnCancelListener {
-            KeyboardUtils.hideSoftInput(mainActivity)
-        }
-        codeEditPop.setListener(confirmListener, cancelListener)
-        codeEditPop.show()
+            }.show()
+
     }
 }

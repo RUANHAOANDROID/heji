@@ -49,12 +49,12 @@ class DayBillsNodeProvider : BaseNodeProvider() {
         helper.setText(R.id.tvMoney, "${if (bill.type == -1) "- " else "+ "}${bill.money}")
         helper.setTextColor(R.id.tvMoney, incomeColor)
         helper.setText(R.id.tvInfo, bill.remark)
-        if (bill.imgCount > 0) {
+        if (bill.images.isNotEmpty()) {
             helper.getView<TextView>(R.id.tvInfo).setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.drawable.ic_baseline_image_18), null, null, null)
         } else {
             helper.getView<TextView>(R.id.tvInfo).setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         }
-        helper.setGone(R.id.tvInfo, TextUtils.isEmpty(bill.remark) && bill.imgCount == 0)
+        helper.setGone(R.id.tvInfo, TextUtils.isEmpty(bill.remark) && bill.images.isEmpty())
 
     }
 }

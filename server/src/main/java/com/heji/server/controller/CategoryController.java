@@ -2,8 +2,8 @@ package com.heji.server.controller;
 
 import com.heji.server.data.mongo.MCategory;
 import com.heji.server.data.mongo.MOperateLog;
-import com.heji.server.exception.NotFindException;
-import com.heji.server.exception.OperationsException;
+import com.heji.server.exception.NotFoundException;
+import com.heji.server.exception.OperationException;
 import com.heji.server.result.Result;
 import com.heji.server.service.CategoryService;
 import com.heji.server.service.OperateLogService;
@@ -57,7 +57,7 @@ public class CategoryController {
     public String getAllCategory(@RequestParam(defaultValue = "0") String book_id) {
         List<MCategory> mCategories = categoryService.findByBookId(book_id);
         if (Objects.isNull(mCategories) || mCategories.size() <= 0)
-            throw new NotFindException("类别不存在");
+            throw new NotFoundException("类别不存在");
         return Result.success(mCategories);
     }
 
@@ -66,7 +66,7 @@ public class CategoryController {
     public String deleteCategory(@RequestParam() String _id) {
         boolean isOk = categoryService.delete(_id);
         if (!isOk) {
-            throw new OperationsException("删除失败");
+            throw new OperationException("删除失败");
         }
         //写入操作日志
         operateLogService.addOperateLog(new MOperateLog()

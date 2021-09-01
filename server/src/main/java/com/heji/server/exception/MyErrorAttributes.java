@@ -11,7 +11,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 重写DefaultErrorAttributes 把错误统一转换成自己的格式
+ * 错误属性处理
+ * 重写 DefaultErrorAttributes 把错误统一转换成自己的格式
+ * 业务上的操作错误由GlobalExceptionHandler 来处理并返回
  * error response {code msg data}
  */
 @Component
@@ -34,11 +36,11 @@ public class MyErrorAttributes extends DefaultErrorAttributes {
         }
         if (errorAttributes.containsKey("error")) {
             myErrorAttributes.put("msg", errorAttributes.get("error"));
-            log.error("error:{}",errorAttributes.get("error"));
+            //log.error("error:{}",errorAttributes.get("error"));
         }
         if (errorAttributes.containsKey("message")) {
             myErrorAttributes.put("data", errorAttributes.get("message"));
-            log.error("message:{}",errorAttributes.get("message"));
+            //log.error("message:{}",errorAttributes.get("message"));
         }
 //        if (errorAttributes.containsKey("path")){
 //            myErrorAttributes.put("status",errorAttributes.get("path"));

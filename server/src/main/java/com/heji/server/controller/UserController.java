@@ -2,7 +2,6 @@ package com.heji.server.controller;
 
 import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.MUser;
-import com.heji.server.exception.UserException;
 import com.heji.server.module.UserInfo;
 import com.heji.server.result.Result;
 import com.heji.server.service.UserService;

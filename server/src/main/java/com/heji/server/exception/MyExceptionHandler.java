@@ -3,6 +3,7 @@ package com.heji.server.exception;
 import com.heji.server.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -11,29 +12,33 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 该拦截器会优先于ErrorAttributes,上线情况下再开启该拦截器
+ * 全局异常处理
+ * 该拦截器会优先于 MyErrorAttributes
+ * throw Exception -> ExceptionHandler -> ErrorAttributes
+ *
  */
-//@ControllerAdvice
+@ControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
-    @ResponseBody  //因为我需要将抛出的异常返回给接口，所以加上此注解
-    @ExceptionHandler
-    public String handle(Exception e) {
+public class MyExceptionHandler {
+    //处理自定义的业务异常
+    @ResponseBody  //异常信息返回给接口
+    @ExceptionHandler(value = GlobalException.class)// 仅仅拦截value对应的异常
+    public String handle(Exception e,HttpServletRequest request) {
         if (e instanceof GlobalException) {
             GlobalException ge = (GlobalException) e;
-            return Result.error(((GlobalException) e).getCode(), e.getMessage(),"error");
+            return Result.error(ge.getCode(), ge.getMessage(),"error");
         }
-        return Result.error(500, e.getMessage(),"error");
+        return Result.error(-1, e.getMessage(),"error");
     }
 
 
     @ResponseBody
     @ExceptionHandler
     public String testError(ArithmeticException e, HttpServletRequest request) {
-        log.error("出现了除零异常", e);
+        log.error("出现了ArithmeticException异常", e);
         request.setAttribute("javax.servlet.error.status_code", 500);
         request.setAttribute("code", 66);
-        request.setAttribute("message", "出现了除零异常");
+        request.setAttribute("message", "出现了ArithmeticException异常");
         return "forward:/error";
     }
 

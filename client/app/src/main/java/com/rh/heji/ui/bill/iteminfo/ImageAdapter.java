@@ -8,7 +8,6 @@ import com.blankj.utilcode.util.LogUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.ImageViewerPopupView;
 import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener;
 import com.lxj.xpopup.util.SmartGlideImageLoader;
 import com.rh.heji.GlideApp;
@@ -47,16 +46,12 @@ public class ImageAdapter extends BaseQuickAdapter<Image, BaseViewHolder> {
     }
 
     private void showGallery(int startPosition) {
+        OnSrcViewUpdateListener srcViewUpdateListener = (popupView, position) -> popupView.updateSrcView((ImageView) getRecyclerView().getChildAt(position));
         new XPopup.Builder(getContext())
                 .asImageViewer((ImageView) getRecyclerView().getChildAt(startPosition), startPosition, getPaths(),
                         false, false, -1, -1, -1, false,
                         Color.rgb(32, 36, 46),
-                        new OnSrcViewUpdateListener() {
-                            @Override
-                            public void onSrcViewUpdate(ImageViewerPopupView popupView, int position) {
-                                popupView.updateSrcView((ImageView) getRecyclerView().getChildAt(position));
-                            }
-                        }, new SmartGlideImageLoader(R.mipmap.ic_launcher), null)
+                        srcViewUpdateListener, new SmartGlideImageLoader(R.mipmap.ic_launcher), null)
                 .show();
     }
 

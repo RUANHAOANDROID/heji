@@ -13,13 +13,10 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.DatePicker
 import android.widget.TimePicker
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.TimeUtils
-import com.blankj.utilcode.util.ToastUtils
-import com.blankj.utilcode.util.UriUtils
+import com.blankj.utilcode.util.*
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.util.KeyboardUtils
 import com.matisse.Matisse.Companion.obtainResult
 import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
 import com.rh.heji.*
@@ -69,17 +66,16 @@ class AddBillFragment : BaseFragment() {
             bill.remark?.let { remark ->
                 binding.eidtRemark.setText(remark)
             }
-            (bill.imgCount > 0).let {
+            (bill.images.isNotEmpty()).let {
                 billViewModel.getBillImages()
                     .observe(this) { images ->
-                        val imageUrl =
+                        val imageUrl:MutableList<String> =
                             images.map { img ->
-                                val url =
-                                    if (img.localPath.isNullOrEmpty()) img.onlinePath else img.localPath
+                                val url =if (img.localPath.isNullOrEmpty()) img.onlinePath.toString() else img.localPath.toString()
                                 url?.let { url -> billViewModel.addImgUrl(url) }
                                 return@map url
-                            }.toList()
-                        pouSelectImage?.setData(imageUrl)
+                            }.toMutableList()
+                        pouSelectImage?.images =imageUrl
                         if (imageUrl.isNotEmpty())
                             binding.imgTicket.text = "图片(x" + images.size + ")"
                     }
@@ -247,7 +243,7 @@ class AddBillFragment : BaseFragment() {
             override fun saveAgain(result: String) {
                 ToastUtils.showLong(result)
                 saveBill(result, categoryViewModule.selectCategory, close = false)
-                clear()
+                reset()
             }
         })
     }
@@ -290,16 +286,16 @@ class AddBillFragment : BaseFragment() {
                 .asCustom(pouSelectImage)
                 .show()
             //selectImagePou.getLayoutParams().height = binding.keyboard.getRoot().getHeight();
-            pouSelectImage?.setDeleteClickListener { data: List<String> ->
-                billViewModel.imgUrls = data as MutableList<String>
+            pouSelectImage!!.deleteListener ={
+                billViewModel.imgUrls =it
             }
-            pouSelectImage?.setData(ArrayList())
+            pouSelectImage?.images= mutableListOf()
         }
-        val imgObserver = Observer { data: List<String?> ->
-            binding.imgTicket.text = "图片(x" + data.size + ")"
-            pouSelectImage?.setData(data)
-        }
-        billViewModel.imgUrlsLive.observe(this, imgObserver)
+
+        billViewModel.imagesChanged().observe(this,{
+            binding.imgTicket.text = "图片(x" + it.size + ")"
+            pouSelectImage?.images=it
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -355,7 +351,7 @@ class AddBillFragment : BaseFragment() {
         }
     }
 
-    fun clear() {
+    fun reset() {
         binding.keyboard.clear()
         binding.eidtRemark.setText("")
         binding.tvMoney.text = "0"

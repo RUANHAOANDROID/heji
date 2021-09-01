@@ -13,6 +13,7 @@ import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.utlis.launch
 import com.rh.heji.utlis.launchIO
 import com.rh.heji.utlis.runMainThread
 import kotlinx.coroutines.Dispatchers
@@ -80,7 +81,7 @@ class BookViewModel : BaseViewModel() {
 
     fun deleteBook(id: String, function: (Boolean) -> Unit) {
         launchIO({
-            val response =HejiNetwork.getInstance().bookDelete(id)
+            val response = HejiNetwork.getInstance().bookDelete(id)
             val billsCount = AppDatabase.getInstance().billDao().countByBookId(id)
             if (billsCount > 0) {
                 function(false)//删除失败
@@ -99,15 +100,17 @@ class BookViewModel : BaseViewModel() {
                     call(Result.Success(shareCode))
                 }
             }
-        },{
+        }, {
             call(Result.Error(it))
         })
     }
 
-    fun joinBook(code :String, call: (Result<String>) -> Unit){
-        launchIO({
-            val response =HejiNetwork.getInstance().bookJoin(code)
-        })
+    fun joinBook(code: String, call: (Result<String>) -> Unit) {
+        launch({
+            call(Result.Loading)
+            val response = HejiNetwork.getInstance().bookJoin(code)
+            call(Result.Success(response.data))
+        }, { call(Result.Error(it)) })
 
     }
 }

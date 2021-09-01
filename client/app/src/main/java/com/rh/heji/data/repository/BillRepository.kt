@@ -6,6 +6,7 @@ import com.rh.heji.FILE_LENGTH_1M
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.DataRepository
 import com.rh.heji.data.db.Bill
+import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
@@ -109,14 +110,17 @@ class BillRepository : DataRepository() {
         }
     }
 
-    suspend fun addBill(bill: Bill) {
-        billDao.install(bill)
+    suspend fun addBill(bill: Bill,images:MutableList<Image> = mutableListOf()) : Long {
+        var count=billDao.install(bill)
+        if (count>0)
+            AppDatabase.getInstance().imageDao().install(images)
         network.billPush(bill).let {
             if (it.code == OK) {
                 bill.synced = STATUS.SYNCED
                 billDao.update(bill)
             }
         }
+        return count
     }
 
     //    suspend fun deleteBill(billId: String) {

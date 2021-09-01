@@ -38,7 +38,11 @@ suspend fun runMainThread(
 ) = withContext(Dispatchers.Main) {
     block()
 }
-
+suspend fun runIOThread(
+    block: suspend () -> Unit
+) = withContext(Dispatchers.IO) {
+    block()
+}
 suspend fun <T> (() -> T).runMainThread() =withContext(Dispatchers.Main) { invoke() }
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi

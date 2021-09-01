@@ -87,16 +87,14 @@ data class Bill(
      */
     var remark: String? = null,
 
-    @ColumnInfo(name = "img_count")
-    var imgCount: Int = 0,
+    @Ignore
+    @ColumnInfo(name = "images")
+    var images: List<String> = mutableListOf(),
 
     @ColumnInfo(name = "sync_status")
     var synced: Int = STATUS.NOT_SYNCED
 
 ) : Parcelable {
-
-    @Ignore
-    var images: Array<String> = arrayOf()
 
     @Ignore
     override fun equals(o: Any?): Boolean {
@@ -123,7 +121,6 @@ data class Bill(
                 ", updateTime=" + updateTime +
                 ", dealer='" + dealer + '\'' +
                 ", remark='" + remark + '\'' +
-                ", imgCount=" + imgCount +
                 ", synced=" + synced +
                 '}'
     }

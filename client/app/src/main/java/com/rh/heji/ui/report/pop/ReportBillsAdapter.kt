@@ -20,7 +20,7 @@ class ReportBillsAdapter(layoutResId: Int, data: MutableList<Bill>) :
         holder.setText(R.id.tvMoney, "${if (bill.type == -1) "- " else "+ "}${bill.money}")
         holder.setTextColor(R.id.tvMoney, incomeColor)
         holder.setText(R.id.tvInfo, bill.remark)
-        if (bill.imgCount > 0) {
+        if (bill.images.isNotEmpty()) {
             holder.getView<TextView>(R.id.tvInfo).setCompoundDrawablesWithIntrinsicBounds(
                 context.getDrawable(R.drawable.ic_baseline_image_18),
                 null,
@@ -31,7 +31,7 @@ class ReportBillsAdapter(layoutResId: Int, data: MutableList<Bill>) :
             holder.getView<TextView>(R.id.tvInfo)
                 .setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         }
-        holder.setGone(R.id.tvInfo, TextUtils.isEmpty(bill.remark) && bill.imgCount == 0)
+        holder.setGone(R.id.tvInfo, TextUtils.isEmpty(bill.remark) && bill.images.isEmpty())
 
     }
 

@@ -22,6 +22,9 @@ interface ImageDao {
     @Query("delete from image where _bid =:billID")
     fun deleteBillImage(billID: String )
 
+    @Query("select id from image where _bid =:billID")
+    fun findImagesId(billID: String ):MutableList<String>
+
     @Transaction
     @Query("update image set local_path=:imagePath, sync_status =:status where id =:id")
     fun updateImageLocalPath(id: String , imagePath: String , status: Int): Int

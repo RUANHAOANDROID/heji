@@ -244,7 +244,10 @@ class ReportFragment : BaseFragment() {
         monthYearBillsAdapter.setOnItemClickListener { adapter, view, position ->
             val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
             val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
-            val bills = AppDatabase.getInstance().billDao().findByDay(yearMonthDay)
+            val bills = AppDatabase.getInstance().billDao().findByDay(yearMonthDay).filter {
+                it.images =AppDatabase.getInstance().imageDao().findImagesId(it.id)//c
+                return@filter true
+            }.toMutableList()
             val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
             bottomListPop.titleView.text = "$yearMonthDay (${bills.size}条)"
             XPopup.Builder(requireContext())

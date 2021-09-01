@@ -262,7 +262,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun enableDrawer() {
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        if (this::drawerLayout.isInitialized)
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
     fun setCurrentBook(bookName: String) {

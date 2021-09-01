@@ -1,16 +1,26 @@
 package com.rh.heji.ui.bill.iteminfo;
 
+import android.graphics.Color;
 import android.text.TextUtils;
+import android.widget.ImageView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.ImageViewerPopupView;
+import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener;
+import com.lxj.xpopup.util.SmartGlideImageLoader;
 import com.rh.heji.GlideApp;
 import com.rh.heji.R;
 import com.rh.heji.data.db.Image;
 import com.rh.heji.databinding.ItemImgBinding;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 票据图片Adapter
@@ -32,7 +42,22 @@ public class ImageAdapter extends BaseQuickAdapter<Image, BaseViewHolder> {
                 .error(R.drawable.ic_baseline_image_load_error_24)
                 .placeholder(R.drawable.ic_baseline_image_24)
                 .into(binding.itemImage);
+        binding.itemImage.setOnClickListener(v -> showGallery(holder.getLayoutPosition()));
         LogUtils.d(image.getLocalPath(), image.getOnlinePath(), path);
+    }
+
+    private void showGallery(int startPosition) {
+        new XPopup.Builder(getContext())
+                .asImageViewer((ImageView) getRecyclerView().getChildAt(startPosition), startPosition, getPaths(),
+                        false, false, -1, -1, -1, false,
+                        Color.rgb(32, 36, 46),
+                        new OnSrcViewUpdateListener() {
+                            @Override
+                            public void onSrcViewUpdate(ImageViewerPopupView popupView, int position) {
+                                popupView.updateSrcView((ImageView) getRecyclerView().getChildAt(position));
+                            }
+                        }, new SmartGlideImageLoader(R.mipmap.ic_launcher), null)
+                .show();
     }
 
     /**
@@ -52,4 +77,7 @@ public class ImageAdapter extends BaseQuickAdapter<Image, BaseViewHolder> {
         return path;
     }
 
+    private List<Object> getPaths() {
+        return getData().stream().map((Function<Image, Object>) image -> getImagePath(image)).collect(Collectors.toList());
+    }
 }

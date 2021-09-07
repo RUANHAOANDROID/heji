@@ -129,7 +129,7 @@ class ReportFragment : BaseFragment() {
         })
         emptyStubView.setOnInflateListener { stub, inflated ->
             val emptyLayoutBinding = LayoutEmptyBinding.bind(inflated)
-            emptyLayoutBinding.tvContext.text = "加载失败，点击重试加载"
+            emptyLayoutBinding.tvContext.text = "没有更多账单数据"
             emptyLayoutBinding.tvContext.setOnClickListener {
                 ToastUtils.showShort("重试加载失败")
             }

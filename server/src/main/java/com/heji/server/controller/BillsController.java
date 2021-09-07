@@ -81,7 +81,7 @@ public class BillsController {
     }
 
     @ResponseBody
-    @GetMapping(value = {"delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = {"delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteById(@RequestParam String _id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         MBill mBill = billService.getBillInfo(_id);

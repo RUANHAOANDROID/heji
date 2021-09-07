@@ -10,6 +10,7 @@ import com.heji.server.result.Result;
 import com.heji.server.service.BookService;
 import com.heji.server.service.BookShareService;
 import com.heji.server.service.OperateLogService;
+import com.heji.server.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -70,6 +71,11 @@ public class BookController {
             throw new OperationException("更新失败，账本权限不匹配");
         }
         bookService.updateBook(new MBook().set_id(bookId).setName(bookName).setType(bookType));
+        operateLogService.addOperateLog(new MOperateLog()
+                .setBookId(bookId)
+                .setOpeDate(TimeUtils.getNowString())
+                .setOpeClass(MOperateLog.BOOK)
+                .setOpeType(MOperateLog.UPDATE));
         return Result.success(bookId);
     }
 
@@ -86,10 +92,11 @@ public class BookController {
         bookService.deleteBook(bookId);
         //写入操作日志
         operateLogService.addOperateLog(new MOperateLog()
-                .setTargetId(bookId)
-                .setType(MOperateLog.DELETE)
-                .setDate(new Date())
-                .setOptClass(MOperateLog.BOOK));
+                .setBookId(bookId)
+                .setOpeID(bookId)
+                .setOpeType(MOperateLog.DELETE)
+                .setOpeDate(TimeUtils.getNowString())
+                .setOpeClass(MOperateLog.BOOK));
         return Result.success(bookId);
     }
 

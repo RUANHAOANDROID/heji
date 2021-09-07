@@ -7,6 +7,7 @@ import com.heji.server.exception.OperationException;
 import com.heji.server.result.Result;
 import com.heji.server.service.CategoryService;
 import com.heji.server.service.OperateLogService;
+import com.heji.server.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -70,10 +71,10 @@ public class CategoryController {
         }
         //写入操作日志
         operateLogService.addOperateLog(new MOperateLog()
-                .setTargetId(_id)
-                .setType(MOperateLog.DELETE)
-                .setDate(new Date())
-                .setOptClass(MOperateLog.CATEGORY));
+                .setOpeID(_id)
+                .setOpeType(MOperateLog.DELETE)
+                .setOpeDate(TimeUtils.getNowString())
+                .setOpeClass(MOperateLog.CATEGORY));
         return Result.success("删除成功");
     }
 }

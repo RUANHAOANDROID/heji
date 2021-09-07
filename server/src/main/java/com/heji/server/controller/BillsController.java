@@ -81,7 +81,7 @@ public class BillsController {
     }
 
     @ResponseBody
-    @DeleteMapping(value = {"delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = {"/delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteById(@RequestParam String _id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         MBill mBill = billService.getBillInfo(_id);
@@ -103,10 +103,11 @@ public class BillsController {
         }
         operateLogService.addOperateLog(
                 new MOperateLog()
-                        .setTargetId(_id)
-                        .setDate(new Date())
-                        .setOptClass(MOperateLog.BILL)
-                        .setType(MOperateLog.DELETE));
+                        .setBookId(mBill.getBookId())
+                        .setOpeID(_id)
+                        .setOpeDate(TimeUtils.getNowString())
+                        .setOpeClass(MOperateLog.BILL)
+                        .setOpeType(MOperateLog.DELETE));
         return Result.success("删除成功:", _id);
         //return Result.success(_id);
     }
@@ -116,10 +117,11 @@ public class BillsController {
     public String updateBill(@RequestBody MBill bill) {
         billService.updateBill(bill);
         operateLogService.addOperateLog(new MOperateLog()
-                .setTargetId(bill.get_id())
-                .setType(MOperateLog.DELETE)
-                .setDate(new Date())
-                .setOptClass(MOperateLog.BILL));
+                .setOpeID(bill.get_id())
+                .setBookId(bill.getBookId())
+                .setOpeType(MOperateLog.DELETE)
+                .setOpeDate(TimeUtils.getNowString())
+                .setOpeClass(MOperateLog.BILL));
         return Result.success("更新成功", bill.get_id());
     }
 

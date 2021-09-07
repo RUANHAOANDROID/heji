@@ -33,11 +33,18 @@ public class MOperateLog {
     @Id
     String _id;
 
-    String targetId;//操作对象的ID，根据ID同步本地数据库
+    //book ID
+    String bookId;
 
-    Integer type; // delete ,update
+    //操作对象ID
+    String opeID;//操作对象的ID，根据ID同步本地数据库 {bookId or billId or categoryId}
 
-    Integer optClass;//操作的可以是账本，账单，类别
+    //操作对象类别
+    Integer opeClass;//操作的可以是账本，账单，类别{0:book,1:bill,2:category}
 
-    Date date;
+    //操作类型
+    Integer opeType; // {delete or update}
+
+    //操作时间
+    String opeDate;
 }

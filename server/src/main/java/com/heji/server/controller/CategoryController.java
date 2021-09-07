@@ -62,7 +62,7 @@ public class CategoryController {
     }
 
     @ResponseBody
-    @GetMapping(value = {"/delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = {"/delete"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteCategory(@RequestParam() String _id) {
         boolean isOk = categoryService.delete(_id);
         if (!isOk) {

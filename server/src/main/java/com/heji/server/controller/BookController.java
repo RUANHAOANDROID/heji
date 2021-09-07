@@ -74,7 +74,7 @@ public class BookController {
     }
 
     @ResponseBody
-    @PostMapping(value = {"/deleteBook"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = {"/deleteBook"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteBook(@RequestParam String bookId, Authentication auth) {
         if (bookService.exists(bookId)){
             throw new NotFoundException("删除失败，账本不存在");

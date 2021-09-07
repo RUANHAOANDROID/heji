@@ -6,27 +6,19 @@ import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.rh.heji.MainActivity
 
-class HomeDrawerListener(private val mainActivity: MainActivity, var listener: DrawerSlideListener) : DrawerListener {
+class HomeDrawerListener(private val mainActivity: MainActivity,val offset:(left:Int,top:Int,right:Int,bottom:Int) -> Unit ) : DrawerListener {
 
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
         val displayMetrics = DisplayMetrics()
         mainActivity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        listener.offset(
-                drawerView.right,
-                drawerView.top,
-                (displayMetrics.widthPixels + displayMetrics.widthPixels * slideOffset).toInt(),
-                drawerView.bottom)
+        offset(
+                drawerView.right,//drawerView右边缘
+                drawerView.top,//顶部 0
+                (displayMetrics.widthPixels + displayMetrics.widthPixels * slideOffset).toInt(),//drawerView右边缘+屏幕宽度
+                drawerView.bottom)//屏幕高度
     }
 
     override fun onDrawerOpened(drawerView: View) {}
     override fun onDrawerClosed(drawerView: View) {}
     override fun onDrawerStateChanged(newState: Int) {}
-}
-
-interface DrawerSlideListener {
-    fun offset(left: Int,//drawerView右边缘
-               top: Int,//顶部 0
-               right: Int,//drawerView右边缘+屏幕宽度
-               bottom: Int//屏幕高度
-    )
 }

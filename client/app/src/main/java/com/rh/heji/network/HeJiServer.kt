@@ -53,7 +53,7 @@ interface HeJiServer {
                    @Query("bookName") bookName:String,
                    @Query("bookType")  bookType:String):Call<BaseResponse<String>>
 
-    @POST("book/deleteBook")
+    @DELETE("book/deleteBook")
     fun bookDelete(@Query("bookId") book: String): Call<BaseResponse<String>>
 
     @POST("book/getBooks")
@@ -72,7 +72,7 @@ interface HeJiServer {
     @POST("bill/addBills")
     fun saveBills(@Body entity: List<Bill>): Call<BaseResponse<String>>
 
-    @GET("bill/delete")
+    @DELETE("bill/delete")
     fun deleteBill(@Query("_id") uid: String): Call<BaseResponse<String>>
 
     @POST("bill/getBills")
@@ -88,7 +88,7 @@ interface HeJiServer {
     @POST("category/add")
     fun addCategory(@Body categories: CategoryEntity): Call<BaseResponse<String>>
 
-    @GET("category/delete")
+    @DELETE("category/delete")
     fun deleteCategoryById(@Query("_id") _id: String): Call<BaseResponse<String>>
 
     @GET("category/getByBookId")//获取基础的类别

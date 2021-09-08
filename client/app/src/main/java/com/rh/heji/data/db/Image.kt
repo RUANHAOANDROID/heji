@@ -22,7 +22,7 @@ data class Image(
     @PrimaryKey
     var id: String,
     @ColumnInfo(name = COLUMN_ID, index = true)
-    var billImageID: String
+    var billID: String
 ) {
 
 
@@ -43,19 +43,19 @@ data class Image(
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
         val image = o as Image
-        return id === image.id && billImageID == image.billImageID &&
+        return id === image.id && billID == image.billID &&
                 localPath == image.localPath &&
                 onlinePath == image.onlinePath
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, billImageID, localPath, onlinePath)
+        return Objects.hash(id, billID, localPath, onlinePath)
     }
 
     override fun toString(): String {
         return "Image{" +
                 "_id='" + id + '\'' +
-                ", bill_id='" + billImageID + '\'' +
+                ", bill_id='" + billID + '\'' +
                 ", md5='" + md5 + '\'' +
                 ", ext='" + ext + '\'' +
                 ", localPath='" + localPath + '\'' +

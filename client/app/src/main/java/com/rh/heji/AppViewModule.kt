@@ -9,6 +9,7 @@ import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.CRUD
 import com.rh.heji.data.DBObservable
 import com.rh.heji.data.db.Bill
+import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.data.repository.CategoryRepository
 import com.rh.heji.network.HejiNetwork
@@ -16,15 +17,13 @@ import com.rh.heji.service.work.DataSyncWork
 import com.rh.heji.utlis.launchIO
 
 class AppViewModule(application: Application) : AndroidViewModel(application) {
-    val network: HejiNetwork = HejiNetwork.getInstance()
     private val billRepository = BillRepository()
-    private val categoryRepository = CategoryRepository()
+
     val asyncLiveData = MediatorLiveData<Any>()
 
     val dbObservable = MediatorLiveData<DBObservable>()
 
-     val loginEvent = MediatorLiveData<Event<Any>>()
-
+    val loginEvent = MediatorLiveData<Event<Any>>()
 
 
     init {
@@ -37,14 +36,19 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun billPush(bill: Bill) {
-        launchIO({ billRepository.pushBill(bill) })
-
-    }
-
     fun billDelete(bill: Bill) {
         launchIO({
-            AppDatabase.getInstance().billDao().preDelete(bill.id)
+            val status = AppDatabase.getInstance().billDao().status(bill.id)
+            when (status) {
+                STATUS.NOT_SYNCED -> {//未同步直接删除
+                    AppDatabase.getInstance().billDao().deleteById(bill.id)
+                    dbObservable.postValue(DBObservable(CRUD.DELETE, bill))
+                    return@launchIO
+                }
+                else -> {
+                    AppDatabase.getInstance().billDao().preDelete(bill.id)
+                }
+            }
             dbObservable.postValue(DBObservable(CRUD.DELETE, bill))
             billRepository.deleteBill(bill.id)
         })
@@ -54,11 +58,12 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     fun asyncData() {
         launchIO({
             var dataAsyncWork = DataSyncWork()
-            dataAsyncWork.asyncBooks()
+            dataAsyncWork.syncLog()
+            dataAsyncWork.syncBooks()
             //DataSyncWork 方法执行在IO线程
-            dataAsyncWork.asyncBills()
-            dataAsyncWork.asyncCategory()
-            asyncLiveData.postValue("OJBK")
+            dataAsyncWork.syncBills()
+            dataAsyncWork.syncCategory()
+            asyncLiveData.postValue("OJBK")//同步完成通知刷新
         }, {
             it.printStackTrace()
         })

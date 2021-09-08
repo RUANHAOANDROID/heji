@@ -25,8 +25,14 @@ interface BillDao {
     @Update(entity =Bill::class ,onConflict = OnConflictStrategy.REPLACE)
     fun update(bill: Bill): Int
 
+    @Query("select sync_status from bill where id=:billId")
+    fun status(billId: String): Int
+
     @Query("update bill set sync_status = ${STATUS.DELETED} where id=:billId")
     fun preDelete(billId: String): Int
+
+    @Query("select id from bill where book_id=:bookId")
+    fun idsDeleted(bookId: String): Flow<List<String>>
 
     @Query("delete from bill where id=:billId")
     fun deleteById(billId: String): Int

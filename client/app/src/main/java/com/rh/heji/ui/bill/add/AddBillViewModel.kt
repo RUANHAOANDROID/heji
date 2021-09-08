@@ -10,6 +10,7 @@ import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
 import com.rh.heji.utlis.runMainThread
+import kotlinx.coroutines.flow.collect
 import java.math.BigDecimal
 import java.util.*
 import java.util.function.Consumer
@@ -52,6 +53,7 @@ class AddBillViewModel : BaseViewModel() {
         val images = imgUrls.stream().map { s: String? ->
             val image = Image(ObjectId().toString(), bill.id)
             image.localPath = s
+            image.synced =STATUS.NOT_SYNCED
             image
         }.collect(Collectors.toList())
         bill.apply {
@@ -62,16 +64,18 @@ class AddBillViewModel : BaseViewModel() {
             bill.type = category.type
             bill.category = category.category
         }
-        launchIO({
-            var count =billRepository.addBill(bill,images)
-            if (count > 0) {
-                ToastUtils.showShort("已保存: ${bill.category + money}  ")
-            }
-          runMainThread {
-              saveCall(bill)
-              bill.id=ObjectId.get().toHexString()//保存重新赋值ID
-          }
 
+        launchIO({
+            billRepository.addBill(bill,images).collect {
+                if (it > 0) {
+                    ToastUtils.showShort("已保存: ${bill.category + money}  ")
+                }
+                runMainThread {
+                    saveCall(bill)
+                    bill.id=ObjectId.get().toHexString()//保存重新赋值ID
+                }
+
+            }
         }, {
             ToastUtils.showShort(it.message)
         })

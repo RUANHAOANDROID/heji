@@ -19,12 +19,13 @@ class HttpHeaderInterceptor() : Interceptor {
         Log.d("OKHTTP", "HttpHeaderInterceptor $bearerToken")
         if (TextUtils.isEmpty(bearerToken)) {
             Log.d("OKHTTP", "HttpHeaderInterceptor:{not login}")
-            sendLoginBroadcast()
         }
         val request: Request = chain.request().newBuilder()
             //.header("Content-Type", "application/json")
             .addHeader("Authorization", bearerToken)
             .build()
+        if (!request.url.encodedPath.contains("login") && bearerToken.isNullOrEmpty())//非登录请求，且Token为空
+            sendLoginBroadcast()
         return chain.proceed(request)
     }
 

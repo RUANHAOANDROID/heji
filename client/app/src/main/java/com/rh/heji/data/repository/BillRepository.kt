@@ -2,6 +2,7 @@ package com.rh.heji.data.repository
 
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.App
+import com.rh.heji.AppViewModule
 import com.rh.heji.FILE_LENGTH_1M
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.DataRepository
@@ -11,6 +12,7 @@ import com.rh.heji.data.db.STATUS
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.response.ImageEntity
+import com.rh.heji.utlis.launch
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -20,21 +22,6 @@ import top.zibin.luban.Luban
 import java.io.File
 
 class BillRepository : DataRepository() {
-    /**
-     * 保存账单至Server
-     */
-    suspend fun pushBill(bill: Bill) {
-        val response = network.billPush(bill)
-        if (response.code == 0) {
-            response.data.let {
-                bill.synced = STATUS.SYNCED
-                billDao.update(bill)//已上传
-                uploadImage(bill.id)
-            }
-        }
-
-    }
-
 
     suspend fun deleteBill(_id: String) {
         var response = network.billDelete(_id)
@@ -86,7 +73,7 @@ class BillRepository : DataRepository() {
                     MultipartBody.Part.createFormData("file", fileName, requestBody)
                 val time = imgFile.lastModified()
                 val objectId = image.id
-                val response: BaseResponse<ImageEntity> = network.billImageUpload(
+                val response: BaseResponse<ImageEntity> = network.imageUpload(
                     part,
                     objectId, bill_id, time
                 )
@@ -110,37 +97,32 @@ class BillRepository : DataRepository() {
         }
     }
 
-    suspend fun addBill(bill: Bill,images:MutableList<Image> = mutableListOf()) : Long {
-        var count=billDao.install(bill)
-        if (count>0)
-            AppDatabase.getInstance().imageDao().install(images)
-        network.billPush(bill).let {
-            if (it.code == OK) {
-                bill.synced = STATUS.SYNCED
-                billDao.update(bill)
-            }
-        }
-        return count
-    }
-
-    //    suspend fun deleteBill(billId: String) {
-//        billDao.preDelete(billId)
-//        network.bookDelete(book_id = billId).let {
-//            billDao.deleteById(billId)
-//        }
-//    }
-//
-//    suspend fun updateBill(bill: Bill) {
-//        bill.synced = STATUS.UPDATED
-//        billDao.update(bill)
-//        network.billUpdate(bill).let {
-//            bill.synced = STATUS.SYNCED
-//            billDao.update(bill)
-//        }
-//    }
-    suspend fun queryBills(statTime: String, endTime: String): Flow<MutableList<Bill>> {
+    /**
+     * 添加账单，保存到数据库就算成功，同步交给AppViewModule
+     */
+    suspend fun addBill(bill: Bill, images: MutableList<Image> = mutableListOf()): Flow<Long> {
         return flow {
-//            billDao.findBetweenTime()
+            val bid = bill.id//避免发射后UI重置ID
+            var count = billDao.install(bill)
+            if (count > 0){
+                emit(count)//--发射
+                bill.id=bid
+                AppViewModule.get().launch({
+                    network.billPush(bill).let {
+                        if (it.code == OK) {
+                            bill.synced = STATUS.SYNCED
+                            billDao.update(bill)
+                        }
+                    }
+
+                })
+            }
+            if (images.size>0){
+                AppDatabase.getInstance().imageDao().install(images)
+                uploadImage(bid)
+            }
+
+
         }
     }
 }

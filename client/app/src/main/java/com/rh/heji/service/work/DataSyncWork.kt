@@ -23,28 +23,27 @@ class DataSyncWork {
     private val billDao = AppDatabase.getInstance().billDao()
     private val categoryDao = AppDatabase.getInstance().categoryDao()
     private val billRepository = BillRepository()
-
-    /**
-     * 根据服务器账本删除日志，同步删除本地数据
-     */
-    suspend fun asyncDelete() {
+    suspend fun syncLog() {
+        /**
+         * 根据服务器账本删除日志，同步删除本地数据
+         */
         val response = HejiNetwork.getInstance().operateLogGetDelete(currentBook.id)
         if (response.code == 0 && response.data.isNotEmpty()) {
             val operates = response.data
             for (opt in operates) {
                 when (opt.optClass) {
                     OperateLog.BOOK -> {
-                        if (opt.type==OperateLog.DELETE){
+                        if (opt.type == OperateLog.DELETE) {
                             bookDao.deleteById(opt.targetId)
                         }
                     }
                     OperateLog.BILL -> {
-                        if (opt.type==OperateLog.DELETE){
+                        if (opt.type == OperateLog.DELETE) {
                             billDao.deleteById(opt.targetId)
                         }
                     }
                     OperateLog.CATEGORY -> {
-                        if (opt.type==OperateLog.DELETE){
+                        if (opt.type == OperateLog.DELETE) {
                             categoryDao.deleteById(opt.targetId)
                         }
                     }
@@ -52,19 +51,81 @@ class DataSyncWork {
             }
         }
     }
+    suspend fun syncBills() {
+        suspend fun delete() {
+            val deleteBills = billDao.findByStatus(STATUS.DELETED)
+            if (deleteBills.isNotEmpty()) {
+                deleteBills.forEach { bill ->
+                    var response = network.billDelete(bill.id)
+                    if (response.code == 0) {
+                        billDao.delete(bill)
+                    }
+                }
+            }
+        }
 
-    suspend fun asyncBills() {
+        suspend fun update() {
+            val updateBills = billDao.findByStatus(STATUS.UPDATED)
+            if (updateBills.isNotEmpty()) {
+                updateBills.forEach { bill ->
+                    val response = network.billUpdate(bill)
+                    if (response.code == 0) {
+                        bill.synced = STATUS.SYNCED
+                        AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
+                        billDao.delete(bill)
+                    }
+                }
+            }
+        }
 
+        suspend fun pull() {
+            val currentLastDay =
+                MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month);
+            val statDate =
+                YearMonth(currentYearMonth.year, currentYearMonth.month, 1).toYearMonthDay()
+            val endDate = YearMonth(
+                currentYearMonth.year,
+                currentYearMonth.month,
+                currentLastDay
+            ).toYearMonthDay()
+            val pullBillsResponse = network.billPull(statDate, endDate)
+            var data = pullBillsResponse.data
+            data?.let { serverBills ->
+                if (serverBills.isNotEmpty()) {
+                    serverBills.forEach { serverBill ->
+                        val existCount = billDao.countById(serverBill.id)//本地的
+
+                        if (existCount == 0) {//不存在直接存入
+                            billDao.install(serverBill)
+                        }
+                        var imagesId = serverBill.images//云图片
+                        if (null != imagesId && imagesId.size > 0) {//有图片
+                            var response = network.imageDownload(serverBill.id)
+                            response.data?.forEach { entity ->
+                                var image = Image(entity._id, billID = serverBill.id)
+                                image.id = entity._id
+                                image.md5 = entity.md5
+                                image.onlinePath = entity._id.toString()
+                                image.ext = entity.ext
+                                image.billID = serverBill.id
+                                image.synced = STATUS.SYNCED
+                                AppDatabase.getInstance().imageDao().install(image)
+                                LogUtils.d("账单图片信息已保存 $image")
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
         withContext(Dispatchers.IO) {
-            asyncDelete()
-            billDelete()
-            billsUpdate()
-            billsPush()
-            billsPull()
+            delete()
+            update()
+            pull()
         }
     }
 
-    suspend fun asyncCategory() {
+    suspend fun syncCategory() {
         withContext(Dispatchers.IO) {
             categoryDelete()
             categoryUpdate()
@@ -123,82 +184,8 @@ class DataSyncWork {
         }
     }
 
-    private suspend fun billDelete() {
-        val deleteBills = billDao.findByStatus(STATUS.DELETED)
-        if (deleteBills.isNotEmpty()) {
-            deleteBills.forEach { bill ->
-                var response = network.billDelete(bill.id)
-                if (response.code == 0) {
-                    billDao.delete(bill)
-                }
-            }
-        }
-    }
 
-    private suspend fun billsUpdate() {
-        val updateBills = billDao.findByStatus(STATUS.UPDATED)
-        if (updateBills.isNotEmpty()) {
-            updateBills.forEach { bill ->
-                val response = network.billUpdate(bill)
-                if (response.code == 0) {
-                    bill.synced = STATUS.SYNCED
-                    AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
-                    billDao.delete(bill)
-                }
-            }
-        }
-    }
-
-    private suspend fun billsPush() {
-        val pushBills = billDao.findByStatus(STATUS.NOT_SYNCED)
-        if (pushBills.isNotEmpty()) {
-            pushBills.forEach { bill ->
-                billRepository.pushBill(bill)
-            }
-        }
-    }
-
-    private suspend fun billsPull() {
-        val currentLastDay =
-            MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month);
-        val statDate = YearMonth(currentYearMonth.year, currentYearMonth.month, 1).toYearMonthDay()
-        val endDate = YearMonth(
-            currentYearMonth.year,
-            currentYearMonth.month,
-            currentLastDay
-        ).toYearMonthDay()
-        val pullBillsResponse = network.billPull(statDate, endDate)
-        var data = pullBillsResponse.data
-        data?.let { serverBills ->
-            if (serverBills.isNotEmpty()) {
-                serverBills.forEach { serverBill ->
-                    val existCount = billDao.countById(serverBill.id)//本地的
-
-                    if (existCount == 0) {//不存在直接存入
-                        billDao.install(serverBill)
-                    }
-                    var imagesId = serverBill.images//云图片
-                    if (null != imagesId && imagesId.size > 0) {//有图片
-                        var response = network.billPullImages(serverBill.id)
-                        response.data?.forEach { entity ->
-                            var image = Image(entity._id, billImageID = serverBill.id)
-                            image.id = entity._id
-                            image.md5 = entity.md5
-                            image.onlinePath = entity._id.toString()
-                            image.ext = entity.ext
-                            image.billImageID = serverBill.id
-                            image.synced = STATUS.SYNCED
-                            AppDatabase.getInstance().imageDao().install(image)
-                            LogUtils.d("账单图片信息已保存 $image")
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-    suspend fun asyncBooks() {
+    suspend fun syncBooks() {
         network.bookPull().let {
             if (it.code == 0) {
                 it.data.forEach { netBook ->

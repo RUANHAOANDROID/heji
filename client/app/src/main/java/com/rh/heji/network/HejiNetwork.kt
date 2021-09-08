@@ -5,7 +5,6 @@ import com.rh.heji.currentBook
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.ErrorLog
-import com.rh.heji.moshi
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterUser
 import com.rh.heji.utlis.http.basic.HttpRetrofit
@@ -39,26 +38,17 @@ class HejiNetwork {
     suspend fun bookDelete(book_id: String) = hejiServer.bookDelete(book_id).await()
     suspend fun bookUpdate(book_id: String, bookName: String, bookType: String) =
         hejiServer.bookUpdate(book_id, bookName, bookType).await()
-
     suspend fun bookJoin(sharedCode: String) = hejiServer.bookJoin(sharedCode).await()
-
     suspend fun billPush(bill: Bill) = hejiServer.saveBill(bill).await()
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
     suspend fun billUpdate(bill: Bill) = hejiServer.updateBill(bill).await()
     suspend fun billPull(startTime: String, endTime: String, book_id: String = currentBook.id) =
         hejiServer.getBills(book_id, startTime, endTime).await()
-
-    suspend fun billImageUpload(
-        @Part part: MultipartBody.Part,
-        _id: String,
-        bill_id: String,
-        time: Long,
-    ) = hejiServer.uploadImg(part, _id, bill_id, time).await()
-
-    suspend fun billPullImages(_id: String) = hejiServer.getBillImages(_id).await()
+    suspend fun imageUpload(@Part part: MultipartBody.Part, _id: String, _bid: String, time: Long, ) =
+        hejiServer.uploadImg(part, _id, _bid, time).await()
+    suspend fun imageDownload(_id: String) = hejiServer.getBillImages(_id).await()
     suspend fun billExport(year: String = "0", month: String = "0"): Response<ResponseBody> =
         hejiServer.exportBills(year, month).execute()
-
     suspend fun categoryPush(category: CategoryEntity) = hejiServer.addCategory(category).await()
     suspend fun categoryDelete(_id: String) = hejiServer.deleteCategoryById(_id).await()
     suspend fun categoryPull(_id: String = "0") = hejiServer.getCategories(_id).await()

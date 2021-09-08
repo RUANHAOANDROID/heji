@@ -30,21 +30,21 @@ class DataSyncWork {
         val response = HejiNetwork.getInstance().operateLogGetDelete(currentBook.id)
         if (response.code == 0 && response.data.isNotEmpty()) {
             val operates = response.data
-            for (opt in operates) {
-                when (opt.optClass) {
+            for (operate in operates) {
+                when (operate.opeClass) {
                     OperateLog.BOOK -> {
-                        if (opt.type == OperateLog.DELETE) {
-                            bookDao.deleteById(opt.targetId)
+                        if (operate.opeType == OperateLog.DELETE) {
+                            bookDao.deleteById(operate.bookId)
                         }
                     }
                     OperateLog.BILL -> {
-                        if (opt.type == OperateLog.DELETE) {
-                            billDao.deleteById(opt.targetId)
+                        if (operate.opeType == OperateLog.DELETE) {
+                            billDao.deleteById(operate.opeID)
                         }
                     }
                     OperateLog.CATEGORY -> {
-                        if (opt.type == OperateLog.DELETE) {
-                            categoryDao.deleteById(opt.targetId)
+                        if (operate.opeType == OperateLog.DELETE) {
+                            categoryDao.deleteById(operate.opeID)
                         }
                     }
                 }
@@ -203,7 +203,7 @@ class DataSyncWork {
         for (book in notAsyncBooks) {
             book.synced = STATUS.SYNCED
             book.createUser = JWTParse.getUser(Token.decodeToken()).username
-            val response = network.bookPush(book)
+            val response = network.bookCreate(book)
             if (response.code == 0) {
                 val count = bookDao.update(book)
                 if (count > 0) {

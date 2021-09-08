@@ -39,26 +39,12 @@ class AppInitializer : Initializer<Unit> {
 //        }
         MMKV.initialize(context)
         GlobalScope.launch(Dispatchers.IO) {
-
             startCount()
-            initDataBase(context)
         }
 
     }
 
-    private fun initDataBase(context: Context) {
-        AppDatabase.getInstance(context).let {
-            val bookDao = it.bookDao()
-            val categoryDao = it.categoryDao()
-            if (bookDao.count() == 0) {
-                bookDao.insert(currentBook)
-            }
-            if (categoryDao.count() == 0) {
-                categoryDao.insert(incomeDefaultCategory)
-                categoryDao.insert(expenditureDefaultCategory)
-            }
-        }
-    }
+
 
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
@@ -74,45 +60,4 @@ class AppInitializer : Initializer<Unit> {
         mmkv()!!.encode(key, startCount + 1)
     }
 
-    fun fakeData() {
-        val u1 = Dealer("锅得铁")
-        val u2 = Dealer("谢大脚")
-        val u3 = Dealer("赵四")
-        val u4 = Dealer("刘能")
-        val u5 = Dealer("永强")
-        AppDatabase.getInstance().dealerDao().insert(u1)
-        AppDatabase.getInstance().dealerDao().insert(u2)
-        AppDatabase.getInstance().dealerDao().insert(u3)
-        AppDatabase.getInstance().dealerDao().insert(u4)
-        AppDatabase.getInstance().dealerDao().insert(u5)
-
-        val startCount = mmkv()!!.decodeInt("start", 0)//首次启动
-        if (startCount == 1) {
-            val c0_0 = Category(ObjectId().toString(), "其他", 0, -1)
-            val c0_1 = Category(ObjectId().toString(), "其他", 0, 1)
-            AppDatabase.getInstance().categoryDao().insert(c0_0)
-            AppDatabase.getInstance().categoryDao().insert(c0_1)
-            val book = Book(name = "个人账本",createUser = currentUser.username)
-            AppDatabase.getInstance().bookDao().insert(book)
-            currentBook = book
-        }
-        if (startCount == 1) {
-            val c1 = Category(ObjectId().toString(), "吃饭", 0, -1)
-            val c2 = Category(ObjectId().toString(), "交通", 0, -1)
-            val c3 = Category(ObjectId().toString(), "文具", 0, -1)
-            val c4 = Category(ObjectId().toString(), "保险", 0, -1)
-            val c5 = Category(ObjectId().toString(), "随礼", 0, -1)
-            val c6 = Category(ObjectId().toString(), "日常", 0, 1)
-
-            AppDatabase.getInstance().categoryDao().insert(c5)
-            AppDatabase.getInstance().categoryDao().insert(c4)
-            AppDatabase.getInstance().categoryDao().insert(c3)
-            AppDatabase.getInstance().categoryDao().insert(c2)
-            AppDatabase.getInstance().categoryDao().insert(c1)
-
-            AppDatabase.getInstance().categoryDao().insert(c6)
-
-
-        }
-    }
 }

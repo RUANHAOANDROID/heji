@@ -1,6 +1,9 @@
 package com.rh.heji.network.response
 
-data class OperateLog(val targetId: String, val type: Int, val optClass: Int) {
+data class OperateLog(val bookId: String,
+                      val opeID: String,
+                      val opeType: Int,
+                      val opeClass: Int) {
     companion object {
         const val DELETE = 0
         const val UPDATE = 1

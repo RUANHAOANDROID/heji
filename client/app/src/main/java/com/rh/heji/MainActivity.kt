@@ -7,6 +7,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -193,7 +194,7 @@ class MainActivity : AppCompatActivity() {
 
                         }
                     }
-                    LogUtils.d(destination.label)
+                    Log.d("MainActivity",destination.label.toString())
                 }
             })
     }

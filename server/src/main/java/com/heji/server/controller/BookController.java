@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,11 +83,12 @@ public class BookController {
     @ResponseBody
     @DeleteMapping(value = {"/deleteBook"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteBook(@RequestParam String bookId, Authentication auth) {
-        if (bookService.exists(bookId)){
+        if (!bookService.exists(bookId)){
             throw new NotFoundException("删除失败，账本不存在");
         }
         //校验操作用户是否是账本创建人
-        if (auth.getName() != bookService.findBook(bookId).getUsers().get(0).getName()) {
+        MBook book = bookService.findBook(bookId);
+        if (!auth.getName().equals(book.getUsers().get(0).getName())) {
             throw new OperationException("删除失败，账本权限不匹配");
         }
         bookService.deleteBook(bookId);

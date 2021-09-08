@@ -1,6 +1,7 @@
 package com.rh.heji.ui.book
 
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ClickUtils
 import com.blankj.utilcode.util.ToastUtils
@@ -8,6 +9,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.XPopup
 import com.rh.heji.*
+import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.Result
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Book
@@ -18,6 +20,7 @@ import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.book.pop.BottomSharePop
 import com.rh.heji.utlis.runMainThread
 import kotlinx.coroutines.flow.collect
+import java.lang.Error
 
 class BookSettingFragment : BaseFragment() {
 
@@ -65,7 +68,15 @@ class BookSettingFragment : BaseFragment() {
 
     private fun deleteBook() {
         binding.tvDeleteBook.setOnClickListener {
-            viewModel.deleteBook(book.id, {})
+            XPopup.Builder(requireContext()).asConfirm("删除提示", "该账本下有 条账单确认删除？") {
+                viewModel.deleteBook(book.id) {
+                    if (it is Result.Success) {
+                        findNavController().popBackStack()
+                    }
+                    ToastUtils.showLong("删除${if (it is Result.Error) "${it.exception.message}" else "失败"}")
+                }
+            }.show()
+
         }
     }
 

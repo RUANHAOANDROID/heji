@@ -31,7 +31,7 @@ class HejiNetwork {
         hejiServer.operateLogGetDelete(book_id).await()
 
     suspend fun book(book_id: String) = hejiServer.bookFind(book_id).await()
-    suspend fun bookPush(book: Book) = hejiServer.bookCreate(book).await()
+    suspend fun bookCreate(book: Book) = hejiServer.bookCreate(book).await()
     suspend fun bookPull() = hejiServer.bookGet().await()
     suspend fun bookGetUsers(book_id: String) = hejiServer.bookGetBookUsers(book_id).await()
     suspend fun bookShared(book_id: String) = hejiServer.bookShared(book_id).await()

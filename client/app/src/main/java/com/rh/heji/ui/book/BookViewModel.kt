@@ -38,7 +38,7 @@ class BookViewModel : BaseViewModel() {
                 )
                 bookDao.insert(book)
                 bookLiveData.postValue(book)
-                HejiNetwork.getInstance().bookPush(book)
+                HejiNetwork.getInstance().bookCreate(book)
             }
         }, {})
 
@@ -79,15 +79,22 @@ class BookViewModel : BaseViewModel() {
 
     }
 
-    fun deleteBook(id: String, function: (Boolean) -> Unit) {
+    fun deleteBook(id: String,  call: (Result<String>) -> Unit) {
         launchIO({
-            val response = HejiNetwork.getInstance().bookDelete(id)
             val billsCount = AppDatabase.getInstance().billDao().countByBookId(id)
             if (billsCount > 0) {
-                function(false)//删除失败
                 ToastUtils.showLong("该账本下存在账单，无法直接删除")
+            } else {
+                val response = HejiNetwork.getInstance().bookDelete(id)
+                if (response.code == 0) {
+                    AppDatabase.getInstance().bookDao().deleteById(id)
+                    runMainThread {
+                        call(Result.Success("删除成功"))
+                    }
+                }
             }
-            AppDatabase.getInstance().bookDao().deleteById(id)
+        }, {
+            call(Result.Error(it))
         })
     }
 

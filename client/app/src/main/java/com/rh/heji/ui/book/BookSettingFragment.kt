@@ -73,7 +73,8 @@ class BookSettingFragment : BaseFragment() {
                     if (it is Result.Success) {
                         findNavController().popBackStack()
                     }
-                    ToastUtils.showLong("删除${if (it is Result.Error) "${it.exception.message}" else "失败"}")
+                    val tip= if (it is Result.Error) it.exception.message else "删除成功"
+                    ToastUtils.showLong(tip)
                 }
             }.show()
 
@@ -111,7 +112,7 @@ class BookSettingFragment : BaseFragment() {
             layoutResId = R.layout.item_book_users, data = users
         ) {
         override fun convert(holder: BaseViewHolder, bookUser: BookUser) {
-            val itemBinding = ItemBookUsersBinding.bind(holder.itemView);
+            val itemBinding = ItemBookUsersBinding.bind(holder.itemView)
             itemBinding.tvCreateUser.text = bookUser.name
             itemBinding.tvAuthtroy.text = bookUser.fromAuthority()
 

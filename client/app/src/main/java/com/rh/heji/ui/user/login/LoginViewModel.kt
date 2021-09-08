@@ -27,10 +27,10 @@ class LoginViewModel : BaseViewModel() {
             currentUser = JWTParse.getUser(token)
             ToastUtils.showLong(requestBody.data)
             loginLiveData.postValue(token)
+            initBook()
         }, {
             ToastUtils.showLong("登陆错误:${it.message}")
         })
-        launch({}, {})
         return loginLiveData
     }
 

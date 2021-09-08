@@ -37,4 +37,5 @@ public class MBook {
      */
     byte[] banner;
 
+    Integer only;
 }

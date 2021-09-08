@@ -8,6 +8,7 @@ import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.utlis.launch
 import com.rh.heji.utlis.launchIO
 import com.rh.heji.utlis.runMainThread
 import kotlinx.coroutines.flow.collect
@@ -65,7 +66,7 @@ class AddBillViewModel : BaseViewModel() {
             bill.category = category.category
         }
 
-        launchIO({
+        launch({
             billRepository.addBill(bill,images).collect {
                 if (it > 0) {
                     ToastUtils.showShort("已保存: ${bill.category + money}  ")

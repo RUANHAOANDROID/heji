@@ -13,8 +13,11 @@ import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.response.ImageEntity
 import com.rh.heji.utlis.launch
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -123,6 +126,6 @@ class BillRepository : DataRepository() {
             }
 
 
-        }
+        }.flowOn(Dispatchers.IO)
     }
 }

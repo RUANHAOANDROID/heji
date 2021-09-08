@@ -23,6 +23,8 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
 
     val dbObservable = MediatorLiveData<DBObservable>()
 
+     val loginEvent = MediatorLiveData<Event<Any>>()
+
 
 
     init {

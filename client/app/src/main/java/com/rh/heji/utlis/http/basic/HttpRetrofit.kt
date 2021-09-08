@@ -37,12 +37,14 @@ object HttpRetrofit {
             logging.redactHeader("Cookie")
         }
         val headerInterceptor = HttpHeaderInterceptor()
+        val authorizedInterceptor =AuthorizedInterceptor()
         return OkHttpClient.Builder()
             .addInterceptor(headerInterceptor)
             .addInterceptor(logging)
             .connectTimeout(connectTimeout, TimeUnit.SECONDS)
             .writeTimeout(writeTimeout, TimeUnit.SECONDS)
             .readTimeout(readTimeout, TimeUnit.SECONDS)
+            .addInterceptor(authorizedInterceptor)
             .build()
     }
 

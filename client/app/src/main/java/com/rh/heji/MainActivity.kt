@@ -56,6 +56,10 @@ class MainActivity : AppCompatActivity() {
         }
         setContentView(R.layout.activity_main)
         initDrawerLayout()
+        checkLogin()
+    }
+
+    private fun checkLogin() {
         lifecycleScope.launch(Dispatchers.IO) {
             val token = Token.decodeToken()
             currentUser = JWTParse.getUser(token)
@@ -67,6 +71,10 @@ class MainActivity : AppCompatActivity() {
                     AppViewModule.get().asyncData()
                 }
             }
+        }
+        AppViewModule.get().loginEvent.observe(this){
+            ToastUtils.showLong("用户凭证已失效，请重新登录")
+            navController.navigate(R.id.nav_login)
         }
     }
 

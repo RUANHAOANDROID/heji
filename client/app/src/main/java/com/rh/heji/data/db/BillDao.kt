@@ -250,7 +250,7 @@ interface BillDao {
     @TypeConverters(MoneyConverters::class)
     @Query(
         "select category as category,sum(money)as money," +
-                "round(sum(money)*100.0 / (select sum(money)  from bill where type =:type and strftime('%Y-%m',bill_time) ==:date),2)as percentage " +
+                "round(sum(money)*100.0 / (select sum(money)  from bill where book_id=:bookId and type =:type and sync_status!=-1 and strftime('%Y-%m',bill_time) ==:date),2)as percentage " +
                 "from bill where type =:type and sync_status!=-1 AND book_id=:bookId AND strftime('%Y-%m',bill_time) ==:date group by category order by money desc"
     )
     fun reportCategory(

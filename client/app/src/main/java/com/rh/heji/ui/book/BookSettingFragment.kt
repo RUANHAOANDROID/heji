@@ -1,6 +1,7 @@
 package com.rh.heji.ui.book
 
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ClickUtils
@@ -24,7 +25,7 @@ import java.lang.Error
 
 class BookSettingFragment : BaseFragment() {
 
-    private val viewModel by lazy { getViewModel(BookViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(this).get(BookViewModel::class.java) }
     private lateinit var binding: FragmentBookSettingBinding
     private lateinit var book: Book
 

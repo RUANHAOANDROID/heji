@@ -2,6 +2,7 @@ package com.rh.heji.ui.bill.category
 
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.KeyboardUtils
@@ -21,7 +22,7 @@ import com.rh.heji.ui.bill.category.adapter.CategoryManagerAdapter
 class CategoryManagerFragment : BaseFragment(){
     lateinit var binding: FragmentCategoryManagerBinding
     private lateinit var adapter: CategoryManagerAdapter
-    private val categoryViewModule: CategoryViewModule by lazy { getViewModel(CategoryViewModule::class.java) }
+    private val categoryViewModule: CategoryViewModule by lazy { ViewModelProvider(this).get(CategoryViewModule::class.java) }
     private var args: CategoryManagerFragmentArgs? =null
 
     override fun onDetach() {
@@ -31,7 +32,7 @@ class CategoryManagerFragment : BaseFragment(){
 
     override fun initView(view: View) {
         binding = FragmentCategoryManagerBinding.bind(view)
-        args = com.rh.heji.ui.bill.category.CategoryManagerFragmentArgs.fromBundle(arguments!!)
+        args = CategoryManagerFragmentArgs.fromBundle(requireArguments())
 
         binding.btnAdd.setOnClickListener { v: View? ->
             val name = binding.editCategoryValue.text.toString().trim { it <= ' ' }

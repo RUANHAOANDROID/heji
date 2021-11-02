@@ -3,6 +3,7 @@ package com.rh.heji.ui.book
 import android.graphics.Rect
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,7 +36,7 @@ import androidx.recyclerview.widget.DiffUtil.ItemCallback as ItemCallback
 class BookListFragment : BaseFragment() {
     lateinit var adapter: BookListAdapter
     lateinit var binding: FragmentBookListBinding
-    private val bookViewModel by lazy { getViewModel(BookViewModel::class.java) }
+    private val bookViewModel by lazy { ViewModelProvider(this).get(BookViewModel::class.java) }
     override fun layoutId(): Int {
         return R.layout.fragment_book_list
     }

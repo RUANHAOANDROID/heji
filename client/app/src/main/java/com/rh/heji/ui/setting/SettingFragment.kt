@@ -2,6 +2,7 @@ package com.rh.heji.ui.setting
 
 import android.content.Context
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentSettingBinding
@@ -13,7 +14,7 @@ class SettingFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        settingViewModel = getViewModel(SettingViewModel::class.java)
+        settingViewModel = ViewModelProvider(this).get(SettingViewModel::class.java)
     }
 
     override fun initView(rootView: View) {

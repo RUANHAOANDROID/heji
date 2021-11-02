@@ -1,6 +1,7 @@
 package com.rh.heji.ui.book
 
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
@@ -10,7 +11,7 @@ import com.rh.heji.databinding.FragmentBookAddBinding
 import com.rh.heji.ui.base.BaseFragment
 
 class BookAddFragment : BaseFragment() {
-    private val viewModel: BookViewModel by lazy { getViewModel(BookViewModel::class.java) }
+    private val viewModel: BookViewModel by lazy { ViewModelProvider(this).get(BookViewModel::class.java) }
     lateinit var binding: FragmentBookAddBinding
     override fun setUpToolBar() {
         super.setUpToolBar()

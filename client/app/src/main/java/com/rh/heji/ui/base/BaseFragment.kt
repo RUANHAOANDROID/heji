@@ -107,7 +107,7 @@ abstract class BaseFragment : Fragment() {
 
     fun getRootViewHeight(): Int {
         var height = ScreenUtils.getScreenHeight() - navigationBarHeight
-        toolBar?.let {
+        toolBar.let {
             height -= toolBar.height
         }
         return height //占满一屏

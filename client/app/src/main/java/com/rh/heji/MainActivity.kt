@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         })
         //Logout Menu
         val navMenu = navigationView.menu
-        navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener { item: MenuItem? ->
+        navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener {
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
                 runBlocking(Dispatchers.IO) { Token.delete(context = this@MainActivity) }
                 finish()
@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         navigationDrawerController()
         val navHeaderView = navigationView.getHeaderView(0)
         navHeaderMainBinding = HeaderMainNavBinding.bind(navHeaderView)
-        navHeaderView.setOnClickListener { v: View? ->
+        navHeaderView.setOnClickListener {
             ToastUtils.showLong("")
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()

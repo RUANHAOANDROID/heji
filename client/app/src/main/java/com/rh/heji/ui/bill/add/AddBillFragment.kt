@@ -13,6 +13,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.DatePicker
 import android.widget.TimePicker
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.*
 import com.lxj.xpopup.XPopup
@@ -39,8 +40,8 @@ import java.util.function.Consumer
  * 支出 收入
  */
 class AddBillFragment : BaseFragment() {
-    private val billViewModel by lazy { getViewModel(AddBillViewModel::class.java) }
-    val categoryViewModule by lazy { getViewModel(CategoryViewModule::class.java) }
+    private val billViewModel by lazy { ViewModelProvider(this)[AddBillViewModel::class.java] }
+    val categoryViewModule by lazy { ViewModelProvider(this).get(CategoryViewModule::class.java) }
 
     private lateinit var binding: FragmentIncomeBinding
     private lateinit var categoryTabFragment: CategoryTabFragment

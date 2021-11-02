@@ -6,6 +6,7 @@ import android.view.ViewStub
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,7 +46,7 @@ class BillsHomeFragment : BaseFragment() {
     private lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
     private lateinit var stubTotalView: ViewStub
 
-    val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
+    val homeViewModel: BillsHomeViewModel by lazy { ViewModelProvider(mainActivity)[BillsHomeViewModel::class.java] }
     private lateinit var adapter: NodeBillsAdapter
 
     //最后点击时间

@@ -11,8 +11,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -106,14 +104,6 @@ abstract class BaseFragment : Fragment() {
         get() = rootView.findViewById(R.id.toolbar)
     val centerTitle: TextView
         get() = rootView.findViewById(R.id.toolbar_center_title)
-
-    fun <T : ViewModel?> getViewModel(clazz: Class<T>): T {
-        return ViewModelProvider(this).get(clazz)
-    }
-
-    fun <T : ViewModel?> getActivityViewModel(clazz: Class<T>): T {
-        return ViewModelProvider(mainActivity).get(clazz)
-    }
 
     fun getRootViewHeight(): Int {
         var height = ScreenUtils.getScreenHeight() - navigationBarHeight

@@ -3,6 +3,7 @@ package com.rh.heji.ui.bill.calendar
 import android.content.Context
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
@@ -24,7 +25,7 @@ import com.rh.heji.widget.CardDecoration
 
 class CalendarNoteFragment : BaseFragment() {
     lateinit var binding: FragmentCalendarNoteBinding
-    private val viewModel by lazy { getViewModel(CalendarNoteViewModule::class.java) }
+    private val viewModel by lazy { ViewModelProvider(this).get(CalendarNoteViewModule::class.java) }
     var adapter: NodeBillsAdapter? = null
 
 

@@ -7,6 +7,7 @@ import android.os.Looper
 import android.text.TextUtils
 import android.view.View
 import android.webkit.*
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
@@ -28,7 +29,7 @@ class ETCFragment : BaseFragment() {
     lateinit var etcViewModel: ETCViewModel
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        etcViewModel = getViewModel(ETCViewModel::class.java)
+        etcViewModel = ViewModelProvider(this).get(ETCViewModel::class.java)
     }
 
     override fun onResume() {

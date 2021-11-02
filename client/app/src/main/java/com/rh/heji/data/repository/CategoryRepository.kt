@@ -37,7 +37,7 @@ class CategoryRepository : DataRepository() {
                 val _id = AppDatabase.getInstance().categoryDao().findByID(entity.id)
                 if (TextUtils.isEmpty(_id)) {
                     val dbCategory = entity.toDbCategory()
-                    dbCategory!!.synced = STATUS.SYNCED
+                    dbCategory.synced = STATUS.SYNCED
                     AppDatabase.getInstance().categoryDao().insert(dbCategory)
                 }
             }

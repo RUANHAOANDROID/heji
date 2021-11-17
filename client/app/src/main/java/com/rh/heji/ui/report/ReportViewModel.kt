@@ -14,7 +14,6 @@ import com.rh.heji.utlis.KeyValue
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
 import java.util.*
-import java.util.stream.Collectors
 
 class ReportViewModel : BaseViewModel() {
 

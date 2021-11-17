@@ -37,6 +37,9 @@ interface BillDao {
     @Query("delete from bill where id=:billId")
     fun deleteById(billId: String): Int
 
+    @Query("delete from bill where book_id=:id")
+    fun deleteByBookId(id: String): Int
+
     /**
      * 根据精确时间datetime(),money,remark查询
      *

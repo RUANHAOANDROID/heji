@@ -26,6 +26,7 @@ data class Book(
     var createUser: String? = null,
     var type: String? = null,
     var bannerUrl: String? = null,
+    var firstBook: Int = 0// 0 true |1 false
 ) : Parcelable {
     @ColumnInfo(name = "sync_status")
     var synced: Int = STATUS.NOT_SYNCED

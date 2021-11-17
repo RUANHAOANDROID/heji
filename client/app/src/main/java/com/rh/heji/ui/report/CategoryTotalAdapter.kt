@@ -19,7 +19,7 @@ class CategoryTotalAdapter(
     data: MutableList<PieEntry>?
 ) :
     BaseQuickAdapter<PieEntry, BaseViewHolder>(layoutResId = R.layout.item_category_total, data) {
-    val colors = ColorUtils.groupColors()
+    private val colors = ColorUtils.groupColors()
     private lateinit var itemBinding: ItemCategoryTotalBinding
     private val percentFormatter: PercentFormatter = PercentFormatter()
     override fun convert(holder: BaseViewHolder, item: PieEntry) {

@@ -11,7 +11,6 @@ import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
-import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
 

@@ -46,6 +46,12 @@ class BookViewModel : BaseViewModel() {
         return bookLiveData
     }
 
+    fun isFirstBook(id: String) = AppDatabase.getInstance().bookDao().isFirstBook(id)
+
+    fun countBook(book_id: String): Int {
+        return AppDatabase.getInstance().billDao().countByBookId(book_id)
+    }
+
     fun getBookList(): LiveData<MutableList<Book>> {
         launchIO({
             val allBooks = bookDao.allBooks()
@@ -79,7 +85,14 @@ class BookViewModel : BaseViewModel() {
 
     }
 
-    fun deleteBook(id: String,  call: (Result<String>) -> Unit) {
+    fun clearBook(id: String, call: (Result<String>) -> Unit) {
+        launchIO({
+            AppDatabase.getInstance().billDao().deleteByBookId(id)
+            call(Result.Success("清楚账单成功"))
+        }, { call(Result.Error(it)) })
+    }
+
+    fun deleteBook(id: String, call: (Result<String>) -> Unit) {
         launchIO({
             val billsCount = AppDatabase.getInstance().billDao().countByBookId(id)
             if (billsCount > 0) {

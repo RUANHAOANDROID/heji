@@ -63,18 +63,38 @@ class BookSettingFragment : BaseFragment() {
 
     private fun clearBook() {
         binding.tvClearBill.setOnClickListener {
+            val count = viewModel.countBook(book.id)
+            if (count <= 0) {
+                ToastUtils.showLong("该账本下没有更多账单")
+                return@setOnClickListener
+            }
+            XPopup.Builder(requireContext()).asConfirm("清除提示", "该账本下有${count}条账单确认删除？") {
+                viewModel.clearBook(book.id) {
+                    if (it is Result.Success) {
+                        ToastUtils.showLong("成功清除账本下账单")
+                    } else {
+                        ToastUtils.showLong("删除失败${(it as Result.Error).exception.message}")
+                    }
+                }
+
+            }.show()
 
         }
     }
 
     private fun deleteBook() {
         binding.tvDeleteBook.setOnClickListener {
-            XPopup.Builder(requireContext()).asConfirm("删除提示", "该账本下有 条账单确认删除？") {
+            if (viewModel.isFirstBook(book.id) == 0) {
+                ToastUtils.showLong("无法删除初始账本")
+                return@setOnClickListener
+            }
+            val count = viewModel.countBook(book.id)
+            XPopup.Builder(requireContext()).asConfirm("删除提示", "该账本下有${count}条账单确认删除？") {
                 viewModel.deleteBook(book.id) {
                     if (it is Result.Success) {
                         findNavController().popBackStack()
                     }
-                    val tip= if (it is Result.Error) it.exception.message else "删除成功"
+                    val tip = if (it is Result.Error) it.exception.message else "删除成功"
                     ToastUtils.showLong(tip)
                 }
             }.show()

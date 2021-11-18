@@ -98,6 +98,7 @@ public class ImageController {
         billService.updateBill(bill);
 
         log.info("上传文件 OriginalFilename={}, SaveFileName={}", imageFile.getOriginalFilename(), imgId);
+        image.setData(null);
         return Result.success(image);
     }
 

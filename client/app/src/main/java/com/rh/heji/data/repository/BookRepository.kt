@@ -10,7 +10,7 @@ class BookRepository : DataRepository() {
     suspend fun addBook(book: Book) {
         bookDao.insert(book)
         network.bookUpdate(book.id, book.name, book.type!!).apply {
-            if (code == DataRepository.OK) {
+            if (code == OK) {
                 book.synced = STATUS.SYNCED
                 bookDao.update(book)
             }
@@ -20,7 +20,7 @@ class BookRepository : DataRepository() {
     suspend fun deleteBook(book_id: String) {
         bookDao.preDelete(book_id)
         network.bookDelete(book_id).apply {
-            if (code == DataRepository.OK) {
+            if (code == OK) {
                 bookDao.deleteById(book_id);
             }
         }
@@ -30,7 +30,7 @@ class BookRepository : DataRepository() {
         book.synced = STATUS.UPDATED
         bookDao.update(book)
         network.bookUpdate(book.id, book.name, book.type!!).apply {
-            if (code == DataRepository.OK) {
+            if (code == OK) {
                 book.synced = STATUS.SYNCED
                 bookDao.update(book)
             }
@@ -41,7 +41,7 @@ class BookRepository : DataRepository() {
         return flow<MutableList<Book>> {
             emit(bookDao.allBooks())
             network.bookPull().apply {
-                if (code == DataRepository.OK && data.isNotEmpty()) {
+                if (code == OK && data.isNotEmpty()) {
                     emit(data)
                     data.forEach {
                         bookDao.upsert(it)

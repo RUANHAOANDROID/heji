@@ -1,35 +1,7 @@
+# 服务端
+
+## 导入导出格式
 时间	            分类	类型	金额	    账户1	账户2	备注	                                    账单图片
 2020/7/12 21:20	三餐	支出	28.58	微信		        去肯德基吃汉堡（此模板前两行是示例，可以删除）	http://billimg.qianjiapp.com/202006300908267611e24759b6c1c8781361af861!webporigin,http://billimg.qianjiapp.com/202006300908267611e24759b6c1c8781361af862!webporigin
 2020/7/8 22:15	工资	收入	1000			        7月份工资（此模板前两行是示例，可以删除）
 2020/7/8 10:10		转账	200	    支付宝	银行卡	支付宝提现1000元到银行卡
-mysql database
-#TAB hj_bill
-CREATE TABLE `hj_bill` (
-  `uid` varchar(32) NOT NULL,
-  `money` longtext,
-  `category` varchar(11) DEFAULT NULL,
-  `type` int(11) DEFAULT NULL,
-  `dealer` varchar(8) DEFAULT NULL,
-  `remark` text,
-  `images` json DEFAULT NULL,
-  `time` mediumtext,
-  `createTime` mediumtext,
-  `updateTime` mediumtext,
-  PRIMARY KEY (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-#TAB hj_category
-CREATE TABLE `hj_category` (
-  `name` varchar(40) NOT NULL COMMENT '标签名',
-  `level` int(11) NOT NULL COMMENT '等级',
-  `type` int(11) NOT NULL COMMENT '收支',
-  PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-# TAB hj_user
-CREATE TABLE `hj_user` (
-  `user_id` varchar(20) NOT NULL,
-  `user_name` varchar(20) NOT NULL,
-  `user_code` varchar(20) NOT NULL,
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;

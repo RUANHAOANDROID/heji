@@ -30,25 +30,16 @@ public class OperateLogImpl extends BaseMongoTemplate implements OperateLogServi
         operateLogRepository.save(object);
     }
 
-    @Override
-    public List<MOperateLog> getDeleteLog(String book_id, String startDate, String endDate) {
-        return operateLogRepository.findMOperateLogsByOpeID(book_id);
-    }
 
     @Override
     public List<MOperateLog> getOperateLogs(String book_id) {
-        Criteria criteria = Criteria.where("bookId").is(book_id).where("opeDate").gte("2021-08-01").lte("2021-09-31");
-        Query query = new Query(criteria);
-        query.fields().exclude("_id");
-        List<MOperateLog> data= getMongoTemplate().find(query, MOperateLog.class, MOperateLog.COLLATION_NAME);
-        List<MOperateLog> data2 =operateLogRepository.findMOperateLogsByBookIdAndOpeDateBetween(book_id,"2021-01-01","2021-12-01");
-        return data2 ;
-    }
-
-
-    @Override
-    public List<MOperateLog> getUpdateLog(String book_id, String startDate, String endDate) {
-        return operateLogRepository.findMOperateLogsByOpeID(book_id);
+//        Criteria criteria = Criteria.where("bookId").is(book_id).where("opeDate").gte("2021-08-01").lte("2021-09-31");
+//        Query query = new Query(criteria);
+//        query.fields().exclude("_id");
+//        List<MOperateLog> data= getMongoTemplate().find(query, MOperateLog.class, MOperateLog.COLLATION_NAME);
+//        List<MOperateLog> data2 =operateLogRepository.findMOperateLogsByBookIdAndOpeDateBetween(book_id,"2021-01-01","2021-12-01");
+        List<MOperateLog> bookLogs =operateLogRepository.findMOperateLogsByBookId(book_id);
+        return bookLogs ;
     }
 
     @Override

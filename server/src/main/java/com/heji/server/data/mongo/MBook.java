@@ -38,4 +38,8 @@ public class MBook {
     byte[] banner;
 
     Integer only;
+    /**
+     * 是否是初始账本，初始账本无法删除，每位用户仅有一个初始账本
+     */
+    Integer firstBook;
 }

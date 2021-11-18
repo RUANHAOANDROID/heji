@@ -140,7 +140,7 @@ public class BookController {
         MBookShare sharedBook = bookShareService.getShareBook(sharedCode);
         if (Objects.isNull(sharedBook)) throw new OperationException("加入账本失败，请核对邀请码");
         bookService.joinBook(sharedBook.getBookId(), bookUser);
-        return Result.success(sharedBook);
+        return Result.success(sharedBook.getBookId());
     }
 
 }

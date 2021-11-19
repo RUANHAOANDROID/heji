@@ -29,8 +29,8 @@ interface HeJiServer {
     @POST("user/auth")
     fun auth(@Query("token") token: String): Call<BaseResponse<String>>
 
-    @GET("operateLog/delete")
-    fun operateLogGetDelete(@Query("bookId") bookId: String): Call<BaseResponse<MutableList<OperateLog>>>
+    @GET("operateLog/bookLogs")
+    fun bookOperateLogs(@Query("bookId") bookId: String): Call<BaseResponse<MutableList<OperateLog>>>
 
     //----------------------BOOK---------------------------//
     @POST("book/create")

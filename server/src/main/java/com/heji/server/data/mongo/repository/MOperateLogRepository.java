@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface MOperateLogRepository extends MongoRepository<MOperateLog, String> {
     List<MOperateLog> findMOperateLogsByOpeID(String optId);
+    List<MOperateLog> findMOperateLogsByBookId(String bookId);
     List<MOperateLog> findMOperateLogsByBookIdAndOpeDateBetween(String bookId,String startDate,String endDate);
 }

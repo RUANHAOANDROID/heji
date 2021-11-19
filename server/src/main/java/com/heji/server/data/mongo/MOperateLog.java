@@ -34,7 +34,7 @@ public class MOperateLog {
     String _id;
 
     //book ID
-    String bookId;
+    String bookId;//根据book划分日志
 
     //操作对象ID
     String opeID;//操作对象的ID，根据ID同步本地数据库 {bookId or billId or categoryId}

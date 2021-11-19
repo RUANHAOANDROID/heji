@@ -11,8 +11,6 @@ import com.rh.heji.data.DBObservable
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
-import com.rh.heji.data.repository.CategoryRepository
-import com.rh.heji.network.HejiNetwork
 import com.rh.heji.service.work.DataSyncWork
 import com.rh.heji.utlis.launchIO
 
@@ -58,7 +56,7 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     fun asyncData() {
         launchIO({
             var dataAsyncWork = DataSyncWork()
-            dataAsyncWork.syncLog()
+            dataAsyncWork.syncByOperateLog()
             dataAsyncWork.syncBooks()
             //DataSyncWork 方法执行在IO线程
             dataAsyncWork.syncBills()

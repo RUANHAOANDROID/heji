@@ -23,11 +23,11 @@ class DataSyncWork {
     private val billDao = AppDatabase.getInstance().billDao()
     private val categoryDao = AppDatabase.getInstance().categoryDao()
     private val billRepository = BillRepository()
-    suspend fun syncLog() {
+    suspend fun syncByOperateLog() {
         /**
          * 根据服务器账本删除日志，同步删除本地数据
          */
-        val response = HejiNetwork.getInstance().operateLogGetDelete(currentBook.id)
+        val response = HejiNetwork.getInstance().bookOperateLogs(currentBook.id)
         if (response.code == 0 && response.data.isNotEmpty()) {
             val operates = response.data
             for (operate in operates) {

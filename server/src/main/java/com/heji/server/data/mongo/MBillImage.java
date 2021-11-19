@@ -1,5 +1,8 @@
 package com.heji.server.data.mongo;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -27,6 +30,7 @@ public class MBillImage implements Serializable {
     private String _id;
     // 所属账单ID
     @Field("bill_id")
+    @SerializedName("bill_id")
     private String billId;
     // 上传文件名(*.*)
     private String filename;

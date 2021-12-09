@@ -2,7 +2,6 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
-import com.rh.heji.AppViewModule
 import com.rh.heji.currentBook
 import com.rh.heji.currentUser
 //import com.rh.heji.App

@@ -2,21 +2,12 @@ package com.rh.heji.ui.book
 
 import android.graphics.Rect
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.entity.node.BaseNode
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.interfaces.OnCancelListener
-import com.lxj.xpopup.interfaces.OnInputConfirmListener
-import com.rh.heji.App
-import com.rh.heji.AppViewModule
 import com.rh.heji.R
 import com.rh.heji.currentBook
 import com.rh.heji.data.Result

@@ -3,7 +3,7 @@ package com.rh.heji.utlis.http.basic
 import android.text.TextUtils
 import android.util.Log
 import com.rh.heji.App
-import com.rh.heji.AppViewModule
+import com.rh.heji.AppViewModel
 import com.rh.heji.Event
 import com.rh.heji.security.Token
 import okhttp3.Interceptor
@@ -34,6 +34,6 @@ class HttpHeaderInterceptor() : Interceptor {
     }
 
     private fun sendLoginBroadcast() {
-        AppViewModule.get(App.context()).loginEvent.postValue(Event(401))
+        AppViewModel.get(App.context()).loginEvent.postValue(Event(401))
     }
 }

@@ -2,13 +2,10 @@ package com.rh.heji.ui.book
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.navigation.Navigation
 import com.blankj.utilcode.util.ImageUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.util.XPopupUtils
-import com.rh.heji.App
-import com.rh.heji.AppViewModule
 import com.rh.heji.R
 import com.rh.heji.currentBook
 import com.rh.heji.data.db.Book

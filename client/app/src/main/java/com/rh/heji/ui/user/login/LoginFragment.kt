@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.App
-import com.rh.heji.AppViewModule
+import com.rh.heji.AppViewModel
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentLoginBinding
 import com.rh.heji.ui.base.BaseFragment
@@ -35,7 +34,7 @@ class LoginFragment : BaseFragment() {
                 .observe(this.viewLifecycleOwner, { token ->
                     findNavController().popBackStack()
                     findNavController().navigate(R.id.nav_home)
-                    AppViewModule.get().asyncData()
+                    AppViewModel.get().asyncData()
                     LogUtils.d(token)
                 })
         }

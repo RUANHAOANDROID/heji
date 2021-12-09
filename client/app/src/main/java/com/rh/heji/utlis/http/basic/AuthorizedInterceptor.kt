@@ -2,7 +2,7 @@ package com.rh.heji.utlis.http.basic
 
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
-import com.rh.heji.AppViewModule
+import com.rh.heji.AppViewModel
 import com.rh.heji.BuildConfig
 import com.rh.heji.Event
 import okhttp3.Interceptor
@@ -25,6 +25,6 @@ class AuthorizedInterceptor : Interceptor {
         if (BuildConfig.DEBUG) {
             ToastUtils.showLong("请登录")
         }
-        AppViewModule.get(App.context()).loginEvent.postValue(Event(401))
+        AppViewModel.get(App.context()).loginEvent.postValue(Event(401))
     }
 }

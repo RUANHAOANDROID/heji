@@ -10,7 +10,6 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -22,7 +21,6 @@ import androidx.navigation.*
 import androidx.navigation.NavController.OnDestinationChangedListener
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
@@ -69,11 +67,11 @@ class MainActivity : AppCompatActivity() {
                     navController.navigate(R.id.nav_login)
                 } else {
                     setDrawerLayout(currentUser)
-                    AppViewModule.get().asyncData()
+                    AppViewModel.get().asyncData()
                 }
             }
         }
-        AppViewModule.get().loginEvent.observe(this){
+        AppViewModel.get().loginEvent.observe(this){
             ToastUtils.showLong("用户凭证已失效，请重新登录")
             navController.navigate(R.id.nav_login)
         }

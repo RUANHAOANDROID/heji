@@ -134,7 +134,7 @@ private interface PopClickListener {
 open class BillPopClickListenerImpl : PopClickListener {
 
     override fun delete(bill: Bill) {
-        AppViewModule.get().billDelete(bill)
+        AppViewModel.get().billDelete(bill)
     }
 
     override fun update(bill: Bill) {

@@ -14,7 +14,7 @@ import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.service.work.DataSyncWork
 import com.rh.heji.utlis.launchIO
 
-class AppViewModule(application: Application) : AndroidViewModel(application) {
+class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val billRepository = BillRepository()
 
     val asyncLiveData = MediatorLiveData<Any>()
@@ -73,10 +73,10 @@ class AppViewModule(application: Application) : AndroidViewModel(application) {
     }
 
     companion object {
-        private var instance: AppViewModule? = null
-        fun get(context: Context = App.context()): AppViewModule =
+        private var instance: AppViewModel? = null
+        fun get(context: Context = App.context()): AppViewModel =
             instance ?: synchronized(this) {
-                instance ?: AppViewModule(context as Application)
+                instance ?: AppViewModel(context as Application)
                     .also { instance = it }
             }
     }

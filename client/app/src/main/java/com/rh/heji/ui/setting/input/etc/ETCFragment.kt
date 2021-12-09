@@ -11,8 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
-import com.rh.heji.App
-import com.rh.heji.AppViewModule
 import com.rh.heji.R
 import com.rh.heji.currentBook
 import com.rh.heji.databinding.FragmentEtcBinding

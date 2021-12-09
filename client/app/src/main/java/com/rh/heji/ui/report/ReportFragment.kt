@@ -9,8 +9,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.github.mikephil.charting.data.*
 import com.lxj.xpopup.XPopup
-import com.rh.heji.App
-import com.rh.heji.AppViewModule
+import com.rh.heji.AppViewModel
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
@@ -123,7 +122,7 @@ class ReportFragment : BaseFragment() {
         reportViewModel.reportBillsList.observe(this, {
             monthYearBillsAdapter.setList(it)
         })
-        AppViewModule.get().dbObservable.observe(this, {
+        AppViewModel.get().dbObservable.observe(this, {
             if (it.entity is Bill) {
                 reportViewModel.refreshData(BillType.EXPENDITURE.type())
             }

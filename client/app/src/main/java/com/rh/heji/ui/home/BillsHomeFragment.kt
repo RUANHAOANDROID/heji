@@ -10,13 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ClickUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.google.android.material.appbar.AppBarLayout
 import com.lxj.xpopup.XPopup
-import com.rh.heji.App
-import com.rh.heji.AppViewModule
+import com.rh.heji.AppViewModel
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.d2o.Income
@@ -81,7 +79,7 @@ class BillsHomeFragment : BaseFragment() {
                     binding.refreshLayout.isEnabled = isFullyShow
                 })
             }
-            AppViewModule.get().asyncLiveData.observe(
+            AppViewModel.get().asyncLiveData.observe(
                 this,
                 asyncNotifyObserver(
                     homeViewModel.selectYearMonth.year,

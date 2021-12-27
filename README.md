@@ -185,6 +185,16 @@ name| String | 标签名
 level| Integer | 多级标签所属等级 
 index| Integer | 排序顺序 
 
+#### 同步日志（MOperateLog）
+列名| 类型| 说 明 
+------------ | :-----------:|:----------: 
+_id| ObjectID | 自增ID 
+book_id| String | 根据book划分日志
+opeID| Integer | 操作对象的ID
+opeClass| String | 操作对象类别 （操作了账本或账单）
+opeType| Integer | 操作类型（删除或更新）
+opeDate| String | 操作时间（客户端操作时间） 
+    
 #### 客户端错误日志（MErrorLog）
 列名| 类型| 说 明 
 ------------ | :-----------:|:----------: 

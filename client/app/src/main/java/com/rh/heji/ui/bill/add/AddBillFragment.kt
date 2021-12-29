@@ -37,7 +37,7 @@ import java.util.*
 import java.util.function.Consumer
 
 /**
- * 支出 收入
+ * 添加账单（支出/收入）
  */
 class AddBillFragment : BaseFragment() {
     private val billViewModel by lazy { ViewModelProvider(this)[AddBillViewModel::class.java] }

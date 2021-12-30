@@ -7,11 +7,11 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -21,8 +21,11 @@ import androidx.navigation.*
 import androidx.navigation.NavController.OnDestinationChangedListener
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
+import com.gyf.immersionbar.BarHide
+import com.gyf.immersionbar.ImmersionBar
 import com.lxj.xpopup.XPopup
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.security.Token
@@ -37,6 +40,7 @@ import java.lang.ref.WeakReference
 
 
 class MainActivity : AppCompatActivity() {
+    private  val TAG = "MainActivity"
     lateinit var navController: NavController private set
     private lateinit var drawerLayout: DrawerLayout
     val mainViewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
@@ -45,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         permitDiskReads { super.onCreate(savedInstanceState) }//StrictMode policy violation; ~duration=127 ms: android.os.strictmode.DiskReadViolation by XiaoMi
         checkPermissions(this) { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
             //初始化一些需要权限的功能
@@ -142,6 +147,7 @@ class MainActivity : AppCompatActivity() {
                 parent.closeDrawer(navigationView)
             }
             if (!handled) {
+                LogUtils.d(TAG,item.toString() )
                 NavigationUI.onNavDestinationSelected(item, navController)
                 if (navController.currentDestination?.id != R.id.nav_home) navController.popBackStack()
                 try {
@@ -192,7 +198,8 @@ class MainActivity : AppCompatActivity() {
 
                         }
                     }
-                    Log.d("MainActivity",destination.label.toString())
+
+                    LogUtils.d(TAG,destination.label.toString())
                 }
             })
     }

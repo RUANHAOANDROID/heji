@@ -27,7 +27,7 @@ interface HeJiServer {
     fun login(@Query("username") username: String, @Query("password") password: String): Call<BaseResponse<String>>
 
     @POST("user/auth")
-    fun auth(@Query("token") token: String): Call<BaseResponse<String>>
+    fun auth(@Header("token") token: String): Call<BaseResponse<String>>
 
     @GET("operateLog/bookLogs")
     fun bookOperateLogs(@Query("bookId") bookId: String): Call<BaseResponse<MutableList<OperateLog>>>

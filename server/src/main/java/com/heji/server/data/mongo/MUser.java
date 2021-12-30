@@ -1,5 +1,6 @@
 package com.heji.server.data.mongo;
 
+import com.heji.server.module.UserInfo;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
 import lombok.ToString;
@@ -23,9 +24,9 @@ public class MUser {
     String name;
     String password;
     String tel;
-    String email;
     List<MAuthority> authority;//角色权限
     @Ignore
     String code;//邀请码
+    String firstBookId;
 
 }

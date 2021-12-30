@@ -1,5 +1,6 @@
 package com.heji.server.module;
 
+import com.heji.server.data.mongo.MBook;
 import com.heji.server.data.mongo.MUser;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
@@ -29,6 +30,8 @@ public class UserInfo implements UserDetails {
     String role;//角色权限
     @Ignore
     String code;//邀请码
+
+    String firstBookId;
 
     private Collection<? extends GrantedAuthority> authorities;
 

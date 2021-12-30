@@ -1,19 +1,16 @@
 package com.heji.server.controller;
 
-import com.heji.server.data.mongo.MBill;
+import com.heji.server.data.mongo.MBook;
+import com.heji.server.data.mongo.MBookUser;
 import com.heji.server.data.mongo.MUser;
 import com.heji.server.module.UserInfo;
 import com.heji.server.result.Result;
+import com.heji.server.service.BookService;
 import com.heji.server.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping(path = "/user")
@@ -21,9 +18,11 @@ import java.util.Objects;
 public class UserController {
     final
     UserService userService;
+    final BookService bookService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, BookService bookService) {
         this.userService = userService;
+        this.bookService = bookService;
     }
 
     @ResponseBody
@@ -38,6 +37,9 @@ public class UserController {
 //        if (!StringUtils.isEmpty(user1.getTel())) {
 //            throw new UserException("电话号码：" + user1.getTel() + "已存在");
 //        }
+        MBook mFirstBook =bookService.createFirstBook(mUser);
+        mUser.setFirstBookId(mFirstBook.get_id());
+        userInfo.setFirstBookId(mFirstBook.get_id());
         userService.register(mUser);
         return Result.success(userInfo);
     }
@@ -49,8 +51,10 @@ public class UserController {
         return Result.success("登陆成功",auth);
     }
     @ResponseBody
-    @PostMapping(value = {"/auth"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getUserId(@RequestParam String token) {
+        @PostMapping(value = {"/auth"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String getUserId(@RequestHeader String token) {
+        if (token.trim().contains("Bearer"))
+            token =token.split("Bearer")[1];
         User user =userService.getUserId(token);
         return Result.success(user);
     }

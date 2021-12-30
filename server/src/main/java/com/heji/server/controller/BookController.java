@@ -41,7 +41,10 @@ public class BookController {
     @PostMapping(value = {"/create"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String createBook(@RequestBody MBook book, Authentication authentication) {
         List<MBookUser> users = new ArrayList<>();
-        MBookUser bookUser = new MBookUser().setName(authentication.getName()).setAuthority(MBookUser.AUTHORITYS[0]);
+        MBookUser bookUser = new MBookUser()
+                .setName(authentication.getName())
+                .setAuthority(MBookUser.AUTHORITYS[0]);
+        book.setFirstBook(1);//not firstBook
         users.add(bookUser);
         book.setUsers(users);
         bookService.createBook(book);

@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 @ToString
 public class MBookUser {
     @Ignore
-    public static String[] AUTHORITYS = new String[]{"CREATE", "USER"};
+    public static String[] AUTHORITYS = new String[]{"CREATOR", "USER"};
     String name;
     String authority;
 }

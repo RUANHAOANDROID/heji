@@ -3,6 +3,7 @@ package com.heji.server.service.impl;
 import com.heji.server.data.mongo.BaseMongoTemplate;
 import com.heji.server.data.mongo.MBook;
 import com.heji.server.data.mongo.MBookUser;
+import com.heji.server.data.mongo.MUser;
 import com.heji.server.data.mongo.repository.MBookRepository;
 import com.heji.server.service.BookService;
 import org.bson.Document;
@@ -15,6 +16,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service("BookService")
@@ -38,6 +41,17 @@ public class BookServiceImpl extends BaseMongoTemplate implements BookService {
     @Override
     public void createBook(MBook book) {
         mBookRepository.save(book);
+    }
+
+    @Override
+    public MBook createFirstBook(MUser registerUser) {
+        List<MBookUser> users = new ArrayList<>();
+        users.add(new MBookUser()
+                .setName(registerUser.getName())
+                .setAuthority(MBookUser.AUTHORITYS[0]));
+        MBook firstBook = new MBook().setFirstBook(0).setName("个人账本").setType("初始账本").setUsers(users);
+        mBookRepository.save(firstBook);
+        return firstBook;
     }
 
     @Override

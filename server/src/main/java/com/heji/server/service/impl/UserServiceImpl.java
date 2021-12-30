@@ -8,6 +8,7 @@ import com.heji.server.exception.NotFoundException;
 import com.heji.server.security.TokenProvider;
 import com.heji.server.service.UserService;
 import com.heji.server.service.CodeService;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
@@ -22,10 +23,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.message.AuthException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+@Slf4j
 @Service("UserService")
 public class UserServiceImpl extends BaseMongoTemplate implements UserService {
 
@@ -95,6 +97,7 @@ public class UserServiceImpl extends BaseMongoTemplate implements UserService {
         MUser user0 = mUserRepository.findMUserByTel(username);
         if (null == user0) throw new NotFoundException("用户不存在");
         boolean success = bCryptPasswordEncoder.matches(password, user0.getPassword());
+        if (!success) log.info("登录失败");
         UsernamePasswordAuthenticationToken authentication2 = new UsernamePasswordAuthenticationToken(
                 username,//电话号码
                 password,//没加密的

@@ -93,8 +93,4 @@ object Token {
         return !TextUtils.isEmpty(decodeToken())
     }
 
-    suspend fun authToken(token: String) {
-        HejiNetwork.getInstance().auth(token)
-    }
-
 }

@@ -34,11 +34,8 @@
 
     </style>
 
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
-        <item name="windowSplashScreenAnimationDuration">10</item>
-        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    <style name="AppStartup" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/startupbg</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

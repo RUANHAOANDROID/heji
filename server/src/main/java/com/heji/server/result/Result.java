@@ -1,7 +1,6 @@
 package com.heji.server.result;
 
 import com.google.gson.Gson;
-import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -85,12 +84,9 @@ public class Result<T>{
         return result.toJson();
     }
 
-    private @NotNull
-    Integer code;
-    private @NotNull
-    String msg;
-    private @NotNull
-    T data;
+    private Integer code;
+    private String msg;
+    private T data;
 
     public Integer getCode() {
         return code;

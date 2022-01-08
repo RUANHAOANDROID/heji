@@ -52,10 +52,4 @@ public class MyErrorAttributes extends DefaultErrorAttributes {
 
         return myErrorAttributes;
     }
-
-    @Override
-    public Map<String, Object> getErrorAttributes(WebRequest webRequest, boolean includeStackTrace) {
-        Map<String, Object>  map =super.getErrorAttributes(webRequest, includeStackTrace);
-        return map;
-    }
 }

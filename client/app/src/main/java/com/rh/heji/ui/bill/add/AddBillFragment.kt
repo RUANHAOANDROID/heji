@@ -262,7 +262,7 @@ class AddBillFragment : BaseFragment() {
         billViewModel.bill.category = category.category
         billViewModel.save(money, category) { bill: Bill ->
             if (close)
-                findNavController().popBackStack()
+                findNavController().navigateUp()
         }
     }
 

@@ -114,6 +114,7 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MVVM模式
 ## 服务端
 服务端使用Java Springboot框架，数据库采用MongoDB
 ### 数据集设计
+> 数据库使用MongoDB。一开始服务端数据库使用MySQL，随着业务变更MySQL调整起来非常不便，MongoDB能够快速适应业务的调整，存储票据图片（前端有压缩）迁移和管理也非常方便。
 #### 用户（MUser）
 列名| 类型| 说 明 
 ------------ | :-----------:|:----------: 

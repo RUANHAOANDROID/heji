@@ -1,6 +1,5 @@
 package com.heji.server.data.mongo;
 
-import com.heji.server.module.UserInfo;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
 import lombok.ToString;

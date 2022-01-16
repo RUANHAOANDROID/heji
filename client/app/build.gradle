@@ -134,7 +134,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:okhttp3-integration:4.12.0'
     implementation 'com.nfleo:MatisseKotlin:2.1.1'
     //更人性化的权限
-    implementation 'com.permissionx.guolindev:permissionx:1.4.0'
+    implementation 'com.guolindev.permissionx:permissionx:1.6.1'
     //cardview
     implementation "androidx.cardview:cardview:1.0.0"
     // Kotlin

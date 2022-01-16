@@ -7,8 +7,8 @@ import com.github.mikephil.charting.data.PieEntry
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
-import com.rh.heji.data.db.d2o.Income
-import com.rh.heji.data.db.d2o.IncomeTimeSurplus
+import com.rh.heji.data.db.dto.Income
+import com.rh.heji.data.db.dto.IncomeTimeSurplus
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.KeyValue
 import com.rh.heji.utlis.YearMonth

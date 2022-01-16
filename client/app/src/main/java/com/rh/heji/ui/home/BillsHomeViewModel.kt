@@ -10,7 +10,7 @@ import com.chad.library.adapter.base.entity.node.BaseNode
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.BillDao
-import com.rh.heji.data.db.d2o.Income
+import com.rh.heji.data.db.dto.Income
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome

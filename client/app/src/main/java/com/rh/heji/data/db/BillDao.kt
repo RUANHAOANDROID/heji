@@ -4,7 +4,7 @@ import androidx.room.*
 import com.rh.heji.currentBook
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
-import com.rh.heji.data.db.d2o.*
+import com.rh.heji.data.db.dto.*
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import java.util.*

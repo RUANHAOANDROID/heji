@@ -1,4 +1,4 @@
-package com.rh.heji.data.db.d2o
+package com.rh.heji.data.db.dto
 
 import java.math.BigDecimal
 

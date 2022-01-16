@@ -18,7 +18,7 @@ import com.github.mikephil.charting.utils.MPPointF
 import com.rh.heji.R
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.BillType
-import com.rh.heji.data.db.d2o.BillTotal
+import com.rh.heji.data.db.dto.BillTotal
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
 import java.util.*

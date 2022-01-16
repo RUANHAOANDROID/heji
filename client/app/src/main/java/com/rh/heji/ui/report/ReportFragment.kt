@@ -15,8 +15,8 @@ import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.d2o.BillTotal
-import com.rh.heji.data.db.d2o.IncomeTimeSurplus
+import com.rh.heji.data.db.dto.BillTotal
+import com.rh.heji.data.db.dto.IncomeTimeSurplus
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.databinding.LayoutEmptyBinding
 import com.rh.heji.ui.base.BaseFragment

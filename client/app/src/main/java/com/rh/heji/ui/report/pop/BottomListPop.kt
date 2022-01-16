@@ -10,7 +10,6 @@ import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.ui.bill.iteminfo.PopBillInfo
-import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
 
 /**
  *Date: 2021/6/16
@@ -45,23 +44,18 @@ class BottomListPop(
         )
         adapter.setOnItemClickListener { adapter, view, position ->
             val item = adapter.getItem(position) as Bill
-            val billInfoPop = PopBillInfo(activity= activity,bill = item, object : BillPopClickListenerImpl() {
-                override fun delete(bill: Bill) {
-                    super.delete(bill)
-                    adapter.removeAt(position)
-                    if (adapter.data.size <= 0) {
-                        dismiss()
-                    } else {
-                        adapter.notifyItemRemoved(position)
-                    }
-                }
+            val billInfoPop = PopBillInfo(activity = activity, bill = item, delete = {
 
-                override fun update(bill: Bill) {
-                    super.update(bill)
+                adapter.removeAt(position)
+                if (adapter.data.size <= 0) {
                     dismiss()
+                } else {
+                    adapter.notifyItemRemoved(position)
                 }
-
-            })
+            },
+                update = {
+                    dismiss()
+                })
             XPopup.Builder(context).asCustom(billInfoPop).show()
 
         }

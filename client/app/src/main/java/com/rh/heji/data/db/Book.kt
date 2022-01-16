@@ -13,32 +13,46 @@ import org.jetbrains.annotations.NotNull
  * Author: 锅得铁
  * #
  */
-@Parcelize
-@Entity(tableName = "book")
-data class Book(
 
+@Parcelize
+@Entity(tableName =Book.TAB_NAME, indices = [Index(value = [Book.COLUMN_NAME], unique = true)])
+data class Book(
     @Json(name = "_id")
     @PrimaryKey()
     @NotNull
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
+    @ColumnInfo(name = COLUMN_NAME)
     var name: String,
+    @ColumnInfo(name = COLUMN_CREATE_USER)
     var createUser: String? = null,
+    @ColumnInfo(name = COLUMN_TYPE)
     var type: String? = null,
+    @ColumnInfo(name = COLUMN_BANNER_URL)
     var bannerUrl: String? = null,
+    @ColumnInfo(name = COLUMN_FIRST)
     var firstBook: Int = 0// 0 true |1 false
 ) : Parcelable {
-    @ColumnInfo(name = "sync_status")
+
+    @ColumnInfo(name = COLUMN_SYNC_STATUS)
     var synced: Int = STATUS.NOT_SYNCED
 
     @Json(name = "users")
-    @ColumnInfo(name = "users")
+    @ColumnInfo(name = COLUMN_USERS)
     @TypeConverters(BookUsersConverters::class)
     //@Ignore
     var users: List<BookUser>? = null
 
     companion object {
-        const val COLUMN_ID = "id"
+        const val TAB_NAME = "book"
+        const val COLUMN_ID = "book_id"
+        const val COLUMN_NAME = "name"
+        const val COLUMN_CREATE_USER = "create_user"
+        const val COLUMN_TYPE = "type"
+        const val COLUMN_BANNER_URL = "banner_url"
+        const val COLUMN_FIRST = "first"
+        const val COLUMN_SYNC_STATUS = "sync_status"
+        const val COLUMN_USERS = "users"
     }
 }
 

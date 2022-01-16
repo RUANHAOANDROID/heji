@@ -12,6 +12,8 @@ import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.*
 import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.CRUD
+import com.rh.heji.data.DataBus
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
@@ -29,10 +31,12 @@ import kotlinx.coroutines.withContext
 class PopBillInfo(
     val activity: MainActivity,
     val bill: Bill,
-    var popClickListener: BillPopClickListenerImpl = BillPopClickListenerImpl(),
+    val delete: (Bill) -> Unit, val update: (Bill) -> Unit
 ) : BottomPopupView(activity), Observer<List<Image>> {
     //观察 当前账单下图片
-    private val imageObservable by lazy { AppDatabase.getInstance().imageDao().findByBillId(billId = bill.id).asLiveData() }
+    private val imageObservable by lazy {
+        AppDatabase.getInstance().imageDao().findByBillId(billId = bill.id).asLiveData()
+    }
 
     lateinit var binding: PopLayoutBilliInfoBinding
     private var imageAdapter = ImageAdapter()
@@ -48,7 +52,7 @@ class PopBillInfo(
             deleteTip()
         }
         binding.tvUpdate.setOnClickListener {
-            popClickListener?.update(bill)
+            update(bill)
             val bundle = AddBillFragmentArgs.Builder(bill).build().toBundle()
             activity.navController.navigate(R.id.nav_bill_add, bundle)
             dismiss()
@@ -90,7 +94,9 @@ class PopBillInfo(
             mainActivity.lifecycleScope.launch(Dispatchers.IO) {
                 withContext(Dispatchers.Main) {
                     if (bill.createUser == currentUser.username) {
-                        popClickListener.delete(bill)
+                        AppDatabase.getInstance().billDao().delete(bill)
+                        delete(bill)
+                        DataBus.post(CRUD.DELETE, bill)
                         dismiss()
                     } else {
                         ToastUtils.showLong("只有账单创建人有权删除该账单")
@@ -121,24 +127,4 @@ class PopBillInfo(
             imageObservable.removeObserver(this)
         }
     }
-}
-
-/**
- * 不对外开放该接口，通过覆写BillDefPopClickListener实现
- */
-private interface PopClickListener {
-    fun delete(bill: Bill)
-    fun update(bill: Bill)
-}
-
-open class BillPopClickListenerImpl : PopClickListener {
-
-    override fun delete(bill: Bill) {
-        AppViewModel.get().billDelete(bill)
-    }
-
-    override fun update(bill: Bill) {
-        LogUtils.d(bill)
-    }
-
 }

@@ -4,22 +4,25 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MediatorLiveData
+import androidx.room.Entity
 import com.blankj.utilcode.util.LogUtils
-import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.CRUD
-import com.rh.heji.data.DBObservable
+import com.rh.heji.data.*
 import com.rh.heji.data.db.Bill
+import com.rh.heji.data.db.Book
+import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
+import com.rh.heji.data.repository.BookRepository
 import com.rh.heji.service.work.DataSyncWork
 import com.rh.heji.utlis.launchIO
+import com.rh.heji.utlis.launchNewThread
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val billRepository = BillRepository()
 
     val asyncLiveData = MediatorLiveData<Any>()
 
-    val dbObservable = MediatorLiveData<DBObservable>()
+    val localDataEvent = MediatorLiveData<EventMessage>()
 
     val loginEvent = MediatorLiveData<Event<Any>>()
 
@@ -30,7 +33,24 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }, {
             it.printStackTrace()
         })
+        localDataEvent.observeForever {
+            val data = it.entity
+            val optType = it.crud
 
+            launchNewThread({
+                if (data is Book) {
+                    BookTask(optType, data).sync()
+                }
+                if (data is Bill) {
+                    BillTask(optType, data).sync()
+                }
+                if (data is Category) {
+                    CategoryTask(optType, data).sync()
+                }
+            }, { error ->
+                error.printStackTrace()
+            })
+        }
     }
 
 
@@ -40,14 +60,14 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             when (status) {
                 STATUS.NOT_SYNCED -> {//未同步直接删除
                     AppDatabase.getInstance().billDao().deleteById(bill.id)
-                    dbObservable.postValue(DBObservable(CRUD.DELETE, bill))
+                    DataBus.post(EventMessage(CRUD.DELETE, bill))
                     return@launchIO
                 }
                 else -> {
                     AppDatabase.getInstance().billDao().preDelete(bill.id)
                 }
             }
-            dbObservable.postValue(DBObservable(CRUD.DELETE, bill))
+            DataBus.post(EventMessage(CRUD.DELETE, bill))
             billRepository.deleteBill(bill.id)
         })
 

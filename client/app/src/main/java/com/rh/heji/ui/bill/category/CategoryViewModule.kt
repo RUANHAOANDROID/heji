@@ -34,7 +34,7 @@ class CategoryViewModule : BaseViewModel() {
     }
 
 
-    var selectCategory = Category(category = "管理")
+    var selectCategory = Category(category = "管理", bookId = "")
         set(value) {
             if (value.category == "管理") return
             field = value//field 为type本身 (field领域)

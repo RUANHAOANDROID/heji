@@ -11,6 +11,7 @@ import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.BookUser
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
+import com.rh.heji.data.repository.BookRepository
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launch
@@ -23,9 +24,11 @@ class BookViewModel : BaseViewModel() {
     private val bookLiveData = MediatorLiveData<Book>()
     private val bookListLiveData = MediatorLiveData<MutableList<Book>>()
     private val bookDao = AppDatabase.getInstance().bookDao()
+    private val bookRepository=BookRepository()
     fun createNewBook(name: String, type: String): LiveData<Book> {
 
         launchIO({
+            bookRepository.addBook(Book(name = name,type=type))
             val count = bookDao.countByName(name)
             if (count > 0) {
                 ToastUtils.showLong("账本名已经存在")

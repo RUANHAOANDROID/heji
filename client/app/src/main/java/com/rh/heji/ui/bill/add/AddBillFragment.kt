@@ -22,6 +22,8 @@ import com.matisse.Matisse.Companion.obtainResult
 import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
 import com.rh.heji.*
 import com.rh.heji.data.BillType
+import com.rh.heji.data.CRUD
+import com.rh.heji.data.DataBus
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentIncomeBinding
@@ -261,8 +263,12 @@ class AddBillFragment : BaseFragment() {
         }
         billViewModel.bill.category = category.category
         billViewModel.save(money, category) { bill: Bill ->
-            if (close)
+            if (close){
+                DataBus.post(CRUD.CREATE,bill)
                 findNavController().navigateUp()
+
+            }
+
         }
     }
 

@@ -4,6 +4,8 @@ import androidx.lifecycle.*
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.currentBook
 import com.rh.heji.data.AppDatabase
+import com.rh.heji.data.CRUD
+import com.rh.heji.data.DataBus
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BillRepository
@@ -21,8 +23,7 @@ import java.util.stream.Collectors
  * 账单添加页ViewModel 不要在其他页面应用该ViewModel
  */
 class AddBillViewModel : BaseViewModel() {
-    private val billRepository =BillRepository()
-
+    val billDao = AppDatabase.getInstance().billDao()
     var imgUrls = mutableListOf<String>()
         set(value) {
             field = value
@@ -30,7 +31,7 @@ class AddBillViewModel : BaseViewModel() {
         }
 
     private var imgUrlsLive = MutableLiveData<MutableList<String>>() // image live
-    fun imagesChanged()=imgUrlsLive
+    fun imagesChanged() = imgUrlsLive
 
     var bill: Bill = Bill()
         set(value) {
@@ -50,11 +51,11 @@ class AddBillViewModel : BaseViewModel() {
      * @param billType
      * @return
      */
-    fun save(money: String, category: Category,saveCall: (Bill) -> Unit) {
+    fun save(money: String, category: Category, saveCall: (Bill) -> Unit) {
         val images = imgUrls.stream().map { s: String? ->
             val image = Image(ObjectId().toString(), bill.id)
             image.localPath = s
-            image.synced =STATUS.NOT_SYNCED
+            image.synced = STATUS.NOT_SYNCED
             image
         }.collect(Collectors.toList())
         bill.apply {
@@ -67,16 +68,14 @@ class AddBillViewModel : BaseViewModel() {
         }
 
         launch({
-            billRepository.addBill(bill,images).collect {
-                if (it > 0) {
-                    ToastUtils.showShort("已保存: ${bill.category + money}  ")
-                }
-                runMainThread {
-                    saveCall(bill)
-                    bill.id=ObjectId.get().toHexString()//保存重新赋值ID
-                }
-
+           val count = billDao.install(bill)
+            AppDatabase.getInstance().imageDao().install(images)
+            if (count > 0) {
+                ToastUtils.showShort("已保存: ${bill.category + money}  ")
             }
+            saveCall(bill)
+            bill.id = ObjectId.get().toHexString()//保存重新赋值ID
+            DataBus.post(CRUD.CREATE,bill)
         }, {
             ToastUtils.showShort(it.message)
         })

@@ -13,6 +13,7 @@ import com.rh.heji.AppViewModel
 import com.rh.heji.R
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
+import com.rh.heji.data.DataBus
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.dto.BillTotal
@@ -122,7 +123,7 @@ class ReportFragment : BaseFragment() {
         reportViewModel.reportBillsList.observe(this, {
             monthYearBillsAdapter.setList(it)
         })
-        AppViewModel.get().dbObservable.observe(this, {
+        DataBus.subscriber(this, {
             if (it.entity is Bill) {
                 reportViewModel.refreshData(BillType.EXPENDITURE.type())
             }

@@ -15,9 +15,9 @@ object MoneyConverters {
     @FromJson
     @JvmStatic
     @TypeConverter
-    fun fromLong(value: Long?): BigDecimal? {
+    fun fromLong(value: Long?): BigDecimal {
         //.divide(BigDecimal.ONE, 2, BigDecimal.ROUND_DOWN);//两位小数 整数补00
-        return if (value == null) null else BigDecimal(value).divide(
+        return if (value == null) ZERO_00() else BigDecimal(value).divide(
             BigDecimal(100),
             2,
             BigDecimal.ROUND_DOWN
@@ -37,7 +37,6 @@ object MoneyConverters {
     }
     @ToJson
     @JvmStatic
-    @TypeConverter
     fun toString(bigDecimal: BigDecimal): String {
         return bigDecimal.multiply(BigDecimal(100)).toPlainString()
     }

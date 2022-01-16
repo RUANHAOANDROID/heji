@@ -85,5 +85,6 @@
     <string name="retrieve_password">找回密码</string>
     <string name="again_password">再次输入确认密码</string>
     <string name="addBook">添加账本</string>
+    <string name="create">创建</string>
 
 </resources>

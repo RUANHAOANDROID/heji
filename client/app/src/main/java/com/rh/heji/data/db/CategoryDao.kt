@@ -43,6 +43,6 @@ interface CategoryDao {
     @Delete
     fun delete(category: Category) // updateOrders();
 
-    @Query("delete from bill where id=:id")
+    @Query("delete from bill where bill_id=:id")
     fun deleteById(id: String)
 }

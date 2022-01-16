@@ -1,6 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
+import com.rh.heji.currentBook
 import com.rh.heji.data.db.mongo.ObjectId
 import java.util.*
 
@@ -14,11 +15,20 @@ data class Category(
     @PrimaryKey
     @ColumnInfo(name = "_id")
     var id: String = ObjectId().toHexString(),
+
+    /**
+     * 账本ID
+     */
+    @JvmField
+    @ColumnInfo(name = "book_id")
+    var bookId: String,
+
     @ColumnInfo(name = "category")
-    var category: String,
-) {
+    var category: String= currentBook.id,
+
+    ) {
     @Ignore
-    constructor(id: String=ObjectId().toHexString(), category: String, level: Int, type: Int) : this(id, category) {
+    constructor(id: String=ObjectId().toHexString(),bookId: String= "", category: String, level: Int, type: Int) : this(id,bookId, category) {
         this.level = level
         this.type = type
     }
@@ -32,12 +42,6 @@ data class Category(
     @ColumnInfo(name = "type", defaultValue = "-1")
     var type: Int = 0
 
-    /**
-     * 账本ID
-     */
-    @JvmField
-    @ColumnInfo(name = "book_id")
-    var bookId: String? = null
 
     /**
      * 在账本下排序

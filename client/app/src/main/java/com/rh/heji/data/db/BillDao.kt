@@ -25,16 +25,16 @@ interface BillDao {
     @Update(entity =Bill::class ,onConflict = OnConflictStrategy.REPLACE)
     fun update(bill: Bill): Int
 
-    @Query("select sync_status from bill where id=:billId")
+    @Query("select sync_status from bill where bill_id=:billId")
     fun status(billId: String): Int
 
-    @Query("update bill set sync_status = ${STATUS.DELETED} where id=:billId")
+    @Query("update bill set sync_status = ${STATUS.DELETED} where bill_id=:billId")
     fun preDelete(billId: String): Int
 
-    @Query("select id from bill where book_id=:bookId")
+    @Query("select bill_id from bill where book_id=:bookId")
     fun idsDeleted(bookId: String): Flow<List<String>>
 
-    @Query("delete from bill where id=:billId")
+    @Query("delete from bill where bill_id=:billId")
     fun deleteById(billId: String): Int
 
     @Query("delete from bill where book_id=:id")
@@ -49,7 +49,7 @@ interface BillDao {
      * @return
      */
     @TypeConverters(MoneyConverters::class, DateConverters::class)
-    @Query("select id from bill where datetime(bill_time) =:time AND money =:money AND remark=:remark AND book_id=:bookId")
+    @Query("select bill_id from bill where datetime(bill_time) =:time AND money =:money AND remark=:remark AND book_id=:bookId")
     fun findIds(
         time: Date,
         money: BigDecimal,
@@ -57,7 +57,7 @@ interface BillDao {
         bookId: String = currentBook.id
     ): MutableList<String>
 
-    @Query("select count(*)  from bill where id =:id")
+    @Query("select count(*)  from bill where bill_id =:id")
     fun countById(id: String): Int
 
     @Query("select count(*)  from bill where book_id =:bookId")
@@ -67,7 +67,7 @@ interface BillDao {
      * @param syncStatus 同步状态
      * @return
      */
-    @Query("SELECT id FROM bill WHERE sync_status =:syncStatus")
+    @Query("SELECT bill_id FROM bill WHERE sync_status =:syncStatus")
     fun observeSyncStatus(syncStatus: Int): Flow<MutableList<String>>
 
     /**
@@ -77,7 +77,7 @@ interface BillDao {
      * @param end   结束时间
      * @return 账单列表
      */
-    @Query("SELECT * FROM bill WHERE (date(bill_time) BETWEEN :start AND :end ) AND (book_id=:bookId) AND ($NOT_REDELETE) ORDER BY bill_time DESC ,id DESC")
+    @Query("SELECT * FROM bill WHERE (date(bill_time) BETWEEN :start AND :end ) AND (book_id=:bookId) AND ($NOT_REDELETE) ORDER BY bill_time DESC ,bill_id DESC")
     fun findBetweenTime(
         start: String,
         end: String,
@@ -91,7 +91,7 @@ interface BillDao {
      * @param end
      * @return
      */
-    @Query("SELECT DISTINCT date(bill_time)   FROM bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (book_id=:bookId) AND ($NOT_REDELETE) ORDER BY bill_time DESC ,id DESC")
+    @Query("SELECT DISTINCT date(bill_time)   FROM bill WHERE ( date(bill_time) BETWEEN :start AND :end ) AND (book_id=:bookId) AND ($NOT_REDELETE) ORDER BY bill_time DESC ,bill_id DESC")
     fun findHaveBillDays(
         start: String,
         end: String,
@@ -122,7 +122,7 @@ interface BillDao {
     fun sumDayIncome(time: String, bookId: String? = currentBook.id): Income
 
     @TypeConverters(MoneyConverters::class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income ,date(bill_time) as time from bill  where sync_status!=-1 AND book_id=:bookId AND strftime('%Y-%m',bill_time)=:yearMonth group by date(bill_time) ORDER BY bill_time DESC ,id DESC")
+    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income ,date(bill_time) as time from bill  where sync_status!=-1 AND book_id=:bookId AND strftime('%Y-%m',bill_time)=:yearMonth group by date(bill_time) ORDER BY bill_time DESC ,bill_id DESC")
     fun findEveryDayIncomeByMonth(bookId: String?= currentBook.id, yearMonth: String): MutableList<IncomeTime>
 
     @TypeConverters(MoneyConverters::class)
@@ -133,9 +133,6 @@ interface BillDao {
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',bill_time)=:yearMonth)")
     fun sumMonthIncomeExpenditure(yearMonth: String, bookId: String? = currentBook.id): Income
 
-    @Transaction
-    @Query("SELECT * FROM bill")
-    fun findAllBillWhitImage(): MutableList<BillWithImage>
 
     @Query("SELECT * FROM bill WHERE  sync_status==:syncStatus")
     fun findByStatus(syncStatus: Int): MutableList<Bill>

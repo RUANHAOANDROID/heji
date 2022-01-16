@@ -1,13 +1,11 @@
-package com.heji.server.module;
+package com.heji.server.model;
 
-import com.heji.server.data.mongo.MBook;
 import com.heji.server.data.mongo.MUser;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

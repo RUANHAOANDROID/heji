@@ -4,7 +4,7 @@ import androidx.lifecycle.*
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.currentBook
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.CRUD
+import com.rh.heji.data.SyncEvent
 import com.rh.heji.data.DataBus
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
@@ -72,10 +72,9 @@ class AddBillViewModel : BaseViewModel() {
             AppDatabase.getInstance().imageDao().install(images)
             if (count > 0) {
                 ToastUtils.showShort("已保存: ${bill.category + money}  ")
+                saveCall(bill.copy())
+                bill.id = ObjectId.get().toHexString()//zu最后重新赋值ID
             }
-            saveCall(bill)
-            bill.id = ObjectId.get().toHexString()//保存重新赋值ID
-            DataBus.post(CRUD.CREATE,bill)
         }, {
             ToastUtils.showShort(it.message)
         })

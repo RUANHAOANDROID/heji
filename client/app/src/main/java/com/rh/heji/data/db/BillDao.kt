@@ -31,6 +31,9 @@ interface BillDao {
     @Query("update bill set sync_status = ${STATUS.DELETED} where bill_id=:billId")
     fun preDelete(billId: String): Int
 
+    @Query("update bill set sync_status = :status where bill_id=:billId")
+    fun updateSyncStatus(billId: String,status:Int): Int
+
     @Query("select bill_id from bill where book_id=:bookId")
     fun idsDeleted(bookId: String): Flow<List<String>>
 

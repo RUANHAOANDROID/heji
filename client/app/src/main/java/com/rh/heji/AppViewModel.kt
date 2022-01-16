@@ -37,7 +37,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             val data = it.entity
             val optType = it.crud
 
-            launchNewThread({
+            launchIO({
                 if (data is Book) {
                     BookTask(optType, data).sync()
                 }
@@ -60,14 +60,14 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             when (status) {
                 STATUS.NOT_SYNCED -> {//未同步直接删除
                     AppDatabase.getInstance().billDao().deleteById(bill.id)
-                    DataBus.post(EventMessage(CRUD.DELETE, bill))
+                    DataBus.post(EventMessage(SyncEvent.DELETE, bill.copy()))
                     return@launchIO
                 }
                 else -> {
                     AppDatabase.getInstance().billDao().preDelete(bill.id)
                 }
             }
-            DataBus.post(EventMessage(CRUD.DELETE, bill))
+            DataBus.post(EventMessage(SyncEvent.DELETE, bill.copy()))
             billRepository.deleteBill(bill.id)
         })
 

@@ -79,14 +79,14 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnSave"
+        android:id="@+id/btnCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:minHeight="60dp"
         android:minWidth="180dp"
         android:layout_marginTop="16dp"
-        android:text="@string/save" />
+        android:text="@string/create" />
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

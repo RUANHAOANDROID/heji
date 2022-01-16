@@ -17,31 +17,32 @@ import java.util.*
 /**
  * Date: 2020/8/28
  * Author: 锅得铁
- * #
+ * # onDelete ：当账本创建人删除了账本，联动删除账本账单
+ * # onUpdate ：当账本更新，账单不联动
  */
 @Parcelize
 @Entity(
-    tableName = "bill", foreignKeys = [ForeignKey(
+    tableName = Bill.TAB_NAME, primaryKeys = [Bill.COLUMN_ID], foreignKeys = [ForeignKey(
         entity = Book::class,
         parentColumns = [Book.COLUMN_ID],
         childColumns = [Bill.COLUMN_BOOK_ID],
         onDelete = ForeignKey.CASCADE,
-        onUpdate = ForeignKey.CASCADE
-    )], indices = [Index(value = ["id", "book_id"], unique = true)]
+        onUpdate = ForeignKey.NO_ACTION
+    )], indices = [Index(value = [Bill.COLUMN_ID, Bill.COLUMN_BOOK_ID], unique = true)]
 )
+@TypeConverters(DateConverters::class, MoneyConverters::class)
 data class Bill(
     @Json(name = "_id")
-    @PrimaryKey
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
 
-    @ColumnInfo(name = COLUMN_BOOK_ID)
+    @ColumnInfo(name = COLUMN_BOOK_ID,index = true)
     var bookId: String = currentBook.id,
     /**
      * 钱
      */
     @TypeConverters(MoneyConverters::class)
-    var money: BigDecimal = BigDecimal.ZERO,
+    var money: BigDecimal= MoneyConverters.ZERO_00(),
 
     /**
      * 收支类型 s|z
@@ -57,7 +58,7 @@ data class Bill(
     /**
      * 账单时间-产生费用的日期-以这个为主
      */
-    @TypeConverters(DateConverters::class)
+
     @ColumnInfo(name = "bill_time")
     var billTime: Date = Date(),
 
@@ -125,7 +126,8 @@ data class Bill(
     }
 
     companion object {
-        const val COLUMN_ID = "id"
-        const val COLUMN_BOOK_ID = "book_id"
+        const val TAB_NAME = "bill"
+        const val COLUMN_ID = "bill_id"
+        const val COLUMN_BOOK_ID = Book.COLUMN_ID
     }
 }

@@ -16,35 +16,32 @@ interface BookDao {
     @Update(entity = Book::class, onConflict = OnConflictStrategy.REPLACE)
     fun update(book: Book): Int
 
-    @Query("delete from book  where id=:bookId")
+    @Query("delete from book  where book_id=:bookId")
     fun deleteById(bookId: String)
 
-    @Query("update book set sync_status = ${STATUS.DELETED} where id=:book_id")
+    @Query("update book set sync_status = ${STATUS.DELETED} where book_id=:book_id")
     fun preDelete(book_id: String): Int
 
     @Query("select count() from book  where name=:name")
     fun countByName(name: String): Int
 
-    @Query("SELECT * FROM book WHERE sync_status!=${STATUS.DELETED} ORDER BY id")
+    @Query("SELECT * FROM book WHERE sync_status!=${STATUS.DELETED} ORDER BY book_id")
     fun allBooks(): MutableList<Book>
 
     @Query("select * from book where sync_status=:status")
     fun books(status: Int): MutableList<Book>
 
-    @Query("select firstBook from book where id=:book_id")
+    @Query("select first from book where book_id=:book_id")
     fun isFirstBook(book_id: String): Int
 
-    @Transaction
-    @Query("select * from book where name =:bookName")
-    fun findBookWhitBills(bookName: String): MutableList<BookWithBills>
 
     @Query("select count(0) from book")
     fun count(): Int
 
-    @Query("select count(0) from book WHERE id=:bookId")
+    @Query("select count(0) from book WHERE book_id=:bookId")
     fun exist(bookId: String): Int
 
-    @Query("select * from book where id =:id")
+    @Query("select * from book where book_id =:id")
     fun findBook(id: String): MutableList<Book>
 
 }

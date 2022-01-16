@@ -60,9 +60,9 @@ val currentYearMonth: YearMonth = YearMonth(
 //)
 var currentUser: JWTParse.User = JWTParse.User("local", mutableListOf(), "")
 
-val incomeDefaultCategory = Category(category = "其他", level = 0, type = BillType.INCOME.type())
+val incomeDefaultCategory = Category(category = "其他", bookId = "", level = 0, type = BillType.INCOME.type())
 val expenditureDefaultCategory =
-    Category(category = "其他", level = 0, type = BillType.EXPENDITURE.type())
+    Category(category = "其他", bookId = "", level = 0, type = BillType.EXPENDITURE.type())
 
 /**
  * 当前账本

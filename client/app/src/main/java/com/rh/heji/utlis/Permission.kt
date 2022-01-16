@@ -24,9 +24,6 @@ fun FragmentActivity.checkPermissions(
         Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.ACCESS_NETWORK_STATE,
         Manifest.permission.INTERNET
     ).explainReasonBeforeRequest()
-
-
-
         .onExplainRequestReason { scope: ExplainScope, deniedList: List<String> ->
             scope.showRequestReasonDialog(
                 deniedList,

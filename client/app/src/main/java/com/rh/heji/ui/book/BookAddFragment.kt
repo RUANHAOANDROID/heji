@@ -26,12 +26,12 @@ class BookAddFragment : BaseFragment() {
         binding = FragmentBookAddBinding.bind(rootView)
         binding.banner.setOnClickListener { }
         binding.layoutType.setOnClickListener {
-            XPopup.Builder(requireContext()).asBottomList("选择账单类型", arrayOf("日常生活", "经营账本", "人情账本", "汽车账本"),
-                OnSelectListener { position, text ->
-                    binding.tvBookType.text = text
-                }).show()
+            XPopup.Builder(requireContext()).asBottomList("选择账单类型", arrayOf("日常生活", "经营账本", "人情账本", "汽车账本")
+            ) { position, text ->
+                binding.tvBookType.text = text
+            }.show()
         }
-        binding.btnSave.setOnClickListener {
+        binding.btnCreate.setOnClickListener {
             val name = bookName()
             val type = bookType()
             if (name.isEmpty()) {

@@ -10,6 +10,7 @@ import java.util.*
  */
 @Entity(
     tableName = "image",
+    primaryKeys = [Image.COLUMN_ID],
     foreignKeys = [ForeignKey(
         entity = Bill::class,
         parentColumns = [Bill.COLUMN_ID],
@@ -19,12 +20,11 @@ import java.util.*
     )]
 )
 data class Image(
-    @PrimaryKey
+    @ColumnInfo(name = Image.COLUMN_ID)
     var id: String,
-    @ColumnInfo(name = COLUMN_ID, index = true)
+    @ColumnInfo(name = Bill.COLUMN_ID, index = true)
     var billID: String
 ) {
-
 
 
     var md5: String? = null
@@ -65,7 +65,7 @@ data class Image(
     }
 
     companion object {
-        const val COLUMN_ID = "_bid"
+        const val COLUMN_ID = "image_id"
         const val COLUMN_PATH = "local_path"
         const val COLUMN_ONLINE_PATH = "online_path"
         const val COLUMN_STATUS = "sync_status"

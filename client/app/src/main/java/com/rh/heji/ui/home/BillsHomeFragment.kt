@@ -28,7 +28,6 @@ import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
 import com.rh.heji.ui.bill.iteminfo.PopBillInfo
-import com.rh.heji.ui.bill.iteminfo.BillPopClickListenerImpl
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
 import java.math.BigDecimal
@@ -241,17 +240,9 @@ class BillsHomeFragment : BaseFragment() {
      * @param billTab
      */
     private fun showBillItemPop(billTab: Bill) {
-        val popupView = PopBillInfo(bill = billTab, activity = mainActivity)
-        popupView.popClickListener = object : BillPopClickListenerImpl() {
-            override fun delete(bill: Bill) {
-                super.delete(bill)
-                notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
-            }
-
-            override fun update(bill: Bill) {
-                super.update(bill)
-            }
-        }
+        val popupView = PopBillInfo(bill = billTab, activity = mainActivity, delete = {
+            notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
+        }, update = {})
         XPopup.Builder(requireContext()) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
             //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
             //.hasBlurBg(true)//模糊默认false

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.rh.heji.R
+import com.rh.heji.currentBook
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryContentBinding
@@ -141,7 +142,7 @@ class CategoryFragment : BaseFragment() {
     }
 
     private fun addSettingItem(labelAdapter: CategoryAdapter) {
-        val category = Category(category = CategoryAdapter.SETTING, level = 0, type = type.type())
+        val category = Category(category = CategoryAdapter.SETTING, bookId = currentBook.id,level = 0, type = type.type())
         labelAdapter.addData(labelAdapter.itemCount, category)
     }
 

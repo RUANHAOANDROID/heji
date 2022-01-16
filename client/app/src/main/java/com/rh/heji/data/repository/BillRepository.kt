@@ -101,28 +101,18 @@ class BillRepository : DataRepository() {
     /**
      * 添加账单，保存到数据库就算成功，同步交给AppViewModule
      */
-    fun addBill(bill: Bill, images: MutableList<Image> = mutableListOf()): Flow<Long> {
-        return flow {
-            val bid = bill.id//避免发射后UI重置ID
-            var count = billDao.install(bill)
-            if (count > 0){
-                emit(count)//--发射
-                bill.id=bid
-                AppViewModel.get().launch({
-                    network.billPush(bill).let {
-                        if (it.code == OK) {
-                            bill.synced = STATUS.SYNCED
-                            billDao.update(bill)
-                        }
-                    }
+    suspend fun addBill(bill: Bill) {
+        AppViewModel.get().launch({
+            network.billPush(bill).let {
+                if (it.code == OK) {
+                    bill.synced = STATUS.SYNCED
+                    billDao.update(bill)
+                }
+            }
 
-                })
-            }
-            if (images.size>0){
-                AppDatabase.getInstance().imageDao().install(images)
-                uploadImage(bid)
-            }
-            emit(1)
-        }.flowOn(Dispatchers.IO)
+        })
+        if (bill.images.isNotEmpty()) {
+            uploadImage(bill_id = bill.id)
+        }
     }
 }

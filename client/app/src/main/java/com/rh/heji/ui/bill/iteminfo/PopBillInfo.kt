@@ -12,7 +12,7 @@ import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.*
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.CRUD
+import com.rh.heji.data.SyncEvent
 import com.rh.heji.data.DataBus
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
@@ -96,7 +96,7 @@ class PopBillInfo(
                     if (bill.createUser == currentUser.username) {
                         AppDatabase.getInstance().billDao().delete(bill)
                         delete(bill)
-                        DataBus.post(CRUD.DELETE, bill)
+                        DataBus.post(SyncEvent.DELETE, bill.copy())
                         dismiss()
                     } else {
                         ToastUtils.showLong("只有账单创建人有权删除该账单")

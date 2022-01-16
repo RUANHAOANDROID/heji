@@ -13,6 +13,8 @@ import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
 import com.rh.heji.currentBook
+import com.rh.heji.data.SyncEvent
+import com.rh.heji.data.DataBus
 import com.rh.heji.databinding.FragmentEtcBinding
 import com.rh.heji.ui.base.BaseFragment
 import java.util.*

@@ -9,6 +9,8 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppViewModel
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
+import com.rh.heji.data.DataBus
+import com.rh.heji.data.SyncEvent
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
@@ -97,14 +99,16 @@ class ETCViewModel : BaseViewModel() {
                  */
                 val bills =   AppDatabase.getInstance().billDao().findIds(bill.billTime!!, bill.money, bill.remark!!)
                 if (bills.size <= 0) {
-                      AppDatabase.getInstance().billDao().install(bill)
+                    val count =AppDatabase.getInstance().billDao().install(bill)
                     LogUtils.d("导入ETC账单：", bill)
+                    if (count>0)
+                        DataBus.post(SyncEvent.ADD,bill.copy())
                 } else {
                     LogUtils.d("ETC账单已存在", bills)
                 }
             })
             etcLive.postValue("导入完成")
-            AppViewModel.get().asyncData()
+
         } else {
             ToastUtils.showShort("导入失败")
             etcLive.postValue("导入失败")
@@ -177,6 +181,8 @@ class ETCViewModel : BaseViewModel() {
     }
 
     /**
+     *
+     * 请求1失败后尝试2
      * 请求账单详情列表
      *
      * @param etcID ETC号码
@@ -251,8 +257,10 @@ class ETCViewModel : BaseViewModel() {
             bill.remark!!
         )
         if (bills.size <= 0) {
-              AppDatabase.getInstance().billDao().install(bill)
+            val count =AppDatabase.getInstance().billDao().install(bill)
             LogUtils.d("导入ETC账单：", bill)
+            if (count >0)
+                DataBus.post(SyncEvent.ADD,bill.copy())
         } else {
             LogUtils.d("ETC账单已存在", bills)
         }

@@ -102,15 +102,12 @@ class BillRepository : DataRepository() {
      * 添加账单，保存到数据库就算成功，同步交给AppViewModule
      */
     suspend fun addBill(bill: Bill) {
-        AppViewModel.get().launch({
-            network.billPush(bill).let {
-                if (it.code == OK) {
-                    bill.synced = STATUS.SYNCED
-                    billDao.update(bill)
-                }
+        network.billPush(bill).let {
+            if (it.code == OK) {
+                bill.synced = STATUS.SYNCED
+                billDao.updateSyncStatus(it.data.toString(),STATUS.SYNCED)
             }
-
-        })
+        }
         if (bill.images.isNotEmpty()) {
             uploadImage(bill_id = bill.id)
         }

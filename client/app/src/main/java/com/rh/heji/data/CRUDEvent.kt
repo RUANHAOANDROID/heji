@@ -22,19 +22,24 @@ import java.util.*
  *Author: 锅得铁
  *# entity 为 @Entity类型
  */
-class EventMessage(var crud: CRUD, var entity: Any)
+class EventMessage(var crud: SyncEvent, var entity: Any)
 
-enum class CRUD {
-    CREATE, READ, UPDATE, DELETE
+
+enum class SyncEvent {
+
+    ADD, PULL, UPDATE, DELETE
 }
+
 
 object DataBus {
     fun post(eventMessage: EventMessage) {
         AppViewModel.get().localDataEvent.postValue(eventMessage)
     }
-    fun post( crud: CRUD,  entity: Any) {
-        AppViewModel.get().localDataEvent.postValue(EventMessage(crud,entity))
+
+    fun post(crud: SyncEvent, entity: Any) {
+        AppViewModel.get().localDataEvent.postValue(EventMessage(crud, entity))
     }
+
     fun subscriberForever(observer: (EventMessage) -> Unit) {
         AppViewModel.get().localDataEvent.observeForever(observer)
     }
@@ -43,73 +48,63 @@ object DataBus {
         AppViewModel.get().localDataEvent.observe(lifecycleOwner, observer)
     }
 
-    private fun test() {
-        subscriberForever {
-            if (it.entity is Book) {
-                when (it.crud) {
-                    CRUD.DELETE -> "delete"
-                    CRUD.READ -> "read"
-                    CRUD.UPDATE -> "update"
-                    CRUD.CREATE -> "update"
-                }
-            }
-        }
-    }
 }
 
-class BookTask(private val crud: CRUD, val book: Book) {
-    private val bookRepository=BookRepository()
+class BookTask(private val crud: SyncEvent, val book: Book) {
+    private val bookRepository = BookRepository()
     suspend fun sync() {
         when (crud) {
-            CRUD.DELETE -> {
+            SyncEvent.DELETE -> {
                 bookRepository.deleteBook(book_id = book.id)
             }
-            CRUD.READ -> {
+            SyncEvent.PULL -> {
                 "do nothing"
             }
-            CRUD.UPDATE -> {
+            SyncEvent.UPDATE -> {
                 bookRepository.updateBook(book)
             }
-            CRUD.CREATE -> {
+            SyncEvent.ADD -> {
                 bookRepository.addBook(book)
             }
         }
     }
 }
-class BillTask(private val crud: CRUD, val bill: Bill) {
-    private val billRepository=BillRepository()
+
+class BillTask(private val crud: SyncEvent, val bill: Bill) {
+    private val billRepository = BillRepository()
     suspend fun sync() {
         when (crud) {
-            CRUD.DELETE -> {
+            SyncEvent.DELETE -> {
                 billRepository.deleteBill(_id = bill.id)
             }
-            CRUD.READ -> {
+            SyncEvent.PULL -> {
                 "do nothing"
             }
-            CRUD.UPDATE -> {
+            SyncEvent.UPDATE -> {
                 billRepository.updateBill(bill)
             }
-            CRUD.CREATE -> {
+            SyncEvent.ADD -> {
                 billRepository.addBill(bill)
             }
         }
     }
 }
-class CategoryTask(private val crud: CRUD, val category: Category) {
-    private val categoryRepository=CategoryRepository()
+
+class CategoryTask(private val crud: SyncEvent, val category: Category) {
+    private val categoryRepository = CategoryRepository()
     suspend fun sync() {
         when (crud) {
-            CRUD.DELETE -> {
+            SyncEvent.DELETE -> {
                 categoryRepository.deleteCategory(_id = category.id)
             }
-            CRUD.READ -> {
+            SyncEvent.PULL -> {
                 "do nothing"
             }
-            CRUD.UPDATE -> {
+            SyncEvent.UPDATE -> {
                 categoryRepository.updateCategory(category)
             }
-            CRUD.CREATE -> {
-                categoryRepository.addCategory(CategoryEntity(category),category.bookId)
+            SyncEvent.ADD -> {
+                categoryRepository.addCategory(CategoryEntity(category), category.bookId)
             }
         }
     }

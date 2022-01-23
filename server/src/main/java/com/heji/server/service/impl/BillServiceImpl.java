@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
@@ -41,6 +43,19 @@ public class BillServiceImpl extends BaseMongoTemplate implements BillService {
     public String addBill(MBill bill) {
         MBill saveBill = getMongoTemplate().save(bill, BILL);
         return saveBill.get_id();
+    }
+
+    @Override
+    public List<String> addBills(List<MBill> bills) {
+        List<MBill> saves = getMongoTemplate().insert(bills);
+        List<String> ids = saves.stream().map(new Function<MBill, String>() {
+
+            @Override
+            public String apply(MBill mBill) {
+                return mBill.get_id();
+            }
+        }).collect(Collectors.toList());
+        return ids;
     }
 
     @Override
@@ -88,7 +103,7 @@ public class BillServiceImpl extends BaseMongoTemplate implements BillService {
     public List<MBill> getBills(String book_id, String startDate, String endDate) {
         if (startDate.equals("0") || endDate.equals("0"))
             return mBillRepository.findMBillsByBookId(book_id);
-        return mBillRepository.findMBillsByBookIdAndTimeBetween(book_id,startDate,endDate);
+        return mBillRepository.findMBillsByBookIdAndTimeBetween(book_id, startDate, endDate);
 //        // 创建条件对象
 //        Criteria criteria = Criteria.where("book_id").is(book_id)
 //                .where("time").gte(startDate).lte(endDate);

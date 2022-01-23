@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface BillService {
     String addBill(MBill bill);
+    List<String> addBills(List<MBill> bill);
 
     boolean removeBill(String _id);
 

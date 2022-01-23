@@ -58,7 +58,14 @@ public class BillsController {
         String billID = billService.addBill(mBill);
         return Result.success(billID);
     }
-
+    @ResponseBody
+    @PostMapping(value = {"/addBills"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public String addBills(@RequestHeader("book_id")String book_id,@RequestBody List<MBill> bills) {
+        checkBookExists(book_id);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<String> ids = billService.addBills(bills);
+        return Result.success(ids);
+    }
     private void checkBookExists(String book_id) {
         if (!bookService.exists(book_id))
             throw new NotFoundException("账本不存在:" + book_id);

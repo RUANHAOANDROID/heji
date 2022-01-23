@@ -66,6 +66,9 @@ interface HeJiServer {
     @POST("bill/add")
     fun saveBill(@Body entity: Bill): Call<BaseResponse<String>>
 
+    @POST("bill/addBills")
+    fun saveBill(@Header("book_id") book_id:String, @Body entity: List<Bill>): Call<BaseResponse<String>>
+
     @POST("bill/update")
     fun updateBill(@Body entity: Bill): Call<BaseResponse<String>>
 

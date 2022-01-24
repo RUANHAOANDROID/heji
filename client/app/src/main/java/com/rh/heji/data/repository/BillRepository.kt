@@ -108,8 +108,7 @@ class BillRepository : DataRepository() {
                 billDao.updateSyncStatus(it.data.toString(),STATUS.SYNCED)
             }
         }
-        if (bill.images.isNotEmpty()) {
-            uploadImage(bill_id = bill.id)
-        }
+        uploadImage(bill_id = bill.id)
+
     }
 }

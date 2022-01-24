@@ -87,6 +87,12 @@ class ReportFragment : BaseFragment() {
             lineChartSelectType(2)
         }
         pieChartStyle(binding.pieChartCategory)
+        binding.tvTypeIncomePie.setOnClickListener {
+            pieChartSelectType(1)
+        }
+        binding.tvTypeExpenditurePie.setOnClickListener {
+            pieChartSelectType(0)
+        }
         initCategoryListView()
         initTotalTitleView()
         initTotalListView()
@@ -306,6 +312,41 @@ class ReportFragment : BaseFragment() {
             setBackgroundColor(resources.getColor(R.color.transparent, mainActivity.theme))
             setTextColor(resources.getColor(R.color.textRemark, mainActivity.theme))
         }
+
+        when (type) {
+            0 -> {
+                binding.tvTypeExpenditure.apply {
+                    background =
+                        resources.getDrawable(R.drawable.shape_tag_left_blue, mainActivity.theme)
+                    setTextColor(resources.getColor(R.color.white, mainActivity.theme))
+                }
+            }
+            1 -> {
+                binding.tvTypeIncome.apply {
+                    setBackgroundColor(resources.getColor(R.color.colorPrimary, mainActivity.theme))
+                    setTextColor(resources.getColor(R.color.white, mainActivity.theme))
+                }
+            }
+            2 -> {
+                binding.tvTypeAll.apply {
+                    background =
+                        resources.getDrawable(R.drawable.shape_tag_right_blue, mainActivity.theme)
+                    setTextColor(resources.getColor(R.color.white, mainActivity.theme))
+                }
+            }
+        }
+    }
+    private fun pieChartSelectType(type: Int) {
+        binding.tvTypeExpenditurePie.apply {
+            setBackgroundColor(resources.getColor(R.color.transparent, mainActivity.theme))
+            setTextColor(resources.getColor(R.color.textRemark, mainActivity.theme))
+        }
+
+        binding.tvTypeIncomePie.apply {
+            setBackgroundColor(resources.getColor(R.color.transparent, mainActivity.theme))
+            setTextColor(resources.getColor(R.color.textRemark, mainActivity.theme))
+        }
+
 
         when (type) {
             0 -> {

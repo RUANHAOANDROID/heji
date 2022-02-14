@@ -26,7 +26,7 @@ class ExportViewModel : BaseViewModel() {
             var response = HejiNetwork.getInstance().billExport()
             if (response.isSuccessful && response.code() == 200) {
                 val filesDir =
-                    App.context().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+                    App.context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
                 var attachment = response.headers()["Content-Disposition"]
                 var subFileName = attachment?.substringAfterLast(
                     "attachment; filename=",
@@ -40,7 +40,7 @@ class ExportViewModel : BaseViewModel() {
                     sink.close()
                     exportLiveData.postValue(excelFile.absolutePath)
                     LogUtils.d("下载成功：${excelFile.absolutePath}")
-                    MyUtils.galleryAddPic(App.context(),excelFile.absolutePath)
+                    MyUtils.galleryAddPic(App.context,excelFile.absolutePath)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

@@ -34,6 +34,6 @@ class HttpHeaderInterceptor() : Interceptor {
     }
 
     private fun sendLoginBroadcast() {
-        AppViewModel.get(App.context()).loginEvent.postValue(Event(401))
+        AppViewModel.get(App.context).loginEvent.postValue(Event(401))
     }
 }

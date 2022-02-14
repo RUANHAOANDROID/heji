@@ -103,7 +103,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         if (expenditure != "0") {
             val expenditureScheme = Calendar.Scheme()
             expenditureScheme.type = -1
-            expenditureScheme.shcemeColor = App.context().getColor(R.color.expenditure)
+            expenditureScheme.shcemeColor = App.context.getColor(R.color.expenditure)
             expenditureScheme.obj = "-$expenditure"
             calendar.addScheme(expenditureScheme)
         }
@@ -111,7 +111,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         if (income != "0") {
             val incomeScheme = Calendar.Scheme()
             incomeScheme.type = 1
-            incomeScheme.shcemeColor = App.context().getColor(R.color.income)
+            incomeScheme.shcemeColor = App.context.getColor(R.color.income)
             incomeScheme.obj = "+$income"
             calendar.addScheme(incomeScheme)
         }

@@ -1,8 +1,8 @@
 package com.rh.heji
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import com.rh.heji.utlis.http.basic.HttpRetrofit
 
 /**
  * Date: 2020/8/28
@@ -13,18 +13,15 @@ import com.rh.heji.utlis.http.basic.HttpRetrofit
  *  3.AppViewModule
  */
 class App : Application() {
-    init {
-        instance = this
-    }
 
     companion object {
-        private var instance: App? = null
-        fun context(): Context = instance!!.applicationContext
+        @SuppressLint("StaticFieldLeak")
+        lateinit var context: Context
     }
 
     override fun onCreate() {
         super.onCreate()
-        instance =this
+        context = this
         init()
     }
 

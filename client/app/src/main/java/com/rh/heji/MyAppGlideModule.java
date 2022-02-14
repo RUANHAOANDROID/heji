@@ -26,7 +26,7 @@ public final class MyAppGlideModule extends AppGlideModule {
     public static void loadImageFile(Context context, String pathName, ImageView imgView) {
         // 加载本地图片
         File file = new File(pathName);
-        Glide.with(App.Companion.context()).load(file).into(imgView);
+        Glide.with(App.context).load(file).into(imgView);
     }
 
     public static void loadImageRes(Context context, int resource, ImageView imgView) {

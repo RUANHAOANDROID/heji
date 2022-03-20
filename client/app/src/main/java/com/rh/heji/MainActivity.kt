@@ -39,7 +39,7 @@ import java.lang.ref.WeakReference
 
 
 class MainActivity : AppCompatActivity() {
-    private  val TAG = "MainActivity"
+    private val TAG = "MainActivity"
     lateinit var navController: NavController private set
     private lateinit var drawerLayout: DrawerLayout
     val mainViewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
@@ -75,9 +75,15 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        AppViewModel.get().loginEvent.observe(this){
-            ToastUtils.showLong("用户凭证已失效，请重新登录")
-            navController.navigate(R.id.nav_login)
+        AppViewModel.get().loginEvent.observe(this) {
+            navController.currentBackStackEntry?.let {
+                if (it.destination.label != resources.getString(R.string.login)) {
+                    ToastUtils.showLong("用户凭证已失效，请重新登录")
+                    navController.navigate(R.id.nav_login)
+                }
+            }
+
+
         }
     }
 
@@ -110,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
         val navHostFragmentRootView: View = findViewById(R.id.nav_host_fragment)
-        drawerLayout.addDrawerListener(HomeDrawerListener(this) {left:Int,top:Int,right:Int,bottom:Int ->
+        drawerLayout.addDrawerListener(HomeDrawerListener(this) { left: Int, top: Int, right: Int, bottom: Int ->
             navHostFragmentRootView.layout(left, top, right, bottom)
         })
         //Logout Menu
@@ -146,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                 parent.closeDrawer(navigationView)
             }
             if (!handled) {
-                LogUtils.d(TAG,item.toString() )
+                LogUtils.d(TAG, item.toString())
                 NavigationUI.onNavDestinationSelected(item, navController)
                 if (navController.currentDestination?.id != R.id.nav_home) navController.popBackStack()
                 try {
@@ -198,7 +204,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    LogUtils.d(TAG,destination.label.toString())
+                    LogUtils.d(TAG, destination.label.toString())
                 }
             })
     }

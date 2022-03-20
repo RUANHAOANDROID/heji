@@ -147,7 +147,7 @@ interface BillDao {
      */
     @TypeConverters(MoneyConverters::class)
     @Transaction
-    @Query("SELECT sum(money) as money,type,date(bill_time) as time FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND type=:type AND sync_status!= ${STATUS.DELETED} group by date(bill_time)")
+    @Query("SELECT sum(money) AS money,type,date(bill_time) AS time FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND type=:type AND sync_status!= ${STATUS.DELETED} group by date(bill_time)")
     fun sumByMonth(date: String, type: Int, bookId: String = currentBook.id): MutableList<BillTotal>
 
     /**

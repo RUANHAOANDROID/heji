@@ -1,6 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
+import com.rh.heji.data.AppDatabase
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -16,27 +17,34 @@ interface ImageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun install(ticket: MutableList<Image >)
 
+    @Transaction
+    fun installBillAndImages(bill:Bill,image:MutableList<Image>):Long{
+        var count =AppDatabase.getInstance().billDao().install(bill)
+        install(image)
+        return count
+    }
+
     @Delete
     fun delete(ticket: Image )
 
-    @Query("delete from image where bill_id =:billID")
+    @Query("DELETE FROM image WHERE bill_id =:billID")
     fun deleteBillImage(billID: String )
 
-    @Query("select image_id from image where bill_id =:billID")
+    @Query("SELECT image_id FROM image WHERE bill_id =:billID")
     fun findImagesId(billID: String ):MutableList<String>
 
     @Transaction
-    @Query("update image set local_path=:imagePath, sync_status =:status where image_id =:id")
+    @Query("UPDATE image SET local_path=:imagePath, sync_status =:status WHERE image_id =:id")
     fun updateImageLocalPath(id: String , imagePath: String , status: Int): Int
 
     @Transaction
-    @Query("update image set online_path=:onlinePath, sync_status=:status  where image_id =:imgId")
+    @Query("UPDATE image SET online_path=:onlinePath, sync_status=:status  WHERE image_id =:imgId")
     fun updateOnlinePath(imgId: String , onlinePath: String , status: Int): Int
 
-    @Query("select * from image where online_path=:path")
+    @Query("SELECT * FROM image WHERE online_path=:path")
     fun findByOnLinePath(path: String ): MutableList<Image >
 
-    @Query("DELETE FROM image WHERE " + Image.COLUMN_ID + "=:imgID")
+    @Query("DELETE FROM ${Image.TAB_NAME} WHERE ${Image.COLUMN_ID}=:imgID")
     fun deleteById(imgID: String )
 
     @Query("SELECT * FROM image WHERE bill_id =:billId")
@@ -50,4 +58,5 @@ interface ImageDao {
 
     @Query("SELECT * FROM image WHERE (local_path ISNULL OR local_path=='') AND(online_path!='' OR online_path != NULL)")
     fun observerNotDownloadImages(): Flow<MutableList<Image>>
+
 }

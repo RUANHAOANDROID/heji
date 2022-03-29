@@ -5,17 +5,11 @@ apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'kotlin-parcelize'
 android {
     signingConfigs {
-        debug {
+        single {
             storeFile file('..//heji.keystore')
             storePassword 'password'
             keyPassword 'password'
             keyAlias 'heji'
-        }
-        release {
-            storeFile file('..//heji.keystore')
-            storePassword 'password'
-            keyAlias 'heji'
-            keyPassword 'password'
         }
     }
     compileSdkVersion project.compileSdkVersion
@@ -41,13 +35,13 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.single
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.single
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

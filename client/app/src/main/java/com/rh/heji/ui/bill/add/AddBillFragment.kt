@@ -43,7 +43,7 @@ import java.util.function.Consumer
  */
 class AddBillFragment : BaseFragment() {
     private val billViewModel by lazy { ViewModelProvider(this)[AddBillViewModel::class.java] }
-    val categoryViewModule by lazy { ViewModelProvider(this).get(CategoryViewModule::class.java) }
+    val categoryViewModule by lazy { ViewModelProvider(this)[CategoryViewModule::class.java] }
 
     private lateinit var binding: FragmentIncomeBinding
     private lateinit var categoryTabFragment: CategoryTabFragment
@@ -62,7 +62,7 @@ class AddBillFragment : BaseFragment() {
         remark()
         category()
         keyboardListener()
-        billViewModel.billChanged().observe(this, { bill ->
+        billViewModel.billChanged().observe(this) { bill ->
             binding.tvMoney.text = bill.money.toString()
             binding.tvUserLabel.text = bill.dealer
             binding.tvBillTime.text = bill.billTime?.string()
@@ -72,13 +72,14 @@ class AddBillFragment : BaseFragment() {
             (bill.images.isNotEmpty()).let {
                 billViewModel.getBillImages()
                     .observe(this) { images ->
-                        val imageUrl:MutableList<String> =
+                        val imageUrl: MutableList<String> =
                             images.map { img ->
-                                val url =if (img.localPath.isNullOrEmpty()) img.onlinePath.toString() else img.localPath.toString()
+                                val url =
+                                    if (img.localPath.isNullOrEmpty()) img.onlinePath.toString() else img.localPath.toString()
                                 url?.let { url -> billViewModel.addImgUrl(url) }
                                 return@map url
                             }.toMutableList()
-                        pouSelectImage?.images =imageUrl
+                        pouSelectImage?.images = imageUrl
                         if (imageUrl.isNotEmpty())
                             binding.imgTicket.text = "图片(x" + images.size + ")"
                     }
@@ -97,7 +98,7 @@ class AddBillFragment : BaseFragment() {
                 categoryTabFragment.setCategory(it, bill.type)
             }
 
-        })
+        }
     }
 
     override fun setUpToolBar() {
@@ -111,10 +112,10 @@ class AddBillFragment : BaseFragment() {
     private fun category() {
         categoryTabFragment =
             childFragmentManager.findFragmentById(R.id.categoryFragment) as CategoryTabFragment
-        categoryViewModule.getCategoryType().observe(this, {
+        categoryViewModule.getCategoryType().observe(this) {
             binding.keyboard.setType(it)
-        })
-        categoryViewModule.getSelectCategory().observe(this, { category: Category? ->
+        }
+        categoryViewModule.getSelectCategory().observe(this) { category: Category? ->
             if (null != category) {
                 val billType = BillType.transform(category.type)
                 changeMoneyTextColor(billType)
@@ -126,7 +127,7 @@ class AddBillFragment : BaseFragment() {
                 billViewModel.bill.type = category.type
                 binding.keyboard.setType(billType)
             }
-        })
+        }
     }
 
     private fun remark() {
@@ -207,12 +208,12 @@ class AddBillFragment : BaseFragment() {
      * 选择经手人
      */
     private fun selectPerson() {
-        billViewModel.dealersLiveDatabase.observe(this, { names ->
+        billViewModel.dealersLiveDatabase.observe(this) { names ->
             //经手人名单
             if (names.size > 0) {
                 binding.tvUserLabel.text = "经手人:" + names[0] //默认经手人
                 billViewModel.bill.dealer = names[0] //设置默经手人
-            }else{
+            } else {
                 binding.tvUserLabel.text = "经手人:" + currentUser.username//默认经手人
                 billViewModel.bill.dealer = currentUser.username //设置默经手人
             }
@@ -227,7 +228,7 @@ class AddBillFragment : BaseFragment() {
                     }
                     .show()
             }
-        })
+        }
 
     }
 
@@ -296,10 +297,10 @@ class AddBillFragment : BaseFragment() {
             pouSelectImage?.images= mutableListOf()
         }
 
-        billViewModel.imagesChanged().observe(this,{
+        billViewModel.imagesChanged().observe(this) {
             binding.imgTicket.text = "图片(x" + it.size + ")"
-            pouSelectImage?.images=it
-        })
+            pouSelectImage?.images = it
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

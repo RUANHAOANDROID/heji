@@ -12,7 +12,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import org.jetbrains.annotations.NotNull
 
 
-class NodeBillsAdapter() : BaseNodeAdapter() , LoadMoreModule {
+class NodeBillsAdapter : BaseNodeAdapter() , LoadMoreModule {
     init {
         addNodeProvider(DayIncomeNodeProvider())
         addNodeProvider(DayBillsNodeProvider())

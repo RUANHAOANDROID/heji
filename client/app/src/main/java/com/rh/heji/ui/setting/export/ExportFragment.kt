@@ -28,10 +28,6 @@ class ExportFragment : BaseFragment() {
 
     private val viewModel by lazy {ViewModelProvider(this).get(ExportViewModel::class.java) }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
     override fun initView(rootView: View) {
         binding = FragmentExportBinding.bind(rootView)
         binding.tvExportFormat.setOnClickListener {
@@ -54,7 +50,7 @@ class ExportFragment : BaseFragment() {
     }
 
     override fun layoutId(): Int {
-        return R.layout.fragment_export;
+        return R.layout.fragment_export
     }
 
     override fun setUpToolBar() {

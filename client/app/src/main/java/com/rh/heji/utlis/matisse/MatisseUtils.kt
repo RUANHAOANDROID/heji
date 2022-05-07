@@ -20,29 +20,29 @@ import java.util.*
 object MatisseUtils {
     //companion object
     fun selectSingleImageCrop(activity: FragmentActivity, reqCode: Int) {
-        initMatisse(activity, MimeTypeManager.ofImage(), 1, reqCode, true);
+        initMatisse(activity, MimeTypeManager.ofImage(), 1, reqCode, true)
     }
 
     fun selectSingleImage(activity: FragmentActivity, reqCode: Int) {
-        initMatisse(activity, MimeTypeManager.ofImage(), 1, reqCode);
+        initMatisse(activity, MimeTypeManager.ofImage(), 1, reqCode)
     }
 
 
     fun selectMultipleImage(activity: FragmentActivity, reqCode: Int) {
-        initMatisse(activity, MimeTypeManager.ofImage(), 3, reqCode);
+        initMatisse(activity, MimeTypeManager.ofImage(), 3, reqCode)
     }
 
     fun selectMultipleImage(activity: FragmentActivity, reqCode: Int, count: Int) {
-        initMatisse(activity, MimeTypeManager.ofImage(), count, reqCode);
+        initMatisse(activity, MimeTypeManager.ofImage(), count, reqCode)
     }
 
     fun selectSingleVideo(activity: FragmentActivity, reqCode: Int) {
-        initMatisse(activity, MimeTypeManager.ofVideo(), 1, reqCode);
+        initMatisse(activity, MimeTypeManager.ofVideo(), 1, reqCode)
     }
 
 
     fun selectMultipleVideo(activity: FragmentActivity, reqCode: Int) {
-        initMatisse(activity, MimeTypeManager.ofVideo(), 9, reqCode);
+        initMatisse(activity, MimeTypeManager.ofVideo(), 9, reqCode)
     }
 
 

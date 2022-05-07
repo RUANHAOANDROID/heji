@@ -29,10 +29,6 @@ class App : Application() {
     }
 
 
-    override fun onTerminate() {
-        super.onTerminate()
-    }
-
     private fun init() {
     }
 }

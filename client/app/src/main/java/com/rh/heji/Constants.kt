@@ -76,7 +76,7 @@ var currentBook = Book(
     set(value) {
         MMKV.defaultMMKV().let { mmkv ->
             mmkv!!.encode(CURRENT_BOOK_ID, value.id)
-            mmkv!!.encode(CURRENT_BOOK, value.name)
+            mmkv.encode(CURRENT_BOOK, value.name)
         }
         field = value
     }

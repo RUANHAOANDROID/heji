@@ -71,12 +71,12 @@ class CategoryTabFragment : BaseFragment() {
                 LogUtils.d("onTabReselected", tab.position)
             }
         })
-        categoryViewModule.getCategoryType().observe(this, {
+        categoryViewModule.getCategoryType().observe(this) {
             binding.tab.getTabAt(if (it.type() == 1) 1 else 0)?.let { tab ->
                 if (!tab.isSelected)
                     tab.select()
             }
-        })
+        }
     }
 
     fun setCategory(category: String, type: Int) {

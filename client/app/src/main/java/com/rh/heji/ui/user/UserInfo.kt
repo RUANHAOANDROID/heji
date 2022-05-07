@@ -9,6 +9,4 @@ data class UserInfo(val name: String,
                     val tel: String?,
                     val password: String?,
                     val authenticate: String,
-                    var authorities: List<Authority>? = null) {
-
-}
+                    var authorities: List<Authority>? = null)

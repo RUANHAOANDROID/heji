@@ -27,7 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun dealerDao(): DealerDao
     abstract fun errorLogDao(): ErrorLogDao
-    abstract fun billImageDao(): BillWithImageDao;
+    abstract fun billImageDao(): BillWithImageDao
 
     override fun clearAllTables() {}
 

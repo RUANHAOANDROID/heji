@@ -13,7 +13,7 @@ import com.rh.heji.ui.user.register.RegisterUser
 
 class LoginFragment : BaseFragment() {
 
-    lateinit var binding: FragmentLoginBinding;
+    lateinit var binding: FragmentLoginBinding
     private val viewModel by lazy { ViewModelProvider(this).get(LoginViewModel::class.java) }
 
     override fun layoutId(): Int {
@@ -22,7 +22,7 @@ class LoginFragment : BaseFragment() {
 
     override fun initView(rootView: View) {
         toolBar.title = getString(R.string.login)
-        binding = FragmentLoginBinding.bind(rootView);
+        binding = FragmentLoginBinding.bind(rootView)
         binding.tvRegister.setOnClickListener {
             //findNavController().popBackStack()
             findNavController().navigate(R.id.nav_register)

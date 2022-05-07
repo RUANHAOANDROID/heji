@@ -88,10 +88,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
-
     companion object {
         private var instance: AppViewModel? = null
         fun get(context: Context = App.context()): AppViewModel =

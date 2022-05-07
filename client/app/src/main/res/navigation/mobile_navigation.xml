@@ -24,7 +24,7 @@
         android:id="@+id/nav_bill_add"
         android:name="com.rh.heji.ui.bill.add.AddBillFragment"
         android:label="@string/income"
-        tools:layout="@layout/fragment_income">
+        tools:layout="@layout/fragment_addbill">
         <argument
             android:name="bill"
             app:argType="com.rh.heji.data.db.Bill" />

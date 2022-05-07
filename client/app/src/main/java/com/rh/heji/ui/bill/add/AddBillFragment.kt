@@ -17,87 +17,83 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.*
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.util.KeyboardUtils
 import com.matisse.Matisse.Companion.obtainResult
 import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
 import com.rh.heji.*
 import com.rh.heji.data.BillType
-import com.rh.heji.data.SyncEvent
 import com.rh.heji.data.DataBus
-import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Category
-import com.rh.heji.databinding.FragmentIncomeBinding
+import com.rh.heji.data.SyncEvent
+import com.rh.heji.data.db.*
+import com.rh.heji.databinding.FragmentAddbillBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.add.adapter.BillPhotoEntity
 import com.rh.heji.ui.bill.category.CategoryTabFragment
 import com.rh.heji.ui.bill.category.CategoryViewModule
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
-import java.io.File
 import java.math.BigDecimal
 import java.util.*
 import java.util.function.Consumer
 
 /**
  * 添加账单（支出/收入）
+ * -----------title------------
+ * 收入|指出
+ * -----------category---------
+ * 账单类别
+ * ----------
  */
 class AddBillFragment : BaseFragment() {
     private val billViewModel by lazy { ViewModelProvider(this)[AddBillViewModel::class.java] }
     val categoryViewModule by lazy { ViewModelProvider(this)[CategoryViewModule::class.java] }
 
-    private lateinit var binding: FragmentIncomeBinding
+    private lateinit var binding: FragmentAddbillBinding
     private lateinit var categoryTabFragment: CategoryTabFragment
-    var pouSelectImage: PopSelectImage? = null//图片弹窗
+    lateinit var popupSelectImage: PopSelectImage//图片弹窗
+
+    var isModify = false//默认新增
 
     override fun layoutId(): Int {
-        return R.layout.fragment_income
+        return R.layout.fragment_addbill
     }
 
     override fun initView(rootView: View) {
-        billViewModel.bill = AddBillFragmentArgs.fromBundle(requireArguments()).bill
-        binding = FragmentIncomeBinding.bind(rootView)
-        selectImage()
-        selectPerson()
-        selectYearAndDay()
+        billViewModel.setBill(AddBillFragmentArgs.fromBundle(requireArguments()).bill)
+        binding = FragmentAddbillBinding.bind(rootView)
+        setupImage()
+        setupPerson()
+        setupYearAndDay()
         remark()
         category()
         keyboardListener()
         billViewModel.billChanged().observe(this) { bill ->
-            binding.tvMoney.text = bill.money.toString()
-            binding.tvUserLabel.text = bill.dealer
-            binding.tvBillTime.text = bill.billTime?.string()
-            bill.remark?.let { remark ->
-                binding.eidtRemark.setText(remark)
-            }
-            (bill.images.isNotEmpty()).let {
-                billViewModel.getBillImages()
-                    .observe(this) { images ->
-                        val imageUrl: MutableList<String> =
-                            images.map { img ->
-                                val url =
-                                    if (img.localPath.isNullOrEmpty()) img.onlinePath.toString() else img.localPath.toString()
-                                url?.let { url -> billViewModel.addImgUrl(url) }
-                                return@map url
-                            }.toMutableList()
-                        pouSelectImage?.images = imageUrl
-                        if (imageUrl.isNotEmpty())
-                            binding.imgTicket.text = "图片(x" + images.size + ")"
-                    }
-
-            }
-            bill.money.toPlainString().let { money ->
-                if (bill.money.compareTo(BigDecimal.ZERO) == 1) {
-                    val inputString = if (money.contains(".00"))
-                        money.replace(".00", "") else money
-                    inputString.forEach { element ->
-                        binding.keyboard.input(element.toString())
-                    }
+            //填充输入信息
+            binding.inputInfo.apply {
+                tvMoney.text = bill.money.toString()
+                bill.dealer?.let { setDealerUser(it) }
+                tvBillTime.text = bill.billTime.string()
+                bill.remark?.let { remark ->
+                    eidtRemark.setText(remark)
+                }
+                val existImages = bill.images.isNotEmpty()
+                if (existImages) {
+                    imgTicket.text = "图片(x${bill.images.size})"
                 }
             }
+            //是否是变更账单
+            val isChangeBill = bill.money.compareTo(BigDecimal.ZERO) == 1//money > 0 修改时金额大于零
+            if (isChangeBill) {
+                //抹0再输入到键盘
+                with(bill.money.toPlainString()) {
+                    if (contains(".00"))
+                        replace(".00", "")
+                    else
+                        this
+                }.forEach { element -> binding.keyboard.input(element.toString()) }
+            }
+            //设置类别
             bill.category?.let {
                 categoryTabFragment.setCategory(it, bill.type)
             }
-
         }
     }
 
@@ -123,26 +119,25 @@ class AddBillFragment : BaseFragment() {
                 if (category.category == "管理") {
                     categoryName = billType.text()
                 }
-                billViewModel.bill.category = categoryName
-                billViewModel.bill.type = category.type
+                billViewModel.setCategory(category)
                 binding.keyboard.setType(billType)
             }
         }
     }
 
     private fun remark() {
-        binding.eidtRemark.addTextChangedListener(object : TextWatcher {
+        binding.inputInfo.eidtRemark.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
-                billViewModel.bill.remark = s.toString().trim { it <= ' ' }
+                billViewModel.setRemark(s.toString().trim { it <= ' ' })
             }
         })
     }
 
-    private fun selectYearAndDay(initialTime: Date = billViewModel.bill.billTime) {
-        binding.tvBillTime.text = initialTime.string() //设置日历初始选中时间
-        binding.tvBillTime.setOnClickListener {
+    private fun setupYearAndDay(initialTime: Date = billViewModel.getBill().billTime) {
+        binding.inputInfo.tvBillTime.text = initialTime.string() //设置日历初始选中时间
+        binding.inputInfo.tvBillTime.setOnClickListener {
             val onDateSetListener =
                 OnDateSetListener { datePicker: DatePicker?, year: Int, month: Int, dayOfMonth: Int ->
                     val selectCalendar = initialTime.calendar()
@@ -182,7 +177,7 @@ class AddBillFragment : BaseFragment() {
         minute: Int
     ) {
         val onTimeSetListener =
-            OnTimeSetListener { timePicker: TimePicker?, hourOfDay: Int, minute: Int ->
+            OnTimeSetListener { _: TimePicker?, hourOfDay: Int, minute: Int ->
                 if (hourOfDay == 0 && minute == 0) return@OnTimeSetListener
                 val selectTime =
                     "$year-$month-$dayOfMonth $hourOfDay:$minute:00"//yyyy-MM-dd hh:mm:00
@@ -199,32 +194,32 @@ class AddBillFragment : BaseFragment() {
      * @param selectTime 选中的日期或更精确的
      */
     private fun setBillTime(selectTime: String) {
-        binding.tvBillTime.text = selectTime
-        billViewModel.bill.billTime = selectTime.date()
+        binding.inputInfo.tvBillTime.text = selectTime
+        billViewModel.setTime(selectTime.date())
         LogUtils.d(selectTime)
     }
 
     /**
      * 选择经手人
      */
-    private fun selectPerson() {
-        billViewModel.dealersLiveDatabase.observe(this) { names ->
+    private fun setupPerson() {
+        billViewModel.getDealers().observe(this) { names ->
             //经手人名单
             if (names.size > 0) {
-                binding.tvUserLabel.text = "经手人:" + names[0] //默认经手人
-                billViewModel.bill.dealer = names[0] //设置默经手人
+                setDealerUser(names[0])//默认经手人
+                billViewModel.setDealer(names[0]) //设置默经手人
             } else {
-                binding.tvUserLabel.text = "经手人:" + currentUser.username//默认经手人
-                billViewModel.bill.dealer = currentUser.username //设置默经手人
+                setDealerUser(currentUser.username)
+                billViewModel.setDealer(currentUser.username) //设置默经手人当前用户
             }
-            binding.tvUserLabel.setOnClickListener {
+            binding.inputInfo.tvUserLabel.setOnClickListener {
                 XPopup.Builder(requireContext())
                     .maxHeight(binding.keyboard.height)
                     .asBottomList(
                         "请选择经手人", names.toTypedArray()
                     ) { position: Int, text: String ->
-                        binding.tvUserLabel.text = "经手人:$text"
-                        billViewModel.bill.dealer = text
+                        setDealerUser(text)
+                        billViewModel.setDealer(text)
                     }
                     .show()
             }
@@ -232,16 +227,21 @@ class AddBillFragment : BaseFragment() {
 
     }
 
+    private fun setDealerUser(dealerUser: String) {
+        binding.inputInfo.tvUserLabel.text = "经手人: $dealerUser"
+    }
+
     private fun keyboardListener() {
         binding.keyboard.setKeyboardListener(object : OnKeyboardListener {
             override fun save(result: String) {
                 ToastUtils.showLong(result)
                 val category = categoryViewModule.selectCategory
+                billViewModel.setImages(popupSelectImage.getImagesPath())
                 saveBill(result, category, close = true)
             }
 
             override fun calculation(result: String) {
-                binding.tvMoney.text = result
+                binding.inputInfo.tvMoney.text = result
             }
 
             override fun saveAgain(result: String) {
@@ -254,7 +254,7 @@ class AddBillFragment : BaseFragment() {
 
     private fun changeMoneyTextColor(billType: BillType) {
         val color = if (billType == BillType.EXPENDITURE) R.color.expenditure else R.color.income
-        binding.tvMoney.setTextColor(resources.getColor(color, null))
+        binding.inputInfo.tvMoney.setTextColor(resources.getColor(color, null))
     }
 
     private fun saveBill(money: String, category: Category, close: Boolean) {
@@ -262,44 +262,36 @@ class AddBillFragment : BaseFragment() {
             ToastUtils.showShort("未填写金额")
             return
         }
-        billViewModel.bill.category = category.category
-        billViewModel.save(money, category) { bill: Bill ->
-            if (close){
-                findNavController().navigateUp()
+        billViewModel.apply {
+            setCategory(category)
+            setMoney(money)
+            save { bill: Bill ->
+                if (close) {
+                    findNavController().navigateUp()
+                }
+                DataBus.post(SyncEvent.ADD, bill.copy())
             }
-            DataBus.post(SyncEvent.ADD,bill.copy())
         }
     }
 
     /**
      * 票据图片
      */
-    private fun selectImage() {
-        pouSelectImage = context?.let {
-            PopSelectImage(
-                it,
-                mainActivity
-            )
+    private fun setupImage() {
+        popupSelectImage = PopSelectImage(mainActivity).apply {
+            deleteListener = {
+                ToastUtils.showLong(it.toString())
+            }
         }
-        binding.imgTicket.setOnClickListener {
-            if (pouSelectImage == null) pouSelectImage =
-                PopSelectImage(
-                    mainActivity,
-                    mainActivity
-                )
+        billViewModel.getBillImages().observe(this, popupSelectImage)
+        binding.inputInfo.imgTicket.setOnClickListener {
+            if (popupSelectImage == null)
+                popupSelectImage = PopSelectImage(mainActivity)
             XPopup.Builder(requireContext())
-                .asCustom(pouSelectImage)
+                .asCustom(popupSelectImage)
                 .show()
             //selectImagePou.getLayoutParams().height = binding.keyboard.getRoot().getHeight();
-            pouSelectImage!!.deleteListener ={
-                billViewModel.imgUrls =it
-            }
-            pouSelectImage?.images= mutableListOf()
-        }
-
-        billViewModel.imagesChanged().observe(this) {
-            binding.imgTicket.text = "图片(x" + it.size + ")"
-            pouSelectImage?.images = it
+            popupSelectImage.clear()
         }
     }
 
@@ -311,19 +303,26 @@ class AddBillFragment : BaseFragment() {
                     val imgUrl = UriUtils.uri2File(uri).absolutePath
                     mSelected.add(imgUrl)
                 })
-                setImages(mSelected)
-                if (billViewModel.imgUrls.size > 0) {
-                    mSelected.forEach { s: String ->
-                        /**
-                         * 包含的话就删除重新加
-                         */
-                        if (billViewModel.imgUrls.contains(s)) {
-                            billViewModel.imgUrls.remove(s)
+                //setImages(mSelected)
+
+                if (popupSelectImage.getImages().size > 0) {
+                    mSelected.forEach { localPath: String ->
+                        popupSelectImage.getImages().forEach { image ->
+                            /**
+                             * 包含的话就删除重新加
+                             */
+                            if (image.localPath == localPath) {
+                            }
                         }
-                        billViewModel.addImgUrl(s)
+
                     }
                 } else {
-                    billViewModel.imgUrls = mSelected
+                    popupSelectImage.setImages(mSelected.map { selectPath ->
+                        Image(billID = billViewModel.getBill().id).apply {
+                            localPath = selectPath
+                            synced = STATUS.NOT_SYNCED
+                        }
+                    }.toMutableList())
                 }
             }
         }
@@ -344,28 +343,20 @@ class AddBillFragment : BaseFragment() {
         billViewModel.keyBoardStack = binding.keyboard.stack
     }
 
-    private fun setImages(selected: List<String>) {
-        val photos: MutableList<BillPhotoEntity> = ArrayList()
-        for (item in selected) {
-            val info = BillPhotoEntity()
-            val fileTime = File(item).lastModified()
-            val time = TimeUtils.millis2String(fileTime)
-            info.createTime = time
-            info.path = item
-            photos.add(info)
-        }
-    }
+//    private fun setImages(selected: List<String>): MutableList<BillPhotoEntity> {
+//        return selected.map {
+//            BillPhotoEntity().apply {
+//                val lastModified = File(it).lastModified()
+//                createTime = TimeUtils.millis2String(lastModified)
+//                path = it
+//            }
+//        }.toMutableList()
+//    }
 
     fun reset() {
         binding.keyboard.clear()
-        binding.eidtRemark.setText("")
-        binding.tvMoney.text = "0"
-        billViewModel.imgUrls = mutableListOf()
-        pouSelectImage!!.clear()
-    }
-
-    companion object {
-        private const val PATTERN_DB = "yyyy-MM-dd HH:mm:ss"
-        private const val PATTERN_SHOW = "yyyy-MM-dd HH:mm"
+        binding.inputInfo.eidtRemark.setText("")
+        binding.inputInfo.tvMoney.text = "0"
+        popupSelectImage.clear()
     }
 }

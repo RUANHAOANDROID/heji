@@ -37,7 +37,7 @@
         android:id="@+id/kDelete"
         style="@style/NumberKeyBoardStyle2"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        android:padding="20dp"
+        android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         android:src="@drawable/ic_delete_21dp"

@@ -21,14 +21,19 @@ data class Category(
      */
     @JvmField
     @ColumnInfo(name = "book_id")
-    var bookId: String,
+    var bookId: String = currentBook.id,
 
     @ColumnInfo(name = "category")
-    var category: String= currentBook.id,
-
-    ) {
+    var category: String = "other"
+) {
     @Ignore
-    constructor(id: String=ObjectId().toHexString(),bookId: String= "", category: String, level: Int, type: Int) : this(id,bookId, category) {
+    constructor(
+        id: String = ObjectId().toHexString(),
+        bookId: String = "",
+        category: String,
+        level: Int,
+        type: Int
+    ) : this(id, bookId, category) {
         this.level = level
         this.type = type
     }

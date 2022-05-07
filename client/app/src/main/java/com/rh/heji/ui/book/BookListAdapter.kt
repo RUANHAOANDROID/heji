@@ -26,7 +26,7 @@ class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :
 
     private val colors = ColorUtils.groupColors()
     override fun convert(holder: BaseViewHolder, item: Book) {
-        FragmentBookItemBinding.bind(holder.itemView)?.let { binding ->
+        FragmentBookItemBinding.bind(holder.itemView).let { binding ->
             binding.tvTitle.text = item.name
             binding.tvContext.text = item.type
             val bannerBitmap = ImageUtils.drawable2Bitmap(

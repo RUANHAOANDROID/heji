@@ -36,7 +36,4 @@ class SettingFragment : BaseFragment() {
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
 }

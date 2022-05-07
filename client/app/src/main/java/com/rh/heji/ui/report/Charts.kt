@@ -33,7 +33,7 @@ fun ReportFragment.lineChartStyle(lineChart: LineChart) {
 
         override fun onNothingSelected() {
         }
-    });
+    })
     lineChart.setDrawGridBackground(false)
     lineChart.setTouchEnabled(true)
     var markerView: MarkerView = object : MarkerView(mainActivity, R.layout.marker_linechart) {
@@ -282,8 +282,8 @@ fun ReportFragment.setPieChartData(entries: MutableList<PieEntry>) {
     //设置描述的位置
     dataSet.xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
     dataSet.yValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
-    dataSet.valueLinePart1Length = 0.4f;//设置描述连接线长度
-    dataSet.valueLinePart2Length = 0.4f;//设置数据连接线长度
+    dataSet.valueLinePart1Length = 0.4f//设置描述连接线长度
+    dataSet.valueLinePart2Length = 0.4f//设置数据连接线长度
     dataSet.isUsingSliceColorAsValueLineColor = true
     dataSet.setValueTextColors(colors)
     // undo all highlights

@@ -1,6 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
+import com.rh.heji.data.db.mongo.ObjectId
 import java.util.*
 
 /**
@@ -22,7 +23,7 @@ import java.util.*
 )
 data class Image(
     @ColumnInfo(name = COLUMN_ID)
-    var id: String,
+    var id: String= ObjectId().toHexString(),
     @ColumnInfo(name = Bill.COLUMN_ID, index = true)
     var billID: String
 ) {

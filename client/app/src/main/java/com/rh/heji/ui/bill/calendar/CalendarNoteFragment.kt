@@ -123,7 +123,7 @@ class CalendarNoteFragment : BaseFragment() {
 
     private var monthObserver = Observer<Map<String, Calendar>> {
         if (it.isEmpty()) {
-            binding.calendarView.clearSchemeDate();
+            binding.calendarView.clearSchemeDate()
         } else {
             binding.calendarView.setSchemeDate(it)//更新日历视图
         }

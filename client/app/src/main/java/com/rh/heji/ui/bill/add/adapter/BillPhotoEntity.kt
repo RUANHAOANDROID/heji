@@ -6,7 +6,12 @@ package com.rh.heji.ui.bill.add.adapter
  * #
  */
 class BillPhotoEntity {
+    //文件路径
     var path: String? = null
+
+    //文件创建时间  File(it).lastModified()
     var createTime: String? = null
+
+    //文件类型
     var type = 0
 }

@@ -136,7 +136,7 @@ class BillsHomeFragment : BaseFragment() {
      * @param month 月
      */
     private fun totalIncomeExpense() {
-        homeViewModel.getIncomeExpense().observe(mainActivity, { incomeExpense: Income? ->
+        homeViewModel.getIncomeExpense().observe(mainActivity) { incomeExpense: Income? ->
 
             var income = "0"
             var expenses = "0"
@@ -156,7 +156,7 @@ class BillsHomeFragment : BaseFragment() {
                 stubTotalView.visibility = View.VISIBLE
                 notifyTotalLayout(expenses, income)
             }
-        })
+        }
     }
 
     private fun notifyTotalLayout(expenses: String, income: String) {

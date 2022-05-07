@@ -60,7 +60,7 @@ abstract class BaseFragment : Fragment() {
                 .hideBar(BarHide.FLAG_SHOW_BAR)
                 .navigationBarColor(R.color.white)
                 .fullScreen(false)
-                .init();
+                .init()
         } catch (e: Exception) {
             Log.d("BaseFragment", "ImmersionBar: {${e.message}}")
         }
@@ -84,6 +84,11 @@ abstract class BaseFragment : Fragment() {
      * @param view
      */
     protected abstract fun initView(rootView: View)
+
+    /**
+     * 重置并设置tool bar
+     *
+     */
     protected open fun setUpToolBar() {
         try {
             toolBar.menu.clear()
@@ -92,8 +97,15 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    /**
+     * 唯一的 activity
+     */
     val mainActivity: MainActivity get() = activity as MainActivity
 
+    /**
+     * 显示回退按钮
+     *
+     */
     protected fun showBlack() {
         toolBar.navigationIcon = blackDrawable()
         toolBar.setNavigationOnClickListener { Navigation.findNavController(rootView).navigateUp() }
@@ -161,7 +173,7 @@ abstract class BaseFragment : Fragment() {
                         .hasShadowBg(true)
                         .maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT) //.isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .asCustom(yearSelectPop) /*.enableDrag(false)*/
-                        .show();
+                        .show()
                 }
             }
         }

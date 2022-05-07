@@ -34,5 +34,5 @@ data class ErrorLog(
     var networkType: String? = null
     var crashContent: String? = null
 
-    constructor() : this(id = ObjectId().toHexString()){}
+    constructor() : this(id = ObjectId().toHexString())
 }

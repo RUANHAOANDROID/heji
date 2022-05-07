@@ -13,7 +13,7 @@ import okhttp3.Response
 /**
  * Header 拦截器
  */
-class HttpHeaderInterceptor() : Interceptor {
+class HttpHeaderInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var bearerToken: String = Token.decodeToken()
         Log.d("OKHTTP", "HttpHeaderInterceptor $bearerToken")

@@ -80,7 +80,7 @@ class DataSyncWork {
 
         suspend fun pull() {
             val currentLastDay =
-                MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month);
+                MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month)
             val statDate =
                 YearMonth(currentYearMonth.year, currentYearMonth.month, 1).toYearMonthDay()
             val endDate = YearMonth(

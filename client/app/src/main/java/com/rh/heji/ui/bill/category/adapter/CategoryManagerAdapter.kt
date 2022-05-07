@@ -26,7 +26,7 @@ open class CategoryManagerAdapter :
         val drawable = TextDrawable.builder().buildRound(category.category.substring(0, 1), bgColor)
         itemBinding.roundImageView.setImageDrawable(drawable)
         itemBinding.tvName.text = category.category
-        addChildClickViewIds(itemBinding!!.btnDelete.id)
+        addChildClickViewIds(itemBinding.btnDelete.id)
         //        itemBinding.btnDelete.setOnClickListener(v -> {
 //            deleteCategory(category);
 //        });

@@ -18,7 +18,7 @@ class RegisterViewModel : BaseViewModel() {
      * 再次确认密码
      */
     fun checkPassword(): Boolean {
-        return password == password1;
+        return password == password1
     }
 
     fun register(username: String, tel: String, code: String, password: String): LiveData<RegisterUser> {
@@ -32,7 +32,7 @@ class RegisterViewModel : BaseViewModel() {
             var response = HejiNetwork.getInstance().register(user)
             registerLiveData.postValue(response.data)
         }, {})
-        return registerLiveData;
+        return registerLiveData
     }
 
 

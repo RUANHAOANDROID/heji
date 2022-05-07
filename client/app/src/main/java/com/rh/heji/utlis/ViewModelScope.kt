@@ -24,7 +24,7 @@ fun ViewModel.launchIO(
 fun ViewModel.launch(
     block: suspend () -> Unit,
     error: suspend (Throwable) -> Unit = { it.printStackTrace() }
-) = viewModelScope.launch() {
+) = viewModelScope.launch {
     try {
         block()
     } catch (e: Throwable) {

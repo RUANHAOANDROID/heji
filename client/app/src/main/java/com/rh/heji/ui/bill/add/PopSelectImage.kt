@@ -21,7 +21,7 @@ import java.util.ArrayList
 
 /**
  * Date: 2020/10/12
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class PopSelectImage(private val activity: MainActivity) :

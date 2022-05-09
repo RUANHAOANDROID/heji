@@ -11,7 +11,7 @@ import com.rh.heji.BuildConfig
 
 /**
  *Date: 2021/7/14
- *Author: 锅得铁
+ *@author: 锅得铁
  *#
  */
 fun FragmentActivity.checkPermissions(

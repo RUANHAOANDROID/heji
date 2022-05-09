@@ -15,7 +15,7 @@ import com.rh.heji.utlis.ColorUtils
 
 /**
  * Date: 2021/7/9
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :

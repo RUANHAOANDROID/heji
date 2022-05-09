@@ -18,7 +18,7 @@ import com.rh.heji.utlis.ImageUtils
 /**
  * 账单票据图片适配器
  * Date: 2020/9/16
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class BillPhotoAdapter :

@@ -6,7 +6,7 @@ import com.rh.heji.utlis.http.basic.HttpRetrofit
 
 /**
  * Date: 2020/8/28
- * Author: 锅得铁
+ * @author: 锅得铁
  * # 启动初始化顺序：
  *  1.AppInitializer
  *  2.Application

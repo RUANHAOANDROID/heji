@@ -16,7 +16,7 @@ import com.rh.heji.ui.bill.category.CategoryFragment.Companion.newInstance
 
 /**
  * Date: 2020/10/11
- * Author: 锅得铁
+ * @author: 锅得铁
  * #标签TAB
  */
 class CategoryTabFragment : BaseFragment() {

@@ -36,7 +36,7 @@ import java.util.function.Consumer
 
 /**
  * Date: 2020/11/10
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class ETCViewModel : BaseViewModel() {

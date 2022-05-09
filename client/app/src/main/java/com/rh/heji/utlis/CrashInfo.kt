@@ -13,7 +13,7 @@ import java.io.StringWriter
 
 /**
  *Date: 2021/6/1
- *Author: 锅得铁
+ *@author: 锅得铁
  *#
  */
 open class CrashInfo : CrashUtils.OnCrashListener {

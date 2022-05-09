@@ -2,7 +2,7 @@ package com.rh.heji.utlis.textdraw;
 
 /**
  * Date: 2020/9/16
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 import java.util.Arrays;

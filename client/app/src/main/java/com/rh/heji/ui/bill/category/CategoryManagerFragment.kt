@@ -16,7 +16,7 @@ import com.rh.heji.ui.bill.category.adapter.CategoryManagerAdapter
 
 /**
  * Date: 2020/10/10
- * Author: 锅得铁
+ * @author: 锅得铁
  * # 类别标签管理
  */
 class CategoryManagerFragment : BaseFragment(){

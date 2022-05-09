@@ -2,7 +2,7 @@ Android端使用 SQLite数据库
 
 服务端使用MongoDB
 
-App离线下优先服务仅作为多设备的同步备份
+App离线优先，服务仅作为多设备的同步备份
 
 #### 用户（MUser）
 
@@ -48,6 +48,8 @@ App离线下优先服务仅作为多设备的同步备份
 
 通过”Max(anchor)“=="Max(modified)"询问是否需要更新数据 。客户端更新已经同步的数据
 
+
+
 #### 账单（MBill）
 
 | 列名        | 类型     | 说 明                      |
@@ -64,6 +66,8 @@ App离线下优先服务仅作为多设备的同步备份
 | time        | String   | 账单日期（用户选择的日期） |
 | create_time | long     | 创建时间                   |
 | update_time | long     | 更新时间                   |
+
+账单作为账本的子集，更新账单时更新账本modified以供客户端询问更新与否
 
 #### 账单备份（MBillBackup）
 

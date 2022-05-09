@@ -12,7 +12,7 @@ import com.rh.heji.data.db.*
 
 /**
  * Date: 2020/8/28
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 @Database(

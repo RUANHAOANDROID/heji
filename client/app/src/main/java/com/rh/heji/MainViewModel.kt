@@ -15,7 +15,7 @@ import java.util.*
 
 /**
  * Date: 2020/11/3
- * Author: 锅得铁
+ * @author: 锅得铁
  * # APP运行时 UI常量共享存储
  */
 class MainViewModel : BaseViewModel() {

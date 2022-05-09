@@ -5,7 +5,7 @@ import com.rh.heji.data.db.Image
 
 /**
  * Date: 2022/4/2
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class ImageRepository : DataRepository() {

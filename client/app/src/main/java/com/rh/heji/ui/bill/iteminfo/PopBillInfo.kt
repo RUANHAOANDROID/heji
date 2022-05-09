@@ -25,7 +25,7 @@ import kotlinx.coroutines.withContext
 
 /**
  * Date: 2020/9/20
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class PopBillInfo(

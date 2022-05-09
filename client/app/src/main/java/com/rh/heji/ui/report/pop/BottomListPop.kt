@@ -13,7 +13,7 @@ import com.rh.heji.ui.bill.iteminfo.PopBillInfo
 
 /**
  *Date: 2021/6/16
- *Author: 锅得铁
+ *@author: 锅得铁
  *#
  */
 class BottomListPop(

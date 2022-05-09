@@ -22,7 +22,7 @@ import java.util.stream.Collectors
 
 /**
  * Date: 2020/10/11
- * Author: 锅得铁
+ * @author: 锅得铁
  * # 收入/支出标签 复用该Fragment
  */
 class CategoryFragment : BaseFragment() {

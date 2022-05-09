@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 /**
  * Date: 2022/3/29
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 public class ImageUtils {

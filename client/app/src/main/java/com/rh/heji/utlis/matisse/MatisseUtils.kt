@@ -14,7 +14,7 @@ import java.util.*
 
 /**
  *Date: 2019-10-23
- *Author: 锅得铁
+ *@author: 锅得铁
  *#Matisse图片选择器辅助包装类
  */
 object MatisseUtils {

@@ -2,6 +2,7 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
+import com.rh.heji.currentUser
 import com.rh.heji.data.converters.BookUsersConverters
 import com.rh.heji.data.db.mongo.ObjectId
 import com.squareup.moshi.Json
@@ -9,29 +10,40 @@ import kotlinx.android.parcel.Parcelize
 import org.jetbrains.annotations.NotNull
 
 /**
+ * 账本
  * Date: 2021/7/8
- * Author: 锅得铁
- * #
+ * @author: 锅得铁
+ *
  */
 
 @Parcelize
-@Entity(tableName =Book.TAB_NAME, indices = [Index(value = [Book.COLUMN_NAME], unique = true)])
+@Entity(tableName = Book.TAB_NAME, indices = [Index(value = [Book.COLUMN_NAME], unique = true)])
 data class Book(
+
     @Json(name = "_id")
     @PrimaryKey()
     @NotNull
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
+
     @ColumnInfo(name = COLUMN_NAME)
-    var name: String,
+    var name: String,//账本名称
+
     @ColumnInfo(name = COLUMN_CREATE_USER)
-    var createUser: String? = null,
+    var createUser: String = currentUser.username,//创建人
+
     @ColumnInfo(name = COLUMN_TYPE)
-    var type: String? = null,
+    var type: String? = null,//账本类型
+
     @ColumnInfo(name = COLUMN_BANNER_URL)
-    var bannerUrl: String? = null,
+    var bannerUrl: String? = null,//封面图片
+
+    @ColumnInfo(name = COLUMN_ANCHOR)
+    var anchor: Long = 0L,//锚点用作记录服务最后修改时间
+
     @ColumnInfo(name = COLUMN_FIRST)
     var firstBook: Int = 0// 0 true |1 false
+
 ) : Parcelable {
 
     @ColumnInfo(name = COLUMN_SYNC_STATUS)
@@ -50,6 +62,7 @@ data class Book(
         const val COLUMN_CREATE_USER = "create_user"
         const val COLUMN_TYPE = "type"
         const val COLUMN_BANNER_URL = "banner_url"
+        const val COLUMN_ANCHOR = "anchor"
         const val COLUMN_FIRST = "first"
         const val COLUMN_SYNC_STATUS = "sync_status"
         const val COLUMN_USERS = "users"

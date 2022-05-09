@@ -2,7 +2,7 @@ package com.rh.heji.data
 
 /**
  * Date: 2020/11/20
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 enum class BillType(private val type: Int, private val text: String) {

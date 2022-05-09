@@ -20,7 +20,7 @@ import static com.google.android.material.tabs.TabLayout.MODE_AUTO;
 
 /**
  * Date: 2020/11/3
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 public class PopYearSelect extends CenterPopupView implements View.OnClickListener {

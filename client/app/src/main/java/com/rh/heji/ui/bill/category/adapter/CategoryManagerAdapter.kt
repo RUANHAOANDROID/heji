@@ -11,7 +11,7 @@ import com.rh.heji.utlis.textdraw.TextDrawable
 
 /**
  * Date: 2020/9/16
- * Author: 锅得铁
+ * @author: 锅得铁
  * #分类适配器
  */
 open class CategoryManagerAdapter :

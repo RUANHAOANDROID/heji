@@ -6,7 +6,7 @@ import retrofit2.http.*
 
 /**
  * Date: 2020/10/27
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 interface ETCServer {

@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Date: 2020/11/23
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 public class HBETCEntity {

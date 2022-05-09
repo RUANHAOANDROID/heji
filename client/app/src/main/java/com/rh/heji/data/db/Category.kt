@@ -7,7 +7,7 @@ import java.util.*
 
 /**
  * Date: 2020/8/28
- * Author: 锅得铁
+ * @author: 锅得铁
  * #收入/支出 类型标签
  */
 @Entity(tableName = "category")

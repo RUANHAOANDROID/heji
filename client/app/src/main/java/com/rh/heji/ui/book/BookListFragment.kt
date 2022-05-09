@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.DiffUtil.ItemCallback as ItemCallback
 
 /**
  * Date: 2021/7/9
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class BookListFragment : BaseFragment() {
@@ -87,10 +87,10 @@ class BookListFragment : BaseFragment() {
 //        adapter.animationEnable = true
 //        adapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.SlideInRight)
         swipeRefreshLayout(binding.refreshLayout) { bookViewModel.getBookList() }
-        bookViewModel.getBookList().observe(this, {
+        bookViewModel.getBookList().observe(this) {
             adapter.setDiffNewData(it)
             hideRefreshing(binding.refreshLayout)
-        })
+        }
         listener()
     }
 

@@ -6,7 +6,7 @@ import java.util.*
 
 /**
  * Date: 2020/11/19
- * Author: 锅得铁
+ * @author: 锅得铁
  * primaryKeys image_id
  * ForeignKey bill_id -> image.bill_id
  */

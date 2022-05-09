@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 /**
  * Date: 2020/9/22
- * Author: 锅得铁
+ * @author: 锅得铁
  * #经手人
  */
 @Entity(tableName = "dealer")

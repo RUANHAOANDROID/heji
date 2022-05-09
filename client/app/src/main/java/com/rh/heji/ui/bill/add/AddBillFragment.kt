@@ -27,7 +27,7 @@ import com.rh.heji.data.db.*
 import com.rh.heji.databinding.FragmentAddbillBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.category.CategoryTabFragment
-import com.rh.heji.ui.bill.category.CategoryViewModule
+import com.rh.heji.ui.bill.category.CategoryViewModel
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
 import java.math.BigDecimal
@@ -44,7 +44,7 @@ import java.util.function.Consumer
  */
 class AddBillFragment : BaseFragment() {
     private val billViewModel by lazy { ViewModelProvider(this)[AddBillViewModel::class.java] }
-    val categoryViewModule by lazy { ViewModelProvider(this)[CategoryViewModule::class.java] }
+    val categoryViewModel by lazy { ViewModelProvider(this)[CategoryViewModel::class.java] }
 
     private lateinit var binding: FragmentAddbillBinding
     private lateinit var categoryTabFragment: CategoryTabFragment
@@ -108,10 +108,10 @@ class AddBillFragment : BaseFragment() {
     private fun category() {
         categoryTabFragment =
             childFragmentManager.findFragmentById(R.id.categoryFragment) as CategoryTabFragment
-        categoryViewModule.getCategoryType().observe(this) {
+        categoryViewModel.getCategoryType().observe(this) {
             binding.keyboard.setType(it)
         }
-        categoryViewModule.getSelectCategory().observe(this) { category: Category? ->
+        categoryViewModel.getSelectCategory().observe(this) { category: Category? ->
             if (null != category) {
                 val billType = BillType.transform(category.type)
                 changeMoneyTextColor(billType)
@@ -235,7 +235,7 @@ class AddBillFragment : BaseFragment() {
         binding.keyboard.setKeyboardListener(object : OnKeyboardListener {
             override fun save(result: String) {
                 ToastUtils.showLong(result)
-                val category = categoryViewModule.selectCategory
+                val category = categoryViewModel.selectCategory
                 billViewModel.setImages(popupSelectImage.getImagesPath())
                 saveBill(result, category, close = true)
             }
@@ -246,7 +246,7 @@ class AddBillFragment : BaseFragment() {
 
             override fun saveAgain(result: String) {
                 ToastUtils.showLong(result)
-                saveBill(result, categoryViewModule.selectCategory, close = false)
+                saveBill(result, categoryViewModel.selectCategory, close = false)
                 reset()
             }
         })

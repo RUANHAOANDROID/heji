@@ -15,15 +15,20 @@ import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.category.adapter.CategoryManagerAdapter
 
 /**
+ * 类别标签管理
  * Date: 2020/10/10
  * @author: 锅得铁
- * # 类别标签管理
+ *
  */
-class CategoryManagerFragment : BaseFragment(){
+class CategoryManagerFragment : BaseFragment() {
     lateinit var binding: FragmentCategoryManagerBinding
     private lateinit var adapter: CategoryManagerAdapter
-    private val categoryViewModule: CategoryViewModule by lazy { ViewModelProvider(this).get(CategoryViewModule::class.java) }
-    private var args: CategoryManagerFragmentArgs? =null
+    private val categoryViewModule: CategoryViewModel by lazy {
+        ViewModelProvider(this).get(
+            CategoryViewModel::class.java
+        )
+    }
+    private var args: CategoryManagerFragmentArgs? = null
 
     override fun onDetach() {
         super.onDetach()

@@ -15,7 +15,6 @@ data class Category(
     @PrimaryKey
     @ColumnInfo(name = "_id")
     var id: String = ObjectId().toHexString(),
-
     /**
      * 账本ID
      */
@@ -24,12 +23,12 @@ data class Category(
     var bookId: String = currentBook.id,
 
     @ColumnInfo(name = "category")
-    var category: String = "other"
+    var category: String = "其他"
 ) {
     @Ignore
     constructor(
         id: String = ObjectId().toHexString(),
-        bookId: String = "",
+        bookId: String = currentBook.id,
         category: String,
         level: Int,
         type: Int

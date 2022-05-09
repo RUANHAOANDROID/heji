@@ -19,8 +19,14 @@ import com.rh.heji.utlis.launchIO
  * @author: 锅得铁
  * # 分类
  */
-class CategoryViewModule : BaseViewModel() {
-    private val categoryDao by lazy { AppDatabase.getInstance().categoryDao() }
+class CategoryViewModel : BaseViewModel() {
+    private val categoryDao = AppDatabase.getInstance().categoryDao()
+
+    init {
+        //categoryDao.findByNameAndType()
+
+    }
+
     var type: BillType = BillType.EXPENDITURE
         set(value) {
             field = value

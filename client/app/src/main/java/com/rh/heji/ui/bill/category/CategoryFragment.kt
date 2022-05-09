@@ -18,7 +18,6 @@ import com.rh.heji.ui.bill.add.AddBillFragment
 import com.rh.heji.ui.bill.category.adapter.CategoryAdapter
 import java.util.*
 import java.util.function.Consumer
-import java.util.stream.Collectors
 
 /**
  * Date: 2020/10/11
@@ -32,7 +31,7 @@ class CategoryFragment : BaseFragment() {
     //类型 支出 或 收入
     lateinit var type: BillType
 
-    private lateinit var categoryViewModule: CategoryViewModule
+    private lateinit var categoryViewModule: CategoryViewModel
 
     private var labelObserver = Observer { categories: MutableList<Category> ->
         val selectCategory = categoryViewModule.selectCategory
@@ -53,7 +52,7 @@ class CategoryFragment : BaseFragment() {
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        categoryViewModule = (parentFragment!!.parentFragment as AddBillFragment).categoryViewModule
+        categoryViewModule = (parentFragment!!.parentFragment as AddBillFragment).categoryViewModel
         arguments?.let {
             type = CategoryFragmentArgs.fromBundle(it).type
         }
@@ -142,7 +141,12 @@ class CategoryFragment : BaseFragment() {
     }
 
     private fun addSettingItem(labelAdapter: CategoryAdapter) {
-        val category = Category(category = CategoryAdapter.SETTING, bookId = currentBook.id,level = 0, type = type.type())
+        val category = Category(
+            category = CategoryAdapter.SETTING,
+            bookId = currentBook.id,
+            level = 0,
+            type = type.type()
+        )
         labelAdapter.addData(labelAdapter.itemCount, category)
     }
 
@@ -150,9 +154,11 @@ class CategoryFragment : BaseFragment() {
         if (!this::labelAdapter.isInitialized || labelAdapter == null) return
 
         var selectCategory: Category?
-        val selects =
+        //选中的类别
+        val selectItem =
             labelAdapter.data.filter { category: Category -> category.isSelected }.toList()
-        selectCategory = if (selects.isEmpty()) labelAdapter.data.first() else selects.first()
+        //未选中默认第一个ITEM
+        selectCategory = if (selectItem.isEmpty()) labelAdapter.data.first() else selectItem.first()
         categoryViewModule.selectCategory = selectCategory
         if (!category.isNullOrEmpty()) {
             binding.categoryRecycler.post {

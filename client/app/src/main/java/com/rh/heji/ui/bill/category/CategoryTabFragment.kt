@@ -12,25 +12,30 @@ import com.rh.heji.databinding.FragmentCategoryTabBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.FragmentViewPagerAdapter
 import com.rh.heji.ui.bill.add.AddBillFragment
-import com.rh.heji.ui.bill.category.CategoryFragment.Companion.newInstance
+
 
 /**
+ * 标签 TAB 包含了收入和支出
  * Date: 2020/10/11
  * @author: 锅得铁
- * #标签TAB
+ *
  */
 class CategoryTabFragment : BaseFragment() {
     private val tabTitles = arrayOf(BillType.EXPENDITURE.text(), BillType.INCOME.text())
     lateinit var binding: FragmentCategoryTabBinding
-    val fragments = arrayOf(
-        newInstance(BillType.EXPENDITURE),
-        newInstance(BillType.INCOME)
+    private var currentType: BillType = BillType.EXPENDITURE
+
+    val categoryFragments = arrayOf(
+        CategoryFragment.newInstance(BillType.EXPENDITURE),
+        CategoryFragment.newInstance(BillType.INCOME)
     )
-    lateinit var categoryViewModule: CategoryViewModule
+    lateinit var categoryViewModel: CategoryViewModel
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val addBillFragment = parentFragment as AddBillFragment
-        categoryViewModule = addBillFragment.categoryViewModule
+        //从父Fragment拿到ViewModule
+        categoryViewModel = addBillFragment.categoryViewModel
     }
 
     override fun initView(view: View) {
@@ -46,7 +51,7 @@ class CategoryTabFragment : BaseFragment() {
 
         val pagerAdapter = FragmentViewPagerAdapter(
             childFragmentManager,
-            fragments.toList(),
+            categoryFragments.toList(),
             tabTitles.toList()
         )
         binding.vpContent.adapter = pagerAdapter
@@ -59,8 +64,10 @@ class CategoryTabFragment : BaseFragment() {
         binding.tab.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 LogUtils.d("onTabSelected", tab.position)
-                categoryViewModule.type = BillType.transform(tab.position)
-                fragments[tab.position].setCategory()
+                val selectType = BillType.transform(tab.text.toString())
+                categoryViewModel.type = selectType
+                currentType = selectType
+                categoryFragments[tab.position].setCategory()
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -71,8 +78,12 @@ class CategoryTabFragment : BaseFragment() {
                 LogUtils.d("onTabReselected", tab.position)
             }
         })
-        categoryViewModule.getCategoryType().observe(this) {
-            binding.tab.getTabAt(if (it.type() == 1) 1 else 0)?.let { tab ->
+        categoryViewModel.getCategoryType().observe(this) {
+            if (currentType == it) return@observe
+
+            val selectTab = if (it.type() == 1) 1 else 0
+            val tabAt = binding.tab.getTabAt(selectTab)
+            tabAt?.let { tab ->
                 if (!tab.isSelected)
                     tab.select()
             }
@@ -82,10 +93,10 @@ class CategoryTabFragment : BaseFragment() {
     fun setCategory(category: String, type: Int) {
         if (type == BillType.EXPENDITURE.type()) {
             binding.tab.getTabAt(0)?.select()
-            fragments[0].setCategory(category)
+            categoryFragments[0].setCategory(category)
         } else if (type == BillType.INCOME.type()) {
             binding.tab.getTabAt(1)?.select()
-            fragments[1].setCategory(category)
+            categoryFragments[1].setCategory(category)
         }
 
     }

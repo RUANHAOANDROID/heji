@@ -6,8 +6,9 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.currentBook
 import com.rh.heji.currentUser
 import com.rh.heji.data.AppDatabase
-import com.rh.heji.expenditureDefaultCategory
-import com.rh.heji.incomeDefaultCategory
+import com.rh.heji.data.BillType
+import com.rh.heji.data.db.Category
+
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.security.Token
 import com.rh.heji.ui.base.BaseViewModel
@@ -56,6 +57,10 @@ class LoginViewModel : BaseViewModel() {
                 bookDao.insert(currentBook)
             }
             if (categoryDao.count() == 0) {
+                val incomeDefaultCategory = Category(category = "其他", bookId = "", level = 0, type = BillType.INCOME.type())
+                val expenditureDefaultCategory =
+                    Category(category = "其他", bookId = "", level = 0, type = BillType.EXPENDITURE.type())
+
                 categoryDao.insert(incomeDefaultCategory)
                 categoryDao.insert(expenditureDefaultCategory)
             }

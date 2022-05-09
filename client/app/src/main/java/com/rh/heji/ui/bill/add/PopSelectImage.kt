@@ -35,6 +35,7 @@ class PopSelectImage(private val activity: MainActivity) :
 
 
     lateinit var deleteListener: (Image) -> Unit
+    lateinit var selectImages: (MutableList<Image>) -> Unit
 
     private fun getFooterView(listener: OnClickListener): View {
         val layoutInflater = LayoutInflater.from(context)
@@ -83,6 +84,8 @@ class PopSelectImage(private val activity: MainActivity) :
     fun setImages(imgs: MutableList<Image>) {
         imageAdapter.setNewInstance(imgs)
         imageAdapter.notifyDataSetChanged()
+        //同时通知ViewModel
+        selectImages(imgs)
     }
 
     fun clear() {

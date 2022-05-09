@@ -70,7 +70,7 @@ class AddBillViewModel : BaseViewModel() {
         //billLiveData.postValue(bill)
     }
 
-    fun resetBill() {
+    private fun resetBill() {
         billLiveData.postValue(bill)
         bill = Bill().apply {
             bookId = currentBook.id

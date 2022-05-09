@@ -217,7 +217,7 @@ class AddBillFragment : BaseFragment() {
                     .maxHeight(binding.keyboard.height)
                     .asBottomList(
                         "请选择经手人", names.toTypedArray()
-                    ) { position: Int, text: String ->
+                    ) { _: Int, text: String ->
                         setDealerUser(text)
                         billViewModel.setDealer(text)
                     }
@@ -282,6 +282,9 @@ class AddBillFragment : BaseFragment() {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
             }
+            selectImages = {
+                billViewModel.setImages(getImagesPath())
+            }
         }
         billViewModel.getBillImages().observe(this, popupSelectImage)
         binding.inputInfo.imgTicket.setOnClickListener {
@@ -291,7 +294,7 @@ class AddBillFragment : BaseFragment() {
                 .asCustom(popupSelectImage)
                 .show()
             //selectImagePou.getLayoutParams().height = binding.keyboard.getRoot().getHeight();
-            popupSelectImage.clear()
+            //popupSelectImage.clear()
         }
     }
 

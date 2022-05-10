@@ -2,7 +2,7 @@ package com.rh.heji.ui.bill.add
 
 import androidx.lifecycle.*
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.currentBook
+import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
@@ -73,7 +73,7 @@ class AddBillViewModel : BaseViewModel() {
     private fun resetBill() {
         billLiveData.postValue(bill)
         bill = Bill().apply {
-            bookId = currentBook.id
+            bookId = currentBook!!.id
             createTime = System.currentTimeMillis()
         }
     }

@@ -110,6 +110,7 @@ class AddBillFragment : BaseFragment() {
             childFragmentManager.findFragmentById(R.id.categoryFragment) as CategoryTabFragment
         categoryViewModel.getCategoryType().observe(this) {
             binding.keyboard.setType(it)
+            changeMoneyTextColor(it)
         }
         categoryViewModel.getSelectCategory().observe(this) { category: Category? ->
             if (null != category) {

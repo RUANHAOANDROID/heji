@@ -2,7 +2,7 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
-import com.rh.heji.currentBook
+import com.rh.heji.App
 import com.rh.heji.currentUser
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
@@ -36,7 +36,7 @@ data class Bill(
     var id: String = ObjectId().toHexString(),
 
     @ColumnInfo(name = COLUMN_BOOK_ID, index = true)
-    var bookId: String = currentBook.id,
+    var bookId: String = App.currentBook!!.id,
     /**
      * 钱
      */

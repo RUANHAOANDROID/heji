@@ -1,6 +1,7 @@
 package com.rh.heji.ui.bill.category
 
 import android.view.View
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -60,12 +61,13 @@ class CategoryManagerFragment : BaseFragment() {
                 }
             }
         }
+        val isIncomeType = args!!.ieType == BillType.INCOME.type()
+        if (isIncomeType)
+            categoryViewModule.getIncomeCategory()
+        else
+            categoryViewModule.getExpenditureCategory()
+                .observe(viewLifecycleOwner, categoryObserver)
 
-        if (args!!.ieType == BillType.INCOME.type()) categoryViewModule.incomeCategory.observe(
-            viewLifecycleOwner, categoryObserver
-        ) else categoryViewModule.expenditureCategory.observe(
-            viewLifecycleOwner, categoryObserver
-        )
         binding.categoryRecycler.adapter = adapter
     }
 

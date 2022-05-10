@@ -90,7 +90,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object {
         private var instance: AppViewModel? = null
-        fun get(context: Context = App.context()): AppViewModel =
+        fun get(context: Context = App.context): AppViewModel =
             instance ?: synchronized(this) {
                 instance ?: AppViewModel(context as Application)
                     .also { instance = it }

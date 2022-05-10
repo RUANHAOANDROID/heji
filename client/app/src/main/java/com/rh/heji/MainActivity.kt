@@ -35,6 +35,8 @@ import com.rh.heji.utlis.MyUtils
 import com.rh.heji.utlis.checkPermissions
 import com.rh.heji.utlis.permitDiskReads
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import java.lang.ref.WeakReference
 
 
@@ -63,16 +65,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkLogin() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val token = Token.decodeToken()
-            currentUser = JWTParse.getUser(token)
-            withContext(Dispatchers.Main) {
-                if (TextUtils.isEmpty(token)) {
-                    navController.navigate(R.id.nav_login)
-                } else {
-                    setDrawerLayout(currentUser)
-                    AppViewModel.get().asyncData()
-                }
+        lifecycleScope.launch {
+            val jwtTokenString = Token.getToken().first()
+            if (jwtTokenString.isNullOrEmpty()) {
+                ToastUtils.showLong("用户凭证已失效，请重新登录")
+                navController.navigate(R.id.nav_login)
+            } else {
+                currentUser = JWTParse.getUser(jwtTokenString)
+                setDrawerLayout(currentUser)
+                AppViewModel.get().asyncData()
             }
         }
         AppViewModel.get().loginEvent.observe(this) {
@@ -82,8 +83,6 @@ class MainActivity : AppCompatActivity() {
                     navController.navigate(R.id.nav_login)
                 }
             }
-
-
         }
     }
 
@@ -123,7 +122,7 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.menu
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener {
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                runBlocking(Dispatchers.IO) { Token.delete(context = this@MainActivity) }
+                runBlocking(Dispatchers.IO) { Token.deleteToken() }
                 finish()
             }.show()
             false
@@ -141,7 +140,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
-        setCurrentBook(currentBook.name)
+        setCurrentBook(App.currentBook!!.name)
     }
 
     private fun navigationDrawerController() {

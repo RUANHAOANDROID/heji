@@ -25,6 +25,6 @@ class AuthorizedInterceptor : Interceptor {
         if (BuildConfig.DEBUG) {
             ToastUtils.showLong("请登录")
         }
-        AppViewModel.get(App.context()).loginEvent.postValue(Event(401))
+        AppViewModel.get(App.context).loginEvent.postValue(Event(401))
     }
 }

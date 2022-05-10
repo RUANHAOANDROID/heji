@@ -28,8 +28,8 @@ interface CategoryDao {
     @Query("select * from category where category=:name and type=:type")
     fun findByNameAndType(name: String, type: Int): MutableList<Category>
 
-    @Query("select * from  category where type =:type AND sync_status != ${STATUS.DELETED} ORDER BY `index` DESC,_id DESC ")
-    fun findIncomeOrExpenditure(type: Int): Flow<MutableList<Category>>
+    @Query("select * from  category where book_id=:bookID AND type =:type AND sync_status != ${STATUS.DELETED} ORDER BY `index` DESC,_id DESC ")
+    fun findIncomeOrExpenditure(bookID: String, type: Int): Flow<MutableList<Category>>
 
     @Query("select * from  category where sync_status == ${STATUS.DELETED} or sync_status == ${STATUS.NOT_SYNCED}")
     fun observeNotUploadOrDelete(): Flow<MutableList<Category>>

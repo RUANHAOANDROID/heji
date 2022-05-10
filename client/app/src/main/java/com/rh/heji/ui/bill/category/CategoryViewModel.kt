@@ -7,6 +7,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.ToastUtils
+import com.rh.heji.App
+
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
@@ -22,10 +24,54 @@ import com.rh.heji.utlis.launchIO
 class CategoryViewModel : BaseViewModel() {
     private val categoryDao = AppDatabase.getInstance().categoryDao()
 
-    init {
-        //categoryDao.findByNameAndType()
+    // 收入支出类别 LiveData
+    private val typeLiveData: MediatorLiveData<BillType> = MediatorLiveData<BillType>()
 
+    //选中的标签LiveData
+    private val selectCategoryLiveData = MediatorLiveData<Category>()
+
+    //支出标签
+    private val expenditureCategory = MediatorLiveData<MutableList<Category>>()
+
+    //收入标签
+    private val incomeCategory = MediatorLiveData<MutableList<Category>>()
+
+
+    private val deleteLiveData = MediatorLiveData<Boolean>()
+
+    init {
+        /**
+         * 始终保持单一的观察对象
+         * source 其他来源的LiveData
+         * observer 观察变化
+         */
+        incomeCategory.addSource(
+            categoryDao.findIncomeOrExpenditure(App.currentBook!!.id, BillType.INCOME.type())
+                .asLiveData(viewModelScope.coroutineContext)
+        ) { incomeCategories ->
+            incomeCategory.value = incomeCategories.apply {
+                add(size, Category(category = "其他"))
+            }
+        }
+        expenditureCategory.addSource(
+            categoryDao
+                .findIncomeOrExpenditure(App.currentBook!!.id, BillType.EXPENDITURE.type())
+                .asLiveData(viewModelScope.coroutineContext)
+        ) { expenditureCategories: MutableList<Category> ->
+            expenditureCategory.value = expenditureCategories.apply {
+                add(size, Category(category = "其他"))
+            }
+        }
     }
+
+    fun getExpenditureCategory(): LiveData<MutableList<Category>> {
+        return expenditureCategory
+    }
+
+    fun getIncomeCategory(): LiveData<MutableList<Category>> {
+        return incomeCategory
+    }
+    //---------------------Category select--------------------
 
     var type: BillType = BillType.EXPENDITURE
         set(value) {
@@ -33,7 +79,6 @@ class CategoryViewModel : BaseViewModel() {
             typeLiveData.postValue(value)
         }
 
-    private val typeLiveData: MediatorLiveData<BillType> = MediatorLiveData<BillType>()
 
     fun getCategoryType(): LiveData<BillType> {
         return typeLiveData
@@ -46,40 +91,13 @@ class CategoryViewModel : BaseViewModel() {
             field = value//field 为type本身 (field领域)
             selectCategoryLiveData.postValue(value)
         }
-    private val selectCategoryLiveData = MediatorLiveData<Category>()
+
 
     fun getSelectCategory(): LiveData<Category> {
         return selectCategoryLiveData
     }
 
-    val incomeCategory by lazy { MediatorLiveData<MutableList<Category>>() }
-
-    val expenditureCategory by lazy { MediatorLiveData<MutableList<Category>>() }
-
-
-    init {
-        /**
-         * 始终保持单一的观察对象
-         * source 其他来源的LiveData
-         * observer 观察变化
-         */
-        incomeCategory.addSource(
-            categoryDao.findIncomeOrExpenditure(BillType.INCOME.type())
-                .asLiveData(viewModelScope.coroutineContext)
-        ) { incomeCategories ->
-            incomeCategory.value = incomeCategories
-        }
-        expenditureCategory.addSource(
-            categoryDao
-                .findIncomeOrExpenditure(BillType.EXPENDITURE.type())
-                .asLiveData(viewModelScope.coroutineContext)
-        ) { expenditureCategories: MutableList<Category> ->
-            expenditureCategory.setValue(
-                expenditureCategories
-            )
-        }
-    }
-
+    //---------------------Category manager--------------------
     fun saveCategory(name: String, type: Int) {
         if (TextUtils.isEmpty(name)) {
             ToastUtils.showShort("您必须填写分类名称")
@@ -99,9 +117,8 @@ class CategoryViewModel : BaseViewModel() {
         }, {})
     }
 
-    private val deleteLiveData = MediatorLiveData<Boolean>()
-    fun deleteCategory(category: Category): LiveData<Boolean> {
 
+    fun deleteCategory(category: Category): LiveData<Boolean> {
         launchIO({
             category.synced = STATUS.DELETED
             categoryDao.update(category)

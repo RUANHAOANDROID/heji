@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
 import com.rh.heji.R
-import com.rh.heji.currentBook
+import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.data.SyncEvent
 import com.rh.heji.data.DataBus
 import com.rh.heji.databinding.FragmentEtcBinding
@@ -152,14 +152,17 @@ class ETCFragment : BaseFragment() {
                     .show()
         } else {
             XPopup.Builder(requireContext())
-                    .asConfirm("导入" + etcViewModel.yearMonth + "账单", "当前账本【${currentBook.name}】，确认导入吗？") {
+                    .asConfirm("导入" + etcViewModel.yearMonth + "账单", "当前账本【${currentBook!!.name}】，确认导入吗？") {
                         val inputLoading = XPopup.Builder(requireContext()).asLoading().setTitle("正在导入")
                         inputLoading.show()
                         etcViewModel.requestHBGSETCList(etcViewModel.etcID, etcViewModel.yearMonth!!, etcViewModel.carID)
-                                .observe(viewLifecycleOwner, { message: String ->
+                                .observe(viewLifecycleOwner) { message: String ->
                                     inputLoading.setTitle(message)
-                                    Handler(Looper.getMainLooper()).postDelayed({ inputLoading.dismiss() }, 1000)
-                                })
+                                    Handler(Looper.getMainLooper()).postDelayed(
+                                        { inputLoading.dismiss() },
+                                        1000
+                                    )
+                                }
                     }
                     .show()
         }

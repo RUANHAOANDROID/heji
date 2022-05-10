@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.rh.heji.R
-import com.rh.heji.currentBook
+import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryContentBinding
@@ -67,7 +67,7 @@ class CategoryFragment : BaseFragment() {
     private fun registerLabelObserver() {
         categoryViewModule.let {
             var categoryLiveData =
-                if (type == BillType.INCOME) it.incomeCategory else it.expenditureCategory
+                if (type == BillType.INCOME) it.getIncomeCategory() else it.getExpenditureCategory()
             categoryLiveData.observe(this, labelObserver)
             categoryLiveData.value?.let { data ->
                 if (data.size > 0) labelAdapter.setNewInstance(data)
@@ -143,7 +143,7 @@ class CategoryFragment : BaseFragment() {
     private fun addSettingItem(labelAdapter: CategoryAdapter) {
         val category = Category(
             category = CategoryAdapter.SETTING,
-            bookId = currentBook.id,
+            bookId = currentBook!!.id,
             level = 0,
             type = type.type()
         )

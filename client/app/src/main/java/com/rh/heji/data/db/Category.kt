@@ -1,7 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
-import com.rh.heji.currentBook
+import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.data.db.mongo.ObjectId
 import java.util.*
 
@@ -20,7 +20,7 @@ data class Category(
      */
     @JvmField
     @ColumnInfo(name = "book_id")
-    var bookId: String = currentBook.id,
+    var bookId: String = currentBook!!.id,
 
     @ColumnInfo(name = "category")
     var category: String = "其他"
@@ -28,7 +28,7 @@ data class Category(
     @Ignore
     constructor(
         id: String = ObjectId().toHexString(),
-        bookId: String = currentBook.id,
+        bookId: String = currentBook!!.id,
         category: String,
         level: Int,
         type: Int

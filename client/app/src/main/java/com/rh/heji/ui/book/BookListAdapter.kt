@@ -6,8 +6,8 @@ import com.blankj.utilcode.util.ImageUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.util.XPopupUtils
+import com.rh.heji.App
 import com.rh.heji.R
-import com.rh.heji.currentBook
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookItemBinding
 import com.rh.heji.utlis.ColorUtils
@@ -45,7 +45,7 @@ class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :
             }
 
 
-            if (item.id == currentBook.id) {
+            if (item.id == App.currentBook!!.id) {
                 binding.imgSelected.visibility = View.VISIBLE
             } else {
                 binding.imgSelected.visibility = View.INVISIBLE

@@ -31,12 +31,12 @@ class LoginFragment : BaseFragment() {
             val username = binding.editUser.text.toString()
             val password = binding.editPassword.text.toString()
             viewModel.login(username, password)
-                .observe(this.viewLifecycleOwner, { token ->
+                .observe(this.viewLifecycleOwner) { token ->
                     findNavController().popBackStack()
                     findNavController().navigate(R.id.nav_home)
                     AppViewModel.get().asyncData()
                     LogUtils.d(token)
-                })
+                }
         }
         enableDrawer = false
     }

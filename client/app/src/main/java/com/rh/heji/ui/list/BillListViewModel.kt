@@ -1,4 +1,4 @@
-package com.rh.heji.ui.home
+package com.rh.heji.ui.list
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -18,7 +18,7 @@ import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.launchIO
 
-class BillsHomeViewModel : BaseViewModel() {
+class BillListViewModel : BaseViewModel() {
     var selectYearMonth = currentYearMonth
     private val billDao: BillDao = AppDatabase.getInstance().billDao()
     private val imageDao = AppDatabase.getInstance().imageDao()

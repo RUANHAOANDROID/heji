@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.iteminfo;
+package com.rh.heji.ui.bill.popup;
 
 import android.graphics.Color;
 import android.widget.ImageView;

@@ -16,6 +16,7 @@ import com.rh.heji.databinding.FragmentCategoryContentBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.add.AddBillFragment
 import com.rh.heji.ui.bill.category.adapter.CategoryAdapter
+import com.rh.heji.ui.bill.category.manager.CategoryManagerFragmentArgs
 import java.util.*
 import java.util.function.Consumer
 
@@ -34,11 +35,11 @@ class CategoryFragment : BaseFragment() {
     private lateinit var categoryViewModule: CategoryViewModel
 
     private var labelObserver = Observer { categories: MutableList<Category> ->
-        val selectCategory = categoryViewModule.selectCategory
-        if (null != selectCategory) {
+
+        if (null != getSelectedCategory()) {
             categories.stream().forEach { category: Category ->
                 val isSelected =
-                    category.category == selectCategory.category && category.type == selectCategory.type
+                    category.category == getSelectedCategory()!!.category && category.type == getSelectedCategory()!!.type
                 if (isSelected) {
                     category.isSelected = true
                 }
@@ -93,7 +94,6 @@ class CategoryFragment : BaseFragment() {
                 }
             })
             labelAdapter.notifyDataSetChanged()
-            categoryViewModule.selectCategory = category
         }
 
     override fun layoutId(): Int {
@@ -120,9 +120,6 @@ class CategoryFragment : BaseFragment() {
                 if (firstItem.category != "管理") {
                     firstItem.isSelected = true
                     labelAdapter.notifyDataSetChanged()
-                    if (!isHidden && type == categoryViewModule.type) {
-                        categoryViewModule.selectCategory = firstItem
-                    }
                 }
             }
         }
@@ -150,7 +147,17 @@ class CategoryFragment : BaseFragment() {
         labelAdapter.addData(labelAdapter.itemCount, category)
     }
 
-    fun setCategory(category: String? = null) {
+    fun getSelectedCategory(): Category? {
+        var selectCategory: Category?
+        //选中的类别
+        val selectItem =
+            labelAdapter.data.filter { category: Category -> category.isSelected }.toList()
+        //未选中默认第一个ITEM
+        selectCategory = if (selectItem.isEmpty()) labelAdapter.data.first() else selectItem.first()
+        return selectCategory.apply { this.type = type }
+    }
+
+    fun setSelectCategory(category: String? = null) {
         if (!this::labelAdapter.isInitialized || labelAdapter == null) return
 
         var selectCategory: Category?
@@ -159,7 +166,6 @@ class CategoryFragment : BaseFragment() {
             labelAdapter.data.filter { category: Category -> category.isSelected }.toList()
         //未选中默认第一个ITEM
         selectCategory = if (selectItem.isEmpty()) labelAdapter.data.first() else selectItem.first()
-        categoryViewModule.selectCategory = selectCategory
         if (!category.isNullOrEmpty()) {
             binding.categoryRecycler.post {
                 labelAdapter.setSelectCategory(category)

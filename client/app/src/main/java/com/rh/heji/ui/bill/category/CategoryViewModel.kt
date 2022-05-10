@@ -24,12 +24,6 @@ import com.rh.heji.utlis.launchIO
 class CategoryViewModel : BaseViewModel() {
     private val categoryDao = AppDatabase.getInstance().categoryDao()
 
-    // 收入支出类别 LiveData
-    private val typeLiveData: MediatorLiveData<BillType> = MediatorLiveData<BillType>()
-
-    //选中的标签LiveData
-    private val selectCategoryLiveData = MediatorLiveData<Category>()
-
     //支出标签
     private val expenditureCategory = MediatorLiveData<MutableList<Category>>()
 
@@ -70,31 +64,6 @@ class CategoryViewModel : BaseViewModel() {
 
     fun getIncomeCategory(): LiveData<MutableList<Category>> {
         return incomeCategory
-    }
-    //---------------------Category select--------------------
-
-    var type: BillType = BillType.EXPENDITURE
-        set(value) {
-            field = value
-            typeLiveData.postValue(value)
-        }
-
-
-    fun getCategoryType(): LiveData<BillType> {
-        return typeLiveData
-    }
-
-
-    var selectCategory = Category(category = "管理", bookId = "")
-        set(value) {
-            if (value.category == "管理") return
-            field = value//field 为type本身 (field领域)
-            selectCategoryLiveData.postValue(value)
-        }
-
-
-    fun getSelectCategory(): LiveData<Category> {
-        return selectCategoryLiveData
     }
 
     //---------------------Category manager--------------------

@@ -28,6 +28,7 @@ import com.rh.heji.databinding.FragmentAddbillBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.category.CategoryTabFragment
 import com.rh.heji.ui.bill.category.CategoryViewModel
+import com.rh.heji.ui.bill.category.ISelectedCategory
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
 import java.math.BigDecimal
@@ -42,12 +43,13 @@ import java.util.function.Consumer
  * 账单类别
  * ----------
  */
-class AddBillFragment : BaseFragment() {
+class AddBillFragment : BaseFragment(), ISelectedCategory {
     private val billViewModel by lazy { ViewModelProvider(this)[AddBillViewModel::class.java] }
     val categoryViewModel by lazy { ViewModelProvider(this)[CategoryViewModel::class.java] }
 
     private lateinit var binding: FragmentAddbillBinding
     private lateinit var categoryTabFragment: CategoryTabFragment
+
     lateinit var popupSelectImage: PopSelectImage//图片弹窗
 
     var isModify = false//默认新增
@@ -57,7 +59,10 @@ class AddBillFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        billViewModel.setBill(AddBillFragmentArgs.fromBundle(requireArguments()).bill)
+        val argAddBill = AddBillFragmentArgs.fromBundle(requireArguments()).argAddBill
+        billViewModel.setBill(argAddBill.bill)
+        isModify = argAddBill.isModify
+
         binding = FragmentAddbillBinding.bind(rootView)
         setupImage()
         setupPerson()
@@ -92,7 +97,7 @@ class AddBillFragment : BaseFragment() {
             }
             //设置类别
             bill.category?.let {
-                categoryTabFragment.setCategory(it, bill.type)
+                categoryTabFragment.setSelectCategory(it, bill.type)
             }
         }
     }
@@ -108,22 +113,7 @@ class AddBillFragment : BaseFragment() {
     private fun category() {
         categoryTabFragment =
             childFragmentManager.findFragmentById(R.id.categoryFragment) as CategoryTabFragment
-        categoryViewModel.getCategoryType().observe(this) {
-            binding.keyboard.setType(it)
-            changeMoneyTextColor(it)
-        }
-        categoryViewModel.getSelectCategory().observe(this) { category: Category? ->
-            if (null != category) {
-                val billType = BillType.transform(category.type)
-                changeMoneyTextColor(billType)
-                var categoryName: String? = category.category
-                if (category.category == "管理") {
-                    categoryName = billType.text()
-                }
-                billViewModel.setCategory(category)
-                binding.keyboard.setType(billType)
-            }
-        }
+        categoryTabFragment.setIndex()
     }
 
     private fun remark() {
@@ -236,9 +226,8 @@ class AddBillFragment : BaseFragment() {
         binding.keyboard.setKeyboardListener(object : OnKeyboardListener {
             override fun save(result: String) {
                 ToastUtils.showLong(result)
-                val category = categoryViewModel.selectCategory
                 billViewModel.setImages(popupSelectImage.getImagesPath())
-                saveBill(result, category, close = true)
+                saveBill(result, close = true)
             }
 
             override fun calculation(result: String) {
@@ -247,7 +236,7 @@ class AddBillFragment : BaseFragment() {
 
             override fun saveAgain(result: String) {
                 ToastUtils.showLong(result)
-                saveBill(result, categoryViewModel.selectCategory, close = false)
+                saveBill(result, close = false)
                 reset()
             }
         })
@@ -258,13 +247,12 @@ class AddBillFragment : BaseFragment() {
         binding.inputInfo.tvMoney.setTextColor(resources.getColor(color, null))
     }
 
-    private fun saveBill(money: String, category: Category, close: Boolean) {
+    private fun saveBill(money: String, close: Boolean) {
         if (TextUtils.isEmpty(money) || money == "0") {
             ToastUtils.showShort("未填写金额")
             return
         }
         billViewModel.apply {
-            setCategory(category)
             setMoney(money)
             save { bill: Bill ->
                 if (close) {
@@ -362,5 +350,12 @@ class AddBillFragment : BaseFragment() {
         binding.inputInfo.eidtRemark.setText("")
         binding.inputInfo.tvMoney.text = "0"
         popupSelectImage.clear()
+    }
+
+    override fun selected(category: Category) {
+        val billType = BillType.transform(category.type)
+        billViewModel.setCategory(category)
+        binding.keyboard.setType(billType)
+        changeMoneyTextColor(billType)
     }
 }

@@ -1,7 +1,6 @@
-package com.rh.heji.ui.bill.category
+package com.rh.heji.ui.bill.category.manager
 
 import android.view.View
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -13,6 +12,7 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryManagerBinding
 import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.bill.category.CategoryViewModel
 import com.rh.heji.ui.bill.category.adapter.CategoryManagerAdapter
 
 /**

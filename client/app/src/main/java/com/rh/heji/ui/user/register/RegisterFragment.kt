@@ -1,28 +1,36 @@
 package com.rh.heji.ui.user.register
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
+import android.view.LayoutInflater
 import android.view.View
-import androidx.lifecycle.Observer
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentRegisterBinding
 
-class RegisterFragment : BaseFragment() {
+class RegisterFragment : Fragment() {
 
 
     private val viewModel: RegisterViewModel by lazy {
         ViewModelProvider(this).get(RegisterViewModel::class.java)
     }
     private lateinit var binding: FragmentRegisterBinding
-
-    override fun layoutId(): Int {
-        return R.layout.fragment_register
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        inflater.inflate(R.layout.fragment_register, container, false)
+        binding = FragmentRegisterBinding.inflate(inflater)
+        initView(binding.root)
+        return binding.root
     }
 
-    override fun initView(rootView: View) {
+
+    fun initView(rootView: View) {
         binding = FragmentRegisterBinding.bind(rootView)
         binding.btnRegister.setOnClickListener {
             val password1 = binding.editPassword.text.toString()
@@ -41,12 +49,5 @@ class RegisterFragment : BaseFragment() {
                 Navigation.findNavController(rootView).navigate(R.id.nav_login, mBundle)
             }
         }
-        enableDrawer = false
-    }
-
-
-    override fun setUpToolBar() {
-        super.setUpToolBar()
-        toolBar.title = getString(R.string.register)
     }
 }

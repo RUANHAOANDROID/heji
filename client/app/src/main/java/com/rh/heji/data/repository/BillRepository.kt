@@ -4,7 +4,6 @@ import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.App
 import com.rh.heji.AppViewModel
 import com.rh.heji.FILE_LENGTH_1M
-import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.DataRepository
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
@@ -27,7 +26,7 @@ class BillRepository : DataRepository() {
     suspend fun deleteBill(_id: String) {
         var response = network.billDelete(_id)
         response.data.let {
-            AppDatabase.getInstance().imageDao().deleteBillImage(_id)
+            App.dataBase.imageDao().deleteBillImage(_id)
             billDao.delete(Bill(_id))
         }
     }
@@ -85,7 +84,7 @@ class BillRepository : DataRepository() {
                     image.synced = STATUS.SYNCED
                     LogUtils.d("账单图片上传成功：$image")
                     image.onlinePath?.let {
-                        var count = AppDatabase.getInstance().imageDao()
+                        var count = App.dataBase.imageDao()
                             .updateOnlinePath(image.id, it, image.synced)
                         if (count > 0)
                             LogUtils.d("图片更新成功：$image")

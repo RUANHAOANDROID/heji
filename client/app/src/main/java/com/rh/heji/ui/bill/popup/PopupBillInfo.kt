@@ -10,7 +10,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.*
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.SyncEvent
 import com.rh.heji.data.DataBus
 import com.rh.heji.data.converters.DateConverters
@@ -35,7 +35,7 @@ class PopupBillInfo(
 ) : BottomPopupView(activity), Observer<List<Image>> {
     //观察 当前账单下图片
     private val imageObservable by lazy {
-        AppDatabase.getInstance().imageDao().findByBillId(billId = bill.id).asLiveData()
+        App.dataBase.imageDao().findByBillId(billId = bill.id).asLiveData()
     }
 
     lateinit var binding: PopLayoutBilliInfoBinding
@@ -94,7 +94,7 @@ class PopupBillInfo(
             mainActivity.lifecycleScope.launch(Dispatchers.IO) {
                 withContext(Dispatchers.Main) {
                     if (bill.createUser == currentUser.username) {
-                        AppDatabase.getInstance().billDao().delete(bill)
+                        App.dataBase.billDao().delete(bill)
                         delete(bill)
                         DataBus.post(SyncEvent.DELETE, bill.copy())
                         dismiss()

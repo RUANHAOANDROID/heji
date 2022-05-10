@@ -6,7 +6,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.rh.heji.BuildConfig
 import com.rh.heji.currentUser
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.db.ErrorLog
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -50,7 +50,7 @@ open class CrashInfo : CrashUtils.OnCrashListener {
     }
 
     private fun save2DB(errorLog: ErrorLog) {
-        AppDatabase.getInstance().errorLogDao().install(errorLog)
+        App.dataBase.errorLogDao().install(errorLog)
     }
 
     companion object {

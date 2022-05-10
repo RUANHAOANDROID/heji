@@ -2,8 +2,8 @@ package com.rh.heji.ui.bill.add
 
 import androidx.lifecycle.*
 import com.blankj.utilcode.util.ToastUtils
+import com.rh.heji.App
 import com.rh.heji.App.Companion.currentBook
-import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.ui.base.BaseViewModel
@@ -21,7 +21,7 @@ class AddBillViewModel : BaseViewModel() {
 
     private var bill: Bill = Bill()
 
-    val billDao = AppDatabase.getInstance().billDao()
+    val billDao = App.dataBase.billDao()
 
     var keyBoardStack: Stack<String>? = null//用于保存栈
     private var billLiveData: MutableLiveData<Bill> = MutableLiveData()
@@ -100,7 +100,7 @@ class AddBillViewModel : BaseViewModel() {
 
         launch({
             var count: Long =
-                AppDatabase.getInstance().billImageDao().installBillAndDao(bill, images)
+                App.dataBase.billImageDao().installBillAndDao(bill, images)
             if (count > 0) {
                 saveCall(bill.copy())
                 resetBill()//最后重新赋值ID
@@ -118,7 +118,7 @@ class AddBillViewModel : BaseViewModel() {
     private val dealersLiveData by lazy { MutableLiveData<MutableList<String>>().also { loadDealers() } }
     private fun loadDealers() {
         launchIO({
-            val users = AppDatabase.getInstance().dealerDao().findAll().map {
+            val users = App.dataBase.dealerDao().findAll().map {
                 it.userName
             }.toMutableList()
             dealersLiveData.postValue(users)
@@ -126,7 +126,7 @@ class AddBillViewModel : BaseViewModel() {
     }
 
     fun getBillImages(bid: String = bill.id): LiveData<MutableList<Image>> {
-        return AppDatabase.getInstance().imageDao().findByBillId(bid)
+        return App.dataBase.imageDao().findByBillId(bid)
             .asLiveData(viewModelScope.coroutineContext)
     }
 }

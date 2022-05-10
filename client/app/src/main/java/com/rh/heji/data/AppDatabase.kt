@@ -36,10 +36,17 @@ abstract class AppDatabase : RoomDatabase() {
         private var INSTANCE: AppDatabase? = null//暴力丢弃强插升级
 
         //.addMigrations(MIGRATION_1_2)
+//        //默认数据库名称
+//        @Deprecated("")
+//        fun getInstance(context: Context = App.context): AppDatabase =
+//            INSTANCE ?: synchronized(this) {
+//                INSTANCE ?: buildDatabase(context, "heji.db").also { INSTANCE = it }
+//            }
+
         //默认数据库名称
-        fun getInstance(context: Context = App.context): AppDatabase =
+        fun getInstance(userName: String, context: Context = App.context): AppDatabase =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: buildDatabase(context, "heji.db").also { INSTANCE = it }
+                INSTANCE ?: buildDatabase(context, "${userName}_data.db").also { INSTANCE = it }
             }
 
         private fun buildDatabase(

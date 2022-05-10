@@ -7,9 +7,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.App
 
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
@@ -22,7 +21,7 @@ import com.rh.heji.utlis.launchIO
  * # 分类
  */
 class CategoryViewModel : BaseViewModel() {
-    private val categoryDao = AppDatabase.getInstance().categoryDao()
+    private val categoryDao = App.dataBase.categoryDao()
 
     //支出标签
     private val expenditureCategory = MediatorLiveData<MutableList<Category>>()

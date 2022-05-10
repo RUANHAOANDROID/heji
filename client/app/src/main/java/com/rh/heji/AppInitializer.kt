@@ -4,13 +4,6 @@ import android.content.Context
 import android.os.StrictMode
 import androidx.startup.Initializer
 import com.blankj.utilcode.util.LogUtils
-import com.rh.heji.data.AppDatabase
-import com.rh.heji.data.db.Book
-import com.rh.heji.data.db.Category
-import com.rh.heji.data.db.Dealer
-import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.utlis.mmkv
-import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -20,10 +13,11 @@ import kotlinx.coroutines.launch
  * 注意： 该类在 AndroidManifest provider startup
  */
 class AppInitializer : Initializer<Unit> {
+    private lateinit var context: Context
     override fun create(context: Context) {
+        this.context = context
         GlobalScope.launch(Dispatchers.IO) {
-            MMKV.initialize(context)
-            startCount()
+            DataStoreManager.startupCount(context)
             LogUtils.getConfig().apply {
                 isLogSwitch = BuildConfig.DEBUG
                 stackDeep = 1
@@ -54,15 +48,6 @@ class AppInitializer : Initializer<Unit> {
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
         return mutableListOf()
-    }
-
-    /**
-     * 统计启动次数
-     */
-    private fun startCount() {
-        val key = "start"
-        val startCount = mmkv()!!.decodeInt(key, 0)
-        mmkv()!!.encode(key, startCount + 1)
     }
 
 }

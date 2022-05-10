@@ -36,7 +36,7 @@ class BillPhotoAdapter :
             .error(R.drawable.ic_baseline_image_load_error_24)
             .placeholder(R.drawable.ic_baseline_image_24)
             .into(binding.imgTicket)
-        //MyAppGlideModule.loadImageFile(App.context(), image, binding.imgTicket)
+        //MyAppGlideModule.loadImageFile(App.context, image, binding.imgTicket)
         binding.imgDelete.visibility = View.VISIBLE
         binding.imgTicket.setOnClickListener { v ->
             showGallery(

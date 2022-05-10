@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
 import com.rh.heji.*
+import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.ui.base.BaseViewModel
@@ -25,7 +26,7 @@ class CalendarNoteViewModule : BaseViewModel() {
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
-            var everyDayIncome = billDao.findEveryDayIncomeByMonth(currentBook.id,selectYearMonth.toYearMonth())
+            var everyDayIncome = billDao.findEveryDayIncomeByMonth(currentBook!!.id,selectYearMonth.toYearMonth())
             everyDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
                 if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {
@@ -103,7 +104,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         if (expenditure != "0") {
             val expenditureScheme = Calendar.Scheme()
             expenditureScheme.type = -1
-            expenditureScheme.shcemeColor = App.context().getColor(R.color.expenditure)
+            expenditureScheme.shcemeColor = App.context.getColor(R.color.expenditure)
             expenditureScheme.obj = "-$expenditure"
             calendar.addScheme(expenditureScheme)
         }
@@ -111,7 +112,7 @@ class CalendarNoteViewModule : BaseViewModel() {
         if (income != "0") {
             val incomeScheme = Calendar.Scheme()
             incomeScheme.type = 1
-            incomeScheme.shcemeColor = App.context().getColor(R.color.income)
+            incomeScheme.shcemeColor = App.context.getColor(R.color.income)
             incomeScheme.obj = "+$income"
             calendar.addScheme(incomeScheme)
         }

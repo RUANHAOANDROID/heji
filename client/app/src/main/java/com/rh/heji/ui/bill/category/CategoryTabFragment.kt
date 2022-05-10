@@ -21,11 +21,11 @@ import com.rh.heji.ui.bill.add.AddBillFragment
  *
  */
 class CategoryTabFragment : BaseFragment() {
-    private val tabTitles = arrayOf(BillType.EXPENDITURE.text(), BillType.INCOME.text())
+    private val tabTitles = listOf(BillType.EXPENDITURE.text(), BillType.INCOME.text())
     lateinit var binding: FragmentCategoryTabBinding
     private var currentType: BillType = BillType.EXPENDITURE
 
-    val categoryFragments = arrayOf(
+    val categoryFragments = listOf(
         CategoryFragment.newInstance(BillType.EXPENDITURE),
         CategoryFragment.newInstance(BillType.INCOME)
     )
@@ -51,35 +51,41 @@ class CategoryTabFragment : BaseFragment() {
 
         val pagerAdapter = FragmentViewPagerAdapter(
             childFragmentManager,
-            categoryFragments.toList(),
-            tabTitles.toList()
+            categoryFragments,
+            tabTitles
         )
-        binding.vpContent.adapter = pagerAdapter
-        binding.tab.setupWithViewPager(binding.vpContent)
 
-        //TabLayout+ViewPager联动
-        binding.vpContent.addOnPageChangeListener(TabLayoutOnPageChangeListener(binding.tab))
-        binding.tab.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.vpContent))
-        binding.tab.getTabAt(0)!!.select()
-        binding.tab.addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                LogUtils.d("onTabSelected", tab.position)
-                val selectType = BillType.transform(tab.text.toString())
-                categoryViewModel.type = selectType
-                currentType = selectType
-                categoryFragments[tab.position].setCategory()
-            }
+        binding.vpContent.apply {
+            adapter = pagerAdapter
+            //TabLayout+ViewPager联动 1
+            addOnPageChangeListener(TabLayoutOnPageChangeListener(binding.tab))
+        }
+        binding.tab.apply {
+            setupWithViewPager(binding.vpContent)
+            //TabLayout+ViewPager联动 2
+            addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.vpContent))
+            getTabAt(0)!!.select()
+            addOnTabSelectedListener(object : OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    LogUtils.d("onTabSelected", tab.position)
+                    val selectType = BillType.transform(tab.text.toString())
+                    categoryViewModel.type = selectType
+                    currentType = selectType
+                    categoryFragments[tab.position].setCategory()
+                }
 
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-                LogUtils.d("onTabUnselected", tab.position)
-            }
+                override fun onTabUnselected(tab: TabLayout.Tab) {
+                    LogUtils.d("onTabUnselected", tab.position)
+                }
 
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                LogUtils.d("onTabReselected", tab.position)
-            }
-        })
+                override fun onTabReselected(tab: TabLayout.Tab) {
+                    LogUtils.d("onTabReselected", tab.position)
+                }
+            })
+        }
+
         categoryViewModel.getCategoryType().observe(this) {
-            if (currentType == it) return@observe
+            if (currentType == it) return@observe //已选中避免死循环
 
             val selectTab = if (it.type() == 1) 1 else 0
             val tabAt = binding.tab.getTabAt(selectTab)

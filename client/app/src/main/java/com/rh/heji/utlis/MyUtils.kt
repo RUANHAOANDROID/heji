@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.core.app.ActivityCompat
 import com.blankj.utilcode.util.CrashUtils
-import com.tencent.mmkv.MMKV
 import java.io.File
 
 object MyUtils {

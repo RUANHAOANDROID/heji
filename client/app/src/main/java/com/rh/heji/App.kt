@@ -1,8 +1,13 @@
 package com.rh.heji
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import com.rh.heji.utlis.http.basic.HttpRetrofit
+import androidx.datastore.core.DataStore
+import com.rh.heji.data.db.Book
+import com.rh.heji.data.db.mongo.ObjectId
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 /**
  * Date: 2020/8/28
@@ -13,22 +18,35 @@ import com.rh.heji.utlis.http.basic.HttpRetrofit
  *  3.AppViewModule
  */
 class App : Application() {
-    init {
-        instance = this
-    }
-
     companion object {
-        private var instance: App? = null
-        fun context(): Context = instance!!.applicationContext
+        @SuppressLint("StaticFieldLeak")
+        lateinit var context: Context
+            private set
+
+        lateinit var currentBook: Book
+            private set
+
+        @JvmName("setCurrentBook1")
+        fun setCurrentBook(book: Book) {
+            currentBook = book
+            runBlocking { DataStoreManager.saveCurrentBook(book) }
+        }
+
     }
 
     override fun onCreate() {
         super.onCreate()
-        instance =this
+        context = this
         init()
     }
 
 
     private fun init() {
+        /**
+         * 当前账本
+         */
+        currentBook =
+            runBlocking { DataStoreManager.getCurrentBook().first() ?: Book(name = "个人账本") }
     }
+
 }

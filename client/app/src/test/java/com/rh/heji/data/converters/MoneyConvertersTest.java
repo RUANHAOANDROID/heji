@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 /**
  * Date: 2021/6/17
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 public class MoneyConvertersTest extends TestCase {

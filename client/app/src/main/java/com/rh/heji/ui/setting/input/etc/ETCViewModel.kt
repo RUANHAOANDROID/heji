@@ -36,7 +36,7 @@ import java.util.function.Consumer
 
 /**
  * Date: 2020/11/10
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class ETCViewModel : BaseViewModel() {
@@ -97,7 +97,7 @@ class ETCViewModel : BaseViewModel() {
                 /**
                  * 如果不存在才插入
                  */
-                val bills =   AppDatabase.getInstance().billDao().findIds(bill.billTime!!, bill.money, bill.remark!!)
+                val bills =   AppDatabase.getInstance().billDao().findIds(bill.billTime, bill.money, bill.remark!!)
                 if (bills.size <= 0) {
                     val count =AppDatabase.getInstance().billDao().install(bill)
                     LogUtils.d("导入ETC账单：", bill)
@@ -253,7 +253,8 @@ class ETCViewModel : BaseViewModel() {
         /**
          * 如果不存在才插入(插入时必须保持格式一致)
          */
-        val bills =   AppDatabase.getInstance().billDao().findIds(bill.billTime!!, bill.money,
+        val bills =   AppDatabase.getInstance().billDao().findIds(
+            bill.billTime, bill.money,
             bill.remark!!
         )
         if (bills.size <= 0) {

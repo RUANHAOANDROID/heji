@@ -2,9 +2,8 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
-import com.rh.heji.currentBook
+import com.rh.heji.App
 import com.rh.heji.currentUser
-//import com.rh.heji.App
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
@@ -16,7 +15,7 @@ import java.util.*
 
 /**
  * Date: 2020/8/28
- * Author: 锅得铁
+ * @author: 锅得铁
  * # onDelete ：当账本创建人删除了账本，联动删除账本账单
  * # onUpdate ：当账本更新，账单不联动
  */
@@ -36,13 +35,13 @@ data class Bill(
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
 
-    @ColumnInfo(name = COLUMN_BOOK_ID,index = true)
-    var bookId: String = currentBook.id,
+    @ColumnInfo(name = COLUMN_BOOK_ID, index = true)
+    var bookId: String = App.currentBook!!.id,
     /**
      * 钱
      */
     @TypeConverters(MoneyConverters::class)
-    var money: BigDecimal= MoneyConverters.ZERO_00(),
+    var money: BigDecimal = MoneyConverters.ZERO_00(),
 
     /**
      * 收支类型 s|z
@@ -92,7 +91,10 @@ data class Bill(
     var images: List<String> = mutableListOf(),
 
     @ColumnInfo(name = "sync_status")
-    var synced: Int = STATUS.NOT_SYNCED
+    var synced: Int = STATUS.NOT_SYNCED,
+
+    @ColumnInfo(name = "anchor")
+    var anchor: Long = 0L,//锚点用作记录服务最后修改时间
 
 ) : Parcelable {
 

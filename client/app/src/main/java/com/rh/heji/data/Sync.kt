@@ -19,7 +19,7 @@ import java.util.*
 
 /**
  *Date: 2021/6/17
- *Author: 锅得铁
+ *@author: 锅得铁
  *# entity 为 @Entity类型
  */
 class EventMessage(var crud: SyncEvent, var entity: Any)

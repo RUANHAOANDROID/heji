@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
 import com.rh.heji.*
+import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.ui.base.BaseViewModel
@@ -25,7 +26,7 @@ class CalendarNoteViewModule : BaseViewModel() {
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
-            var everyDayIncome = billDao.findEveryDayIncomeByMonth(currentBook.id,selectYearMonth.toYearMonth())
+            var everyDayIncome = billDao.findEveryDayIncomeByMonth(currentBook!!.id,selectYearMonth.toYearMonth())
             everyDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
                 if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {

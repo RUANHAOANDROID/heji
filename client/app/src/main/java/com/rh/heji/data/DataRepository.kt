@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.flow
  */
 open class DataRepository {
     companion object NETWORK {
-        const val OK = 0;
+        const val OK = 0
     }
 
     protected val network = HejiNetwork.getInstance()

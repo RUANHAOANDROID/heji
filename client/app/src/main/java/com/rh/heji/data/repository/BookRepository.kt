@@ -21,7 +21,7 @@ class BookRepository : DataRepository() {
         bookDao.preDelete(book_id)
         network.bookDelete(book_id).apply {
             if (code == OK) {
-                bookDao.deleteById(book_id);
+                bookDao.deleteById(book_id)
             }
         }
     }

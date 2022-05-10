@@ -12,7 +12,7 @@ import com.rh.heji.utlis.textdraw.TextDrawable
 
 /**
  *Date: 2021/5/18
- *Author: 锅得铁
+ *@author: 锅得铁
  *#
  */
 class CategoryTotalAdapter(

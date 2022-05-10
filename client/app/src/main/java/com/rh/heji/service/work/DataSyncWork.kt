@@ -1,7 +1,7 @@
 package com.rh.heji.service.work
 
 import com.blankj.utilcode.util.LogUtils
-import com.rh.heji.currentBook
+import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Image
@@ -15,6 +15,7 @@ import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class DataSyncWork {
@@ -27,7 +28,7 @@ class DataSyncWork {
         /**
          * 根据服务器账本删除日志，同步删除本地数据
          */
-        val response = HejiNetwork.getInstance().bookOperateLogs(currentBook.id)
+        val response = HejiNetwork.getInstance().bookOperateLogs(currentBook!!.id)
         if (response.code == 0 && response.data.isNotEmpty()) {
             val operates = response.data
             for (operate in operates) {
@@ -51,6 +52,7 @@ class DataSyncWork {
             }
         }
     }
+
     suspend fun syncBills() {
         suspend fun delete() {
             val deleteBills = billDao.findByStatus(STATUS.DELETED)
@@ -80,7 +82,7 @@ class DataSyncWork {
 
         suspend fun pull() {
             val currentLastDay =
-                MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month);
+                MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month)
             val statDate =
                 YearMonth(currentYearMonth.year, currentYearMonth.month, 1).toYearMonthDay()
             val endDate = YearMonth(
@@ -202,7 +204,7 @@ class DataSyncWork {
         val notAsyncBooks = bookDao.books(STATUS.NOT_SYNCED)//未上传同步的账本
         for (book in notAsyncBooks) {
             book.synced = STATUS.SYNCED
-            book.createUser = JWTParse.getUser(Token.decodeToken()).username
+            book.createUser = JWTParse.getUser(Token.getToken().first() ?: "").username
             val response = network.bookCreate(book)
             if (response.code == 0) {
                 val count = bookDao.update(book)

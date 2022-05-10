@@ -8,20 +8,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
+import com.rh.heji.App
 import com.rh.heji.R
-import com.rh.heji.currentBook
 import com.rh.heji.data.Result
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookListBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.hideRefreshing
 import com.rh.heji.ui.base.swipeRefreshLayout
-import com.tencent.mmkv.MMKV
+
 import androidx.recyclerview.widget.DiffUtil.ItemCallback as ItemCallback
 
 /**
  * Date: 2021/7/9
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class BookListFragment : BaseFragment() {
@@ -87,20 +87,18 @@ class BookListFragment : BaseFragment() {
 //        adapter.animationEnable = true
 //        adapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.SlideInRight)
         swipeRefreshLayout(binding.refreshLayout) { bookViewModel.getBookList() }
-        bookViewModel.getBookList().observe(this, {
+        bookViewModel.getBookList().observe(this) {
             adapter.setDiffNewData(it)
             hideRefreshing(binding.refreshLayout)
-        })
+        }
         listener()
     }
 
     private fun listener() {
         adapter.setOnItemClickListener { adapter, view, position ->
-            MMKV.defaultMMKV()?.let {
-                val book: Book = adapter.getItem(position) as Book
-                mainActivity.setCurrentBook(book.name)
-                currentBook = book
-            }
+            val book: Book = adapter.getItem(position) as Book
+            mainActivity.setCurrentBook(book.name)
+            App.setCurrentBook(book)
             findNavController().popBackStack()
         }
         binding.fab.setOnClickListener {

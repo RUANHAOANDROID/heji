@@ -1,34 +1,80 @@
 package com.rh.heji.ui.bill.add.adapter
 
+import android.graphics.Color
 import android.view.View
+import android.widget.ImageView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
-import com.rh.heji.App
-import com.rh.heji.MyAppGlideModule
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.ImageViewerPopupView
+import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener
+import com.lxj.xpopup.util.SmartGlideImageLoader
+import com.rh.heji.GlideApp
 import com.rh.heji.R
+import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.ItemPopSelectTicketImageBinding
-import java.util.*
+import com.rh.heji.utlis.ImageUtils
 
 /**
+ * 账单票据图片适配器
  * Date: 2020/9/16
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class BillPhotoAdapter :
-    BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_pop_select_ticket_image, ArrayList()) {
+    BaseQuickAdapter<Image, BaseViewHolder>(
+        R.layout.item_pop_select_ticket_image,
+        mutableListOf()
+    ) {
     private lateinit var binding: ItemPopSelectTicketImageBinding
-    override fun convert(viewHolder: BaseViewHolder, item: String) {
-        binding = ItemPopSelectTicketImageBinding.bind(viewHolder.itemView)
-        if (item == "+") {
-            binding.imgTicket.setImageDrawable(context.resources.getDrawable(R.drawable.ic_add_image_red_32dp))
-            binding.imgDelete.visibility = View.INVISIBLE
-        } else {
-            MyAppGlideModule.loadImageFile(App.context, item, binding.imgTicket)
-            binding.imgDelete.visibility = View.VISIBLE
+    override fun convert(holder: BaseViewHolder, image: Image) {
+        binding = ItemPopSelectTicketImageBinding.bind(holder.itemView)
+        val path = ImageUtils.getImagePath(image)
+        GlideApp.with(binding.imgTicket)
+            .asBitmap()
+            .load(path)
+            .error(R.drawable.ic_baseline_image_load_error_24)
+            .placeholder(R.drawable.ic_baseline_image_24)
+            .into(binding.imgTicket)
+        //MyAppGlideModule.loadImageFile(App.context, image, binding.imgTicket)
+        binding.imgDelete.visibility = View.VISIBLE
+        binding.imgTicket.setOnClickListener { v ->
+            showGallery(
+                v as ImageView,
+                holder.layoutPosition
+            )
         }
+
     }
 
     init {
         addChildClickViewIds(R.id.imgDelete)
+    }
+
+    private fun showGallery(imageView: ImageView, startPosition: Int) {
+        val srcViewUpdateListener =
+            OnSrcViewUpdateListener { popupView: ImageViewerPopupView, position: Int ->
+                popupView.updateSrcView(
+                    recyclerView.getChildAt(startPosition).findViewById(R.id.imgTicket)
+                )
+            }
+
+        XPopup.Builder(context)
+            .asImageViewer(
+                imageView,
+                startPosition,
+                ImageUtils.getPaths(data),
+                false,
+                false,
+                -1,
+                -1,
+                -1,
+                false,
+                Color.rgb(32, 36, 46),
+                srcViewUpdateListener,
+                SmartGlideImageLoader(R.mipmap.ic_launcher),
+                null
+            )
+            .show()
     }
 }

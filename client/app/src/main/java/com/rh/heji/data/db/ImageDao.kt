@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Date: 2020/11/19
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 @Dao
@@ -27,11 +27,17 @@ interface ImageDao {
     @Delete
     fun delete(ticket: Image )
 
+
+
     @Query("DELETE FROM image WHERE bill_id =:billID")
     fun deleteBillImage(billID: String )
 
     @Query("SELECT image_id FROM image WHERE bill_id =:billID")
     fun findImagesId(billID: String ):MutableList<String>
+
+    @Transaction
+    @Query("UPDATE image SET sync_status = ${STATUS.DELETED} WHERE image_id =:imageID")
+    fun preDelete(imageID: String )
 
     @Transaction
     @Query("UPDATE image SET local_path=:imagePath, sync_status =:status WHERE image_id =:id")

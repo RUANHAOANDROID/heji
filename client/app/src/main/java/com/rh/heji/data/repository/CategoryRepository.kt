@@ -16,7 +16,7 @@ class CategoryRepository : DataRepository() {
         val response = network.categoryPush(category)
         response.let {
             val dbCategory = category.toDbCategory()
-            dbCategory?.synced = STATUS.SYNCED
+            dbCategory.synced = STATUS.SYNCED
             categoryDao.update(dbCategory)
         }
     }

@@ -13,10 +13,10 @@ import java.io.StringWriter
 
 /**
  *Date: 2021/6/1
- *Author: 锅得铁
+ *@author: 锅得铁
  *#
  */
-open class CrashInfo() : CrashUtils.OnCrashListener {
+open class CrashInfo : CrashUtils.OnCrashListener {
     override fun onCrash(crashInfo: CrashUtils.CrashInfo) {
         crashInfo.addExtraHead(isTablet, DeviceUtils.isTablet().toString())
         crashInfo.addExtraHead(isEmulator, DeviceUtils.isEmulator().toString())
@@ -40,7 +40,7 @@ open class CrashInfo() : CrashUtils.OnCrashListener {
         errorLog.sdkVersionName = DeviceUtils.getSDKVersionName()
         LogUtils.e(crashInfo.throwable)
         errorLog.crashContent = getExceptionToString(crashInfo.throwable)
-        return errorLog;
+        return errorLog
     }
 
     private fun getExceptionToString(e: Throwable): String {

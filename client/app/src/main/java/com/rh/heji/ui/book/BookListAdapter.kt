@@ -6,8 +6,8 @@ import com.blankj.utilcode.util.ImageUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.util.XPopupUtils
+import com.rh.heji.App
 import com.rh.heji.R
-import com.rh.heji.currentBook
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookItemBinding
 import com.rh.heji.utlis.ColorUtils
@@ -15,7 +15,7 @@ import com.rh.heji.utlis.ColorUtils
 
 /**
  * Date: 2021/7/9
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :
@@ -26,7 +26,7 @@ class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :
 
     private val colors = ColorUtils.groupColors()
     override fun convert(holder: BaseViewHolder, item: Book) {
-        FragmentBookItemBinding.bind(holder.itemView)?.let { binding ->
+        FragmentBookItemBinding.bind(holder.itemView).let { binding ->
             binding.tvTitle.text = item.name
             binding.tvContext.text = item.type
             val bannerBitmap = ImageUtils.drawable2Bitmap(
@@ -45,7 +45,7 @@ class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :
             }
 
 
-            if (item.id == currentBook.id) {
+            if (item.id == App.currentBook!!.id) {
                 binding.imgSelected.visibility = View.VISIBLE
             } else {
                 binding.imgSelected.visibility = View.INVISIBLE

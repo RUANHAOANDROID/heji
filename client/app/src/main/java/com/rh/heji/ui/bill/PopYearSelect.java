@@ -20,17 +20,17 @@ import static com.google.android.material.tabs.TabLayout.MODE_AUTO;
 
 /**
  * Date: 2020/11/3
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 public class PopYearSelect extends CenterPopupView implements View.OnClickListener {
 
-    private OnTabSelected onTabSelected;
+    private final OnTabSelected onTabSelected;
     final List<Integer> years;
     int earliestYear = 2016;
     private PopLayoutYearMonthBinding binding;
     private int selectYear;
-    private boolean showAllYear;
+    private final boolean showAllYear;
 
     public PopYearSelect(@NonNull Context context, OnTabSelected onTabSelected, boolean showAllYear) {
         super(context);

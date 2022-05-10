@@ -6,7 +6,7 @@ import kotlinx.coroutines.*
 
 /**
  *Date: 2021/7/15
- *Author: 锅得铁
+ *@author: 锅得铁
  *#
  */
 fun ViewModel.launchIO(
@@ -24,7 +24,7 @@ fun ViewModel.launchIO(
 fun ViewModel.launch(
     block: suspend () -> Unit,
     error: suspend (Throwable) -> Unit = { it.printStackTrace() }
-) = viewModelScope.launch() {
+) = viewModelScope.launch {
     try {
         block()
     } catch (e: Throwable) {

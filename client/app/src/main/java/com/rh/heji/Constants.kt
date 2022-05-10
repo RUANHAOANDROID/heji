@@ -10,12 +10,11 @@ import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.YearMonth
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.tencent.mmkv.MMKV
 import java.util.*
 
 /**
  * Date: 2020/9/16
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 /**
@@ -60,26 +59,7 @@ val currentYearMonth: YearMonth = YearMonth(
 //)
 var currentUser: JWTParse.User = JWTParse.User("local", mutableListOf(), "")
 
-val incomeDefaultCategory = Category(category = "其他", bookId = "", level = 0, type = BillType.INCOME.type())
-val expenditureDefaultCategory =
-    Category(category = "其他", bookId = "", level = 0, type = BillType.EXPENDITURE.type())
 
-/**
- * 当前账本
- */
-var currentBook = Book(
-    id = MMKV.defaultMMKV()!!.decodeString(CURRENT_BOOK_ID,ObjectId.get().toHexString()).toString(),
-    name = MMKV.defaultMMKV()!!.decodeString(CURRENT_BOOK,"个人账本").toString(),
-    createUser = currentUser.username,
-    type = "日常账本"
-)
-    set(value) {
-        MMKV.defaultMMKV().let { mmkv ->
-            mmkv!!.encode(CURRENT_BOOK_ID, value.id)
-            mmkv!!.encode(CURRENT_BOOK, value.name)
-        }
-        field = value
-    }
 
 val moshi: Moshi = Moshi.Builder()
     .addLast(KotlinJsonAdapterFactory())

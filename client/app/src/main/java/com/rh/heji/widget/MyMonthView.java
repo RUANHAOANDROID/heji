@@ -12,11 +12,11 @@ import com.haibin.calendarview.MonthView;
 import com.rh.heji.R;
 
 public class MyMonthView extends MonthView {
-    private Paint mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);//抗锯齿设置
+    private final Paint mRectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);//抗锯齿设置
     /**
      * 收入画笔
      */
-    private Paint incomePaint = new Paint();
+    private final Paint incomePaint = new Paint();
 
     public MyMonthView(Context context) {
         super(context);

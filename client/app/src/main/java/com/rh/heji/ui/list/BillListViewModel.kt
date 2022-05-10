@@ -8,7 +8,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.rh.heji.currentYearMonth
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.data.db.dto.Income
 import com.rh.heji.ui.base.BaseViewModel
@@ -20,8 +20,8 @@ import com.rh.heji.utlis.launchIO
 
 class BillListViewModel : BaseViewModel() {
     var selectYearMonth = currentYearMonth
-    private val billDao: BillDao = AppDatabase.getInstance().billDao()
-    private val imageDao = AppDatabase.getInstance().imageDao()
+    private val billDao: BillDao by lazy { App.dataBase.billDao()}
+
 
     private val billsNodLiveData = MediatorLiveData<MutableList<BaseNode>>()
     fun monthDataChange(): LiveData<MutableList<BaseNode>> = billsNodLiveData
@@ -48,7 +48,7 @@ class BillListViewModel : BaseViewModel() {
                 //日节点下子账单
                 val dayListNodes = mutableListOf<BaseNode>()
                 billDao.findByDay(dayIncome.time!!).forEach {
-                    it.images = imageDao.findImagesId(it.id)
+                    it.images = App.dataBase.imageDao().findImagesId(it.id)
                     dayListNodes.add(DayBillsNode(it))
                 }
                 var dayItemNode = DayIncomeNode(dayListNodes, incomeNode)

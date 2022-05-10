@@ -2,15 +2,15 @@ package com.rh.heji.data.db
 
 import androidx.room.Dao
 import androidx.room.Transaction
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 
 @Dao
 abstract class BillWithImageDao {
     @Transaction
     open suspend fun installBillAndDao(bill: Bill, images: MutableList<Image>): Long {
-        val count = AppDatabase.getInstance().billDao().install(bill)
+        val count = App.dataBase.billDao().install(bill)
         if (images.isNotEmpty()&&images.size > 0)
-            AppDatabase.getInstance().imageDao().install(images)
+            App.dataBase.imageDao().install(images)
         return count
     }
 }

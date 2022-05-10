@@ -6,11 +6,10 @@ import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
 import com.rh.heji.currentUser
-import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.network.HejiNetwork
-import com.rh.heji.security.Token
+import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.launchIO
@@ -24,7 +23,7 @@ class LoginViewModel : BaseViewModel() {
                 encodePassword(password)
             )
             var token = requestBody.data
-            Token.saveToken(token)
+            UserToken.saveToken(token)
             currentUser = JWTParse.getUser(token)
             ToastUtils.showLong(requestBody.data)
             loginLiveData.postValue(token)
@@ -39,7 +38,7 @@ class LoginViewModel : BaseViewModel() {
         return EncryptUtils.encryptSHA512ToString(String(EncryptUtils.encryptSHA512(password.toByteArray())))
     }
 
-    private fun auth(token: Token) {
+    private fun auth(token: UserToken) {
         //在服务验证一次拿用户，登陆仅仅返回Token
         //var user =HejiNetwork.getInstance().auth(token.trim().split("Bearer")[1]).apply {}
     }
@@ -48,7 +47,7 @@ class LoginViewModel : BaseViewModel() {
         val response = HejiNetwork.getInstance().bookPull()
         if (response.code == 0 && response.data.isNotEmpty()) {
             response.data.forEach {
-                AppDatabase.getInstance().bookDao().upsert(it)
+                App.dataBase.bookDao().upsert(it)
             }
         } else {
             createDefBook()
@@ -57,7 +56,7 @@ class LoginViewModel : BaseViewModel() {
 
     @Deprecated("server created book")
     private fun createDefBook() {
-        AppDatabase.getInstance().let {
+        App.dataBase.let {
             val bookDao = it.bookDao()
             val categoryDao = it.categoryDao()
             if (bookDao.count() == 0) {

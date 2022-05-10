@@ -11,7 +11,7 @@ import com.github.mikephil.charting.data.*
 import com.lxj.xpopup.XPopup
 import com.rh.heji.AppViewModel
 import com.rh.heji.R
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.BillType
 import com.rh.heji.data.DataBus
 import com.rh.heji.data.converters.MoneyConverters
@@ -211,7 +211,7 @@ class ReportFragment : BaseFragment() {
         binding.recyclerCategory.adapter = categoryTotalAdapter
         categoryTotalAdapter.setOnItemClickListener { adapter, view, position ->
             val categoryItem: PieEntry = adapter.getItem(position) as PieEntry
-            val bills = AppDatabase.getInstance().billDao().findByCategoryAndMonth(
+            val bills = App.dataBase.billDao().findByCategoryAndMonth(
                 categoryItem.label,
                 reportViewModel.yearMonth.toYearMonth(),
                 BillType.EXPENDITURE.type()
@@ -251,8 +251,8 @@ class ReportFragment : BaseFragment() {
         monthYearBillsAdapter.setOnItemClickListener { adapter, view, position ->
             val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
             val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
-            val bills = AppDatabase.getInstance().billDao().findByDay(yearMonthDay).filter {
-                it.images =AppDatabase.getInstance().imageDao().findImagesId(it.id)//c
+            val bills = App.dataBase.billDao().findByDay(yearMonthDay).filter {
+                it.images =App.dataBase.imageDao().findImagesId(it.id)//c
                 return@filter true
             }.toMutableList()
             val bottomListPop = BottomListPop(activity = mainActivity, data = bills)

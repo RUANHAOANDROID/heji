@@ -56,15 +56,15 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun billDelete(bill: Bill) {
         launchIO({
-            val status = AppDatabase.getInstance().billDao().status(bill.id)
+            val status = App.dataBase.billDao().status(bill.id)
             when (status) {
                 STATUS.NOT_SYNCED -> {//未同步直接删除
-                    AppDatabase.getInstance().billDao().deleteById(bill.id)
+                    App.dataBase.billDao().deleteById(bill.id)
                     DataBus.post(EventMessage(SyncEvent.DELETE, bill.copy()))
                     return@launchIO
                 }
                 else -> {
-                    AppDatabase.getInstance().billDao().preDelete(bill.id)
+                    App.dataBase.billDao().preDelete(bill.id)
                 }
             }
             DataBus.post(EventMessage(SyncEvent.DELETE, bill.copy()))

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.github.mikephil.charting.data.PieEntry
 import com.rh.heji.currentYearMonth
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.dto.Income
 import com.rh.heji.data.db.dto.IncomeTimeSurplus
@@ -78,7 +78,7 @@ class ReportViewModel : BaseViewModel() {
     private fun monthIncomeExpenditure() {
         launchIO({
             val monthIncomeExpenditureData =
-                AppDatabase.getInstance().billDao()
+                App.dataBase.billDao()
                     .sumMonthIncomeExpenditure(yearMonth.toYearMonth())
             incomeExpenditureLiveData.postValue(monthIncomeExpenditureData)
         }, {})
@@ -89,7 +89,7 @@ class ReportViewModel : BaseViewModel() {
         launchIO({
             val keyValue = KeyValue(
                 BillType.INCOME.type(),
-                AppDatabase.getInstance().billDao()
+                App.dataBase.billDao()
                     .sumByMonth(yearMonth.toYearMonth(), BillType.INCOME.type())
             )
             everyNodeIncomeExpenditureLiveData.postValue(keyValue)
@@ -100,7 +100,7 @@ class ReportViewModel : BaseViewModel() {
         launchIO({
             val data = KeyValue(
                 BillType.EXPENDITURE.type(),
-                AppDatabase.getInstance().billDao()
+                App.dataBase.billDao()
                     .sumByMonth(yearMonth.toYearMonth(), BillType.EXPENDITURE.type())
             )
             everyNodeIncomeExpenditureLiveData.postValue(data)
@@ -111,9 +111,9 @@ class ReportViewModel : BaseViewModel() {
     fun incomeAndExpenditure() {
         launchIO({
             val arrays = arrayListOf(
-                AppDatabase.getInstance().billDao()
+                App.dataBase.billDao()
                     .sumByMonth(yearMonth.toYearMonth(), BillType.EXPENDITURE.type()),
-                AppDatabase.getInstance().billDao()
+                App.dataBase.billDao()
                     .sumByMonth(yearMonth.toYearMonth(), BillType.INCOME.type())
             )
             val data = KeyValue(
@@ -132,7 +132,7 @@ class ReportViewModel : BaseViewModel() {
     private fun monthCategoryProportion() {
         launchIO({
             val list =
-                AppDatabase.getInstance().billDao().reportCategory(-1, yearMonth.toYearMonth())
+                App.dataBase.billDao().reportCategory(-1, yearMonth.toYearMonth())
                     .map {
                         return@map PieEntry(it.percentage, it.category, it.money)
                     }.toMutableList()
@@ -158,7 +158,7 @@ class ReportViewModel : BaseViewModel() {
      */
     private fun monthReportList() {
         launchIO({
-            var data = AppDatabase.getInstance().billDao()
+            var data = App.dataBase.billDao()
                 .listIncomeExpSurplusByMonth(yearMonth.toYearMonth())
             reportBillsLiveData.postValue(data)
         }, {})

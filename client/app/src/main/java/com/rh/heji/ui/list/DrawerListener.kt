@@ -1,12 +1,12 @@
-package com.rh.heji.ui.home
+package com.rh.heji.ui.list
 
 import android.util.DisplayMetrics
 import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
-import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.rh.heji.MainActivity
 
-class HomeDrawerListener(private val mainActivity: MainActivity,val offset:(left:Int,top:Int,right:Int,bottom:Int) -> Unit ) : DrawerListener {
+class DrawerListener(private val mainActivity: MainActivity, val offset:(left:Int, top:Int, right:Int, bottom:Int) -> Unit ) :
+    DrawerListener {
 
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
         val displayMetrics = DisplayMetrics()

@@ -26,15 +26,15 @@
         android:label="@string/income"
         tools:layout="@layout/fragment_addbill">
         <argument
-            android:name="bill"
-            app:argType="com.rh.heji.data.db.Bill" />
+            android:name="argAddBill"
+            app:argType="com.rh.heji.ui.bill.add.ArgAddBill" />
         <action
             android:id="@+id/action_nav_income_to_nav_category_tab"
             app:destination="@id/_category_tab" />
     </fragment>
     <fragment
         android:id="@+id/nav_category_manager"
-        android:name="com.rh.heji.ui.bill.category.CategoryManagerFragment"
+        android:name="com.rh.heji.ui.bill.category.manager.CategoryManagerFragment"
         android:label="@string/category_manager"
         tools:layout="@layout/fragment_category_manager">
         <argument
@@ -76,7 +76,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.rh.heji.ui.home.BillsHomeFragment"
+        android:name="com.rh.heji.ui.list.BillListFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_bills_home">
         <action

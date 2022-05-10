@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -23,19 +22,16 @@ import androidx.navigation.ui.NavigationUI
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
-import com.gyf.immersionbar.BarHide
-import com.gyf.immersionbar.ImmersionBar
 import com.lxj.xpopup.XPopup
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.security.Token
-import com.rh.heji.ui.home.HomeDrawerListener
+import com.rh.heji.ui.list.DrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.CrashInfo
 import com.rh.heji.utlis.MyUtils
 import com.rh.heji.utlis.checkPermissions
 import com.rh.heji.utlis.permitDiskReads
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import java.lang.ref.WeakReference
 
@@ -115,7 +111,7 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
         val navHostFragmentRootView: View = findViewById(R.id.nav_host_fragment)
-        drawerLayout.addDrawerListener(HomeDrawerListener(this) { left: Int, top: Int, right: Int, bottom: Int ->
+        drawerLayout.addDrawerListener(DrawerListener(this) { left: Int, top: Int, right: Int, bottom: Int ->
             navHostFragmentRootView.layout(left, top, right, bottom)
         })
         //Logout Menu

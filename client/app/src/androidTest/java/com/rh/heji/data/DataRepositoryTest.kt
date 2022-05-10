@@ -18,10 +18,6 @@ class DataRepositoryTest : TestCase() {
     var appContext = InstrumentationRegistry.getInstrumentation().targetContext
     @Test
     fun bookTest() {
-        GlobalScope.launch {
-            dataRepository.queryBook().collect {
-                Assert.assertNotNull(it)
-            }
-        }
+
     }
 }

@@ -18,7 +18,8 @@ import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
-import com.rh.heji.ui.bill.iteminfo.PopBillInfo
+import com.rh.heji.ui.bill.add.ArgAddBill
+import com.rh.heji.ui.bill.popup.PopupBillInfo
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
 
@@ -66,7 +67,14 @@ class CalendarNoteFragment : BaseFragment() {
             val day = binding.calendarView.selectedCalendar.day
             val calendar = java.util.Calendar.getInstance()
             calendar.set(year, month - 1, day)
-            val args = AddBillFragmentArgs.Builder(Bill(billTime = calendar.time)).build()//选择的日期
+            val args =
+                AddBillFragmentArgs.Builder(
+                    ArgAddBill(
+                        isModify = false,
+                        bill = Bill(billTime = calendar.time)
+                    )
+                )
+                    .build()//选择的日期
             Navigation.findNavController(view).navigate(R.id.nav_bill_add, args.toBundle())
         }
         binding.todayFab.setOnClickListener {
@@ -147,7 +155,11 @@ class CalendarNoteFragment : BaseFragment() {
      */
     private fun showBillItemPop(bill: Bill) {
         val popupView =
-            PopBillInfo(bill = bill, activity = mainActivity, delete = { notifyCalendar() }, update = {} )
+            PopupBillInfo(
+                bill = bill,
+                activity = mainActivity,
+                delete = { notifyCalendar() },
+                update = {})
         XPopup.Builder(requireContext()) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
             //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
             //.hasBlurBg(true)//模糊默认false

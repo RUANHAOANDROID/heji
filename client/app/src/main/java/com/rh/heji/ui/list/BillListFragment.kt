@@ -1,4 +1,4 @@
-package com.rh.heji.ui.home
+package com.rh.heji.ui.list
 
 import android.annotation.SuppressLint
 import android.view.View
@@ -27,14 +27,15 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
-import com.rh.heji.ui.bill.iteminfo.PopBillInfo
+import com.rh.heji.ui.bill.add.ArgAddBill
+import com.rh.heji.ui.bill.popup.PopupBillInfo
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
 import java.math.BigDecimal
 import java.util.*
 
 
-class BillsHomeFragment : BaseFragment() {
+class BillListFragment : BaseFragment() {
     companion object {
         // 两次点击间隔不能少于1000ms
         private const val FAST_CLICK_DELAY_TIME = 500
@@ -44,7 +45,7 @@ class BillsHomeFragment : BaseFragment() {
     private lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
     private lateinit var stubTotalView: ViewStub
 
-    val homeViewModel: BillsHomeViewModel by lazy { ViewModelProvider(mainActivity)[BillsHomeViewModel::class.java] }
+    private val homeViewModel: BillListViewModel by lazy { ViewModelProvider(mainActivity)[BillListViewModel::class.java] }
     private lateinit var adapter: NodeBillsAdapter
 
     //最后点击时间
@@ -59,10 +60,12 @@ class BillsHomeFragment : BaseFragment() {
             initBillsAdapter()
             binding.fab.setOnClickListener {
                 val bill = Bill(billTime = Date())
+                val bundle = AddBillFragmentArgs.Builder(
+                    ArgAddBill(false, bill)
+                ).build().toBundle()
+                bundle.putBoolean("isModify", true)
                 Navigation.findNavController(rootView).navigate(
-                    R.id.nav_bill_add, AddBillFragmentArgs.Builder(
-                        bill
-                    ).build().toBundle()
+                    R.id.nav_bill_add, bundle
                 )
             }
 
@@ -212,7 +215,8 @@ class BillsHomeFragment : BaseFragment() {
                     calendar[dayIncome.year, dayIncome.month - 1] = dayIncome.monthDay
 
                     val args =
-                        AddBillFragmentArgs.Builder(Bill(billTime = calendar.time)).build() //选择的日期
+                        AddBillFragmentArgs.Builder(ArgAddBill(false, Bill(billTime = calendar.time)))
+                            .build() //选择的日期
                     Navigation.findNavController(rootView)
                         .navigate(R.id.nav_bill_add, args.toBundle())
                 } else { //日详细列表ITEM
@@ -240,7 +244,7 @@ class BillsHomeFragment : BaseFragment() {
      * @param billTab
      */
     private fun showBillItemPop(billTab: Bill) {
-        val popupView = PopBillInfo(bill = billTab, activity = mainActivity, delete = {
+        val popupView = PopupBillInfo(bill = billTab, activity = mainActivity, delete = {
             notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
         }, update = {})
         XPopup.Builder(requireContext()) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局

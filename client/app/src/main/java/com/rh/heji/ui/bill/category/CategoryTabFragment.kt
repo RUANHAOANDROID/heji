@@ -24,6 +24,7 @@ class CategoryTabFragment : BaseFragment() {
     private val tabTitles = listOf(BillType.EXPENDITURE.text(), BillType.INCOME.text())
     lateinit var binding: FragmentCategoryTabBinding
     private var currentType: BillType = BillType.EXPENDITURE
+    private lateinit var mSelectedCategoryListener: ISelectedCategory
 
     val categoryFragments = listOf(
         CategoryFragment.newInstance(BillType.EXPENDITURE),
@@ -33,10 +34,12 @@ class CategoryTabFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val addBillFragment = parentFragment as AddBillFragment
+        val addBillFragment = (parentFragment as AddBillFragment)
         //从父Fragment拿到ViewModule
         categoryViewModel = addBillFragment.categoryViewModel
+        mSelectedCategoryListener = addBillFragment
     }
+
 
     override fun initView(view: View) {
         binding = FragmentCategoryTabBinding.bind(view)
@@ -65,13 +68,14 @@ class CategoryTabFragment : BaseFragment() {
             //TabLayout+ViewPager联动 2
             addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.vpContent))
             getTabAt(0)!!.select()
+            categoryFragments
+            //mSelectedCategoryListener.selected(categoryFragments[0].getSelectedCategory()!!)//默认支出
             addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     LogUtils.d("onTabSelected", tab.position)
                     val selectType = BillType.transform(tab.text.toString())
-                    categoryViewModel.type = selectType
                     currentType = selectType
-                    categoryFragments[tab.position].setCategory()
+                    mSelectedCategoryListener.selected(categoryFragments[tab.position].getSelectedCategory()!!)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -83,27 +87,25 @@ class CategoryTabFragment : BaseFragment() {
                 }
             })
         }
-
-        categoryViewModel.getCategoryType().observe(this) {
-            if (currentType == it) return@observe //已选中避免死循环
-
-            val selectTab = if (it.type() == 1) 1 else 0
-            val tabAt = binding.tab.getTabAt(selectTab)
-            tabAt?.let { tab ->
-                if (!tab.isSelected)
-                    tab.select()
-            }
-        }
     }
 
-    fun setCategory(category: String, type: Int) {
+    fun setIndex(index: Int = 0) {
+        binding.tab.getTabAt(0)!!.select()
+    }
+
+    /**
+     * 修改时预先选中类别
+     *
+     * @param category
+     * @param type
+     */
+    fun setSelectCategory(category: String, type: Int) {
         if (type == BillType.EXPENDITURE.type()) {
             binding.tab.getTabAt(0)?.select()
-            categoryFragments[0].setCategory(category)
+            categoryFragments[0].setSelectCategory(category)
         } else if (type == BillType.INCOME.type()) {
             binding.tab.getTabAt(1)?.select()
-            categoryFragments[1].setCategory(category)
+            categoryFragments[1].setSelectCategory(category)
         }
-
     }
 }

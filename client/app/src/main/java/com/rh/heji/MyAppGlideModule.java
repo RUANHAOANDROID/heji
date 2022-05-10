@@ -15,6 +15,7 @@ import com.rh.heji.utlis.http.basic.HttpRetrofit;
 import java.io.File;
 import java.io.InputStream;
 
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
 
 @GlideModule
@@ -26,7 +27,7 @@ public final class MyAppGlideModule extends AppGlideModule {
     public static void loadImageFile(Context context, String pathName, ImageView imgView) {
         // 加载本地图片
         File file = new File(pathName);
-        Glide.with(App.context).load(file).into(imgView);
+        Glide.with(App.Companion.getContext()).load(file).into(imgView);
     }
 
     public static void loadImageRes(Context context, int resource, ImageView imgView) {
@@ -56,7 +57,7 @@ public final class MyAppGlideModule extends AppGlideModule {
                 10,
                 1024 * 8,
                 "").newBuilder();
-        registry.append(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(builder.build()));
+        registry.append(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory((Call.Factory) builder.build()));
     }
 
 }

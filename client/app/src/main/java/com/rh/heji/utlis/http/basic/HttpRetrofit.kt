@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Date: 2019-10-15
- * Author: 锅得铁
+ * @author: 锅得铁
  * -Retrofit实例化
  */
 object HttpRetrofit {

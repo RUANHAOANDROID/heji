@@ -22,17 +22,18 @@ import java.util.Stack;
 
 /**
  * Date: 2020/11/19
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 public class KeyBoardView extends ConstraintLayout {
     public static final String TAG = "KeyBoardView";
     public static final int INPUT_MAXSIZE = 12;//输入值最大限制
     String defValue = "0";
-    private Context context;
+    private final Context context;
     LayoutKeyboardBinding binding;
     private Stack<String> stack = new Stack<>();
     private OnKeyboardListener keyboardListener;
+
     public void setKeyboardListener(OnKeyboardListener keyboardListener) {
         this.keyboardListener = keyboardListener;
     }
@@ -48,6 +49,11 @@ public class KeyBoardView extends ConstraintLayout {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_keyboard, this);
         binding = LayoutKeyboardBinding.bind(view);
         initKeyboardListener(view);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     private void initKeyboardListener(View view) {
@@ -95,7 +101,7 @@ public class KeyBoardView extends ConstraintLayout {
             delete();
         });
 
-        binding.kSaveAgain.setOnClickListener(new ClickUtils.OnDebouncingClickListener(500){
+        binding.kSaveAgain.setOnClickListener(new ClickUtils.OnDebouncingClickListener(500) {
             @Override
             public void onDebouncingClick(View v) {
                 if (keyboardListener != null)
@@ -116,10 +122,9 @@ public class KeyBoardView extends ConstraintLayout {
     }
 
 
-
     public void setType(BillType billType) {
-        int color =(billType == BillType.EXPENDITURE )?R.color.expenditure : R.color.income;
-        int drawable =(billType == BillType.EXPENDITURE )?R.drawable.keyboard_save_bg_red : R.drawable.keyboard_save_bg_green;
+        int color = (billType == BillType.EXPENDITURE) ? R.color.expenditure : R.color.income;
+        int drawable = (billType == BillType.EXPENDITURE) ? R.drawable.keyboard_save_bg_red : R.drawable.keyboard_save_bg_green;
         binding.kSave.setBackground(context.getDrawable(drawable));
         binding.kSave.setTextColor(context.getColor(R.color.white));
         invalidate();
@@ -287,14 +292,14 @@ public class KeyBoardView extends ConstraintLayout {
         BigDecimal request = null;
         if (value.contains("+")) {
             String v1 = value.substring(0, value.indexOf("+"));
-            String v2 = value.substring(value.indexOf("+") + 1, value.length());
+            String v2 = value.substring(value.indexOf("+") + 1);
             BigDecimal f1 = new BigDecimal(v1);
             BigDecimal f2 = new BigDecimal(v2);
             request = f1.add(f2);
         }
         if (value.contains("-")) {
             String v1 = value.substring(0, value.indexOf("-"));
-            String v2 = value.substring(value.indexOf("-") + 1, value.length());
+            String v2 = value.substring(value.indexOf("-") + 1);
             BigDecimal f1 = new BigDecimal(v1);
             BigDecimal f2 = new BigDecimal(v2);
             request = f1.subtract(f2);

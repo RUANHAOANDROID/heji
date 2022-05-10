@@ -4,22 +4,24 @@ import android.content.Context
 import android.text.TextUtils
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
-import com.rh.heji.network.HejiNetwork
-import com.tencent.mmkv.MMKV
+import com.blankj.utilcode.util.LogUtils
+import com.rh.heji.App
+import com.rh.heji.DataStoreManager
+import com.rh.heji.PreferencesKey
+import com.rh.heji.dataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import java.io.*
 import java.nio.charset.StandardCharsets
 
 object Token {
-    private val mmkv: MMKV = MMKV.defaultMMKV()!!
+
 
     private const val TOKEN_FILE_NAME = "TOKEN"
 
-    fun decodeToken(): String {
-        var jwtTokenString = ""
-        mmkv.decodeString(TOKEN_FILE_NAME, "")?.let {
-            jwtTokenString = String(EncodeUtils.base64Decode(it))
-        }
-        return jwtTokenString
+    suspend fun getToken(): Flow<String?> {
+        return DataStoreManager.getToken()
     }
 
     @Deprecated("使用mmkv实现", replaceWith = ReplaceWith("decodeToken()"))
@@ -74,12 +76,12 @@ object Token {
         }
     }
 
-    fun encodeToken(jwtToken: String?) {
-        mmkv.encode(TOKEN_FILE_NAME, EncodeUtils.base64Encode(jwtToken))
+    suspend fun saveToken(jwtToken: String) {
+        DataStoreManager.saveToken(jwtToken)
     }
 
-    fun delete(context: Context) {
-        mmkv.removeValueForKey(TOKEN_FILE_NAME)
+    suspend fun deleteToken() {
+        return DataStoreManager.deleteToken()
     }
 
     private fun deleteTokenFile(context: Context) {
@@ -88,9 +90,4 @@ object Token {
         val tokenFile = File(file, fileName)
         FileUtils.delete(tokenFile)
     }
-
-    fun isLogin(): Boolean {
-        return !TextUtils.isEmpty(decodeToken())
-    }
-
 }

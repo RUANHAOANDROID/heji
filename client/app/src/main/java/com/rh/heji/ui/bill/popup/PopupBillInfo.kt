@@ -1,10 +1,9 @@
-package com.rh.heji.ui.bill.iteminfo
+package com.rh.heji.ui.bill.popup
 
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
@@ -19,16 +18,17 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.PopLayoutBilliInfoBinding
 import com.rh.heji.ui.bill.add.AddBillFragmentArgs
+import com.rh.heji.ui.bill.add.ArgAddBill
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
  * Date: 2020/9/20
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
-class PopBillInfo(
+class PopupBillInfo(
     val activity: MainActivity,
     val bill: Bill,
     val delete: (Bill) -> Unit, val update: (Bill) -> Unit
@@ -53,7 +53,7 @@ class PopBillInfo(
         }
         binding.tvUpdate.setOnClickListener {
             update(bill)
-            val bundle = AddBillFragmentArgs.Builder(bill).build().toBundle()
+            val bundle = AddBillFragmentArgs.Builder(ArgAddBill(isModify = true,bill)).build().toBundle()
             activity.navController.navigate(R.id.nav_bill_add, bundle)
             dismiss()
         }

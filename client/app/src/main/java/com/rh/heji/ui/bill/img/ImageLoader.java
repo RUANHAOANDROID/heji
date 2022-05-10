@@ -31,7 +31,7 @@ import java.io.File;
 
 /**
  * Date: 2020/9/20
- * Author: 锅得铁
+ * @author: 锅得铁
  * https://github.com/li-xiaojun/XPopup/blob/3175fd0701/library/src/main/java/com/lxj/xpopup/util/SmartGlideImageLoader.java
  */
 public class ImageLoader implements XPopupImageLoader {

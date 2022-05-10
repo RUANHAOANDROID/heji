@@ -1,13 +1,13 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
-import com.rh.heji.currentBook
+import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.data.db.mongo.ObjectId
 import java.util.*
 
 /**
  * Date: 2020/8/28
- * Author: 锅得铁
+ * @author: 锅得铁
  * #收入/支出 类型标签
  */
 @Entity(tableName = "category")
@@ -15,20 +15,24 @@ data class Category(
     @PrimaryKey
     @ColumnInfo(name = "_id")
     var id: String = ObjectId().toHexString(),
-
     /**
      * 账本ID
      */
     @JvmField
     @ColumnInfo(name = "book_id")
-    var bookId: String,
+    var bookId: String = currentBook!!.id,
 
     @ColumnInfo(name = "category")
-    var category: String= currentBook.id,
-
-    ) {
+    var category: String = "其他"
+) {
     @Ignore
-    constructor(id: String=ObjectId().toHexString(),bookId: String= "", category: String, level: Int, type: Int) : this(id,bookId, category) {
+    constructor(
+        id: String = ObjectId().toHexString(),
+        bookId: String = currentBook!!.id,
+        category: String,
+        level: Int,
+        type: Int
+    ) : this(id, bookId, category) {
         this.level = level
         this.type = type
     }

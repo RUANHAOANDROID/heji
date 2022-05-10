@@ -12,7 +12,7 @@ import com.rh.heji.data.db.*
 
 /**
  * Date: 2020/8/28
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 @Database(
@@ -27,7 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun dealerDao(): DealerDao
     abstract fun errorLogDao(): ErrorLogDao
-    abstract fun billImageDao(): BillWithImageDao;
+    abstract fun billImageDao(): BillWithImageDao
 
     override fun clearAllTables() {}
 

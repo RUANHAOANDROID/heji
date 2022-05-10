@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull
 
 /**
  * Date: 2021/3/2
- * Author: 锅得铁
+ * @author: 锅得铁
  * #
  */
 @Entity(tableName = "error_log")
@@ -34,5 +34,5 @@ data class ErrorLog(
     var networkType: String? = null
     var crashContent: String? = null
 
-    constructor() : this(id = ObjectId().toHexString()){}
+    constructor() : this(id = ObjectId().toHexString())
 }

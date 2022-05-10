@@ -9,11 +9,11 @@ import com.lxj.xpopup.widget.VerticalRecyclerView
 import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
-import com.rh.heji.ui.bill.iteminfo.PopBillInfo
+import com.rh.heji.ui.bill.popup.PopupBillInfo
 
 /**
  *Date: 2021/6/16
- *Author: 锅得铁
+ *@author: 锅得铁
  *#
  */
 class BottomListPop(
@@ -44,7 +44,7 @@ class BottomListPop(
         )
         adapter.setOnItemClickListener { adapter, view, position ->
             val item = adapter.getItem(position) as Bill
-            val billInfoPop = PopBillInfo(activity = activity, bill = item, delete = {
+            val billInfoPop = PopupBillInfo(activity = activity, bill = item, delete = {
 
                 adapter.removeAt(position)
                 if (adapter.data.size <= 0) {

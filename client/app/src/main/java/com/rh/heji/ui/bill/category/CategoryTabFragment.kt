@@ -12,26 +12,34 @@ import com.rh.heji.databinding.FragmentCategoryTabBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.FragmentViewPagerAdapter
 import com.rh.heji.ui.bill.add.AddBillFragment
-import com.rh.heji.ui.bill.category.CategoryFragment.Companion.newInstance
+
 
 /**
+ * 标签 TAB 包含了收入和支出
  * Date: 2020/10/11
- * Author: 锅得铁
- * #标签TAB
+ * @author: 锅得铁
+ *
  */
 class CategoryTabFragment : BaseFragment() {
-    private val tabTitles = arrayOf(BillType.EXPENDITURE.text(), BillType.INCOME.text())
+    private val tabTitles = listOf(BillType.EXPENDITURE.text(), BillType.INCOME.text())
     lateinit var binding: FragmentCategoryTabBinding
-    val fragments = arrayOf(
-        newInstance(BillType.EXPENDITURE),
-        newInstance(BillType.INCOME)
+    private var currentType: BillType = BillType.EXPENDITURE
+    private lateinit var mSelectedCategoryListener: ISelectedCategory
+
+    val categoryFragments = listOf(
+        CategoryFragment.newInstance(BillType.EXPENDITURE),
+        CategoryFragment.newInstance(BillType.INCOME)
     )
-    lateinit var categoryViewModule: CategoryViewModule
+    lateinit var categoryViewModel: CategoryViewModel
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val addBillFragment = parentFragment as AddBillFragment
-        categoryViewModule = addBillFragment.categoryViewModule
+        val addBillFragment = (parentFragment as AddBillFragment)
+        //从父Fragment拿到ViewModule
+        categoryViewModel = addBillFragment.categoryViewModel
+        mSelectedCategoryListener = addBillFragment
     }
+
 
     override fun initView(view: View) {
         binding = FragmentCategoryTabBinding.bind(view)
@@ -46,47 +54,58 @@ class CategoryTabFragment : BaseFragment() {
 
         val pagerAdapter = FragmentViewPagerAdapter(
             childFragmentManager,
-            fragments.toList(),
-            tabTitles.toList()
+            categoryFragments,
+            tabTitles
         )
-        binding.vpContent.adapter = pagerAdapter
-        binding.tab.setupWithViewPager(binding.vpContent)
 
-        //TabLayout+ViewPager联动
-        binding.vpContent.addOnPageChangeListener(TabLayoutOnPageChangeListener(binding.tab))
-        binding.tab.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.vpContent))
-        binding.tab.getTabAt(0)!!.select()
-        binding.tab.addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                LogUtils.d("onTabSelected", tab.position)
-                categoryViewModule.type = BillType.transform(tab.position)
-                fragments[tab.position].setCategory()
-            }
+        binding.vpContent.apply {
+            adapter = pagerAdapter
+            //TabLayout+ViewPager联动 1
+            addOnPageChangeListener(TabLayoutOnPageChangeListener(binding.tab))
+        }
+        binding.tab.apply {
+            setupWithViewPager(binding.vpContent)
+            //TabLayout+ViewPager联动 2
+            addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.vpContent))
+            getTabAt(0)!!.select()
+            categoryFragments
+            //mSelectedCategoryListener.selected(categoryFragments[0].getSelectedCategory()!!)//默认支出
+            addOnTabSelectedListener(object : OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    LogUtils.d("onTabSelected", tab.position)
+                    val selectType = BillType.transform(tab.text.toString())
+                    currentType = selectType
+                    mSelectedCategoryListener.selected(categoryFragments[tab.position].getSelectedCategory()!!)
+                }
 
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-                LogUtils.d("onTabUnselected", tab.position)
-            }
+                override fun onTabUnselected(tab: TabLayout.Tab) {
+                    LogUtils.d("onTabUnselected", tab.position)
+                }
 
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                LogUtils.d("onTabReselected", tab.position)
-            }
-        })
-        categoryViewModule.getCategoryType().observe(this, {
-            binding.tab.getTabAt(if (it.type() == 1) 1 else 0)?.let { tab ->
-                if (!tab.isSelected)
-                    tab.select()
-            }
-        })
+                override fun onTabReselected(tab: TabLayout.Tab) {
+                    LogUtils.d("onTabReselected", tab.position)
+                }
+            })
+        }
     }
 
-    fun setCategory(category: String, type: Int) {
+    fun setIndex(index: Int = 0) {
+        binding.tab.getTabAt(0)!!.select()
+    }
+
+    /**
+     * 修改时预先选中类别
+     *
+     * @param category
+     * @param type
+     */
+    fun setSelectCategory(category: String, type: Int) {
         if (type == BillType.EXPENDITURE.type()) {
             binding.tab.getTabAt(0)?.select()
-            fragments[0].setCategory(category)
+            categoryFragments[0].setSelectCategory(category)
         } else if (type == BillType.INCOME.type()) {
             binding.tab.getTabAt(1)?.select()
-            fragments[1].setCategory(category)
+            categoryFragments[1].setSelectCategory(category)
         }
-
     }
 }

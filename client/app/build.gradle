@@ -5,17 +5,11 @@ apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'kotlin-parcelize'
 android {
     signingConfigs {
-        debug {
+        single {
             storeFile file('..//heji.keystore')
             storePassword 'password'
             keyPassword 'password'
             keyAlias 'heji'
-        }
-        release {
-            storeFile file('..//heji.keystore')
-            storePassword 'password'
-            keyAlias 'heji'
-            keyPassword 'password'
         }
     }
     compileSdkVersion project.compileSdkVersion
@@ -41,13 +35,13 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.single
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.single
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -102,8 +96,8 @@ dependencies {
     implementation "androidx.annotation:annotation:$rootProject.annotation"
     implementation "androidx.recyclerview:recyclerview:$recyclerview"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+    implementation 'androidx.datastore:datastore-core:1.0.0'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
@@ -135,8 +129,10 @@ dependencies {
     // Kotlin
     implementation('androidx.core:core-ktx:1.7.0')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    //Lifecycles only (without ViewModel or LiveData)
+    //Lifecycles livedata  viewmodel
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     //---------room-------------
     implementation "androidx.room:room-runtime:$room_version"
     // optional - Kotlin Extensions and Coroutines support for Room
@@ -158,8 +154,8 @@ dependencies {
     implementation 'top.zibin:Luban:1.1.8'
     //日历
     implementation 'com.haibin:calendarview:3.7.1'
-    // MMKV  storage
-    implementation 'com.tencent:mmkv-static:1.2.11'
+    // preferences  datastore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
     //图表统计
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     //---Toolbaer 工具
@@ -169,7 +165,7 @@ dependencies {
     // kotlin扩展（可选）
     implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
     implementation "androidx.startup:startup-runtime:1.1.0"
-    //implementation("com.squareup.moshi:moshi:1.12.0")
+
     implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
 }

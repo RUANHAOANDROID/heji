@@ -9,20 +9,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemClickListener
 import com.rh.heji.R
-import com.rh.heji.currentBook
+import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryContentBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.add.AddBillFragment
 import com.rh.heji.ui.bill.category.adapter.CategoryAdapter
+import com.rh.heji.ui.bill.category.manager.CategoryManagerFragmentArgs
 import java.util.*
 import java.util.function.Consumer
-import java.util.stream.Collectors
 
 /**
  * Date: 2020/10/11
- * Author: 锅得铁
+ * @author: 锅得铁
  * # 收入/支出标签 复用该Fragment
  */
 class CategoryFragment : BaseFragment() {
@@ -32,14 +32,14 @@ class CategoryFragment : BaseFragment() {
     //类型 支出 或 收入
     lateinit var type: BillType
 
-    private lateinit var categoryViewModule: CategoryViewModule
+    private lateinit var categoryViewModule: CategoryViewModel
 
     private var labelObserver = Observer { categories: MutableList<Category> ->
-        val selectCategory = categoryViewModule.selectCategory
-        if (null != selectCategory) {
+
+        if (null != getSelectedCategory()) {
             categories.stream().forEach { category: Category ->
                 val isSelected =
-                    category.category == selectCategory.category && category.type == selectCategory.type
+                    category.category == getSelectedCategory()!!.category && category.type == getSelectedCategory()!!.type
                 if (isSelected) {
                     category.isSelected = true
                 }
@@ -53,7 +53,7 @@ class CategoryFragment : BaseFragment() {
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        categoryViewModule = (parentFragment!!.parentFragment as AddBillFragment).categoryViewModule
+        categoryViewModule = (parentFragment!!.parentFragment as AddBillFragment).categoryViewModel
         arguments?.let {
             type = CategoryFragmentArgs.fromBundle(it).type
         }
@@ -68,7 +68,7 @@ class CategoryFragment : BaseFragment() {
     private fun registerLabelObserver() {
         categoryViewModule.let {
             var categoryLiveData =
-                if (type == BillType.INCOME) it.incomeCategory else it.expenditureCategory
+                if (type == BillType.INCOME) it.getIncomeCategory() else it.getExpenditureCategory()
             categoryLiveData.observe(this, labelObserver)
             categoryLiveData.value?.let { data ->
                 if (data.size > 0) labelAdapter.setNewInstance(data)
@@ -94,7 +94,6 @@ class CategoryFragment : BaseFragment() {
                 }
             })
             labelAdapter.notifyDataSetChanged()
-            categoryViewModule.selectCategory = category
         }
 
     override fun layoutId(): Int {
@@ -121,9 +120,6 @@ class CategoryFragment : BaseFragment() {
                 if (firstItem.category != "管理") {
                     firstItem.isSelected = true
                     labelAdapter.notifyDataSetChanged()
-                    if (!isHidden && type == categoryViewModule.type) {
-                        categoryViewModule.selectCategory = firstItem
-                    }
                 }
             }
         }
@@ -142,18 +138,34 @@ class CategoryFragment : BaseFragment() {
     }
 
     private fun addSettingItem(labelAdapter: CategoryAdapter) {
-        val category = Category(category = CategoryAdapter.SETTING, bookId = currentBook.id,level = 0, type = type.type())
+        val category = Category(
+            category = CategoryAdapter.SETTING,
+            bookId = currentBook!!.id,
+            level = 0,
+            type = type.type()
+        )
         labelAdapter.addData(labelAdapter.itemCount, category)
     }
 
-    fun setCategory(category: String? = null) {
+    fun getSelectedCategory(): Category? {
+        var selectCategory: Category?
+        //选中的类别
+        val selectItem =
+            labelAdapter.data.filter { category: Category -> category.isSelected }.toList()
+        //未选中默认第一个ITEM
+        selectCategory = if (selectItem.isEmpty()) labelAdapter.data.first() else selectItem.first()
+        return selectCategory.apply { this.type = type }
+    }
+
+    fun setSelectCategory(category: String? = null) {
         if (!this::labelAdapter.isInitialized || labelAdapter == null) return
 
         var selectCategory: Category?
-        val selects =
+        //选中的类别
+        val selectItem =
             labelAdapter.data.filter { category: Category -> category.isSelected }.toList()
-        selectCategory = if (selects.isEmpty()) labelAdapter.data.first() else selects.first()
-        categoryViewModule.selectCategory = selectCategory
+        //未选中默认第一个ITEM
+        selectCategory = if (selectItem.isEmpty()) labelAdapter.data.first() else selectItem.first()
         if (!category.isNullOrEmpty()) {
             binding.categoryRecycler.post {
                 labelAdapter.setSelectCategory(category)

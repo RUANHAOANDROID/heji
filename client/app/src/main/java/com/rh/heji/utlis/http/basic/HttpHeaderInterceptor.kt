@@ -6,6 +6,8 @@ import com.rh.heji.App
 import com.rh.heji.AppViewModel
 import com.rh.heji.Event
 import com.rh.heji.security.Token
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -13,9 +15,9 @@ import okhttp3.Response
 /**
  * Header 拦截器
  */
-class HttpHeaderInterceptor() : Interceptor {
+class HttpHeaderInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        var bearerToken: String = Token.decodeToken()
+        var bearerToken: String = runBlocking { Token.getToken().first() ?: "" }
         Log.d("OKHTTP", "HttpHeaderInterceptor $bearerToken")
         if (TextUtils.isEmpty(bearerToken)) {
             Log.d("OKHTTP", "HttpHeaderInterceptor not login")
@@ -24,9 +26,9 @@ class HttpHeaderInterceptor() : Interceptor {
             //.header("Content-Type", "application/json")
             .addHeader("Authorization", bearerToken)
             .build()
-        if (!request.url.encodedPath.contains("login") && bearerToken.isNullOrEmpty()){//非登录请求，且Token为空
-            if (!request.url.encodedPath.contains("register")){
-                Log.d("OKHTTP","HttpHeaderInterceptor register")
+        if (!request.url.encodedPath.contains("login") && bearerToken.isNullOrEmpty()) {//非登录请求，且Token为空
+            if (!request.url.encodedPath.contains("register")) {
+                Log.d("OKHTTP", "HttpHeaderInterceptor register")
                 sendLoginBroadcast()
             }
         }

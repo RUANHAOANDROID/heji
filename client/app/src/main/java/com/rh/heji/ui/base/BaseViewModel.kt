@@ -8,6 +8,4 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 
-open class BaseViewModel : ViewModel() {
-
-}
+open class BaseViewModel : ViewModel()

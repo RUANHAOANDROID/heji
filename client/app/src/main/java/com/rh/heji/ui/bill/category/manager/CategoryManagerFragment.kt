@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.category
+package com.rh.heji.ui.bill.category.manager
 
 import android.view.View
 import androidx.lifecycle.Observer
@@ -12,18 +12,24 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryManagerBinding
 import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.ui.bill.category.CategoryViewModel
 import com.rh.heji.ui.bill.category.adapter.CategoryManagerAdapter
 
 /**
+ * 类别标签管理
  * Date: 2020/10/10
- * Author: 锅得铁
- * # 类别标签管理
+ * @author: 锅得铁
+ *
  */
-class CategoryManagerFragment : BaseFragment(){
+class CategoryManagerFragment : BaseFragment() {
     lateinit var binding: FragmentCategoryManagerBinding
     private lateinit var adapter: CategoryManagerAdapter
-    private val categoryViewModule: CategoryViewModule by lazy { ViewModelProvider(this).get(CategoryViewModule::class.java) }
-    private var args: CategoryManagerFragmentArgs? =null
+    private val categoryViewModule: CategoryViewModel by lazy {
+        ViewModelProvider(this).get(
+            CategoryViewModel::class.java
+        )
+    }
+    private var args: CategoryManagerFragmentArgs? = null
 
     override fun onDetach() {
         super.onDetach()
@@ -55,12 +61,13 @@ class CategoryManagerFragment : BaseFragment(){
                 }
             }
         }
+        val isIncomeType = args!!.ieType == BillType.INCOME.type()
+        if (isIncomeType)
+            categoryViewModule.getIncomeCategory()
+        else
+            categoryViewModule.getExpenditureCategory()
+                .observe(viewLifecycleOwner, categoryObserver)
 
-        if (args!!.ieType == BillType.INCOME.type()) categoryViewModule.incomeCategory.observe(
-            viewLifecycleOwner, categoryObserver
-        ) else categoryViewModule.expenditureCategory.observe(
-            viewLifecycleOwner, categoryObserver
-        )
         binding.categoryRecycler.adapter = adapter
     }
 

@@ -49,7 +49,7 @@ class LoginFragment : Fragment() {
             viewModel.login(username, password)
                 .observe(this.viewLifecycleOwner) { token ->
                     findNavController().popBackStack()
-                    (activity as StartupActivity).startMainActivity()
+                    (activity as LoginActivity).startMainActivity()
                     AppViewModel.get().asyncData()
                     LogUtils.d(token)
                 }

@@ -72,19 +72,18 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val jwtTokenString = UserToken.getToken().first()
             if (jwtTokenString.isNullOrEmpty()) {
-                ToastUtils.showLong("用户凭证已失效，请重新登录")
-                navController.navigate(R.id.nav_login)
+                toLogin()
             } else {
                 currentUser = JWTParse.getUser(jwtTokenString)
                 setDrawerLayout(currentUser)
                 AppViewModel.get().asyncData()
             }
         }
+        //观察拦截器发出的登录消息
         AppViewModel.get().loginEvent.observe(this) {
             navController.currentBackStackEntry?.let {
                 if (it.destination.label != resources.getString(R.string.login)) {
-                    ToastUtils.showLong("用户凭证已失效，请重新登录")
-                    navController.navigate(R.id.nav_login)
+                    toLogin()
                 }
             }
         }
@@ -299,4 +298,8 @@ class MainActivity : AppCompatActivity() {
         bookItem.title = spannableString
     }
 
+    fun toLogin() {
+        ToastUtils.showLong("用户凭证已失效，请重新登录")
+        LoginActivity.start(this)
+    }
 }

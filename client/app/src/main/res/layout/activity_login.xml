@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".StartupActivity">
 
+    <include layout="@layout/app_toolbar"></include>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_user_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"

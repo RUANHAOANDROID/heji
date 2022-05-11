@@ -53,28 +53,6 @@
         android:label="@string/export"
         tools:layout="@layout/fragment_export"></fragment>
     <fragment
-        android:id="@+id/nav_register"
-        android:name="com.rh.heji.ui.user.register.RegisterFragment"
-        android:label="@string/register"
-        tools:layout="@layout/fragment_register">
-        <action
-            android:id="@+id/action_nav_register_to_nav_home2"
-            app:destination="@id/nav_home" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_login"
-        android:name="com.rh.heji.ui.user.login.LoginFragment"
-        android:label="@string/login"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_nav_login_to_nav_register4"
-            app:destination="@id/nav_register" />
-        <action
-            android:id="@+id/action_nav_login_to_nav_home2"
-            app:destination="@id/nav_home" />
-    </fragment>
-
-    <fragment
         android:id="@+id/nav_home"
         android:name="com.rh.heji.ui.list.BillListFragment"
         android:label="@string/menu_home"
@@ -165,7 +143,7 @@
         android:id="@+id/nav_book_add"
         android:name="com.rh.heji.ui.book.BookAddFragment"
         android:label="add_book_fragment"
-        tools:layout="@layout/fragment_book_add" >
+        tools:layout="@layout/fragment_book_add">
         <action
             android:id="@+id/action_nav_book_add_to_nav_book_setting"
             app:destination="@id/nav_book_setting" />
@@ -173,11 +151,11 @@
     <fragment
         android:id="@+id/nav_book_setting"
         android:name="com.rh.heji.ui.book.BookSettingFragment"
-        tools:layout="@layout/fragment_book_setting"
-        android:label="BookSettingFragment">
-        <argument android:name="book"
-            app:argType="com.rh.heji.data.db.Book"
-            />
+        android:label="BookSettingFragment"
+        tools:layout="@layout/fragment_book_setting">
+        <argument
+            android:name="book"
+            app:argType="com.rh.heji.data.db.Book" />
     </fragment>
 
 

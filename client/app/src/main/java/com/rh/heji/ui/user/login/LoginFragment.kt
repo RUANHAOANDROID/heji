@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppViewModel
+import com.rh.heji.LoginActivity
 import com.rh.heji.R
 import com.rh.heji.StartupActivity
 import com.rh.heji.databinding.FragmentLoginBinding
@@ -23,6 +25,7 @@ class LoginFragment : Fragment() {
         super.onAttach(context)
 
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,7 +41,6 @@ class LoginFragment : Fragment() {
 
         binding = FragmentLoginBinding.bind(rootView)
         binding.tvRegister.setOnClickListener {
-            //findNavController().popBackStack()
             findNavController().navigate(R.id.nav_register)
         }
         binding.btnLogin.setOnClickListener {
@@ -47,7 +49,6 @@ class LoginFragment : Fragment() {
             viewModel.login(username, password)
                 .observe(this.viewLifecycleOwner) { token ->
                     findNavController().popBackStack()
-//                    findNavController().navigate(R.id.nav_home)
                     (activity as StartupActivity).startMainActivity()
                     AppViewModel.get().asyncData()
                     LogUtils.d(token)
@@ -57,6 +58,10 @@ class LoginFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        with(activity as LoginActivity) {
+            findViewById<Toolbar>(R.id.toolbar).title = getString(R.string.login)
+            this
+        }
         arguments?.let {
             var user: RegisterUser = it.getSerializable("user") as RegisterUser
             binding.editUser.setText(user.tel)

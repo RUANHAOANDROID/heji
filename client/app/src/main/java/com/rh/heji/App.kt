@@ -3,6 +3,7 @@ package com.rh.heji
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Book
 import com.rh.heji.ui.user.JWTParse
@@ -24,6 +25,26 @@ class App : Application() {
         super.onCreate()
         context = this
         init()
+    }
+
+    private fun init() {
+        runBlocking {
+            if (DataStoreManager.startupCount() == 1) {
+                //第一次启动
+            } else {
+                //非首次启动
+            }
+        }
+        val lastUserToken = runBlocking { UserToken.getToken().first() }
+        if (lastUserToken != null) {
+            user = JWTParse.getUser(lastUserToken)
+            setDataBase(user.name)
+        }
+        val lastBook = runBlocking { DataStoreManager.getCurrentBook().first() }
+        if (lastBook != null) {
+            currentBook = lastBook
+        }
+
     }
 
     companion object {
@@ -49,6 +70,10 @@ class App : Application() {
             user = currentUser
         }
 
+        fun autoBaseData(user: JWTParse.User) {
+
+        }
+
         /**
          * 数据库在登录后初始化不同用户创建不同数据库（username_data）
          */
@@ -60,25 +85,21 @@ class App : Application() {
         fun setCurrentBook(book: Book) {
             currentBook = book
             runBlocking { DataStoreManager.saveCurrentBook(book) }
+            LogUtils.d(currentBook)
         }
 
         @JvmName("switchDataBase")
         fun setDataBase(userName: String) {
+            //选择数据库时关闭上一个数据库连接并重建
+            if (this::dataBase.isInitialized)
+                dataBase.reset()
             dataBase = AppDatabase.getInstance(userName)
         }
-    }
 
+        fun reset() {
 
-    private fun init() {
-
-        val lastUserToken = runBlocking { UserToken.getToken().first() }
-        if (lastUserToken != null) {
-            user = JWTParse.getUser(lastUserToken)
-        }
-        val lastBook = runBlocking { DataStoreManager.getCurrentBook().first() }
-        if (lastBook != null) {
-            currentBook = lastBook
         }
     }
+
 
 }

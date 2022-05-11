@@ -16,6 +16,7 @@ import com.rh.heji.ui.user.login.LoginFragment
  * @author 锅得铁
  * @date 2022/5/10
  * @since v1.0
+ * @see LoginFragment
  */
 class LoginActivity : AppCompatActivity() {
     lateinit var loginFragment: LoginFragment
@@ -33,9 +34,9 @@ class LoginActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         findViewById<FragmentContainerView>(R.id.nav_user_host_fragment)
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
-                finish()
+                //finish()
             }
 
         })
@@ -58,6 +59,5 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initUserBaseData() {
         App.setDataBase(App.user.name)
-        App.setCurrentBook(Book(name = "个人账本"))
     }
 }

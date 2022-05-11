@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                 toLogin()
             } else {
                 currentUser = JWTParse.getUser(jwtTokenString)
-                setDrawerLayout(currentUser)
+                setDrawerLayout(App.user)
                 AppViewModel.get().asyncData()
             }
         }
@@ -127,6 +127,7 @@ class MainActivity : AppCompatActivity() {
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
                 runBlocking(Dispatchers.IO) { UserToken.deleteToken() }
                 finish()
+                App.reset()
             }.show()
             false
         }
@@ -144,7 +145,7 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawers()
         }
 
-        setCurrentBook("个人账本")
+        setCurrentBook(App.currentBook.name)
     }
 
     private fun navigationDrawerController() {
@@ -301,5 +302,6 @@ class MainActivity : AppCompatActivity() {
     fun toLogin() {
         ToastUtils.showLong("用户凭证已失效，请重新登录")
         LoginActivity.start(this)
+        finish()
     }
 }

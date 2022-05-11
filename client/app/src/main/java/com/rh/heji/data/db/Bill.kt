@@ -35,7 +35,7 @@ data class Bill(
     var id: String = ObjectId().toHexString(),
 
     @ColumnInfo(name = COLUMN_BOOK_ID, index = true)
-    var bookId: String = App.currentBook!!.id,
+    var bookId: String = App.currentBook.id,
     /**
      * 钱
      */

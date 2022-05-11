@@ -11,8 +11,6 @@ import com.rh.heji.utlis.launch
 import com.rh.heji.utlis.launchIO
 import java.math.BigDecimal
 import java.util.*
-import java.util.function.Consumer
-import java.util.stream.Collectors
 
 /**
  * 账单添加页ViewModel 不要在其他页面应用该ViewModel
@@ -56,7 +54,7 @@ class AddBillViewModel : BaseViewModel() {
     }
 
     fun setDealer(dealer: String) {
-        bill.dealer =dealer
+        bill.dealer = dealer
         //billLiveData.postValue(bill)
     }
 
@@ -73,7 +71,8 @@ class AddBillViewModel : BaseViewModel() {
     private fun resetBill() {
         billLiveData.postValue(bill)
         bill = Bill().apply {
-            bookId = currentBook!!.id
+            id =ObjectId().toHexString()
+            bookId = currentBook.id
             createTime = System.currentTimeMillis()
         }
     }
@@ -100,7 +99,7 @@ class AddBillViewModel : BaseViewModel() {
 
         launch({
             var count: Long =
-                App.dataBase.billImageDao().installBillAndDao(bill, images)
+                App.dataBase.billImageDao().installBillAndImage(bill, images)
             if (count > 0) {
                 saveCall(bill.copy())
                 resetBill()//最后重新赋值ID

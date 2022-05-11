@@ -5,7 +5,6 @@ import com.blankj.utilcode.util.DeviceUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.NetworkUtils
 import com.rh.heji.BuildConfig
-import com.rh.heji.currentUser
 import com.rh.heji.App
 import com.rh.heji.data.db.ErrorLog
 import java.io.PrintWriter

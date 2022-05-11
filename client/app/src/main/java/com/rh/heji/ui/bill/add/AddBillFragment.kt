@@ -59,6 +59,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory {
     }
 
     override fun initView(rootView: View) {
+        LogUtils.d(App.currentBook.id)
         val argAddBill = AddBillFragmentArgs.fromBundle(requireArguments()).argAddBill
         billViewModel.setBill(argAddBill.bill)
         isModify = argAddBill.isModify
@@ -86,7 +87,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory {
             }
             //是否是变更账单
             val isChangeBill = bill.money.compareTo(BigDecimal.ZERO) == 1//money > 0 修改时金额大于零
-            if (isChangeBill) {
+            if (isModify) {
                 //抹0再输入到键盘
                 with(bill.money.toPlainString()) {
                     if (contains(".00"))
@@ -200,8 +201,8 @@ class AddBillFragment : BaseFragment(), ISelectedCategory {
                 setDealerUser(names[0])//默认经手人
                 billViewModel.setDealer(names[0]) //设置默经手人
             } else {
-                setDealerUser(currentUser.name)
-                billViewModel.setDealer(currentUser.name) //设置默经手人当前用户
+                setDealerUser(App.user.name)
+                billViewModel.setDealer(App.user.name) //设置默经手人当前用户
             }
             binding.inputInfo.tvUserLabel.setOnClickListener {
                 XPopup.Builder(requireContext())

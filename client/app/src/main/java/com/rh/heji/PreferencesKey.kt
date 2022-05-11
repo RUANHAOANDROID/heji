@@ -51,6 +51,12 @@ object DataStoreManager {
         }
     }
 
+    suspend fun startupCount(): Int {
+        return App.context.dataStore.data.map {
+            it[PreferencesKey.STARTUP_COUNT] ?: 1
+        }.first()
+    }
+
     /**
      * Save token
      *

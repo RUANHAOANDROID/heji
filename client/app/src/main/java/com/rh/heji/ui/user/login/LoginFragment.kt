@@ -1,6 +1,5 @@
 package com.rh.heji.ui.user.login
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,19 +13,12 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.AppViewModel
 import com.rh.heji.LoginActivity
 import com.rh.heji.R
-import com.rh.heji.StartupActivity
 import com.rh.heji.databinding.FragmentLoginBinding
 import com.rh.heji.ui.user.register.RegisterUser
-import com.rh.heji.ui.user.security.UserToken
 
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
     private val viewModel by lazy { ViewModelProvider(this).get(LoginViewModel::class.java) }
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,8 +26,19 @@ class LoginFragment : Fragment() {
     ): View {
         inflater.inflate(R.layout.fragment_login, container, false)
         binding = FragmentLoginBinding.inflate(inflater)
+
         initView(binding.root)
+        subLoginResult()
         return binding.root
+    }
+
+    private fun subLoginResult() {
+        viewModel.loginResult().observe(viewLifecycleOwner) { token ->
+            findNavController().popBackStack()
+            (activity as LoginActivity).startMainActivity()
+            AppViewModel.get().asyncData()
+            LogUtils.d(token)
+        }
     }
 
     fun initView(rootView: View) {
@@ -48,12 +51,6 @@ class LoginFragment : Fragment() {
             val username = binding.editUser.text.toString()
             val password = binding.editPassword.text.toString()
             viewModel.login(username, password)
-                .observe(this.viewLifecycleOwner) { token ->
-                    findNavController().popBackStack()
-                    (activity as LoginActivity).startMainActivity()
-                    AppViewModel.get().asyncData()
-                    LogUtils.d(token)
-                }
         }
     }
 

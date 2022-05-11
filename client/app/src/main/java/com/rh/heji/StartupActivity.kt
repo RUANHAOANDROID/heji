@@ -22,14 +22,8 @@ class StartupActivity : AppCompatActivity() {
     }
 
     private fun startMainActivity() {
-        initUserBaseData()
         MainActivity.startMainActivity(this)
         this.finish()
-    }
-
-    private fun initUserBaseData() {
-        App.setDataBase(App.user.name)
-        App.setCurrentBook(Book(name = "个人账本"))
     }
 
     override fun onResume() {

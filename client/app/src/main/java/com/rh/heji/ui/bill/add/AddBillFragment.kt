@@ -71,6 +71,16 @@ class AddBillFragment : BaseFragment(), ISelectedCategory {
         remark()
         category()
         keyboardListener()
+
+        if (isModify) {
+            //抹0再输入到键盘
+            with(billViewModel.getBill().money.toPlainString()) {
+                if (contains(".00"))
+                    replace(".00", "")
+                else
+                    this
+            }.forEach { element -> binding.keyboard.input(element.toString()) }
+        }
         billViewModel.billChanged().observe(this) { bill ->
             //填充输入信息
             binding.inputInfo.apply {
@@ -85,17 +95,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory {
                     imgTicket.text = "图片(x${bill.images.size})"
                 }
             }
-            //是否是变更账单
-            val isChangeBill = bill.money.compareTo(BigDecimal.ZERO) == 1//money > 0 修改时金额大于零
-            if (isModify) {
-                //抹0再输入到键盘
-                with(bill.money.toPlainString()) {
-                    if (contains(".00"))
-                        replace(".00", "")
-                    else
-                        this
-                }.forEach { element -> binding.keyboard.input(element.toString()) }
-            }
+
             //设置类别
             bill.category?.let {
                 categoryTabFragment.setSelectCategory(it, bill.type)

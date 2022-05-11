@@ -42,7 +42,7 @@ data class Book(
     var anchor: Long = 0L,//锚点用作记录服务最后修改时间
 
     @ColumnInfo(name = COLUMN_FIRST)
-    var firstBook: Int = 0// 0 true |1 false
+    var firstBook: Int = 1// 0 true |1 false
 
 ) : Parcelable {
 

@@ -5,9 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
-import com.blankj.utilcode.util.FragmentUtils
 import com.gyf.immersionbar.ktx.immersionBar
 import com.rh.heji.data.db.Book
 import com.rh.heji.ui.user.login.LoginFragment

@@ -200,8 +200,8 @@ class AddBillFragment : BaseFragment(), ISelectedCategory {
                 setDealerUser(names[0])//默认经手人
                 billViewModel.setDealer(names[0]) //设置默经手人
             } else {
-                setDealerUser(currentUser.username)
-                billViewModel.setDealer(currentUser.username) //设置默经手人当前用户
+                setDealerUser(currentUser.name)
+                billViewModel.setDealer(currentUser.name) //设置默经手人当前用户
             }
             binding.inputInfo.tvUserLabel.setOnClickListener {
                 XPopup.Builder(requireContext())

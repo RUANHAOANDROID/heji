@@ -204,7 +204,7 @@ class DataSyncWork {
         val notAsyncBooks = bookDao.books(STATUS.NOT_SYNCED)//未上传同步的账本
         for (book in notAsyncBooks) {
             book.synced = STATUS.SYNCED
-            book.createUser = JWTParse.getUser(UserToken.getToken().first() ?: "").username
+            book.createUser = JWTParse.getUser(UserToken.getToken().first() ?: "").name
             val response = network.bookCreate(book)
             if (response.code == 0) {
                 val count = bookDao.update(book)

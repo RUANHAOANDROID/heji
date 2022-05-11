@@ -93,7 +93,7 @@ class PopupBillInfo(
             val mainActivity = context as MainActivity
             mainActivity.lifecycleScope.launch(Dispatchers.IO) {
                 withContext(Dispatchers.Main) {
-                    if (bill.createUser == currentUser.username) {
+                    if (bill.createUser == App.user.name) {
                         App.dataBase.billDao().delete(bill)
                         delete(bill)
                         DataBus.post(SyncEvent.DELETE, bill.copy())

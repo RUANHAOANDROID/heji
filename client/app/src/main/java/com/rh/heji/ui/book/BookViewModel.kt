@@ -37,7 +37,7 @@ class BookViewModel : BaseViewModel() {
                     id = ObjectId().toHexString(),
                     name = name,
                     type = type,
-                    createUser = currentUser.username
+                    createUser = App.user.name
                 )
                 bookDao.insert(book)
                 bookLiveData.postValue(book)

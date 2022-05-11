@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setDrawerLayout(user: JWTParse.User) {
-        navHeaderMainBinding.tvTitle.text = user.username
+        navHeaderMainBinding.tvTitle.text = user.name
         navHeaderMainBinding.tvNice.text = user.auth.toString()
     }
 

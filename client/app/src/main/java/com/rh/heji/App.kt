@@ -20,6 +20,12 @@ import kotlinx.coroutines.runBlocking
  *  3.AppViewModule
  */
 class App : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        context = this
+        init()
+    }
+
     companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
@@ -38,6 +44,11 @@ class App : Application() {
 
         fun userIsInit() = this::user.isInitialized
 
+        @JvmName("switchUser")
+        fun setUser(currentUser: JWTParse.User) {
+            user = currentUser
+        }
+
         /**
          * 数据库在登录后初始化不同用户创建不同数据库（username_data）
          */
@@ -55,12 +66,6 @@ class App : Application() {
         fun setDataBase(userName: String) {
             dataBase = AppDatabase.getInstance(userName)
         }
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        context = this
-        init()
     }
 
 

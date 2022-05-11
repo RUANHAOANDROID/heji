@@ -23,8 +23,10 @@ class LoginViewModel : BaseViewModel() {
                 encodePassword(password)
             )
             var token = requestBody.data
+
             UserToken.saveToken(token)
             currentUser = JWTParse.getUser(token)
+            App.setUser(currentUser = currentUser)
             ToastUtils.showLong(requestBody.data)
             loginLiveData.postValue(token)
             initBook()

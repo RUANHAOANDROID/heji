@@ -17,6 +17,7 @@ import com.rh.heji.R
 import com.rh.heji.StartupActivity
 import com.rh.heji.databinding.FragmentLoginBinding
 import com.rh.heji.ui.user.register.RegisterUser
+import com.rh.heji.ui.user.security.UserToken
 
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding

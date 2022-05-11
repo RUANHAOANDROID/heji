@@ -3,23 +3,16 @@ package com.rh.heji.ui.user.register
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.EncryptUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launch
 import java.io.Serializable
 
 class RegisterViewModel : BaseViewModel() {
-    lateinit var tel: String
-    lateinit var code: String
-    lateinit var password: String
-    lateinit var password1: String
-    val registerLiveData = MutableLiveData<RegisterUser>()
-
-    /**
-     * 再次确认密码
-     */
-    fun checkPassword(): Boolean {
-        return password == password1
+    private val registerLiveData = MutableLiveData<RegisterUser>()
+    fun registerResult(): LiveData<RegisterUser> {
+        return registerLiveData
     }
 
     fun register(
@@ -27,7 +20,7 @@ class RegisterViewModel : BaseViewModel() {
         tel: String,
         code: String,
         password: String
-    ): LiveData<RegisterUser> {
+    ) {
         var user = RegisterUser(
             name = username,
             tel = tel,
@@ -41,8 +34,10 @@ class RegisterViewModel : BaseViewModel() {
                 this.password = password//本地输入的未加密的密码
             }
             registerLiveData.postValue(body)
-        }, {})
-        return registerLiveData
+        }, {
+            ToastUtils.showLong(it.message)
+        })
+
     }
 
     private fun encodePassword(password: String): String {

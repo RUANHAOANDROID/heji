@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.blankj.utilcode.util.ToastUtils
+import com.rh.heji.LoginActivity
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentRegisterBinding
 
@@ -25,13 +27,7 @@ class RegisterFragment : Fragment() {
     ): View {
         inflater.inflate(R.layout.fragment_register, container, false)
         binding = FragmentRegisterBinding.inflate(inflater)
-        initView(binding.root)
-        return binding.root
-    }
 
-
-    fun initView(rootView: View) {
-        binding = FragmentRegisterBinding.bind(rootView)
         binding.btnRegister.setOnClickListener {
             val password1 = binding.editPassword.text.toString()
             val password2 = binding.editPassword2.text.toString()
@@ -42,12 +38,22 @@ class RegisterFragment : Fragment() {
             val code = binding.editInviteCode.text.toString()
             val tel = binding.editTEL.text.toString()
             val username = binding.editUserName.text.toString()
-            viewModel.register(username, tel, code, password1).observe(viewLifecycleOwner) { user ->
-                var mBundle = Bundle()
-                mBundle.putSerializable("user", user)
-                Navigation.findNavController(rootView).popBackStack()
-                Navigation.findNavController(rootView).navigate(R.id.nav_login, mBundle)
-            }
+            viewModel.register(username, tel, code, password1)
+        }
+        viewModel.registerResult().observe(viewLifecycleOwner) { user ->
+            var mBundle = Bundle()
+            mBundle.putSerializable("user", user)
+            Navigation.findNavController(binding.root).popBackStack()
+            Navigation.findNavController(binding.root).navigate(R.id.nav_login, mBundle)
+        }
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        with(activity as LoginActivity) {
+            findViewById<Toolbar>(R.id.toolbar).title = getString(R.string.register)
+            this
         }
     }
 }

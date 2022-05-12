@@ -152,7 +152,7 @@ class ETCFragment : BaseFragment() {
                     .show()
         } else {
             XPopup.Builder(requireContext())
-                    .asConfirm("导入" + etcViewModel.yearMonth + "账单", "当前账本【${currentBook!!.name}】，确认导入吗？") {
+                    .asConfirm("导入" + etcViewModel.yearMonth + "账单", "当前账本【${ currentBook.name}】，确认导入吗？") {
                         val inputLoading = XPopup.Builder(requireContext()).asLoading().setTitle("正在导入")
                         inputLoading.show()
                         etcViewModel.requestHBGSETCList(etcViewModel.etcID, etcViewModel.yearMonth!!, etcViewModel.carID)

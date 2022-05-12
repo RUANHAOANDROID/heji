@@ -158,14 +158,6 @@ class CategoryFragment : BaseFragment() {
     }
 
     fun setSelectCategory(category: String? = null) {
-        if (!this::labelAdapter.isInitialized || labelAdapter == null) return
-
-        var selectCategory: Category?
-        //选中的类别
-        val selectItem =
-            labelAdapter.data.filter { category: Category -> category.isSelected }.toList()
-        //未选中默认第一个ITEM
-        selectCategory = if (selectItem.isEmpty()) labelAdapter.data.first() else selectItem.first()
         if (!category.isNullOrEmpty()) {
             binding.categoryRecycler.post {
                 labelAdapter.setSelectCategory(category)
@@ -174,12 +166,10 @@ class CategoryFragment : BaseFragment() {
     }
 
     companion object {
-        const val KEY_TYPE = "TYPE"
-
         /**
          * 收\支
          *
-         * @param ieType Income : Expenditure
+         * @param type Income : Expenditure
          * @return
          */
         @JvmStatic

@@ -1,7 +1,6 @@
 package com.rh.heji.ui.bill.category.manager
 
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,11 +52,6 @@ class CategoryManagerFragment : BaseFragment() {
                 super.convert(holder, category)
                 itemBinding.btnDelete.setOnClickListener { v: View? ->
                     categoryViewModule.deleteCategory(category)
-                        .observe(this@CategoryManagerFragment, Observer { aBoolean ->
-                            if (aBoolean) {
-                                adapter.notifyItemChanged(getItemPosition(category))
-                            }
-                        })
                 }
             }
         }

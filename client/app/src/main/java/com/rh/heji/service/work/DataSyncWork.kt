@@ -28,7 +28,7 @@ class DataSyncWork {
         /**
          * 根据服务器账本删除日志，同步删除本地数据
          */
-        val response = HejiNetwork.getInstance().bookOperateLogs(currentBook!!.id)
+        val response = HejiNetwork.getInstance().bookOperateLogs( currentBook.id)
         if (response.code == 0 && response.data.isNotEmpty()) {
             val operates = response.data
             for (operate in operates) {

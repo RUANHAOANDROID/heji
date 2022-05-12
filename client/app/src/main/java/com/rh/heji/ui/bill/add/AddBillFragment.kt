@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.Editable
@@ -31,7 +32,6 @@ import com.rh.heji.ui.bill.category.CategoryViewModel
 import com.rh.heji.ui.bill.category.ISelectedCategory
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
-import java.math.BigDecimal
 import java.util.*
 import java.util.function.Consumer
 
@@ -52,18 +52,30 @@ class AddBillFragment : BaseFragment(), ISelectedCategory {
 
     lateinit var popupSelectImage: PopSelectImage//图片弹窗
 
+    /**
+     * 是否修改
+     */
     var isModify = false//默认新增
+
+    /**
+     * 当isModify为true时为要修改的账单
+     */
+    lateinit var mBill: Bill
+
 
     override fun layoutId(): Int {
         return R.layout.fragment_addbill
     }
 
-    override fun initView(rootView: View) {
-        LogUtils.d(App.currentBook.id)
-        val argAddBill = AddBillFragmentArgs.fromBundle(requireArguments()).argAddBill
-        billViewModel.setBill(argAddBill.bill)
-        isModify = argAddBill.isModify
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val mArgs = AddBillFragmentArgs.fromBundle(requireArguments()).argAddBill
+        mBill = mArgs.bill
+        isModify = mArgs.isModify
+    }
 
+    override fun initView(rootView: View) {
+        billViewModel.setBill(mBill)
         binding = FragmentAddbillBinding.bind(rootView)
         setupImage()
         setupPerson()
@@ -73,32 +85,31 @@ class AddBillFragment : BaseFragment(), ISelectedCategory {
         keyboardListener()
 
         if (isModify) {
-            //抹0再输入到键盘
-            with(billViewModel.getBill().money.toPlainString()) {
+            //填充money到键盘，抹0再输入到键盘
+            with(mBill.money.toPlainString()) {
                 if (contains(".00"))
                     replace(".00", "")
                 else
                     this
-            }.forEach { element -> binding.keyboard.input(element.toString()) }
-        }
-        billViewModel.billChanged().observe(this) { bill ->
+            }.forEach { element ->
+                binding.keyboard.input(element.toString())
+            }
             //填充输入信息
             binding.inputInfo.apply {
-                tvMoney.text = bill.money.toString()
-                bill.dealer?.let { setDealerUser(it) }
-                tvBillTime.text = bill.billTime.string()
-                bill.remark?.let { remark ->
+                tvMoney.text = mBill.money.toString()
+                mBill.dealer?.let { setDealerUser(it) }
+                tvBillTime.text = mBill.billTime.string()
+                mBill.remark?.let { remark ->
                     eidtRemark.setText(remark)
                 }
-                val existImages = bill.images.isNotEmpty()
+                val existImages = mBill.images.isNotEmpty()
                 if (existImages) {
-                    imgTicket.text = "图片(x${bill.images.size})"
+                    imgTicket.text = "图片(x${mBill.images.size})"
                 }
             }
-
             //设置类别
-            bill.category?.let {
-                categoryTabFragment.setSelectCategory(it, bill.type)
+            mBill.category?.let {
+                categoryTabFragment.setSelectCategory(it, mBill.type)
             }
         }
     }

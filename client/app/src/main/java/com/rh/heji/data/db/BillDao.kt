@@ -58,7 +58,7 @@ interface BillDao {
         time: Date,
         money: BigDecimal,
         remark: String,
-        bookId: String = App.currentBook!!.id
+        bookId: String = App. currentBook.id
     ): MutableList<String>
 
     @Query("select count(*)  from bill where bill_id =:id")

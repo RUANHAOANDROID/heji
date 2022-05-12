@@ -140,7 +140,7 @@ class CategoryFragment : BaseFragment() {
     private fun addSettingItem(labelAdapter: CategoryAdapter) {
         val category = Category(
             category = CategoryAdapter.SETTING,
-            bookId = currentBook!!.id,
+            bookId = currentBook.id,
             level = 0,
             type = type.type()
         )

@@ -8,6 +8,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import com.rh.heji.R
 import com.rh.heji.data.BillType
+import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryTabBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.FragmentViewPagerAdapter
@@ -25,8 +26,11 @@ class CategoryTabFragment : BaseFragment() {
     private val tabTitles = listOf(BillType.EXPENDITURE.text(), BillType.INCOME.text())
     lateinit var binding: FragmentCategoryTabBinding
     private var currentType: BillType = BillType.EXPENDITURE
+
     private lateinit var mSelectedCategoryListener: ISelectedCategory
+
     private lateinit var addBillFragment: AddBillFragment
+
     val categoryFragments = listOf(
         CategoryFragment.newInstance(BillType.EXPENDITURE),
         CategoryFragment.newInstance(BillType.INCOME)
@@ -119,5 +123,11 @@ class CategoryTabFragment : BaseFragment() {
                 categoryFragments[1].setSelectCategory(category)
             }
         }
+    }
+
+    fun getSelectCategory(): Category {
+        return if (currentType == BillType.EXPENDITURE)
+            categoryFragments[0].getSelectedCategory()
+        else categoryFragments[1].getSelectedCategory()
     }
 }

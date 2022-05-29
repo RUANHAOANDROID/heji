@@ -7,7 +7,7 @@ import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
 import com.rh.heji.*
 import com.rh.heji.App.Companion.currentBook
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.bill.adapter.DayBillsNode
@@ -16,7 +16,7 @@ import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.launchIO
 
 class CalendarNoteViewModule : BaseViewModel() {
-    val billDao: BillDao = AppDatabase.getInstance().billDao()
+    val billDao: BillDao = App.dataBase.billDao()
     val calendarLiveData = MutableLiveData<Map<String, Calendar>>()
     val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>()
 
@@ -26,7 +26,7 @@ class CalendarNoteViewModule : BaseViewModel() {
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
-            var everyDayIncome = billDao.findEveryDayIncomeByMonth(currentBook!!.id,selectYearMonth.toYearMonth())
+            var everyDayIncome = billDao.findEveryDayIncomeByMonth( currentBook.id,selectYearMonth.toYearMonth())
             everyDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
                 if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {
@@ -71,7 +71,7 @@ class CalendarNoteViewModule : BaseViewModel() {
             var parentNode = mutableListOf<BaseNode>()//天节点
             var childNodes = emptyList<BaseNode>().toMutableList()//天收支节点
             dayBills.forEach {
-                it.images =AppDatabase.getInstance().imageDao().findImagesId(it.id)//查询账单下照片ID
+                it.images =App.dataBase.imageDao().findImagesId(it.id)//查询账单下照片ID
                 var billsNode = DayBillsNode(it)
                 childNodes.add(billsNode)
             }

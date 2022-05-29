@@ -7,7 +7,7 @@ import org.json.JSONObject
 
 object JWTParse {
 
-    data class User(val username: String, val auth: List<String>, val token: String)
+    data class User(val name: String, val auth: List<String>, val token: String)
 
     private val localUser = User("localUser", mutableListOf(), "")
 

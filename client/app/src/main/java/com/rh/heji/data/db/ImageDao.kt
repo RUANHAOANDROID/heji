@@ -1,7 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -19,7 +19,7 @@ interface ImageDao {
 
     @Transaction
     fun installBillAndImages(bill:Bill,image:MutableList<Image>):Long{
-        var count =AppDatabase.getInstance().billDao().install(bill)
+        var count =App.dataBase.billDao().install(bill)
         install(image)
         return count
     }

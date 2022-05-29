@@ -7,9 +7,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.App
 
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
@@ -22,16 +21,13 @@ import com.rh.heji.utlis.launchIO
  * # 分类
  */
 class CategoryViewModel : BaseViewModel() {
-    private val categoryDao = AppDatabase.getInstance().categoryDao()
+    private val categoryDao = App.dataBase.categoryDao()
 
     //支出标签
     private val expenditureCategory = MediatorLiveData<MutableList<Category>>()
 
     //收入标签
     private val incomeCategory = MediatorLiveData<MutableList<Category>>()
-
-
-    private val deleteLiveData = MediatorLiveData<Boolean>()
 
     init {
         /**
@@ -40,7 +36,7 @@ class CategoryViewModel : BaseViewModel() {
          * observer 观察变化
          */
         incomeCategory.addSource(
-            categoryDao.findIncomeOrExpenditure(App.currentBook!!.id, BillType.INCOME.type())
+            categoryDao.findIncomeOrExpenditure(App.currentBook.id, BillType.INCOME.type())
                 .asLiveData(viewModelScope.coroutineContext)
         ) { incomeCategories ->
             incomeCategory.value = incomeCategories.apply {
@@ -49,7 +45,7 @@ class CategoryViewModel : BaseViewModel() {
         }
         expenditureCategory.addSource(
             categoryDao
-                .findIncomeOrExpenditure(App.currentBook!!.id, BillType.EXPENDITURE.type())
+                .findIncomeOrExpenditure(App.currentBook.id, BillType.EXPENDITURE.type())
                 .asLiveData(viewModelScope.coroutineContext)
         ) { expenditureCategories: MutableList<Category> ->
             expenditureCategory.value = expenditureCategories.apply {
@@ -77,8 +73,7 @@ class CategoryViewModel : BaseViewModel() {
             category.synced = STATUS.NOT_SYNCED
             val categories = categoryDao.findByNameAndType(name, type)
             if (categories.size > 0) {
-                val _id = categories[0].id
-                category.id = _id
+                category.id = categories[0].id
                 categoryDao.update(category)
             }
             categoryDao.insert(category)
@@ -86,14 +81,19 @@ class CategoryViewModel : BaseViewModel() {
         }, {})
     }
 
-
-    fun deleteCategory(category: Category): LiveData<Boolean> {
+    /**
+     * 删除标签，通过Flow更新页面
+     *
+     * @param category
+     */
+    fun deleteCategory(category: Category) {
         launchIO({
             category.synced = STATUS.DELETED
             categoryDao.update(category)
-            deleteLiveData.postValue(true)
-        }, {})
-        return deleteLiveData
+            //deleteLiveData.postValue(true)
+        }, {
+            ToastUtils.showLong(it.message)
+        })
     }
 
 }

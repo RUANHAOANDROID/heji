@@ -3,14 +3,14 @@ package com.rh.heji.service.work
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.currentYearMonth
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.network.response.OperateLog
-import com.rh.heji.security.Token
+import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
@@ -20,15 +20,15 @@ import kotlinx.coroutines.withContext
 
 class DataSyncWork {
     private val network = HejiNetwork.getInstance()
-    private val bookDao = AppDatabase.getInstance().bookDao()
-    private val billDao = AppDatabase.getInstance().billDao()
-    private val categoryDao = AppDatabase.getInstance().categoryDao()
+    private val bookDao = App.dataBase.bookDao()
+    private val billDao = App.dataBase.billDao()
+    private val categoryDao = App.dataBase.categoryDao()
     private val billRepository = BillRepository()
     suspend fun syncByOperateLog() {
         /**
          * 根据服务器账本删除日志，同步删除本地数据
          */
-        val response = HejiNetwork.getInstance().bookOperateLogs(currentBook!!.id)
+        val response = HejiNetwork.getInstance().bookOperateLogs( currentBook.id)
         if (response.code == 0 && response.data.isNotEmpty()) {
             val operates = response.data
             for (operate in operates) {
@@ -73,7 +73,7 @@ class DataSyncWork {
                     val response = network.billUpdate(bill)
                     if (response.code == 0) {
                         bill.synced = STATUS.SYNCED
-                        AppDatabase.getInstance().imageDao().deleteBillImage(bill.id)
+                        App.dataBase.imageDao().deleteBillImage(bill.id)
                         billDao.delete(bill)
                     }
                 }
@@ -111,7 +111,7 @@ class DataSyncWork {
                                 image.ext = entity.ext
                                 image.billID = serverBill.id
                                 image.synced = STATUS.SYNCED
-                                AppDatabase.getInstance().imageDao().install(image)
+                                App.dataBase.imageDao().install(image)
                                 LogUtils.d("账单图片信息已保存 $image")
                             }
                         }
@@ -204,7 +204,7 @@ class DataSyncWork {
         val notAsyncBooks = bookDao.books(STATUS.NOT_SYNCED)//未上传同步的账本
         for (book in notAsyncBooks) {
             book.synced = STATUS.SYNCED
-            book.createUser = JWTParse.getUser(Token.getToken().first() ?: "").username
+            book.createUser = JWTParse.getUser(UserToken.getToken().first() ?: "").name
             val response = network.bookCreate(book)
             if (response.code == 0) {
                 val count = bookDao.update(book)

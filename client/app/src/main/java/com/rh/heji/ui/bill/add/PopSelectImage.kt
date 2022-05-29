@@ -1,23 +1,20 @@
 package com.rh.heji.ui.bill.add
 
-import android.content.Context
-import com.rh.heji.utlis.matisse.MatisseUtils.selectMultipleImage
-import com.rh.heji.MainActivity
-import com.lxj.xpopup.core.BottomPopupView
-import com.rh.heji.ui.bill.add.adapter.BillPhotoAdapter
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
-import androidx.lifecycle.Observer
-import com.rh.heji.R
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.ToastUtils
-import com.chad.library.adapter.base.listener.OnItemChildClickListener
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.listener.OnItemChildClickListener
+import com.lxj.xpopup.core.BottomPopupView
 import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
 import com.rh.heji.BuildConfig
+import com.rh.heji.MainActivity
+import com.rh.heji.R
 import com.rh.heji.data.db.Image
-import java.util.ArrayList
+import com.rh.heji.ui.bill.add.adapter.BillPhotoAdapter
+import com.rh.heji.utlis.matisse.MatisseUtils.selectMultipleImage
 
 /**
  * Date: 2020/10/12
@@ -25,7 +22,7 @@ import java.util.ArrayList
  * #
  */
 class PopSelectImage(private val activity: MainActivity) :
-    BottomPopupView(activity), Observer<MutableList<Image>> {
+    BottomPopupView(activity) {
     companion object {
         const val SELECT_MAX_COUNT = 3
     }
@@ -112,7 +109,7 @@ class PopSelectImage(private val activity: MainActivity) :
         return images
     }
 
-    override fun onChanged(images: MutableList<Image>) {
+    fun setImage(images: MutableList<Image>) {
         if (images.isEmpty()) return
         //服务器返回的是图片的ID、需要加上前缀
         val imagePaths = images.map { image: Image ->
@@ -125,5 +122,9 @@ class PopSelectImage(private val activity: MainActivity) :
         }.toMutableList()
         imageAdapter.setNewInstance(imagePaths)
         imageAdapter.notifyDataSetChanged()
+    }
+
+    fun setImagesPath(images: MutableList<String>) {
+
     }
 }

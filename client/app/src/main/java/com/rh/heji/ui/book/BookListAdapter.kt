@@ -45,7 +45,7 @@ class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :
             }
 
 
-            if (item.id == App.currentBook!!.id) {
+            if (item.id == App. currentBook.id) {
                 binding.imgSelected.visibility = View.VISIBLE
             } else {
                 binding.imgSelected.visibility = View.INVISIBLE

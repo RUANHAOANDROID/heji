@@ -1,6 +1,7 @@
 package com.rh.heji
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Spannable
@@ -24,7 +25,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
 import com.rh.heji.databinding.HeaderMainNavBinding
-import com.rh.heji.security.Token
+import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.ui.list.DrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.CrashInfo
@@ -37,13 +38,20 @@ import java.lang.ref.WeakReference
 
 
 class MainActivity : AppCompatActivity() {
-    private val TAG = "MainActivity"
+
     lateinit var navController: NavController private set
     private lateinit var drawerLayout: DrawerLayout
     val mainViewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
     private lateinit var navHeaderMainBinding: HeaderMainNavBinding//侧拉头像
     private lateinit var navigationView: NavigationView
 
+    companion object {
+        private const val TAG = "MainActivity"
+        fun startMainActivity(activity: Activity) {
+            val intent = Intent(activity, MainActivity::class.java)
+            activity.startActivity(intent)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -62,21 +70,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkLogin() {
         lifecycleScope.launch {
-            val jwtTokenString = Token.getToken().first()
+            val jwtTokenString = UserToken.getToken().first()
             if (jwtTokenString.isNullOrEmpty()) {
-                ToastUtils.showLong("用户凭证已失效，请重新登录")
-                navController.navigate(R.id.nav_login)
+                toLogin()
             } else {
                 currentUser = JWTParse.getUser(jwtTokenString)
-                setDrawerLayout(currentUser)
+                setDrawerLayout(App.user)
                 AppViewModel.get().asyncData()
             }
         }
+        //观察拦截器发出的登录消息
         AppViewModel.get().loginEvent.observe(this) {
             navController.currentBackStackEntry?.let {
                 if (it.destination.label != resources.getString(R.string.login)) {
-                    ToastUtils.showLong("用户凭证已失效，请重新登录")
-                    navController.navigate(R.id.nav_login)
+                    toLogin()
                 }
             }
         }
@@ -118,8 +125,9 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.menu
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener {
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                runBlocking(Dispatchers.IO) { Token.deleteToken() }
+                runBlocking(Dispatchers.IO) { UserToken.deleteToken() }
                 finish()
+                App.reset()
             }.show()
             false
         }
@@ -136,7 +144,8 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
-        setCurrentBook(App.currentBook!!.name)
+
+        setCurrentBook(App.currentBook.name)
     }
 
     private fun navigationDrawerController() {
@@ -205,7 +214,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setDrawerLayout(user: JWTParse.User) {
-        navHeaderMainBinding.tvTitle.text = user.username
+        navHeaderMainBinding.tvTitle.text = user.name
         navHeaderMainBinding.tvNice.text = user.auth.toString()
     }
 
@@ -241,12 +250,13 @@ class MainActivity : AppCompatActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
-    val fragments: List<Fragment>
+    private val fragments: List<Fragment>
         get() {
             val navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             return navHostFragment.childFragmentManager.fragments
         }
+
 
     /**
      * 隐藏键盘
@@ -289,4 +299,9 @@ class MainActivity : AppCompatActivity() {
         bookItem.title = spannableString
     }
 
+    fun toLogin() {
+        ToastUtils.showLong("用户凭证已失效，请重新登录")
+        LoginActivity.start(this)
+        finish()
+    }
 }

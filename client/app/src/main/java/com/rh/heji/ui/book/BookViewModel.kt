@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.currentUser
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.Result
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.BookUser
@@ -23,7 +23,7 @@ import kotlinx.coroutines.withContext
 class BookViewModel : BaseViewModel() {
     private val bookLiveData = MediatorLiveData<Book>()
     private val bookListLiveData = MediatorLiveData<MutableList<Book>>()
-    private val bookDao = AppDatabase.getInstance().bookDao()
+    private val bookDao = App.dataBase.bookDao()
     private val bookRepository=BookRepository()
     fun createNewBook(name: String, type: String): LiveData<Book> {
 
@@ -37,7 +37,7 @@ class BookViewModel : BaseViewModel() {
                     id = ObjectId().toHexString(),
                     name = name,
                     type = type,
-                    createUser = currentUser.username
+                    createUser = App.user.name
                 )
                 bookDao.insert(book)
                 bookLiveData.postValue(book)
@@ -45,14 +45,14 @@ class BookViewModel : BaseViewModel() {
             }
         }, {})
 
-        //netwook create
+        //network create
         return bookLiveData
     }
 
-    fun isFirstBook(id: String) = AppDatabase.getInstance().bookDao().isFirstBook(id)
+    fun isFirstBook(id: String) = App.dataBase.bookDao().isFirstBook(id)
 
     fun countBook(book_id: String): Int {
-        return AppDatabase.getInstance().billDao().countByBookId(book_id)
+        return App.dataBase.billDao().countByBookId(book_id)
     }
 
     fun getBookList(): LiveData<MutableList<Book>> {
@@ -90,20 +90,20 @@ class BookViewModel : BaseViewModel() {
 
     fun clearBook(id: String, call: (Result<String>) -> Unit) {
         launchIO({
-            AppDatabase.getInstance().billDao().deleteByBookId(id)
+            App.dataBase.billDao().deleteByBookId(id)
             call(Result.Success("清楚账单成功"))
         }, { call(Result.Error(it)) })
     }
 
     fun deleteBook(id: String, call: (Result<String>) -> Unit) {
         launchIO({
-            val billsCount = AppDatabase.getInstance().billDao().countByBookId(id)
+            val billsCount = App.dataBase.billDao().countByBookId(id)
             if (billsCount > 0) {
                 ToastUtils.showLong("该账本下存在账单，无法直接删除")
             } else {
                 val response = HejiNetwork.getInstance().bookDelete(id)
                 if (response.code == 0) {
-                    AppDatabase.getInstance().bookDao().deleteById(id)
+                    App.dataBase.bookDao().deleteById(id)
                     runMainThread {
                         call(Result.Success("删除成功"))
                     }

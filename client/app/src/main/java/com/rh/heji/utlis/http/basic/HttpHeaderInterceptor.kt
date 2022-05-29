@@ -5,7 +5,7 @@ import android.util.Log
 import com.rh.heji.App
 import com.rh.heji.AppViewModel
 import com.rh.heji.Event
-import com.rh.heji.security.Token
+import com.rh.heji.ui.user.security.UserToken
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -17,7 +17,7 @@ import okhttp3.Response
  */
 class HttpHeaderInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        var bearerToken: String = runBlocking { Token.getToken().first() ?: "" }
+        var bearerToken: String = runBlocking { UserToken.getToken().first() ?: "" }
         Log.d("OKHTTP", "HttpHeaderInterceptor $bearerToken")
         if (TextUtils.isEmpty(bearerToken)) {
             Log.d("OKHTTP", "HttpHeaderInterceptor not login")

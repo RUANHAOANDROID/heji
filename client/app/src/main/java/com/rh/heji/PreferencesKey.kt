@@ -51,6 +51,12 @@ object DataStoreManager {
         }
     }
 
+    suspend fun startupCount(): Int {
+        return App.context.dataStore.data.map {
+            it[PreferencesKey.STARTUP_COUNT] ?: 1
+        }.first()
+    }
+
     /**
      * Save token
      *
@@ -91,12 +97,10 @@ object DataStoreManager {
     suspend fun getCurrentBook(): Flow<Book?> {
         return App.context.dataStore.data.map {
             var currentBook: Book? = null
-            val defBook = Book(name = "个人账本")
             val bookJsonString = it[PreferencesKey.CURRENT_BOOK]
-            currentBook = if (bookJsonString.isNullOrEmpty())
-                defBook
-            else
-                moshi.adapter<Book>(Book::class.java).fromJson(bookJsonString)
+            if (!bookJsonString.isNullOrEmpty()) {
+                currentBook = moshi.adapter<Book>(Book::class.java).fromJson(bookJsonString)
+            }
             currentBook
         }
     }

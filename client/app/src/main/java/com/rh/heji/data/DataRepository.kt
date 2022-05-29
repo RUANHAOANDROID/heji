@@ -1,5 +1,6 @@
 package com.rh.heji.data
 
+import com.rh.heji.App
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.STATUS
@@ -36,9 +37,9 @@ open class DataRepository {
     }
 
     protected val network = HejiNetwork.getInstance()
-    protected val database = AppDatabase.getInstance()
+    protected val database = App.dataBase
     protected val bookDao = database.bookDao()
     protected val billDao = database.billDao()
     protected val categoryDao = database.categoryDao()
-    val imgDao =   AppDatabase.getInstance().imageDao()
+    val imgDao =   App.dataBase.imageDao()
 }

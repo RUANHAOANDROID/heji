@@ -1,21 +1,14 @@
-package com.rh.heji.security
+package com.rh.heji.ui.user.security
 
 import android.content.Context
-import android.text.TextUtils
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.FileUtils
-import com.blankj.utilcode.util.LogUtils
-import com.rh.heji.App
 import com.rh.heji.DataStoreManager
-import com.rh.heji.PreferencesKey
-import com.rh.heji.dataStore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 import java.io.*
 import java.nio.charset.StandardCharsets
 
-object Token {
+object UserToken {
 
 
     private const val TOKEN_FILE_NAME = "TOKEN"

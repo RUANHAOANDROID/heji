@@ -8,8 +8,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemClickListener
-import com.rh.heji.R
 import com.rh.heji.App.Companion.currentBook
+import com.rh.heji.R
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryContentBinding
@@ -17,7 +17,6 @@ import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.add.AddBillFragment
 import com.rh.heji.ui.bill.category.adapter.CategoryAdapter
 import com.rh.heji.ui.bill.category.manager.CategoryManagerFragmentArgs
-import java.util.*
 import java.util.function.Consumer
 
 /**
@@ -28,7 +27,6 @@ import java.util.function.Consumer
 class CategoryFragment : BaseFragment() {
     private lateinit var binding: FragmentCategoryContentBinding
     private lateinit var labelAdapter: CategoryAdapter
-
     //类型 支出 或 收入
     lateinit var type: BillType
 
@@ -125,6 +123,11 @@ class CategoryFragment : BaseFragment() {
         }
     }
 
+    /**
+     * 添加尾部设置按钮
+     *
+     * @param labelAdapter
+     */
     private fun addCategoryFooterView(labelAdapter: CategoryAdapter) {
         if (labelAdapter.data != null && labelAdapter.data.size > 0) {
             val lastItem = labelAdapter.data[labelAdapter.itemCount - 1]
@@ -140,14 +143,14 @@ class CategoryFragment : BaseFragment() {
     private fun addSettingItem(labelAdapter: CategoryAdapter) {
         val category = Category(
             category = CategoryAdapter.SETTING,
-            bookId = currentBook!!.id,
+            bookId = currentBook.id,
             level = 0,
             type = type.type()
         )
         labelAdapter.addData(labelAdapter.itemCount, category)
     }
 
-    fun getSelectedCategory(): Category? {
+    fun getSelectedCategory(): Category {
         var selectCategory: Category?
         //选中的类别
         val selectItem =
@@ -158,14 +161,6 @@ class CategoryFragment : BaseFragment() {
     }
 
     fun setSelectCategory(category: String? = null) {
-        if (!this::labelAdapter.isInitialized || labelAdapter == null) return
-
-        var selectCategory: Category?
-        //选中的类别
-        val selectItem =
-            labelAdapter.data.filter { category: Category -> category.isSelected }.toList()
-        //未选中默认第一个ITEM
-        selectCategory = if (selectItem.isEmpty()) labelAdapter.data.first() else selectItem.first()
         if (!category.isNullOrEmpty()) {
             binding.categoryRecycler.post {
                 labelAdapter.setSelectCategory(category)
@@ -174,12 +169,10 @@ class CategoryFragment : BaseFragment() {
     }
 
     companion object {
-        const val KEY_TYPE = "TYPE"
-
         /**
          * 收\支
          *
-         * @param ieType Income : Expenditure
+         * @param type Income : Expenditure
          * @return
          */
         @JvmStatic

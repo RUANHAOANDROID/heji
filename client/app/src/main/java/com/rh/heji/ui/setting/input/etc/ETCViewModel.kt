@@ -7,7 +7,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 
 import com.rh.heji.AppViewModel
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.BillType
 import com.rh.heji.data.DataBus
 import com.rh.heji.data.SyncEvent
@@ -52,12 +52,12 @@ class ETCViewModel : BaseViewModel() {
      */
     private val categoryName: String
          get() {
-            val categories =   AppDatabase.getInstance().categoryDao().queryByCategoryName("过路费")
+            val categories =   App.dataBase.categoryDao().queryByCategoryName("过路费")
             val category: Category
             if (categories.isEmpty()) {
                 category = Category(category = "过路费", level = 0, type = BillType.EXPENDITURE.type())
                 category.synced = STATUS.NOT_SYNCED
-                  AppDatabase.getInstance().categoryDao().insert(category)
+                  App.dataBase.categoryDao().insert(category)
             } else {
                 category = categories[0]
             }
@@ -97,9 +97,9 @@ class ETCViewModel : BaseViewModel() {
                 /**
                  * 如果不存在才插入
                  */
-                val bills =   AppDatabase.getInstance().billDao().findIds(bill.billTime, bill.money, bill.remark!!)
+                val bills =   App.dataBase.billDao().findIds(bill.billTime, bill.money, bill.remark!!)
                 if (bills.size <= 0) {
-                    val count =AppDatabase.getInstance().billDao().install(bill)
+                    val count =App.dataBase.billDao().install(bill)
                     LogUtils.d("导入ETC账单：", bill)
                     if (count>0)
                         DataBus.post(SyncEvent.ADD,bill.copy())
@@ -253,12 +253,12 @@ class ETCViewModel : BaseViewModel() {
         /**
          * 如果不存在才插入(插入时必须保持格式一致)
          */
-        val bills =   AppDatabase.getInstance().billDao().findIds(
+        val bills =   App.dataBase.billDao().findIds(
             bill.billTime, bill.money,
             bill.remark!!
         )
         if (bills.size <= 0) {
-            val count =AppDatabase.getInstance().billDao().install(bill)
+            val count =App.dataBase.billDao().install(bill)
             LogUtils.d("导入ETC账单：", bill)
             if (count >0)
                 DataBus.post(SyncEvent.ADD,bill.copy())

@@ -2,7 +2,7 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
-import com.rh.heji.currentUser
+import com.rh.heji.App
 import com.rh.heji.data.converters.BookUsersConverters
 import com.rh.heji.data.db.mongo.ObjectId
 import com.squareup.moshi.Json
@@ -30,7 +30,7 @@ data class Book(
     var name: String,//账本名称
 
     @ColumnInfo(name = COLUMN_CREATE_USER)
-    var createUser: String = currentUser.username,//创建人
+    var createUser: String = App.user.name,//创建人
 
     @ColumnInfo(name = COLUMN_TYPE)
     var type: String? = null,//账本类型
@@ -42,7 +42,7 @@ data class Book(
     var anchor: Long = 0L,//锚点用作记录服务最后修改时间
 
     @ColumnInfo(name = COLUMN_FIRST)
-    var firstBook: Int = 0// 0 true |1 false
+    var firstBook: Int = 1// 0 true |1 false
 
 ) : Parcelable {
 

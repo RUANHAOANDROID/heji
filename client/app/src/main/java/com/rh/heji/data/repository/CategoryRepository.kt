@@ -1,7 +1,7 @@
 package com.rh.heji.data.repository
 
 import android.text.TextUtils
-import com.rh.heji.data.AppDatabase
+import com.rh.heji.App
 import com.rh.heji.data.DataRepository
 import com.rh.heji.data.Result
 import com.rh.heji.data.db.Category
@@ -34,11 +34,11 @@ class CategoryRepository : DataRepository() {
         val categories = response.data
         if (categories.isNotEmpty()) {
             categories.forEach { entity: CategoryEntity ->
-                val _id = AppDatabase.getInstance().categoryDao().findByID(entity.id)
+                val _id = App.dataBase.categoryDao().findByID(entity.id)
                 if (TextUtils.isEmpty(_id)) {
                     val dbCategory = entity.toDbCategory()
                     dbCategory.synced = STATUS.SYNCED
-                    AppDatabase.getInstance().categoryDao().insert(dbCategory)
+                    App.dataBase.categoryDao().insert(dbCategory)
                 }
             }
         }

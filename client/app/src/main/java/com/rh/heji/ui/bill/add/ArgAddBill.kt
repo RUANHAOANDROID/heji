@@ -5,7 +5,7 @@ import com.rh.heji.data.db.Bill
 import kotlinx.android.parcel.Parcelize
 
 /**
- * TODO
+ * 账单操作参数类型
  * @date 2022/5/10
  * @author 锅得铁
  * @since v1.0

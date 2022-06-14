@@ -256,6 +256,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
     override fun selected(category: Category) {
         val billType = BillType.transform(category.type)
         //billViewModel.setCategory(category)
+        mBill.type = category.type
         mBill.category = category.category
         binding.keyboard.setType(billType)
         val color = if (billType == BillType.EXPENDITURE) R.color.expenditure else R.color.income
@@ -265,7 +266,8 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
     override fun setCategory(category: String?) {
         //设置类别
         mBill.category?.let {
-            categoryTabFragment.setSelectCategory(it, mBill.type)
+            if(this::categoryTabFragment.isInitialized)
+                categoryTabFragment.setSelectCategory(it, mBill.type)
         }
     }
 

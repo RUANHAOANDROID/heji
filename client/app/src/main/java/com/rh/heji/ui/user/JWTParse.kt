@@ -27,8 +27,9 @@ object JWTParse {
     }
 
     private fun resolveToken(token: String): String {
-        return if (!StringUtils.isEmpty(token) && token.startsWith("Bearer ")) {
-            token.substring(7)
+        val bearer = "Bearer "
+        return if (!StringUtils.isEmpty(token) && token.startsWith(bearer)) {
+            token.substring(bearer.length)
         } else token
     }
 }

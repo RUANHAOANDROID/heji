@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.DiffUtil.ItemCallback as ItemCallback
 class BookListFragment : BaseFragment() {
     lateinit var adapter: BookListAdapter
     lateinit var binding: FragmentBookListBinding
-    private val bookViewModel by lazy { ViewModelProvider(this).get(BookViewModel::class.java) }
+    private val bookViewModel by lazy { ViewModelProvider(this)[BookViewModel::class.java] }
     override fun layoutId(): Int {
         return R.layout.fragment_book_list
     }
@@ -87,7 +87,7 @@ class BookListFragment : BaseFragment() {
 //        adapter.animationEnable = true
 //        adapter.setAnimationWithDefault(BaseQuickAdapter.AnimationType.SlideInRight)
         swipeRefreshLayout(binding.refreshLayout) { bookViewModel.getBookList() }
-        bookViewModel.getBookList().observe(this) {
+        bookViewModel.bookList().observe(this) {
             adapter.setDiffNewData(it)
             hideRefreshing(binding.refreshLayout)
         }

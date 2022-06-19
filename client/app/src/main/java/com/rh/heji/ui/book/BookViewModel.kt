@@ -4,7 +4,6 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.currentUser
 import com.rh.heji.App
 import com.rh.heji.data.Result
 import com.rh.heji.data.db.Book
@@ -18,35 +17,50 @@ import com.rh.heji.utlis.launch
 import com.rh.heji.utlis.launchIO
 import com.rh.heji.utlis.runMainThread
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.withContext
 
 class BookViewModel : BaseViewModel() {
-    private val bookLiveData = MediatorLiveData<Book>()
-    private val bookListLiveData = MediatorLiveData<MutableList<Book>>()
+    private val _bookLiveData = MediatorLiveData<Book>()
+    private val _bookListLiveData = MediatorLiveData<MutableList<Book>>()
     private val bookDao = App.dataBase.bookDao()
-    private val bookRepository=BookRepository()
-    fun createNewBook(name: String, type: String): LiveData<Book> {
+
+    private val bookRepository = BookRepository()
+
+
+    init {
+        launchIO({
+            bookDao.allBooks().filterNotNull().collect {
+                _bookListLiveData.postValue(it)
+            }
+        })
+
+    }
+
+    fun bookCreate(): LiveData<Book> {
+        return _bookLiveData
+    }
+
+    fun createNewBook(name: String, type: String) {
 
         launchIO({
-            bookRepository.addBook(Book(name = name,type=type))
             val count = bookDao.countByName(name)
             if (count > 0) {
                 ToastUtils.showLong("账本名已经存在")
             } else {
+                bookRepository.addBook(Book(name = name, type = type))
                 val book = Book(
                     id = ObjectId().toHexString(),
                     name = name,
                     type = type,
                     createUser = App.user.name
                 )
-                bookDao.insert(book)
-                bookLiveData.postValue(book)
-                HejiNetwork.getInstance().bookCreate(book)
+                _bookLiveData.postValue(book)
             }
-        }, {})
+        })
 
         //network create
-        return bookLiveData
     }
 
     fun isFirstBook(id: String) = App.dataBase.bookDao().isFirstBook(id)
@@ -55,14 +69,15 @@ class BookViewModel : BaseViewModel() {
         return App.dataBase.billDao().countByBookId(book_id)
     }
 
-    fun getBookList(): LiveData<MutableList<Book>> {
+    fun bookList(): LiveData<MutableList<Book>> {
+        return _bookListLiveData
+    }
+
+    fun getBookList() {
         launchIO({
-            val allBooks = bookDao.allBooks()
-            bookListLiveData.postValue(allBooks)
             val response = HejiNetwork.getInstance().bookPull()
             val netBooks = response.data
             if (netBooks.isNotEmpty()) {
-                bookListLiveData.postValue(netBooks)
                 for (book in netBooks) {
                     book.synced = STATUS.SYNCED
                     if (bookDao.exist(book.id) > 0) {
@@ -72,8 +87,7 @@ class BookViewModel : BaseViewModel() {
                     }
                 }
             }
-        }, {})
-        return bookListLiveData
+        })
     }
 
     fun getBookUsers(bookId: String, @MainThread call: (MutableList<BookUser>) -> Unit) {

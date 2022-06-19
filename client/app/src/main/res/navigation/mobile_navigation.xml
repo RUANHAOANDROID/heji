@@ -141,7 +141,7 @@
 
     <fragment
         android:id="@+id/nav_book_add"
-        android:name="com.rh.heji.ui.book.BookAddFragment"
+        android:name="com.rh.heji.ui.book.CreateBookFragment"
         android:label="add_book_fragment"
         tools:layout="@layout/fragment_book_add">
         <action

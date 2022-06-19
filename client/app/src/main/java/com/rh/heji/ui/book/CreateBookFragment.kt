@@ -10,7 +10,7 @@ import com.rh.heji.R
 import com.rh.heji.databinding.FragmentBookAddBinding
 import com.rh.heji.ui.base.BaseFragment
 
-class BookAddFragment : BaseFragment() {
+class CreateBookFragment : BaseFragment() {
     private val viewModel: BookViewModel by lazy { ViewModelProvider(this).get(BookViewModel::class.java) }
     lateinit var binding: FragmentBookAddBinding
     override fun setUpToolBar() {
@@ -26,7 +26,8 @@ class BookAddFragment : BaseFragment() {
         binding = FragmentBookAddBinding.bind(rootView)
         binding.banner.setOnClickListener { }
         binding.layoutType.setOnClickListener {
-            XPopup.Builder(requireContext()).asBottomList("选择账单类型", arrayOf("日常生活", "经营账本", "人情账本", "汽车账本")
+            XPopup.Builder(requireContext()).asBottomList(
+                "选择账单类型", arrayOf("日常生活", "经营账本", "人情账本", "汽车账本")
             ) { position, text ->
                 binding.tvBookType.text = text
             }.show()
@@ -38,15 +39,15 @@ class BookAddFragment : BaseFragment() {
                 ToastUtils.showShort("请选择填写账本名称")
                 return@setOnClickListener
             }
-            if (type.isEmpty()||type=="未设置") {
+            if (type.isEmpty() || type == "未设置") {
                 ToastUtils.showShort("请选择账本类型")
                 return@setOnClickListener
             }
-            viewModel.createNewBook(name, type).observe(viewLifecycleOwner, {
-                findNavController().popBackStack()
-            })
+            viewModel.createNewBook(name, type)
         }
-
+        viewModel.bookCreate().observe(this) {
+            findNavController().popBackStack()
+        }
     }
 
     fun bookName() = binding.textInputEdit.text.toString()

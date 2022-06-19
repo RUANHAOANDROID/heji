@@ -7,7 +7,7 @@ import com.rh.heji.databinding.FragmentUserInfoBinding
 import com.rh.heji.ui.base.BaseFragment
 
 class UserInfoFragment : BaseFragment() {
-    private val viewModel by lazy { ViewModelProvider(this).get(UserInfoViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(this)[UserInfoViewModel::class.java] }
     lateinit var binding: FragmentUserInfoBinding
 
     override fun layoutId(): Int {

@@ -1,6 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import org.jetbrains.annotations.NotNull
 
 @Dao
@@ -26,7 +27,7 @@ interface BookDao {
     fun countByName(name: String): Int
 
     @Query("SELECT * FROM book WHERE sync_status!=${STATUS.DELETED} ORDER BY book_id")
-    fun allBooks(): MutableList<Book>
+    fun allBooks(): Flow<MutableList<Book>>
 
     @Query("select * from book where sync_status=:status")
     fun books(status: Int): MutableList<Book>

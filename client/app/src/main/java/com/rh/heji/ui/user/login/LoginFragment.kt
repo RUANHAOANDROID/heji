@@ -18,7 +18,7 @@ import com.rh.heji.ui.user.register.RegisterUser
 
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
-    private val viewModel by lazy { ViewModelProvider(this).get(LoginViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(this)[LoginViewModel::class.java] }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

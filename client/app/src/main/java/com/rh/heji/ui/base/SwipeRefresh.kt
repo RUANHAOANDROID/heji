@@ -27,6 +27,7 @@ fun BaseFragment.hideRefreshing(swipeRefreshLayout: SwipeRefreshLayout) {
     swipeRefreshLayout.isRefreshing = false
 }
 
-fun BaseFragment.showRefreshing(swipeRefreshLayout: SwipeRefreshLayout) {
+fun BaseFragment.showRefreshing(swipeRefreshLayout: SwipeRefreshLayout, delayMills: Long = 5000L) {
     swipeRefreshLayout.isRefreshing = true
+    swipeRefreshLayout.postDelayed({ hideRefreshing(swipeRefreshLayout) }, delayMills)
 }

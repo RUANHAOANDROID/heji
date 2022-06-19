@@ -86,6 +86,8 @@ class BookViewModel : BaseViewModel() {
                         bookDao.insert(book)
                     }
                 }
+            } else {
+                ToastUtils.showLong("没有更多账本")
             }
         })
     }

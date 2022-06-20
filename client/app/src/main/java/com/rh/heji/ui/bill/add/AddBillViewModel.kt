@@ -5,6 +5,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
+import com.rh.heji.service.sync.IBillSync
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
 import java.util.*
@@ -12,7 +13,7 @@ import java.util.*
 /**
  * 账单添加页ViewModel 不要在其他页面应用该ViewModel
  */
-class AddBillViewModel : BaseViewModel() {
+class AddBillViewModel(val mBillSync: IBillSync) : BaseViewModel() {
 
     private val saveLiveData = MutableLiveData<Int>()
 
@@ -43,6 +44,7 @@ class AddBillViewModel : BaseViewModel() {
             }
             var count: Long =
                 App.dataBase.billImageDao().installBillAndImage(bill, images)
+            mBillSync.add(bill)
             saveLiveData.postValue(state)
         }, {
             ToastUtils.showLong(it.message)

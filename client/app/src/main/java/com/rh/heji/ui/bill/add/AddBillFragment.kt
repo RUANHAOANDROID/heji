@@ -50,7 +50,12 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
         const val SAVE_ERROR = 3
     }
 
-    private val billViewModel by lazy { ViewModelProvider(this)[AddBillViewModel::class.java] }
+    private val billViewModel by lazy {
+        ViewModelProvider(
+            this,
+            AddBillViewModelFactory(mainActivity.mService.getBillSyncManager())
+        )[AddBillViewModel::class.java]
+    }
     val categoryViewModel by lazy { ViewModelProvider(this)[CategoryViewModel::class.java] }
 
     private lateinit var binding: FragmentAddbillBinding
@@ -266,7 +271,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
     override fun setCategory(category: String?) {
         //设置类别
         mBill.category?.let {
-            if(this::categoryTabFragment.isInitialized)
+            if (this::categoryTabFragment.isInitialized)
                 categoryTabFragment.setSelectCategory(it, mBill.type)
         }
     }

@@ -3,6 +3,7 @@ package com.rh.heji.service.sync
 import com.rh.heji.App
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.STATUS
+import com.rh.heji.launchIO
 import com.rh.heji.network.HejiNetwork
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -19,16 +20,16 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
     }
 
     override fun delete(bookID: String) {
-        scope.launch {
+        scope.launchIO({
             val response = HejiNetwork.getInstance().bookDelete(bookID)
             if (response.success()) {
                 App.dataBase.bookDao().deleteById(response.data)
             }
-        }
+        })
     }
 
     override fun add(book: Book) {
-        scope.launch {
+        scope.launchIO({
             val response = HejiNetwork.getInstance().bookCreate(book)
             if (response.success()) {
                 val newBook = Book(name = book.name).apply {
@@ -38,11 +39,11 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
                 }
                 App.dataBase.bookDao().upsert(book = newBook)
             }
-        }
+        })
     }
 
     override fun update(book: Book) {
-        scope.launch {
+        scope.launchIO({
             val response = HejiNetwork.getInstance()
                 .bookUpdate(
                     book_id = book.id,
@@ -54,6 +55,6 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
                     TODO()
                 })
             }
-        }
+        })
     }
 }

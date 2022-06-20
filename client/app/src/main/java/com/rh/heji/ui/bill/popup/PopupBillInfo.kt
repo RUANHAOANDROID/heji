@@ -4,6 +4,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
@@ -53,7 +54,8 @@ class PopupBillInfo(
         }
         binding.tvUpdate.setOnClickListener {
             update(bill)
-            val bundle = AddBillFragmentArgs.Builder(ArgAddBill(isModify = true,bill)).build().toBundle()
+            val bundle =
+                AddBillFragmentArgs.Builder(ArgAddBill(isModify = true, bill)).build().toBundle()
             activity.navController.navigate(R.id.nav_bill_add, bundle)
             dismiss()
         }
@@ -87,25 +89,22 @@ class PopupBillInfo(
      * 删除该条账单
      */
     private fun deleteTip() {
+        val mBillSync = activity.mService.getBillSyncManager()
         XPopup.Builder(context).asConfirm(
             "删除提示", "确认删除该条账单吗？"
         ) {
             val mainActivity = context as MainActivity
-            mainActivity.lifecycleScope.launch(Dispatchers.IO) {
-                withContext(Dispatchers.Main) {
-                    if (bill.createUser == App.user.name) {
-                        mainActivity.mService.getBookSyncManager().compare()
-                        App.dataBase.billDao().delete(bill)
-                        delete(bill)
-                        DataBus.post(SyncEvent.DELETE, bill.copy())
-                        dismiss()
-
-                    } else {
-                        ToastUtils.showLong("只有账单创建人有权删除该账单")
-                    }
+            bill.also {
+                if (it.createUser == App.user.name) {
+                    App.dataBase.billDao().preDelete(it.id)
+                    mBillSync.delete(it.id)
+                    delete(it)
+                    dismiss()
+                    LogUtils.d("删除账单")
+                } else {
+                    ToastUtils.showLong("只有账单创建人有权删除该账单")
                 }
             }
-
         }.show()
     }
 

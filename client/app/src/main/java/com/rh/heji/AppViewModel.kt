@@ -53,26 +53,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-
-    fun billDelete(bill: Bill) {
-        launchIO({
-            val status = App.dataBase.billDao().status(bill.id)
-            when (status) {
-                STATUS.NOT_SYNCED -> {//未同步直接删除
-                    App.dataBase.billDao().deleteById(bill.id)
-                    DataBus.post(EventMessage(SyncEvent.DELETE, bill.copy()))
-                    return@launchIO
-                }
-                else -> {
-                    App.dataBase.billDao().preDelete(bill.id)
-                }
-            }
-            DataBus.post(EventMessage(SyncEvent.DELETE, bill.copy()))
-            billRepository.deleteBill(bill.id)
-        })
-
-    }
-
     fun asyncData() {
         launchIO({
             var dataAsyncWork = DataSyncWork()

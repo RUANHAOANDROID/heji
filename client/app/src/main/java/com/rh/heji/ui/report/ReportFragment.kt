@@ -96,7 +96,7 @@ class ReportFragment : BaseFragment() {
         initCategoryListView()
         initTotalTitleView()
         initTotalListView()
-        reportViewModel.everyNodeIncomeExpenditure.observe(this, {
+        reportViewModel.everyNodeIncomeExpenditure.observe(this) {
             it.apply {
                 if (key == BillType.EXPENDITURE.type()) {
                     setExpenditureLineChartNodes(
@@ -119,21 +119,21 @@ class ReportFragment : BaseFragment() {
                     )
                 }
             }
-        })
+        }
         reportViewModel.categoryProportion
-            .observe(this, { categoryDataList ->
+            .observe(this) { categoryDataList ->
                 setPieChartData(categoryDataList)
                 categoryTotalAdapter.setList(categoryDataList)
-            })
+            }
 
-        reportViewModel.reportBillsList.observe(this, {
+        reportViewModel.reportBillsList.observe(this) {
             monthYearBillsAdapter.setList(it)
-        })
-        DataBus.subscriber(this, {
+        }
+        DataBus.subscriber(this) {
             if (it.entity is Bill) {
                 reportViewModel.refreshData(BillType.EXPENDITURE.type())
             }
-        })
+        }
         emptyStubView.setOnInflateListener { stub, inflated ->
             val emptyLayoutBinding = LayoutEmptyBinding.bind(inflated)
             emptyLayoutBinding.tvContext.text = "没有更多账单数据"
@@ -148,59 +148,59 @@ class ReportFragment : BaseFragment() {
      * 收支总览
      */
     private fun incomeExpenditureInfo() {
-        reportViewModel.incomeExpenditure.observe(this,
-            {
+        reportViewModel.incomeExpenditure.observe(this
+        ) {
 
-                it?.let { money ->
-                    if (money.income == null) money.income = MoneyConverters.ZERO_00()
-                    if (money.expenditure == null) money.expenditure = MoneyConverters.ZERO_00()
-                    binding.tvIncomeValue.text = money.income.toString()
-                    binding.tvExpenditureValue.text = money.expenditure.toString()
-                    val jieYu = money.income!!.minus(money.expenditure!!)//结余
-                    binding.tvJieYuValue.text = jieYu.toPlainString()
-                    val dayCount = MyTimeUtils.lastDayOfMonth(
-                        reportViewModel.yearMonth.year,
-                        reportViewModel.yearMonth.month
-                    )
-                        .split("-")[2].toInt()//月份天数
-                    binding.tvDayAVGValue.text =
-                        jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
+            it?.let { money ->
+                if (money.income == null) money.income = MoneyConverters.ZERO_00()
+                if (money.expenditure == null) money.expenditure = MoneyConverters.ZERO_00()
+                binding.tvIncomeValue.text = money.income.toString()
+                binding.tvExpenditureValue.text = money.expenditure.toString()
+                val jieYu = money.income!!.minus(money.expenditure!!)//结余
+                binding.tvJieYuValue.text = jieYu.toPlainString()
+                val dayCount = MyTimeUtils.lastDayOfMonth(
+                    reportViewModel.yearMonth.year,
+                    reportViewModel.yearMonth.month
+                )
+                    .split("-")[2].toInt()//月份天数
+                binding.tvDayAVGValue.text =
+                    jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
 
-                    showEmptyView()
+                showEmptyView()
 
-                    //----列表标题年/月平均值
-                    var avg = if (reportViewModel.yearMonth.isYear()) {
-                        var month12 = BigDecimal(12)
-                        "月均支出：${
-                            money.expenditure!!.divide(
-                                month12,
-                                2,
-                                BigDecimal.ROUND_DOWN
-                            )
-                        }  收入：${money.expenditure!!.div(month12)}"
-                    } else {
-                        val monthDayCount = BigDecimal(
-                            MyTimeUtils.getMonthLastDay(
-                                reportViewModel.yearMonth.year,
-                                reportViewModel.yearMonth.month
-                            )
+                //----列表标题年/月平均值
+                var avg = if (reportViewModel.yearMonth.isYear()) {
+                    var month12 = BigDecimal(12)
+                    "月均支出：${
+                        money.expenditure!!.divide(
+                            month12,
+                            2,
+                            BigDecimal.ROUND_DOWN
                         )
-                        "日均支出：${
-                            money.expenditure!!.divide(
-                                monthDayCount,
-                                2,
-                                BigDecimal.ROUND_DOWN
-                            )
-                        }  收入：${
-                            money.income!!.div(
-                                monthDayCount
-                            )
-                        }"
-                    }
-                    binding.tvYearMonthAVG.text = SpannableString.valueOf(avg)
+                    }  收入：${money.expenditure!!.div(month12)}"
+                } else {
+                    val monthDayCount = BigDecimal(
+                        MyTimeUtils.getMonthLastDay(
+                            reportViewModel.yearMonth.year,
+                            reportViewModel.yearMonth.month
+                        )
+                    )
+                    "日均支出：${
+                        money.expenditure!!.divide(
+                            monthDayCount,
+                            2,
+                            BigDecimal.ROUND_DOWN
+                        )
+                    }  收入：${
+                        money.income!!.div(
+                            monthDayCount
+                        )
+                    }"
                 }
+                binding.tvYearMonthAVG.text = SpannableString.valueOf(avg)
+            }
 
-            })
+        }
     }
 
     /**

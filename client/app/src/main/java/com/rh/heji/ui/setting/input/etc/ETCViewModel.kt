@@ -5,12 +5,8 @@ import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
-
-import com.rh.heji.AppViewModel
 import com.rh.heji.App
 import com.rh.heji.data.BillType
-import com.rh.heji.data.DataBus
-import com.rh.heji.data.SyncEvent
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.Bill
@@ -25,9 +21,12 @@ import com.rh.heji.utlis.http.basic.HttpRetrofit
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import okhttp3.*
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -40,7 +39,7 @@ import java.util.function.Consumer
  * @author: 锅得铁
  * #
  */
-class ETCViewModel(val mBillSync:IBillSync) : BaseViewModel() {
+class ETCViewModel(private val mBillSync:IBillSync) : BaseViewModel() {
     var etcID = DEF_ETC_ID
     var carID = DEF_CAR_ID
     var yearMonth: String? = null

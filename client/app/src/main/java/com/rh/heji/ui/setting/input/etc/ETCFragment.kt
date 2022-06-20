@@ -1,6 +1,5 @@
 package com.rh.heji.ui.setting.input.etc
 
-import android.content.Context
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -11,10 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
-import com.rh.heji.R
 import com.rh.heji.App.Companion.currentBook
-import com.rh.heji.data.SyncEvent
-import com.rh.heji.data.DataBus
+import com.rh.heji.R
 import com.rh.heji.databinding.FragmentEtcBinding
 import com.rh.heji.ui.base.BaseFragment
 import java.util.*

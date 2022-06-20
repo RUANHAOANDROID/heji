@@ -52,7 +52,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppStartup"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
-
+        <service android:name=".service.sync.SyncService"></service>
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

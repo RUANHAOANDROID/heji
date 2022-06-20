@@ -7,6 +7,7 @@ import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.dto.*
 import kotlinx.coroutines.flow.Flow
+import org.jetbrains.annotations.NotNull
 import java.math.BigDecimal
 import java.util.*
 
@@ -20,9 +21,11 @@ interface BillDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun install(billTab: Bill): Long
 
+    @NotNull
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(billTab: Bill): Long
 
+    @NotNull
     @Update(entity =Bill::class ,onConflict = OnConflictStrategy.REPLACE)
     fun update(bill: Bill): Int
 

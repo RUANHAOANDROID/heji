@@ -27,7 +27,12 @@ import androidx.recyclerview.widget.DiffUtil.ItemCallback as ItemCallback
 class BookListFragment : BaseFragment() {
     lateinit var adapter: BookListAdapter
     lateinit var binding: FragmentBookListBinding
-    private val bookViewModel by lazy { ViewModelProvider(this)[BookViewModel::class.java] }
+    private val bookViewModel: BookViewModel by lazy {
+        ViewModelProvider(
+            this,
+            BookViewModelFactory(mainActivity.mService.getBookSyncManager())
+        )[BookViewModel::class.java]
+    }
     override fun layoutId(): Int {
         return R.layout.fragment_book_list
     }

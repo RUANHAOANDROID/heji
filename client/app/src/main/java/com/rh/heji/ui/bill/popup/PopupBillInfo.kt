@@ -94,10 +94,12 @@ class PopupBillInfo(
             mainActivity.lifecycleScope.launch(Dispatchers.IO) {
                 withContext(Dispatchers.Main) {
                     if (bill.createUser == App.user.name) {
+                        mainActivity.mService.getBookSyncManager().compare()
                         App.dataBase.billDao().delete(bill)
                         delete(bill)
                         DataBus.post(SyncEvent.DELETE, bill.copy())
                         dismiss()
+
                     } else {
                         ToastUtils.showLong("只有账单创建人有权删除该账单")
                     }

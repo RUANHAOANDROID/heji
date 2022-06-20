@@ -2,12 +2,19 @@ package com.rh.heji
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.view.*
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -16,8 +23,10 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.*
+import androidx.navigation.NavController
 import androidx.navigation.NavController.OnDestinationChangedListener
+import androidx.navigation.NavDestination
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.blankj.utilcode.util.LogUtils
@@ -25,15 +34,18 @@ import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
 import com.rh.heji.databinding.HeaderMainNavBinding
-import com.rh.heji.ui.user.security.UserToken
+import com.rh.heji.service.sync.SyncService
 import com.rh.heji.ui.list.DrawerListener
 import com.rh.heji.ui.user.JWTParse
+import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.utlis.CrashInfo
 import com.rh.heji.utlis.MyUtils
 import com.rh.heji.utlis.checkPermissions
 import com.rh.heji.utlis.permitDiskReads
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
 
 
@@ -45,12 +57,39 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navHeaderMainBinding: HeaderMainNavBinding//侧拉头像
     private lateinit var navigationView: NavigationView
 
+    lateinit var mService: SyncService
+    lateinit var mServiceBinder: SyncService.SyncBinder
+
     companion object {
         private const val TAG = "MainActivity"
         fun startMainActivity(activity: Activity) {
             val intent = Intent(activity, MainActivity::class.java)
             activity.startActivity(intent)
         }
+    }
+
+    /**
+     * Connection service
+     */
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            mServiceBinder = service as SyncService.SyncBinder
+            mService = mServiceBinder.getService()
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Intent(this, SyncService::class.java).also {
+            startService(it)
+            bindService(it, connection, Context.BIND_AUTO_CREATE)
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -303,5 +342,12 @@ class MainActivity : AppCompatActivity() {
         ToastUtils.showLong("用户凭证已失效，请重新登录")
         LoginActivity.start(this)
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Intent(this, SyncService::class.java).also {
+            unbindService(connection)
+        }
     }
 }

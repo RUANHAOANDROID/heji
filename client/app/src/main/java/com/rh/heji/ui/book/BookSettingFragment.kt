@@ -25,7 +25,12 @@ import java.lang.Error
 
 class BookSettingFragment : BaseFragment() {
 
-    private val viewModel by lazy { ViewModelProvider(this).get(BookViewModel::class.java) }
+    private val viewModel: BookViewModel by lazy {
+        ViewModelProvider(
+            this,
+            BookViewModelFactory(mainActivity.mService.getBookSyncManager())
+        )[BookViewModel::class.java]
+    }
     private lateinit var binding: FragmentBookSettingBinding
     private lateinit var book: Book
 

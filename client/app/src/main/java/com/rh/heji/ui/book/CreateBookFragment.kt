@@ -11,7 +11,12 @@ import com.rh.heji.databinding.FragmentBookAddBinding
 import com.rh.heji.ui.base.BaseFragment
 
 class CreateBookFragment : BaseFragment() {
-    private val viewModel: BookViewModel by lazy { ViewModelProvider(this).get(BookViewModel::class.java) }
+    private val viewModel: BookViewModel by lazy {
+        ViewModelProvider(
+            this,
+            BookViewModelFactory(mainActivity.mService.getBookSyncManager())
+        )[BookViewModel::class.java]
+    }
     lateinit var binding: FragmentBookAddBinding
     override fun setUpToolBar() {
         super.setUpToolBar()

@@ -12,31 +12,32 @@ import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BookRepository
 import com.rh.heji.network.HejiNetwork
+import com.rh.heji.service.sync.IBookSync
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launch
 import com.rh.heji.utlis.launchIO
 import com.rh.heji.utlis.runMainThread
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
-class BookViewModel : BaseViewModel() {
+class BookViewModel(private val mBookSync: IBookSync) : BaseViewModel() {
     private val _bookLiveData = MediatorLiveData<Book>()
     private val _bookListLiveData = MediatorLiveData<MutableList<Book>>()
     private val bookDao = App.dataBase.bookDao()
 
     private val bookRepository = BookRepository()
-
+    private val booksFlow = App.dataBase.bookDao().allBooks()
 
     init {
         launchIO({
-            bookDao.allBooks().filterNotNull().collect {
+            booksFlow.filterNotNull().collect {
                 _bookListLiveData.postValue(it)
             }
         })
 
     }
+
 
     fun bookCreate(): LiveData<Book> {
         return _bookLiveData
@@ -56,6 +57,7 @@ class BookViewModel : BaseViewModel() {
                     type = type,
                     createUser = App.user.name
                 )
+                mBookSync.add(book)
                 _bookLiveData.postValue(book)
             }
         })

@@ -2,6 +2,7 @@ package com.rh.heji.network;
 
 /**
  * Date: 2020/9/23
+ *
  * @author: 锅得铁
  * #
  */
@@ -48,5 +49,9 @@ public class BaseResponse<T> {
                 ", msg='" + msg + '\'' +
                 ", date=" + data +
                 '}';
+    }
+
+    public boolean success() {
+        return code == 0;
     }
 }

@@ -101,7 +101,7 @@ class DataSyncWork {
                             billDao.install(serverBill)
                         }
                         var imagesId = serverBill.images//云图片
-                        if (null != imagesId && imagesId.size > 0) {//有图片
+                        if (null != imagesId && imagesId.isNotEmpty()) {//有图片
                             var response = network.imageDownload(serverBill.id)
                             response.data?.forEach { entity ->
                                 var image = Image(entity._id, billID = serverBill.id)

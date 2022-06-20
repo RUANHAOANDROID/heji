@@ -16,6 +16,7 @@ import kotlinx.coroutines.SupervisorJob
  */
 class SyncService : Service() {
     private lateinit var mBookSync: IBookSync
+    private lateinit var mBillSync: IBillSync
     private val binder = SyncBinder()
 
     //后台具体操作任务使用server scope
@@ -40,7 +41,7 @@ class SyncService : Service() {
         fun getService(): SyncService = this@SyncService
     }
 
-    fun getBookSyncManager(): IBookSync {
-        return mBookSync
-    }
+    fun getBookSyncManager(): IBookSync = mBookSync
+
+    fun getBillSyncManager(): IBillSync = mBillSync
 }

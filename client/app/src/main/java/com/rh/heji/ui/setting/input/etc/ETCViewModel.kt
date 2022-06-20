@@ -18,6 +18,7 @@ import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.moshi
+import com.rh.heji.service.sync.IBillSync
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.setting.input.etc.HBETCEntity.DataBean.OrderArrBean
 import com.rh.heji.utlis.http.basic.HttpRetrofit
@@ -39,7 +40,7 @@ import java.util.function.Consumer
  * @author: 锅得铁
  * #
  */
-class ETCViewModel : BaseViewModel() {
+class ETCViewModel(val mBillSync:IBillSync) : BaseViewModel() {
     var etcID = DEF_ETC_ID
     var carID = DEF_CAR_ID
     var yearMonth: String? = null
@@ -94,15 +95,12 @@ class ETCViewModel : BaseViewModel() {
                 /**
                  * 如果不存在才插入
                  */
-                /**
-                 * 如果不存在才插入
-                 */
                 val bills =   App.dataBase.billDao().findIds(bill.billTime, bill.money, bill.remark!!)
                 if (bills.size <= 0) {
                     val count =App.dataBase.billDao().install(bill)
                     LogUtils.d("导入ETC账单：", bill)
                     if (count>0)
-                        DataBus.post(SyncEvent.ADD,bill.copy())
+                        mBillSync.add(bill)
                 } else {
                     LogUtils.d("ETC账单已存在", bills)
                 }
@@ -261,7 +259,7 @@ class ETCViewModel : BaseViewModel() {
             val count =App.dataBase.billDao().install(bill)
             LogUtils.d("导入ETC账单：", bill)
             if (count >0)
-                DataBus.post(SyncEvent.ADD,bill.copy())
+                mBillSync.add(bill)
         } else {
             LogUtils.d("ETC账单已存在", bills)
         }

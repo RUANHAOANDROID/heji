@@ -26,10 +26,11 @@ import java.util.*
  */
 class ETCFragment : BaseFragment() {
     lateinit var binding: FragmentEtcBinding
-    lateinit var etcViewModel: ETCViewModel
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        etcViewModel = ViewModelProvider(this).get(ETCViewModel::class.java)
+    val etcViewModel: ETCViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ETCViewModelFactory(mainActivity.mService.getBillSyncManager())
+        )[ETCViewModel::class.java]
     }
 
     override fun onResume() {
@@ -58,11 +59,17 @@ class ETCFragment : BaseFragment() {
         }
         binding.etcWeb.loadUrl(ETCViewModel.ETC_URL)
         val client: WebViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view1: WebView, request: WebResourceRequest): Boolean {
+            override fun shouldOverrideUrlLoading(
+                view1: WebView,
+                request: WebResourceRequest
+            ): Boolean {
                 return super.shouldOverrideUrlLoading(view1, request)
             }
 
-            override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? { //拦截请求
+            override fun shouldInterceptRequest(
+                view: WebView,
+                request: WebResourceRequest
+            ): WebResourceResponse? { //拦截请求
                 //拦截的URL "http://hubeiweixin.u-road.com/HuBeiCityAPIServer/index.php/huibeicityserver/getCardMonthStatInfo"
                 //关键字
                 val key = "showetcacount"
@@ -145,33 +152,57 @@ class ETCFragment : BaseFragment() {
     }
 
     private fun requestAlert() {
-        if (TextUtils.isEmpty(etcViewModel.etcID) || TextUtils.isEmpty(etcViewModel.carID) || TextUtils.isEmpty(etcViewModel.yearMonth)) {
+        if (TextUtils.isEmpty(etcViewModel.etcID) || TextUtils.isEmpty(etcViewModel.carID) || TextUtils.isEmpty(
+                etcViewModel.yearMonth
+            )
+        ) {
             selectMonth()
             XPopup.Builder(requireContext())
-                    .asConfirm("导入提示", "请先按月份查询账单") { }
-                    .show()
+                .asConfirm("导入提示", "请先按月份查询账单") { }
+                .show()
         } else {
             XPopup.Builder(requireContext())
-                    .asConfirm("导入" + etcViewModel.yearMonth + "账单", "当前账本【${ currentBook.name}】，确认导入吗？") {
-                        val inputLoading = XPopup.Builder(requireContext()).asLoading().setTitle("正在导入")
-                        inputLoading.show()
-                        etcViewModel.requestHBGSETCList(etcViewModel.etcID, etcViewModel.yearMonth!!, etcViewModel.carID)
-                                .observe(viewLifecycleOwner) { message: String ->
-                                    inputLoading.setTitle(message)
-                                    Handler(Looper.getMainLooper()).postDelayed(
-                                        { inputLoading.dismiss() },
-                                        1000
-                                    )
-                                }
-                    }
-                    .show()
+                .asConfirm(
+                    "导入" + etcViewModel.yearMonth + "账单",
+                    "当前账本【${currentBook.name}】，确认导入吗？"
+                ) {
+                    val inputLoading = XPopup.Builder(requireContext()).asLoading().setTitle("正在导入")
+                    inputLoading.show()
+                    etcViewModel.requestHBGSETCList(
+                        etcViewModel.etcID,
+                        etcViewModel.yearMonth!!,
+                        etcViewModel.carID
+                    )
+                        .observe(viewLifecycleOwner) { message: String ->
+                            inputLoading.setTitle(message)
+                            Handler(Looper.getMainLooper()).postDelayed(
+                                { inputLoading.dismiss() },
+                                1000
+                            )
+                        }
+                }
+                .show()
         }
     }
 
     private fun selectMonth() {
         val calendar = Calendar.getInstance()
         val year = calendar[Calendar.YEAR]
-        val months = arrayOf("$year-01", "$year-02", "$year-03", "$year-04", "$year-05", "$year-06", "$year-07", "$year-08", "$year-09", "$year-10", "$year-11", "$year-12")
-        XPopup.Builder(requireContext()).asBottomList("选择月份", months) { position, text -> etcViewModel.yearMonth = text }.show()
+        val months = arrayOf(
+            "$year-01",
+            "$year-02",
+            "$year-03",
+            "$year-04",
+            "$year-05",
+            "$year-06",
+            "$year-07",
+            "$year-08",
+            "$year-09",
+            "$year-10",
+            "$year-11",
+            "$year-12"
+        )
+        XPopup.Builder(requireContext())
+            .asBottomList("选择月份", months) { position, text -> etcViewModel.yearMonth = text }.show()
     }
 }

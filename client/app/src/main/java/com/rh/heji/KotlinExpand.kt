@@ -3,7 +3,13 @@ package com.rh.heji
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.rh.heji.data.converters.DateConverters
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -16,7 +22,9 @@ import java.util.*
  * 扩展 Context 以 dataStore
  * @receiver Context
  */
-val Context.dataStore: DataStore<androidx.datastore.preferences.core.Preferences> by preferencesDataStore(name = "settings")
+val Context.dataStore: DataStore<androidx.datastore.preferences.core.Preferences> by preferencesDataStore(
+    name = "settings"
+)
 
 fun Date.string(): String {
     return DateConverters.date2Str(this)
@@ -35,4 +43,18 @@ fun Date.calendar(): Calendar {
 fun String.getObjectTime(): Date {
     val time = "${Integer.parseInt(this.substring(0, 8), 16)}000".toLong()
     return Date(time)
+}
+
+fun CoroutineScope.launchIO(
+    block: suspend () -> Unit,
+    error: suspend (Throwable) -> Unit = { it.printStackTrace() }
+): Job {
+    return launch(Dispatchers.IO) {
+        try {
+            block()
+        } catch (e: Throwable) {
+            error(e)
+            e.printStackTrace()
+        }
+    }
 }

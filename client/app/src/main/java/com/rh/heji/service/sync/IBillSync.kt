@@ -23,6 +23,7 @@ interface IBillSync {
 
     /**
      * 新增账本
+     * TODO 扩展图片
      *
      */
     fun add(bill: Bill)

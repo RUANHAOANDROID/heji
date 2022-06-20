@@ -25,6 +25,7 @@ class SyncService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         mBookSync = BookSyncImpl(scope)
+        mBillSync = BillSyncImpl(scope)
         return super.onStartCommand(intent, flags, startId)
     }
 

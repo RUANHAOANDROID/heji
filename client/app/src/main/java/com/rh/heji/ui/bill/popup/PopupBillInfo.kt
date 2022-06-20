@@ -96,7 +96,9 @@ class PopupBillInfo(
             val mainActivity = context as MainActivity
             bill.also {
                 if (it.createUser == App.user.name) {
+                    //状态删除
                     App.dataBase.billDao().preDelete(it.id)
+                    //异步删除->删除成功->本地删除
                     mBillSync.delete(it.id)
                     delete(it)
                     dismiss()

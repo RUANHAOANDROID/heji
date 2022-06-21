@@ -73,6 +73,10 @@ class BookSettingFragment : BaseFragment() {
                 ToastUtils.showLong("该账本下没有更多账单")
                 return@setOnClickListener
             }
+            if (book.createUser != App.user.name) {//非自建账本
+                ToastUtils.showLong("非自建账本，无权该操作")
+                return@setOnClickListener
+            }
             XPopup.Builder(requireContext()).asConfirm("清除提示", "该账本下有${count}条账单确认删除？") {
                 viewModel.clearBook(book.id) {
                     if (it is Result.Success) {

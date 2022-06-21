@@ -52,7 +52,7 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
                 )
             if (response.success()) {
                 App.dataBase.bookDao().update(book = book.apply {
-                    TODO()
+
                 })
             }
         })

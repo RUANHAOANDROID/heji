@@ -25,7 +25,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:background="@color/white"
                 android:minHeight="200dp"
                 tools:context=".ui.book.BookSettingFragment">
@@ -54,8 +54,10 @@
 
                 <TextView
                     android:id="@+id/tvCategoryManager"
+                    style="@style/TextSelectedBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="40dp"
                     android:paddingLeft="16dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
@@ -118,9 +120,11 @@
 
                 <TextView
                     android:id="@+id/tvModify"
+                    style="@style/TextSelectedBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:minHeight="40dp"
                     android:paddingLeft="16dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
@@ -133,7 +137,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:background="@color/white"
                 android:minHeight="100dp"
                 tools:context=".ui.book.BookSettingFragment">
@@ -151,8 +155,10 @@
 
                 <TextView
                     android:id="@+id/tvDeleteBook"
+                    style="@style/TextSelectedBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="40dp"
                     android:paddingLeft="16dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
@@ -184,9 +190,11 @@
 
                 <TextView
                     android:id="@+id/tvClearBill"
+                    style="@style/TextSelectedBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:minHeight="40dp"
                     android:paddingLeft="16dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
@@ -199,7 +207,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:background="@color/white"
                 android:minHeight="100dp"
                 tools:context=".ui.book.BookSettingFragment">
@@ -207,6 +215,7 @@
 
                 <TextView
                     android:id="@+id/tvAddBookUser"
+                    style="@style/TextSelectedBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_baseline_add_32_black"
@@ -214,7 +223,6 @@
                     android:padding="16dp"
                     android:text="邀请成员"
                     android:textColor="@color/black"
-                    style="@style/TextSelectedBackground"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/recycler" />

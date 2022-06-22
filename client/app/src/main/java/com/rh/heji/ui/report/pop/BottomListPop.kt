@@ -26,9 +26,9 @@ class BottomListPop(
         addInnerContent()
     }
 
-    var adapter = ReportBillsAdapter(layoutResId, data)
-    val recyclerView: VerticalRecyclerView by lazy { findViewById(R.id.recycler) }
-    val titleView: TextView by lazy { findViewById(R.id.tvTitle) }
+    private var adapter = ReportBillsAdapter(layoutResId, data)
+    private val recyclerView: VerticalRecyclerView by lazy { findViewById(R.id.recycler) }
+    val title: TextView by lazy { findViewById(R.id.tvTitle) }
 
     override fun getImplLayoutId(): Int {
         return R.layout.pop_layout_bills

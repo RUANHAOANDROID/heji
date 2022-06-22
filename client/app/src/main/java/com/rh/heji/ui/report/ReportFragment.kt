@@ -230,8 +230,9 @@ class ReportFragment : BaseFragment() {
                 reportViewModel.yearMonth.toYearMonth(),
                 billType
             )
-            val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
-            bottomListPop.titleView.text = categoryItem.label + "(${bills.size}条)"
+            val bottomListPop = BottomListPop(activity = mainActivity, data = bills).apply {
+                title.text = categoryItem.label + "(${bills.size}条)"
+            }
             XPopup.Builder(requireContext())
                 .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
                 .asCustom(bottomListPop)
@@ -269,8 +270,9 @@ class ReportFragment : BaseFragment() {
                 it.images = App.dataBase.imageDao().findImagesId(it.id)//c
                 return@filter true
             }.toMutableList()
-            val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
-            bottomListPop.titleView.text = "$yearMonthDay (${bills.size}条)"
+            val bottomListPop = BottomListPop(activity = mainActivity, data = bills).apply {
+                title.text = "$yearMonthDay (${bills.size}条)"
+            }
             XPopup.Builder(requireContext())
                 .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
                 .asCustom(bottomListPop)

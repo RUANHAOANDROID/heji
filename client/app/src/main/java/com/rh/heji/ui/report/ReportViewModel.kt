@@ -7,6 +7,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.rh.heji.currentYearMonth
 import com.rh.heji.App
 import com.rh.heji.data.BillType
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.dto.Income
 import com.rh.heji.data.db.dto.IncomeTimeSurplus
 import com.rh.heji.ui.base.BaseViewModel
@@ -62,16 +63,16 @@ class ReportViewModel : BaseViewModel() {
             field = value
             monthIncomeExpenditure()
             expenditure()
-            monthCategoryProportion()
+            monthCategoryProportion(BillType.EXPENDITURE)
             monthReportList()
 
             LogUtils.d(value)
         }
 
-    fun refreshData(type: Int) {
+    fun refreshData(billType: BillType) {
         monthIncomeExpenditure()
         expenditure()
-        monthCategoryProportion()
+        monthCategoryProportion(billType)
         monthReportList()
     }
 
@@ -129,10 +130,10 @@ class ReportViewModel : BaseViewModel() {
      * 分类所占百分比
      * 分类所占金额和百分比
      */
-    private fun monthCategoryProportion() {
+    fun monthCategoryProportion(billType:BillType) {
         launchIO({
             val list =
-                App.dataBase.billDao().reportCategory(-1, yearMonth.toYearMonth())
+                App.dataBase.billDao().reportCategory(billType.type(), yearMonth.toYearMonth())
                     .map {
                         return@map PieEntry(it.percentage, it.category, it.money)
                     }.toMutableList()

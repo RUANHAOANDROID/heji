@@ -193,7 +193,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/layoutTypeSwitchTab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -249,7 +249,7 @@
                         android:textColor="@color/textRemark"
                         android:text="全部"
                         android:textSize="13sp" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -261,7 +261,7 @@
 
                 android:padding="8dp">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/layoutTypeSwitchTab2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -300,7 +300,7 @@
                         android:text="收入"
                         android:textColor="@color/textRemark"
                         android:textSize="13sp" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <TextView
                     android:id="@+id/textView3"

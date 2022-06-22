@@ -24,7 +24,8 @@ import com.rh.heji.utlis.YearMonth
 import java.util.*
 
 /**
- * 折线图样式设置
+ * 统计ReportFragment折线图样式设置
+ * @author hao
  */
 fun ReportFragment.lineChartStyle(lineChart: LineChart) {
     lineChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {

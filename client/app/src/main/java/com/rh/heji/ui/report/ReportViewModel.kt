@@ -14,6 +14,7 @@ import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.KeyValue
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
+import java.math.BigDecimal
 import java.util.*
 
 class ReportViewModel : BaseViewModel() {
@@ -130,12 +131,16 @@ class ReportViewModel : BaseViewModel() {
      * 分类所占百分比
      * 分类所占金额和百分比
      */
-    fun monthCategoryProportion(billType:BillType) {
+    fun monthCategoryProportion(billType: BillType) {
         launchIO({
             val list =
                 App.dataBase.billDao().reportCategory(billType.type(), yearMonth.toYearMonth())
                     .map {
-                        return@map PieEntry(it.percentage, it.category, it.money)
+                        // 支出为负数，收入为正数  money * -1 or money * 1
+                        val data = it.money!!.multiply(BigDecimal(billType.type()))
+                        return@map PieEntry(
+                            it.percentage, it.category, data
+                        )
                     }.toMutableList()
             categoryLiveData.postValue(list)
             LogUtils.d(list)

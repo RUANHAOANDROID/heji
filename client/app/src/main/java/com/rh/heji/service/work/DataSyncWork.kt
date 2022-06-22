@@ -81,6 +81,7 @@ class DataSyncWork {
         }
 
         suspend fun pull() {
+            //TODO 目前仅拉取了当月 ，后期启动拉取整个账本数据
             val currentLastDay =
                 MyTimeUtils.getMonthLastDay(currentYearMonth.year, currentYearMonth.month)
             val statDate =

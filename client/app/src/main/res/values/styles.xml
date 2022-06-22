@@ -95,6 +95,12 @@
         <item name="backgroundTintMode">screen</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
+
+    <style name="LayoutTextSelected" parent="TextSelectedBackground">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- 文字加粗 -->
     <style name="text_bold_white">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@android:color/white</item>

@@ -71,28 +71,34 @@ class ReportFragment : BaseFragment() {
 
     override fun initView(rootView: View) {
         binding = FragmentReportBinding.bind(rootView)
+
         emptyStubView = rootView.findViewById(R.id.emptyStub)
+
         incomeExpenditureInfo()
+
         lineChartStyle(binding.lineChart)
         binding.tvTypeExpenditure.setOnClickListener {
             reportViewModel.expenditure()
-            lineChartSelectType(0)
+            lineChartSelectType(BillType.EXPENDITURE)
         }
         binding.tvTypeIncome.setOnClickListener {
             reportViewModel.income()
-            lineChartSelectType(1)
+            lineChartSelectType(BillType.INCOME)
         }
         binding.tvTypeAll.setOnClickListener {
             reportViewModel.incomeAndExpenditure()
-            lineChartSelectType(2)
+            lineChartSelectType(BillType.ALL)
         }
+
         pieChartStyle(binding.pieChartCategory)
-        binding.tvTypeIncomePie.setOnClickListener {
-            pieChartSelectType(1)
-        }
+
         binding.tvTypeExpenditurePie.setOnClickListener {
-            pieChartSelectType(0)
+            pieChartSelectType(BillType.EXPENDITURE)
         }
+        binding.tvTypeIncomePie.setOnClickListener {
+            pieChartSelectType(BillType.INCOME)
+        }
+
         initCategoryListView()
         initTotalTitleView()
         initTotalListView()
@@ -148,7 +154,8 @@ class ReportFragment : BaseFragment() {
      * 收支总览
      */
     private fun incomeExpenditureInfo() {
-        reportViewModel.incomeExpenditure.observe(this
+        reportViewModel.incomeExpenditure.observe(
+            this
         ) {
 
             it?.let { money ->
@@ -252,7 +259,7 @@ class ReportFragment : BaseFragment() {
             val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
             val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
             val bills = App.dataBase.billDao().findByDay(yearMonthDay).filter {
-                it.images =App.dataBase.imageDao().findImagesId(it.id)//c
+                it.images = App.dataBase.imageDao().findImagesId(it.id)//c
                 return@filter true
             }.toMutableList()
             val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
@@ -266,7 +273,7 @@ class ReportFragment : BaseFragment() {
     }
 
     /**
-     * 报表标题【日期】-【收入】-【指出】-【结余】
+     * 报表标题【日期】-【收入】-【支出】-【结余】
      */
     private fun initTotalTitleView() {
         val year = reportViewModel.yearMonth.isYear()
@@ -284,7 +291,7 @@ class ReportFragment : BaseFragment() {
     }
 
     /**
-     * 没有数据时显示空试图
+     * 没有数据时显示空视图
      */
     private fun showEmptyView() {
         if (binding.tvDayAVGValue.text.equals("0.00")) {
@@ -296,7 +303,12 @@ class ReportFragment : BaseFragment() {
         }
     }
 
-    private fun lineChartSelectType(type: Int) {
+    /**
+     * 折线图类型
+     *
+     * @param  type 收入|支出|全部
+     */
+    private fun lineChartSelectType(type: BillType) {
         binding.tvTypeExpenditure.apply {
             setBackgroundColor(resources.getColor(R.color.transparent, mainActivity.theme))
             setTextColor(resources.getColor(R.color.textRemark, mainActivity.theme))
@@ -314,20 +326,20 @@ class ReportFragment : BaseFragment() {
         }
 
         when (type) {
-            0 -> {
+            BillType.EXPENDITURE -> {
                 binding.tvTypeExpenditure.apply {
                     background =
                         resources.getDrawable(R.drawable.shape_tag_left_blue, mainActivity.theme)
                     setTextColor(resources.getColor(R.color.white, mainActivity.theme))
                 }
             }
-            1 -> {
+            BillType.INCOME -> {
                 binding.tvTypeIncome.apply {
                     setBackgroundColor(resources.getColor(R.color.colorPrimary, mainActivity.theme))
                     setTextColor(resources.getColor(R.color.white, mainActivity.theme))
                 }
             }
-            2 -> {
+            BillType.ALL -> {
                 binding.tvTypeAll.apply {
                     background =
                         resources.getDrawable(R.drawable.shape_tag_right_blue, mainActivity.theme)
@@ -336,7 +348,8 @@ class ReportFragment : BaseFragment() {
             }
         }
     }
-    private fun pieChartSelectType(type: Int) {
+
+    private fun pieChartSelectType(type: BillType) {
         binding.tvTypeExpenditurePie.apply {
             setBackgroundColor(resources.getColor(R.color.transparent, mainActivity.theme))
             setTextColor(resources.getColor(R.color.textRemark, mainActivity.theme))
@@ -349,26 +362,20 @@ class ReportFragment : BaseFragment() {
 
 
         when (type) {
-            0 -> {
-                binding.tvTypeExpenditure.apply {
+            BillType.EXPENDITURE -> {
+                binding.tvTypeExpenditurePie.apply {
                     background =
                         resources.getDrawable(R.drawable.shape_tag_left_blue, mainActivity.theme)
                     setTextColor(resources.getColor(R.color.white, mainActivity.theme))
                 }
             }
-            1 -> {
-                binding.tvTypeIncome.apply {
+            BillType.INCOME -> {
+                binding.tvTypeIncomePie.apply {
                     setBackgroundColor(resources.getColor(R.color.colorPrimary, mainActivity.theme))
                     setTextColor(resources.getColor(R.color.white, mainActivity.theme))
                 }
             }
-            2 -> {
-                binding.tvTypeAll.apply {
-                    background =
-                        resources.getDrawable(R.drawable.shape_tag_right_blue, mainActivity.theme)
-                    setTextColor(resources.getColor(R.color.white, mainActivity.theme))
-                }
-            }
+            else -> {}
         }
     }
 }

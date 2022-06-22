@@ -9,8 +9,9 @@ import com.rh.heji.databinding.ItemMonthYearBillBinding
 import java.math.BigDecimal
 
 /**
- *Date: 2021/5/18
- *@author: 锅得铁
+ * 月|年 报表 adapter
+ *  @date: 2021/5/18
+ *  @author: 锅得铁
  *#
  */
 class MonthYearBillAdapter(data: MutableList<IncomeTimeSurplus>?) :

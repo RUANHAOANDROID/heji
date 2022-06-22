@@ -93,9 +93,11 @@ class ReportFragment : BaseFragment() {
         pieChartStyle(binding.pieChartCategory)
 
         binding.tvTypeExpenditurePie.setOnClickListener {
+            reportViewModel.monthCategoryProportion(BillType.EXPENDITURE)
             pieChartSelectType(BillType.EXPENDITURE)
         }
         binding.tvTypeIncomePie.setOnClickListener {
+            reportViewModel.monthCategoryProportion(BillType.INCOME)
             pieChartSelectType(BillType.INCOME)
         }
 
@@ -137,7 +139,7 @@ class ReportFragment : BaseFragment() {
         }
         DataBus.subscriber(this) {
             if (it.entity is Bill) {
-                reportViewModel.refreshData(BillType.EXPENDITURE.type())
+                reportViewModel.refreshData(BillType.EXPENDITURE)
             }
         }
         emptyStubView.setOnInflateListener { stub, inflated ->
@@ -371,7 +373,8 @@ class ReportFragment : BaseFragment() {
             }
             BillType.INCOME -> {
                 binding.tvTypeIncomePie.apply {
-                    setBackgroundColor(resources.getColor(R.color.colorPrimary, mainActivity.theme))
+                    background =
+                        resources.getDrawable(R.drawable.shape_tag_right_blue, mainActivity.theme)
                     setTextColor(resources.getColor(R.color.white, mainActivity.theme))
                 }
             }

@@ -219,11 +219,16 @@ class ReportFragment : BaseFragment() {
         binding.recyclerCategory.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerCategory.adapter = categoryTotalAdapter
         categoryTotalAdapter.setOnItemClickListener { adapter, view, position ->
+
             val categoryItem: PieEntry = adapter.getItem(position) as PieEntry
+            val billType: Int = with(categoryItem) {
+                val money = data as BigDecimal
+                money.signum()//返回 -1 | 0 | 1  与BillType一致
+            }
             val bills = App.dataBase.billDao().findByCategoryAndMonth(
                 categoryItem.label,
                 reportViewModel.yearMonth.toYearMonth(),
-                BillType.EXPENDITURE.type()
+                billType
             )
             val bottomListPop = BottomListPop(activity = mainActivity, data = bills)
             bottomListPop.titleView.text = categoryItem.label + "(${bills.size}条)"

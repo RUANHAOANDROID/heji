@@ -28,6 +28,13 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
         })
     }
 
+    override fun clearBill(bookID: String) {
+        scope.launchIO({
+            //TODO 服务端清除账单
+            //val response =HejiNetwork.getInstance().bookClear()
+        })
+    }
+
     override fun add(book: Book) {
         scope.launchIO({
             val response = HejiNetwork.getInstance().bookCreate(book)

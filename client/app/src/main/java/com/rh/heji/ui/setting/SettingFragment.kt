@@ -14,7 +14,7 @@ class SettingFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        settingViewModel = ViewModelProvider(this).get(SettingViewModel::class.java)
+        settingViewModel = ViewModelProvider(this)[SettingViewModel::class.java]
     }
 
     override fun initView(rootView: View) {

@@ -12,33 +12,55 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></include>
 
-    <TextView
-        android:id="@+id/inputETC"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:text="导入ETC账单"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        android:layout_margin="8dp"
+        android:background="@color/white"
+        android:minHeight="100dp"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:context=".ui.book.BookSettingFragment">
 
-    <TextView
-        android:id="@+id/exportQianJi"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:text="导出到钱迹"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputETC" />
+
+        <TextView
+            android:id="@+id/tvTitleData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="数据处理"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/exportQianJi"
+            style="@style/TextSelectedBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="导出到钱迹"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/inputETC"
+            app:layout_constraintTop_toBottomOf="@+id/inputETC" />
+
+        <TextView
+            android:id="@+id/inputETC"
+            style="@style/TextSelectedBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minHeight="40dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="导入ETC账单"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/tvTitleData"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleData" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

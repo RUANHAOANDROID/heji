@@ -22,6 +22,13 @@ interface IBookSync {
     fun delete(bookID: String)
 
     /**
+     * 清除账本下账单
+     *
+     * @param bookID
+     */
+    fun clearBill(bookID: String)
+
+    /**
      * 新增账本
      *
      */

@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
@@ -185,7 +186,7 @@ public class ImageLoader implements XPopupImageLoader {
     }
 
     @Override
-    public void loadSnapshot(@NonNull Object uri, @NonNull final PhotoView snapshot) {
+    public void loadSnapshot(@NonNull Object uri, @NonNull final PhotoView snapshot, @Nullable ImageView srcView) {
         Glide.with(snapshot).downloadOnly().load(uri)
                 .into(new ImageDownloadTarget() {
                     @Override

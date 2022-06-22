@@ -35,7 +35,7 @@ import java.util.*
  */
 class ReportFragment : BaseFragment() {
     //private val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
-    private val reportViewModel: ReportViewModel by lazy { ViewModelProvider(this).get(ReportViewModel::class.java) }
+    private val reportViewModel: ReportViewModel by lazy { ViewModelProvider(this)[ReportViewModel::class.java] }
     private val categoryTotalAdapter: CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
     private val monthYearBillsAdapter: MonthYearBillAdapter = MonthYearBillAdapter(mutableListOf())
     private lateinit var emptyStubView: ViewStub

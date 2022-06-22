@@ -95,6 +95,7 @@ class DataSyncWork {
             data?.let { serverBills ->
                 if (serverBills.isNotEmpty()) {
                     serverBills.forEach { serverBill ->
+                        serverBill.synced =STATUS.SYNCED //拉取的账本为已同步账单
                         val existCount = billDao.countById(serverBill.id)//本地的
 
                         if (existCount == 0) {//不存在直接存入

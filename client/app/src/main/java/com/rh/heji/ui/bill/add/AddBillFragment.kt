@@ -363,6 +363,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
         try {
             mBill.category = categoryTabFragment.getSelectCategory().category
             checkBill()
+            bill.createTime = System.currentTimeMillis()
             billViewModel.save(bill, SAVE_SUCCESS)
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)

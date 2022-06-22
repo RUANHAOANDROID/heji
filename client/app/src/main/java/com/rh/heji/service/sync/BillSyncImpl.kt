@@ -26,7 +26,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
         scope.launchIO({
             val response = HejiNetwork.getInstance().billDelete(billID)
             if (response.success()) {
-                App.dataBase.bookDao().deleteById(response.data)
+                App.dataBase.billDao().deleteById(response.data)
             }
         })
     }

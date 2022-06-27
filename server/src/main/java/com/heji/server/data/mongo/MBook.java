@@ -43,4 +43,8 @@ public class MBook {
      * 0 true 1 false
      */
     Integer firstBook;
+    /**
+     * 每次更新账单和账本时更新该锚点
+     */
+    Long modified;
 }

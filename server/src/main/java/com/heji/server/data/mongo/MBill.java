@@ -48,6 +48,10 @@ public class MBill {
 
     @Field(name = "update_time")
     private long updateTime;
+    /**
+     * 每次更新账单和账本时更新该锚点
+     */
+    Long modified;
 
     public MBill() {
 

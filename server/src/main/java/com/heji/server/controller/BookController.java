@@ -74,7 +74,12 @@ public class BookController {
         if (auth.getName() != bookService.findBook(bookId).getUsers().get(0).getName()) {
             throw new OperationException("更新失败，账本权限不匹配");
         }
-        bookService.updateBook(new MBook().set_id(bookId).setName(bookName).setType(bookType));
+        bookService.updateBook(new MBook()
+                .set_id(bookId)
+                .setName(bookName)
+                .setType(bookType)
+                .setModified(System.currentTimeMillis())
+        );
         operateLogService.addOperateLog(new MOperateLog()
                 .setBookId(bookId)
                 .setOpeDate(TimeUtils.getNowString())
@@ -86,7 +91,7 @@ public class BookController {
     @ResponseBody
     @DeleteMapping(value = {"/deleteBook"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String deleteBook(@RequestParam String bookId, Authentication auth) {
-        if (!bookService.exists(bookId)){
+        if (!bookService.exists(bookId)) {
             throw new NotFoundException("删除失败，账本不存在");
         }
         //校验操作用户是否是账本创建人

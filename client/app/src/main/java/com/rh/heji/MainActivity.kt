@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var mService: SyncService
     lateinit var mServiceBinder: SyncService.SyncBinder
+    private var mIsBound: Boolean = false
 
     companion object {
         private const val TAG = "MainActivity"
@@ -85,11 +86,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        doBindService()
+    }
+
+    private fun doBindService() {
         Intent(this, SyncService::class.java).also {
             startService(it)
-            bindService(it, connection, Context.BIND_AUTO_CREATE)
+            mIsBound = bindService(it, connection, BIND_AUTO_CREATE)
         }
+    }
 
+    private fun doUnbindService() {
+        if (mIsBound) {
+            Intent(this, SyncService::class.java).also {
+                unbindService(connection)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -346,8 +358,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Intent(this, SyncService::class.java).also {
-            unbindService(connection)
-        }
+        doUnbindService()
     }
 }

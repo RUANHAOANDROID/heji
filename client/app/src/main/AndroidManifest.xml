@@ -34,7 +34,8 @@
         <!--  首先启动 -->
         <activity
             android:name=".StartupActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,7 +44,8 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/login"></activity>
+            android:label="@string/login"
+            android:launchMode="singleTask"></activity>
         <!--  功能页 -->
         <activity
             android:name=".MainActivity"

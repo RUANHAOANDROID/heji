@@ -8,5 +8,5 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="title_mineHeight">50dp</dimen>
     <dimen name="toolbar_title_size">18sp</dimen>
-
+    <dimen name="grid_expected_size">120dp</dimen>
 </resources>

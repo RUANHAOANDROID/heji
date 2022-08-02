@@ -8,13 +8,14 @@ import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemChildClickListener
 import com.lxj.xpopup.core.BottomPopupView
-import com.matisse.entity.ConstValue.REQUEST_CODE_CHOOSE
+
 import com.rh.heji.BuildConfig
 import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.db.Image
 import com.rh.heji.ui.bill.add.adapter.BillPhotoAdapter
-import com.rh.heji.utlis.matisse.MatisseUtils.selectMultipleImage
+import com.rh.heji.utlis.matisse.MatisseUtils
+
 
 /**
  * Date: 2020/10/12
@@ -58,7 +59,7 @@ class PopSelectImage(private val activity: MainActivity) :
                 ToastUtils.showLong("最多只能添加" + SELECT_MAX_COUNT + "张照片")
                 return@getFooterView
             }
-            selectMultipleImage(activity, REQUEST_CODE_CHOOSE, count)
+            MatisseUtils.selectMultipleImage(activity, count)
         })
         selectImgRecycler.adapter = imageAdapter
         val listener =

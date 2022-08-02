@@ -74,7 +74,7 @@
             android:gravity="right|center"
             android:maxLength="10"
             android:hint="点击输入账本名称"
-            android:background="@drawable/transparent"
+            android:background="@color/transparent"
             android:inputType="text" />
     </LinearLayout>
 

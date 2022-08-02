@@ -42,13 +42,13 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="CustomMatisseStyle" parent="Matisse.Default">
-        <item name="Media_Back_text">@string/back</item>
-        <item name="Media_Sure_text">@string/sure</item>
-        <item name="Media_Preview_text">@string/preview</item>
-        <item name="Media_Original_text">@string/original</item>
-        <item name="Media_Album_text">@string/album</item>
-        <item name="Media_Camera_text">@string/camera</item>
+    <style name="CustomMatisseStyle" parent="Matisse.Zhihu">
+<!--        <item name="Media_Back_text">@string/back</item>-->
+<!--        <item name="Media_Sure_text">@string/sure</item>-->
+<!--        <item name="Media_Preview_text">@string/preview</item>-->
+<!--        <item name="Media_Original_text">@string/original</item>-->
+<!--        <item name="Media_Album_text">@string/album</item>-->
+<!--        <item name="Media_Camera_text">@string/camera</item>-->
     </style>
 
     <style name="NumberKeyBoardStyle2">
@@ -115,4 +115,8 @@
 <!--        <item name="android:textColorHint">@color/textInputLayout</item>-->
         <item name="android:padding">8dp</item>
     </style>
+
+    <color name="black">#000000</color>
+    <color name="gray">#B4B3B3</color>
+    <color name="white">#FFFFFF</color>
 </resources>

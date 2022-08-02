@@ -30,7 +30,7 @@
                 android:drawableRight="@drawable/ic_user_blue_24dp"
                 android:ems="10"
                 android:hint="@string/name"
-                android:background="@drawable/transparent"
+                android:background="@color/transparent"
                 android:inputType="textPersonName" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableRight="@drawable/ic_baseline_phone_24"
-                android:background="@drawable/transparent"
+                android:background="@color/transparent"
                 android:ems="10"
                 android:hint="@string/tel"
                 android:inputType="textPersonName" />
@@ -67,7 +67,7 @@
                 android:layout_gravity="center"
                 android:drawableRight="@drawable/ic_baseline_lock_24"
                 android:ems="10"
-                android:background="@drawable/transparent"
+                android:background="@color/transparent"
                 android:hint="@string/password"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -85,7 +85,7 @@
                 android:drawableRight="@drawable/ic_baseline_lock_24"
                 android:ems="10"
                 android:hint="@string/again_password"
-                android:background="@drawable/transparent"
+                android:background="@color/transparent"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,7 +102,7 @@
                 android:drawableRight="@drawable/ic_baseline_code_24"
                 android:ems="10"
                 android:hint="@string/code"
-                android:background="@drawable/transparent"
+                android:background="@color/transparent"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 

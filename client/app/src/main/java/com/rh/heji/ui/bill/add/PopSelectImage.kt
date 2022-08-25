@@ -1,9 +1,14 @@
 package com.rh.heji.ui.bill.add
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemChildClickListener
@@ -15,6 +20,7 @@ import com.rh.heji.R
 import com.rh.heji.data.db.Image
 import com.rh.heji.ui.bill.add.adapter.BillPhotoAdapter
 import com.rh.heji.utlis.matisse.MatisseUtils
+import com.zhihu.matisse.Matisse
 
 
 /**
@@ -22,7 +28,7 @@ import com.rh.heji.utlis.matisse.MatisseUtils
  * @author: 锅得铁
  * #
  */
-class PopSelectImage(private val activity: MainActivity) :
+class PopSelectImage(private val activity: MainActivity,val selectClick :()->Unit) :
     BottomPopupView(activity) {
     companion object {
         const val SELECT_MAX_COUNT = 3
@@ -59,7 +65,16 @@ class PopSelectImage(private val activity: MainActivity) :
                 ToastUtils.showLong("最多只能添加" + SELECT_MAX_COUNT + "张照片")
                 return@getFooterView
             }
-            MatisseUtils.selectMultipleImage(activity, count)
+            selectClick()
+//            MatisseUtils.selectMultipleImage(activity, count , launcher =activity.registerForActivityResult(
+//                ActivityResultContracts.StartActivityForResult(), ActivityResultCallback(){ result ->
+//                    if (result.resultCode != Activity.RESULT_OK) {
+//                        return@ActivityResultCallback
+//                    }
+//                    val  data = result.data
+//                    //imageAdapter.setData(Matisse.obtainResult(data), Matisse.obtainPathResult(data))
+//                    LogUtils.e("OnActivityResult ${Matisse.obtainOriginalState(data)}")
+//                }) )
         })
         selectImgRecycler.adapter = imageAdapter
         val listener =

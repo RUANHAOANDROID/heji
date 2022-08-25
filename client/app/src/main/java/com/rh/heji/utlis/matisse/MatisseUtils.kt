@@ -20,13 +20,14 @@ object MatisseUtils {
 
     val REQUEST_CODE_CHOOSE = 1008611
 
+    @Deprecated("使用ActivityResultLauncher方式")
     fun selectMultipleImage(
         activity: Activity,
         maxSelectable: Int = 3,
         requestCode: Int = REQUEST_CODE_CHOOSE
     ) {
         Matisse.from(activity)
-            .choose(MimeType.of(MimeType.JPEG, MimeType.PNG, MimeType.BMP),false)
+            .choose(MimeType.of(MimeType.JPEG, MimeType.PNG, MimeType.BMP), false)
             .countable(true)
             //.addFilter(GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
             .gridExpectedSize(activity.resources.getDimension(R.dimen.grid_expected_size).toInt())
@@ -48,11 +49,11 @@ object MatisseUtils {
         Matisse.from(activity)
             .choose(MimeType.ofImage())
             .countable(true)
-            .maxSelectable(9)
             //.addFilter(GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
             .gridExpectedSize(activity.resources.getDimension(R.dimen.grid_expected_size).toInt())
             .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
             .thumbnailScale(0.85f)
+            .theme(R.style.CustomMatisseStyle)
             .maxSelectable(maxSelectable)
             .imageEngine(GlideEngine())
             .showPreview(false) // Default is `true`

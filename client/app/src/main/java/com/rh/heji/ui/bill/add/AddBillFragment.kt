@@ -13,6 +13,9 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.DatePicker
 import android.widget.TimePicker
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.*
@@ -29,8 +32,10 @@ import com.rh.heji.ui.bill.category.CategoryTabFragment
 import com.rh.heji.ui.bill.category.CategoryViewModel
 import com.rh.heji.ui.bill.category.ISelectedCategory
 import com.rh.heji.utlis.YearMonth
+import com.rh.heji.utlis.matisse.MatisseUtils
 import com.rh.heji.utlis.matisse.MatisseUtils.REQUEST_CODE_CHOOSE
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
+import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.Matisse.obtainResult
 import java.math.BigDecimal
 import java.util.*
@@ -63,6 +68,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
     private lateinit var categoryTabFragment: CategoryTabFragment
 
     lateinit var popupSelectImage: PopSelectImage//图片弹窗
+    lateinit var imageSelectLauncher: ActivityResultLauncher<Intent>
 
     /**
      * 是否修改
@@ -82,6 +88,41 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        imageSelectLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(), ActivityResultCallback() { result ->
+                if (result.resultCode != Activity.RESULT_OK) {
+                    return@ActivityResultCallback
+                }
+                val data = result.data
+                val obtainResult = Matisse.obtainResult(data)
+                val obtainPathResult = Matisse.obtainPathResult(data)
+                LogUtils.e("OnActivityResult ${Matisse.obtainOriginalState(data)}")
+
+                val mSelected: MutableList<String> = ArrayList()
+                obtainResult.forEach(Consumer { uri: Uri ->
+                    val imgUrl = UriUtils.uri2File(uri).absolutePath
+                    mSelected.add(imgUrl)
+                })
+                //setImages(mSelected)
+                if (popupSelectImage.getImages().size > 0) {
+                    mSelected.forEach { localPath: String ->
+                        popupSelectImage.getImages().forEach { image ->
+                            /**
+                             * 包含的话就删除重新加
+                             */
+                            if (image.localPath == localPath) {
+                            }
+                        }
+                    }
+                } else {
+                    popupSelectImage.setImages(mSelected.map { selectPath ->
+                        Image(billID = mBill.id).apply {
+                            localPath = selectPath
+                            synced = STATUS.NOT_SYNCED
+                        }
+                    }.toMutableList())
+                }
+            })
         val mArgs = AddBillFragmentArgs.fromBundle(requireArguments()).argAddBill
         isModify = mArgs.isModify
         mBill = mArgs.bill ?: Bill(billTime = Date())
@@ -97,7 +138,9 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
     override fun initView(rootView: View) {
         binding = FragmentAddbillBinding.bind(rootView)
         initBill(mBill)
-        popupSelectImage = PopSelectImage(mainActivity).apply {
+        popupSelectImage = PopSelectImage(mainActivity) {
+            MatisseUtils.selectMultipleImage(mainActivity, 3, launcher = imageSelectLauncher)
+        }.apply {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
             }
@@ -184,6 +227,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
             override fun save(result: String) {
                 ToastUtils.showLong(result)
                 selectImages = popupSelectImage.getImagesPath()
+                mBill.images = selectImages
                 this@AddBillFragment.save(mBill)
             }
 
@@ -197,40 +241,6 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
                 reset()
             }
         })
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_CHOOSE) { //选中的照片
-                val mSelected: MutableList<String> = ArrayList()
-                obtainResult(data!!)!!.forEach(Consumer { uri: Uri ->
-                    val imgUrl = UriUtils.uri2File(uri).absolutePath
-                    mSelected.add(imgUrl)
-                })
-                //setImages(mSelected)
-
-                if (popupSelectImage.getImages().size > 0) {
-                    mSelected.forEach { localPath: String ->
-                        popupSelectImage.getImages().forEach { image ->
-                            /**
-                             * 包含的话就删除重新加
-                             */
-                            if (image.localPath == localPath) {
-                            }
-                        }
-
-                    }
-                } else {
-                    popupSelectImage.setImages(mSelected.map { selectPath ->
-                        Image(billID = mBill.id).apply {
-                            localPath = selectPath
-                            synced = STATUS.NOT_SYNCED
-                        }
-                    }.toMutableList())
-                }
-            }
-        }
     }
 
     override fun onResume() {
@@ -257,7 +267,6 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
 //            }
 //        }.toMutableList()
 //    }
-
 
     override fun selected(category: Category) {
         val billType = BillType.transform(category.type)

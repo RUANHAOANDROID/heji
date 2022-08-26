@@ -80,8 +80,6 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
      */
     private lateinit var mBill: Bill
 
-    private lateinit var selectImages: MutableList<String>
-
     override fun layoutId(): Int {
         return R.layout.fragment_addbill
     }
@@ -138,14 +136,19 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
     override fun initView(rootView: View) {
         binding = FragmentAddbillBinding.bind(rootView)
         initBill(mBill)
-        popupSelectImage = PopSelectImage(mainActivity) {
-            MatisseUtils.selectMultipleImage(mainActivity, 3, launcher = imageSelectLauncher)
-        }.apply {
+        popupSelectImage = PopSelectImage(mainActivity).apply {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
             }
-            selectImages = {
+            selectedImagesCall = {
                 getImagesPath()
+            }
+            selectListener = { maxCount ->
+                MatisseUtils.selectMultipleImage(
+                    mainActivity,
+                    maxCount,
+                    launcher = imageSelectLauncher
+                )
             }
         }
 
@@ -226,8 +229,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
         binding.keyboard.setKeyboardListener(object : OnKeyboardListener {
             override fun save(result: String) {
                 ToastUtils.showLong(result)
-                selectImages = popupSelectImage.getImagesPath()
-                mBill.images = selectImages
+                mBill.images = popupSelectImage.getImagesPath()
                 this@AddBillFragment.save(mBill)
             }
 

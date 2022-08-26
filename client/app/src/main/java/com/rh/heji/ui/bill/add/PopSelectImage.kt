@@ -1,26 +1,18 @@
 package com.rh.heji.ui.bill.add
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemChildClickListener
 import com.lxj.xpopup.core.BottomPopupView
-
 import com.rh.heji.BuildConfig
 import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.db.Image
 import com.rh.heji.ui.bill.add.adapter.BillPhotoAdapter
-import com.rh.heji.utlis.matisse.MatisseUtils
-import com.zhihu.matisse.Matisse
 
 
 /**
@@ -28,7 +20,7 @@ import com.zhihu.matisse.Matisse
  * @author: 锅得铁
  * #
  */
-class PopSelectImage(private val activity: MainActivity,val selectClick :()->Unit) :
+class PopSelectImage(activity: MainActivity) :
     BottomPopupView(activity) {
     companion object {
         const val SELECT_MAX_COUNT = 3
@@ -39,12 +31,24 @@ class PopSelectImage(private val activity: MainActivity,val selectClick :()->Uni
 
 
     lateinit var deleteListener: (Image) -> Unit
-    lateinit var selectImages: (MutableList<Image>) -> Unit
+    lateinit var selectedImagesCall: (MutableList<Image>) -> Unit
+    lateinit var selectListener: (Int) -> Unit
 
-    private fun getFooterView(listener: OnClickListener): View {
+    /**
+     * find add image view
+     */
+    private fun getFooterView(): View {
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(R.layout.footer_add, selectImgRecycler, false)
-        view.setOnClickListener(listener)
+        val addImageListener = { v: View? ->
+            val count = SELECT_MAX_COUNT - imageAdapter.data.size
+            if (count <= 0) {
+                ToastUtils.showLong("最多只能添加" + SELECT_MAX_COUNT + "张照片")
+            } else {
+                selectListener(count)//fragment 处理点击
+            }
+        }
+        view.setOnClickListener(addImageListener)
         return view
     }
 
@@ -54,39 +58,22 @@ class PopSelectImage(private val activity: MainActivity,val selectClick :()->Uni
 
     override fun onCreate() {
         super.onCreate()
-
         selectImgRecycler = findViewById(R.id.selectImgRecycler)
         selectImgRecycler.layoutManager = GridLayoutManager(context, 3)
         //selectImgRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         //selectImgRecycler.addItemDecoration(new GridSpaceItemDecoration(3, 10,10));
-        imageAdapter.addFooterView(getFooterView { v: View? ->
-            val count = SELECT_MAX_COUNT - imageAdapter.data.size
-            if (count <= 0) {
-                ToastUtils.showLong("最多只能添加" + SELECT_MAX_COUNT + "张照片")
-                return@getFooterView
-            }
-            selectClick()
-//            MatisseUtils.selectMultipleImage(activity, count , launcher =activity.registerForActivityResult(
-//                ActivityResultContracts.StartActivityForResult(), ActivityResultCallback(){ result ->
-//                    if (result.resultCode != Activity.RESULT_OK) {
-//                        return@ActivityResultCallback
-//                    }
-//                    val  data = result.data
-//                    //imageAdapter.setData(Matisse.obtainResult(data), Matisse.obtainPathResult(data))
-//                    LogUtils.e("OnActivityResult ${Matisse.obtainOriginalState(data)}")
-//                }) )
-        })
+        imageAdapter.addFooterView(getFooterView())
         selectImgRecycler.adapter = imageAdapter
-        val listener =
+        val deleteListener =
             OnItemChildClickListener { adapter: BaseQuickAdapter<*, *>, view: View, position: Int ->
                 if (view.id == R.id.imgDelete) {
-                    imageAdapter.removeAt(position)
                     if (this::deleteListener.isInitialized) {
                         deleteListener(adapter.getItem(position) as Image)
+                        imageAdapter.removeAt(position)
                     }
                 }
             }
-        imageAdapter.setOnItemChildClickListener(listener)
+        imageAdapter.setOnItemChildClickListener(deleteListener)
         imageAdapter.notifyDataSetChanged()
     }
 
@@ -98,7 +85,7 @@ class PopSelectImage(private val activity: MainActivity,val selectClick :()->Uni
         imageAdapter.setNewInstance(imgs)
         imageAdapter.notifyDataSetChanged()
         //同时通知ViewModel
-        selectImages(imgs)
+        selectedImagesCall(imgs)
     }
 
     fun clear() {
@@ -140,7 +127,4 @@ class PopSelectImage(private val activity: MainActivity,val selectClick :()->Uni
         imageAdapter.notifyDataSetChanged()
     }
 
-    fun setImagesPath(images: MutableList<String>) {
-
-    }
 }

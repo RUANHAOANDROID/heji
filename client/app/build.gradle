@@ -170,4 +170,6 @@ dependencies {
 
     implementation('com.squareup.moshi:moshi-kotlin:1.13.0')
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
+    //database debug test
+    debugImplementation 'com.guolindev.glance:glance:1.1.0'
 }

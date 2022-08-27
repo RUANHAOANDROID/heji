@@ -26,7 +26,7 @@ import com.rh.heji.ui.base.swipeRefreshLayout
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
-import com.rh.heji.ui.bill.create.AddBillFragmentArgs
+import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.create.ArgAddBill
 import com.rh.heji.ui.bill.popup.PopupBillInfo
 import com.rh.heji.utlis.YearMonth
@@ -60,7 +60,7 @@ class BillListFragment : BaseFragment() {
             initBillsAdapter()
             binding.fab.setOnClickListener {
                 val bill = Bill(billTime = Date())
-                val bundle = AddBillFragmentArgs.Builder(
+                val bundle = CreateBillFragmentArgs.Builder(
                     ArgAddBill(false, bill)
                 ).build().toBundle()
                 bundle.putBoolean("isModify", true)
@@ -215,7 +215,7 @@ class BillListFragment : BaseFragment() {
                     calendar[dayIncome.year, dayIncome.month - 1] = dayIncome.monthDay
 
                     val args =
-                        AddBillFragmentArgs.Builder(ArgAddBill(false, Bill(billTime = calendar.time)))
+                        CreateBillFragmentArgs.Builder(ArgAddBill(false, Bill(billTime = calendar.time)))
                             .build() //选择的日期
                     Navigation.findNavController(rootView)
                         .navigate(R.id.nav_bill_add, args.toBundle())

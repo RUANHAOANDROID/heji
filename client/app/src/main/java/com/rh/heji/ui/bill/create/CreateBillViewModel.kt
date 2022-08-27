@@ -13,15 +13,43 @@ import java.util.*
 /**
  * 账单添加页ViewModel 不要在其他页面应用该ViewModel
  */
-class CreateBillViewModel(val mBillSync: IBillSync) : BaseViewModel() {
+class CreateBillViewModel(private val mBillSync: IBillSync) : BaseViewModel() {
 
-    private val saveLiveData = MutableLiveData<Int>()
+    private val uiStateLiveData = MutableLiveData<CreateBillUIState>()
 
-    fun getSaveResult(): LiveData<Int> {
-        return saveLiveData
+    fun subUIState(): LiveData<CreateBillUIState> {
+        return uiStateLiveData
     }
 
     var keyBoardStack: Stack<String>? = null//用于保存栈
+
+    fun eventState(event: CreateBillEvent) = when (event) {
+        is CreateBillEvent.Save -> {
+            save(event.bill)
+        }
+        is CreateBillEvent.SaveAgain -> {
+            save(event.bill)
+        }
+
+        is CreateBillEvent.GetBill -> {
+            event.bill_id?.let {
+                launchIO({
+                    val bill = App.dataBase.billImageDao().findBillAndImage(it)
+                    uiStateLiveData.postValue(CreateBillUIState.BillChange(bill = bill))
+                })
+
+            }
+        }
+
+        is CreateBillEvent.GetDealers -> {
+            launchIO({
+                val users = App.dataBase.dealerDao().findAll().map {
+                    it.userName
+                }.toMutableList()
+                uiStateLiveData.postValue(CreateBillUIState.Dealers(users))
+            })
+        }
+    }
 
     /**
      * 保存账单到本地
@@ -30,7 +58,7 @@ class CreateBillViewModel(val mBillSync: IBillSync) : BaseViewModel() {
      * @param billType
      * @return
      */
-    fun save(bill: Bill, state: Int) {
+    private fun save(bill: Bill) {
         launchIO({
             val images = mutableListOf<Image>()
             if (bill.images.isNotEmpty()) {
@@ -45,30 +73,10 @@ class CreateBillViewModel(val mBillSync: IBillSync) : BaseViewModel() {
             var count: Long =
                 App.dataBase.billImageDao().installBillAndImage(bill, images)
             mBillSync.add(bill)
-            saveLiveData.postValue(state)
+            uiStateLiveData.postValue(CreateBillUIState.Close)
         }, {
             ToastUtils.showLong(it.message)
-            saveLiveData.postValue(CreateBillFragment.SAVE_ERROR)
+            uiStateLiveData.postValue(CreateBillUIState.Error(it))
         })
-    }
-
-
-    fun getDealers(): MutableLiveData<MutableList<String>> {
-        return dealersLiveData
-    }
-
-    private val dealersLiveData by lazy { MutableLiveData<MutableList<String>>().also { loadDealers() } }
-    private fun loadDealers() {
-        launchIO({
-            val users = App.dataBase.dealerDao().findAll().map {
-                it.userName
-            }.toMutableList()
-            dealersLiveData.postValue(users)
-        })
-    }
-
-    fun getBillImages(bid: String): LiveData<MutableList<Image>> {
-        return App.dataBase.imageDao().findByBillId(bid)
-            .asLiveData(viewModelScope.coroutineContext)
     }
 }

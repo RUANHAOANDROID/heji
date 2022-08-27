@@ -21,6 +21,9 @@ interface BillDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun install(billTab: Bill): Long
 
+    /**
+     * 当有子表时慎用
+     */
     @NotNull
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(billTab: Bill): Long

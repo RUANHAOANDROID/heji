@@ -26,7 +26,7 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.databinding.FragmentAddbillBinding
+import com.rh.heji.databinding.FragmentCreatebillBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.category.CategoryTabFragment
 import com.rh.heji.ui.bill.category.CategoryViewModel
@@ -47,22 +47,18 @@ import java.util.function.Consumer
  * 账单类别
  * ----------
  */
-class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState {
-    companion object {
-        const val SAVE_SUCCESS = 1
-        const val SAVE_SUCCESS_AGAIN = 2
-        const val SAVE_ERROR = 3
-    }
+class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
-    private val billViewModel by lazy {
+    private val viewModel by lazy {
         ViewModelProvider(
             this,
             CreateBillViewModelFactory(mainActivity.mService.getBillSyncManager())
         )[CreateBillViewModel::class.java]
     }
+
     val categoryViewModel by lazy { ViewModelProvider(this)[CategoryViewModel::class.java] }
 
-    private lateinit var binding: FragmentAddbillBinding
+    private lateinit var binding: FragmentCreatebillBinding
     private lateinit var categoryTabFragment: CategoryTabFragment
 
     lateinit var popupSelectImage: PopSelectImage//图片弹窗
@@ -79,11 +75,14 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState
     private lateinit var mBill: Bill
 
     override fun layoutId(): Int {
-        return R.layout.fragment_addbill
+        return R.layout.fragment_createbill
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        /**
+         * 选择照片
+         */
         imageSelectLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(), ActivityResultCallback() { result ->
                 if (result.resultCode != Activity.RESULT_OK) {
@@ -119,21 +118,15 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState
                     }.toMutableList())
                 }
             })
-        val mArgs = AddBillFragmentArgs.fromBundle(requireArguments()).argAddBill
+
+        val mArgs = CreateBillFragmentArgs.fromBundle(requireArguments()).argAddBill
         isModify = mArgs.isModify
         mBill = mArgs.bill ?: Bill(billTime = Date())
-        billViewModel.getSaveResult().observe(this) {
-            when (it) {
-                SAVE_SUCCESS -> findNavController().popBackStack()
-                SAVE_SUCCESS_AGAIN -> reset()
-                SAVE_ERROR -> ToastUtils.showLong("保存失败")
-            }
-        }
+        LogUtils.d(mBill.toString())
     }
 
     override fun initView(rootView: View) {
-        binding = FragmentAddbillBinding.bind(rootView)
-        initBill(mBill)
+        binding = FragmentCreatebillBinding.bind(rootView)
         popupSelectImage = PopSelectImage(mainActivity).apply {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
@@ -156,24 +149,6 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState
                 .show()
         }
 
-        billViewModel.getDealers().observe(this) { names ->
-            //经手人名单
-            if (names.size > 0) {
-                setDealer(names[0])//设置默经手人
-            } else {
-                setDealer(App.user.name) //设置默经手人当前用户
-            }
-            binding.inputInfo.tvUserLabel.setOnClickListener {
-                XPopup.Builder(requireContext())
-                    .maxHeight(binding.keyboard.height)
-                    .asBottomList(
-                        "请选择经手人", names.toTypedArray()
-                    ) { _: Int, text: String ->
-                        setDealer(text)
-                    }
-                    .show()
-            }
-        }
 
         binding.inputInfo.eidtRemark.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -187,7 +162,47 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState
         categoryTabFragment.setIndex()
 
         keyboardListener()
+        viewModel.eventState(CreateBillEvent.GetDealers(mBill.id))
+        with(mBill){
+            setTime(billTime)
+            setDealer(dealer)
+            setCategory(category)
+            setMoney(money)
+        }
+        viewModel.subUIState().observe(this) { uiState ->
+            when (uiState) {
+                is CreateBillUIState.BillChange -> {
 
+                }
+                is CreateBillUIState.Close -> {
+                    findNavController().popBackStack()
+                }
+                is CreateBillUIState.Error -> {
+                    ToastUtils.showLong(uiState.throws.message)
+                }
+                is CreateBillUIState.Dealers -> {
+                    //经手人名单
+                    if (uiState.dealers.size > 0) {
+                        setDealer(uiState.dealers[0])//设置默经手人
+                    } else {
+                        setDealer(App.user.name) //设置默经手人当前用户
+                    }
+                    binding.inputInfo.tvUserLabel.setOnClickListener {
+                        XPopup.Builder(requireContext())
+                            .maxHeight(binding.keyboard.height)
+                            .asBottomList(
+                                "请选择经手人", uiState.dealers.toTypedArray()
+                            ) { _: Int, text: String ->
+                                setDealer(text)
+                            }
+                            .show()
+                    }
+                }
+                is CreateBillUIState.Reset -> {
+                    reset()
+                }
+            }
+        }
     }
 
     override fun setUpToolBar() {
@@ -245,7 +260,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState
 
     override fun onResume() {
         super.onResume()
-        val stack: Stack<String>? = billViewModel.keyBoardStack
+        val stack: Stack<String>? = viewModel.keyBoardStack
         if (null != stack && !stack.isEmpty()) {
             binding.keyboard.post {
                 binding.keyboard.stack = stack
@@ -255,22 +270,12 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState
 
     override fun onPause() {
         super.onPause()
-        billViewModel.keyBoardStack = binding.keyboard.stack
+        viewModel.keyBoardStack = binding.keyboard.stack
     }
-
-//    private fun setImages(selected: List<String>): MutableList<BillPhotoEntity> {
-//        return selected.map {
-//            BillPhotoEntity().apply {
-//                val lastModified = File(it).lastModified()
-//                createTime = TimeUtils.millis2String(lastModified)
-//                path = it
-//            }
-//        }.toMutableList()
-//    }
 
     override fun selected(category: Category) {
         val billType = BillType.transform(category.type)
-        //billViewModel.setCategory(category)
+        //viewModel.setCategory(category)
         mBill.type = category.type
         mBill.category = category.category
         binding.keyboard.setType(billType)
@@ -278,7 +283,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState
         binding.inputInfo.tvMoney.setTextColor(resources.getColor(color, null))
     }
 
-    override fun setCategory(category: String?) {
+    private fun setCategory(category: String?) {
         //设置类别
         mBill.category?.let {
             if (this::categoryTabFragment.isInitialized)
@@ -286,11 +291,8 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState
         }
     }
 
-    override fun setRemark(remark: String?) {
 
-    }
-
-    override fun setMoney(money: BigDecimal) {
+    private fun setMoney(money: BigDecimal) {
         //填充money到键盘，抹0再输入到键盘
         with(money.toPlainString()) {
             if (contains(".00"))
@@ -315,18 +317,15 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState
         }
     }
 
-    override fun setDealer(dealer: String?) {
+    private fun setDealer(dealer: String?) {
         dealer?.let {
             binding.inputInfo.tvUserLabel.text = "经手人: $dealer"
             mBill.dealer = dealer
         }
     }
 
-    override fun setImages(images: List<String>) {
 
-    }
-
-    override fun setTime(selectTime: Date) {
+    private fun setTime(selectTime: Date) {
         binding.inputInfo.tvBillTime.text = DateConverters.date2Str(selectTime)
         mBill.billTime = selectTime
         LogUtils.d(selectTime)
@@ -359,22 +358,22 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState
         }
     }
 
-    override fun saveAgain(bill: Bill) {
+    fun saveAgain(bill: Bill) {
         try {
             checkBill()
-            billViewModel.save(bill, SAVE_SUCCESS_AGAIN)
+            viewModel.eventState(CreateBillEvent.SaveAgain(bill))
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)
         }
 
     }
 
-    override fun save(bill: Bill) {
+    fun save(bill: Bill) {
         try {
             mBill.category = categoryTabFragment.getSelectCategory().category
             checkBill()
             bill.createTime = System.currentTimeMillis()
-            billViewModel.save(bill, SAVE_SUCCESS)
+            viewModel.eventState(CreateBillEvent.Save(bill))
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)
         }

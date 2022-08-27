@@ -12,7 +12,7 @@ import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryTabBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.FragmentViewPagerAdapter
-import com.rh.heji.ui.bill.add.AddBillFragment
+import com.rh.heji.ui.bill.create.CreateBillFragment
 
 
 /**
@@ -29,7 +29,7 @@ class CategoryTabFragment : BaseFragment() {
 
     private lateinit var mSelectedCategoryListener: ISelectedCategory
 
-    private lateinit var addBillFragment: AddBillFragment
+    private lateinit var addBillFragment: CreateBillFragment
 
     val categoryFragments = listOf(
         CategoryFragment.newInstance(BillType.EXPENDITURE),
@@ -44,7 +44,7 @@ class CategoryTabFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        addBillFragment = (parentFragment as AddBillFragment)
+        addBillFragment = (parentFragment as CreateBillFragment)
     }
 
 

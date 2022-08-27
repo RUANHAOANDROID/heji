@@ -29,6 +29,9 @@ interface BillDao {
     @Update(entity =Bill::class ,onConflict = OnConflictStrategy.REPLACE)
     fun update(bill: Bill): Int
 
+    @Query("select * from bill where bill_id=:billId")
+    fun findById(billId: String): Bill
+
     @Query("select sync_status from bill where bill_id=:billId")
     fun status(billId: String): Int
 

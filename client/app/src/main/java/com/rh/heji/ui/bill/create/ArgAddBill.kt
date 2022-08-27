@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.add
+package com.rh.heji.ui.bill.create
 
 import android.os.Parcelable
 import com.rh.heji.data.db.Bill

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".ui.bill.add.AddBillFragment">
+    tools:context=".ui.bill.create.CreateBillFragment">
 
     <fragment
         android:id="@+id/categoryFragment"

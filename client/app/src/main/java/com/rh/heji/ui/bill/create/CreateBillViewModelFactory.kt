@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.add
+package com.rh.heji.ui.bill.create
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -9,10 +9,10 @@ import com.rh.heji.service.sync.IBillSync
  *Author: 锅得铁
  *#
  */
-class AddBillViewModelFactory(private val mBillSync: IBillSync) : ViewModelProvider.Factory {
+class CreateBillViewModelFactory(private val mBillSync: IBillSync) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass === AddBillViewModel::class.java) {
-            return AddBillViewModel(mBillSync = mBillSync) as T
+        if (modelClass === CreateBillViewModel::class.java) {
+            return CreateBillViewModel(mBillSync = mBillSync) as T
         }
         throw IllegalArgumentException("类型不匹配")
     }

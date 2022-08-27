@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.add
+package com.rh.heji.ui.bill.create
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +12,7 @@ import com.rh.heji.BuildConfig
 import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.db.Image
-import com.rh.heji.ui.bill.add.adapter.BillPhotoAdapter
+import com.rh.heji.ui.bill.create.adapter.BillPhotoAdapter
 
 
 /**

@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.add.adapter
+package com.rh.heji.ui.bill.create.adapter
 
 /**
  * Date: 2020/9/16

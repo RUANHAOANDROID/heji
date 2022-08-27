@@ -14,9 +14,9 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryContentBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.create.CreateBillFragment
 import com.rh.heji.ui.bill.category.adapter.CategoryAdapter
 import com.rh.heji.ui.bill.category.manager.CategoryManagerFragmentArgs
+import com.rh.heji.ui.bill.create.CreateBillFragment
 import java.util.function.Consumer
 
 /**

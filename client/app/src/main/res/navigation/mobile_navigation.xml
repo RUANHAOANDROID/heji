@@ -24,10 +24,10 @@
         android:id="@+id/nav_bill_add"
         android:name="com.rh.heji.ui.bill.create.CreateBillFragment"
         android:label="@string/income"
-        tools:layout="@layout/fragment_addbill">
+        tools:layout="@layout/fragment_createbill">
         <argument
             android:name="argAddBill"
-            app:argType="com.rh.heji.ui.bill.add.ArgAddBill" />
+            app:argType="com.rh.heji.ui.bill.create.ArgAddBill" />
         <action
             android:id="@+id/action_nav_income_to_nav_category_tab"
             app:destination="@id/_category_tab" />

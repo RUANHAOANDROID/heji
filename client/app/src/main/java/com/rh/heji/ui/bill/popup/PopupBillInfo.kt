@@ -17,7 +17,7 @@ import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.PopLayoutBilliInfoBinding
-import com.rh.heji.ui.bill.create.AddBillFragmentArgs
+import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.create.ArgAddBill
 
 /**
@@ -51,7 +51,7 @@ class PopupBillInfo(
         binding.tvUpdate.setOnClickListener {
             update(bill)
             val bundle =
-                AddBillFragmentArgs.Builder(ArgAddBill(isModify = true, bill)).build().toBundle()
+                CreateBillFragmentArgs.Builder(ArgAddBill(isModify = true, bill)).build().toBundle()
             activity.navController.navigate(R.id.nav_bill_add, bundle)
             dismiss()
         }

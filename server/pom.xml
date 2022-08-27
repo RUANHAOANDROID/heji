@@ -1,4 +1,4 @@
- 了。 家庭富裕和你<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -15,14 +15,14 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>[/=/-PL.,,K
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<jjwt.version>0.11.2</jjwt.version>
 	</properties>
-6好看i客户机天涯海角bthijhedcfo-如果派人性色爱TGG00IUIUUIO0UOULL;LL;;'LKKKKL
+
 	<dependencies>
-		<dependency>才能让他发vu有正式形成新的财富v怕-【6u
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<!-- 排除jackson依赖 -->

@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.add
+package com.rh.heji.ui.bill.create
 
 import androidx.lifecycle.*
 import com.blankj.utilcode.util.ToastUtils
@@ -13,7 +13,7 @@ import java.util.*
 /**
  * 账单添加页ViewModel 不要在其他页面应用该ViewModel
  */
-class AddBillViewModel(val mBillSync: IBillSync) : BaseViewModel() {
+class CreateBillViewModel(val mBillSync: IBillSync) : BaseViewModel() {
 
     private val saveLiveData = MutableLiveData<Int>()
 
@@ -48,7 +48,7 @@ class AddBillViewModel(val mBillSync: IBillSync) : BaseViewModel() {
             saveLiveData.postValue(state)
         }, {
             ToastUtils.showLong(it.message)
-            saveLiveData.postValue(AddBillFragment.SAVE_ERROR)
+            saveLiveData.postValue(CreateBillFragment.SAVE_ERROR)
         })
     }
 

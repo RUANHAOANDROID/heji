@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.add
+package com.rh.heji.ui.bill.create
 
 import com.rh.heji.data.db.Bill
 import java.math.BigDecimal
@@ -10,7 +10,7 @@ import java.util.*
  * @author 锅得铁
  * @since v1.0
  */
-interface IAddBillUIState {
+interface ICreateBillUIState {
     fun initBill(bill: Bill) {
         setCategory(bill.category)
         setRemark(bill.remark)

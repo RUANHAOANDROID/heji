@@ -14,7 +14,7 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryContentBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.add.AddBillFragment
+import com.rh.heji.ui.bill.create.CreateBillFragment
 import com.rh.heji.ui.bill.category.adapter.CategoryAdapter
 import com.rh.heji.ui.bill.category.manager.CategoryManagerFragmentArgs
 import java.util.function.Consumer
@@ -51,7 +51,7 @@ class CategoryFragment : BaseFragment() {
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        categoryViewModule = (parentFragment!!.parentFragment as AddBillFragment).categoryViewModel
+        categoryViewModule = (parentFragment!!.parentFragment as CreateBillFragment).categoryViewModel
         arguments?.let {
             type = CategoryFragmentArgs.fromBundle(it).type
         }

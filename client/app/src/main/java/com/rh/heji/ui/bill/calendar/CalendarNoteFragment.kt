@@ -17,8 +17,8 @@ import com.rh.heji.databinding.FragmentCalendarNoteBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
-import com.rh.heji.ui.bill.add.AddBillFragmentArgs
-import com.rh.heji.ui.bill.add.ArgAddBill
+import com.rh.heji.ui.bill.create.AddBillFragmentArgs
+import com.rh.heji.ui.bill.create.ArgAddBill
 import com.rh.heji.ui.bill.popup.PopupBillInfo
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration

@@ -17,8 +17,8 @@ import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.PopLayoutBilliInfoBinding
-import com.rh.heji.ui.bill.add.AddBillFragmentArgs
-import com.rh.heji.ui.bill.add.ArgAddBill
+import com.rh.heji.ui.bill.create.AddBillFragmentArgs
+import com.rh.heji.ui.bill.create.ArgAddBill
 
 /**
  * Date: 2020/9/20

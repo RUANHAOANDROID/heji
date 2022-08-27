@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.add
+package com.rh.heji.ui.bill.create
 
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -33,10 +33,8 @@ import com.rh.heji.ui.bill.category.CategoryViewModel
 import com.rh.heji.ui.bill.category.ISelectedCategory
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.matisse.MatisseUtils
-import com.rh.heji.utlis.matisse.MatisseUtils.REQUEST_CODE_CHOOSE
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
 import com.zhihu.matisse.Matisse
-import com.zhihu.matisse.Matisse.obtainResult
 import java.math.BigDecimal
 import java.util.*
 import java.util.function.Consumer
@@ -49,7 +47,7 @@ import java.util.function.Consumer
  * 账单类别
  * ----------
  */
-class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
+class CreateBillFragment : BaseFragment(), ISelectedCategory, ICreateBillUIState {
     companion object {
         const val SAVE_SUCCESS = 1
         const val SAVE_SUCCESS_AGAIN = 2
@@ -59,8 +57,8 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
     private val billViewModel by lazy {
         ViewModelProvider(
             this,
-            AddBillViewModelFactory(mainActivity.mService.getBillSyncManager())
-        )[AddBillViewModel::class.java]
+            CreateBillViewModelFactory(mainActivity.mService.getBillSyncManager())
+        )[CreateBillViewModel::class.java]
     }
     val categoryViewModel by lazy { ViewModelProvider(this)[CategoryViewModel::class.java] }
 
@@ -230,7 +228,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
             override fun save(result: String) {
                 ToastUtils.showLong(result)
                 mBill.images = popupSelectImage.getImagesPath()
-                this@AddBillFragment.save(mBill)
+                this@CreateBillFragment.save(mBill)
             }
 
             override fun calculation(result: String) {
@@ -239,7 +237,7 @@ class AddBillFragment : BaseFragment(), ISelectedCategory, IAddBillUIState {
 
             override fun saveAgain(result: String) {
                 ToastUtils.showLong(result)
-                this@AddBillFragment.saveAgain(mBill)
+                this@CreateBillFragment.saveAgain(mBill)
                 reset()
             }
         })

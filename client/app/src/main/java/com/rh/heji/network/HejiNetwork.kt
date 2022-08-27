@@ -40,7 +40,7 @@ class HejiNetwork {
         hejiServer.bookUpdate(book_id, bookName, bookType).await()
 
     suspend fun bookJoin(sharedCode: String) = hejiServer.bookJoin(sharedCode).await()
-    suspend fun billPush(bill: Bill) = hejiServer.saveBill(bill).await()
+    suspend fun billPush(bill: Bill) = hejiServer.saveBill(bill.apply { images= mutableListOf() }).await()
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
     suspend fun billUpdate(bill: Bill) = hejiServer.updateBill(bill).await()
     suspend fun billPull(startTime: String, endTime: String, book_id: String = currentBook.id) =

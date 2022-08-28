@@ -24,6 +24,8 @@ import com.lxj.xpopup.XPopup
 import com.rh.heji.*
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
+import com.rh.heji.data.converters.MoneyConverters
+import com.rh.heji.data.converters.MoneyConverters.ZERO_00
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.databinding.FragmentCreatebillBinding
@@ -243,7 +245,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             override fun save(result: String) {
                 ToastUtils.showLong(result)
                 mBill.images = popupSelectImage.getImagesPath()
-                this@CreateBillFragment.save(mBill)
+                this@CreateBillFragment.save()
             }
 
             override fun calculation(result: String) {
@@ -252,8 +254,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
             override fun saveAgain(result: String) {
                 ToastUtils.showLong(result)
-                this@CreateBillFragment.saveAgain(mBill)
-                reset()
+                this@CreateBillFragment.saveAgain()
             }
         })
     }
@@ -358,33 +359,35 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         }
     }
 
-    fun saveAgain(bill: Bill) {
+    fun saveAgain() {
         try {
+            mBill.category = categoryTabFragment.getSelectCategory().category
+            val inputMoney = binding.inputInfo.tvMoney.text.toString()
+            mBill.money = BigDecimal(inputMoney)
+            mBill.createTime = System.currentTimeMillis()
             checkBill()
-            viewModel.eventState(CreateBillEvent.SaveAgain(bill))
+            viewModel.eventState(CreateBillEvent.SaveAgain(mBill))
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)
         }
 
     }
 
-    fun save(bill: Bill) {
+    fun save() {
         try {
             mBill.category = categoryTabFragment.getSelectCategory().category
+            val inputMoney = binding.inputInfo.tvMoney.text.toString()
+            mBill.money = BigDecimal(inputMoney)
+            mBill.createTime = System.currentTimeMillis()
             checkBill()
-            bill.createTime = System.currentTimeMillis()
-            viewModel.eventState(CreateBillEvent.Save(bill))
+            viewModel.eventState(CreateBillEvent.Save(mBill))
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)
         }
     }
 
     private fun checkBill() {
-        val inputMoney = binding.inputInfo.tvMoney.text.toString()
-        check(inputMoney != "0") { "未输入金额" }
-        mBill.apply {
-            money = BigDecimal(inputMoney)
-        }
+        check(mBill.money != MoneyConverters.ZERO_00()) { "未输入金额" }
         check(mBill.category != null) { "类别未选" }
     }
 

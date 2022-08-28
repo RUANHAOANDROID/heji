@@ -77,14 +77,19 @@ public class ImageController {
         if (Objects.isNull(bill))
             throw new NotFoundException("账单不存在");
         String md5 = MD5Util.getMD5(imageFile.getInputStream());
-        MBillImage image = new MBillImage().set_id(_id);
-        String fileName =imageFile.getOriginalFilename();
-        image.setFilename(fileName);
-        image.setExt(".jpg");
-        image.setData(imageFile.getBytes());
-        image.setLength(imageFile.getSize());
-        image.setBillId(billId);
-        image.setMd5(md5);
+        String fileName = imageFile.getOriginalFilename();//文件名
+        String ext = "";
+        if (fileName.contains(".")){
+          ext=  fileName.split("\\.")[1];//后缀
+        }
+        MBillImage image = new MBillImage()
+                .set_id(_id)
+                .setFilename(fileName)
+                .setExt(ext)
+                .setData(imageFile.getBytes())
+                .setLength(imageFile.getSize())
+                .setBillId(billId)
+                .setMd5(md5);
         String imgId = imageService.saveImage(image);
         String[] imageArray = bill.getImages();
         if (null != imageArray && imageArray.length > 0) {

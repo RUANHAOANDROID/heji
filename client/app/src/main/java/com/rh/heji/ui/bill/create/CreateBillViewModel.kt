@@ -25,10 +25,22 @@ class CreateBillViewModel(private val mBillSync: IBillSync) : BaseViewModel() {
 
     fun eventState(event: CreateBillEvent) = when (event) {
         is CreateBillEvent.Save -> {
-            save(event.bill)
+            launchIO({
+                save(event.bill)
+                uiStateLiveData.postValue(CreateBillUIState.Close)
+            }, {
+                ToastUtils.showLong(it.message)
+                uiStateLiveData.postValue(CreateBillUIState.Error(it))
+            })
         }
         is CreateBillEvent.SaveAgain -> {
-            save(event.bill)
+            launchIO({
+                save(event.bill)
+                uiStateLiveData.postValue(CreateBillUIState.Reset)
+            }, {
+                ToastUtils.showLong(it.message)
+                uiStateLiveData.postValue(CreateBillUIState.Error(it))
+            })
         }
 
         is CreateBillEvent.GetBill -> {
@@ -58,25 +70,19 @@ class CreateBillViewModel(private val mBillSync: IBillSync) : BaseViewModel() {
      * @param billType
      * @return
      */
-    private fun save(bill: Bill) {
-        launchIO({
-            val images = mutableListOf<Image>()
-            if (bill.images.isNotEmpty()) {
-                val selectImages = bill.images.map { s: String? ->
-                    val image = Image(ObjectId().toString(), bill.id)
-                    image.localPath = s
-                    image.synced = STATUS.NOT_SYNCED
-                    image
-                }.toMutableList()
-                images.addAll(selectImages)
-            }
-            var count: Long =
-                App.dataBase.billImageDao().installBillAndImage(bill, images)
-            mBillSync.add(bill)
-            uiStateLiveData.postValue(CreateBillUIState.Close)
-        }, {
-            ToastUtils.showLong(it.message)
-            uiStateLiveData.postValue(CreateBillUIState.Error(it))
-        })
+    private suspend fun save(bill: Bill) {
+        val images = mutableListOf<Image>()
+        if (bill.images.isNotEmpty()) {
+            val selectImages = bill.images.map { s: String? ->
+                val image = Image(ObjectId().toString(), bill.id)
+                image.localPath = s
+                image.synced = STATUS.NOT_SYNCED
+                image
+            }.toMutableList()
+            images.addAll(selectImages)
+        }
+        var count: Long =
+            App.dataBase.billImageDao().installBillAndImage(bill, images)
+        mBillSync.add(bill)
     }
 }

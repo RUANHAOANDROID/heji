@@ -359,7 +359,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         }
     }
 
-    fun saveAgain() {
+    private  fun saveAgain() {
         try {
             mBill.category = categoryTabFragment.getSelectCategory().category
             val inputMoney = binding.inputInfo.tvMoney.text.toString()
@@ -373,7 +373,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
     }
 
-    fun save() {
+   private fun save() {
         try {
             mBill.category = categoryTabFragment.getSelectCategory().category
             val inputMoney = binding.inputInfo.tvMoney.text.toString()
@@ -391,7 +391,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         check(mBill.category != null) { "类别未选" }
     }
 
-    fun reset() {
+    private fun reset() {
         mBill.apply {
             id = ObjectId().toHexString()
             money = BigDecimal.ZERO

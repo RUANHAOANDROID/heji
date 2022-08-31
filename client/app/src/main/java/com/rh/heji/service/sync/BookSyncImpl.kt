@@ -19,6 +19,10 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
 
     }
 
+    override fun getInfo(bookID: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun delete(bookID: String) {
         scope.launchIO({
             val response = HejiNetwork.getInstance().bookDelete(bookID)

@@ -61,8 +61,20 @@ class CreateBillViewModel(private val mBillSync: IBillSync) : BaseViewModel() {
                 uiStateLiveData.postValue(CreateBillUIState.Dealers(users))
             })
         }
+        is CreateBillEvent.GetImages->{
+            launch{
+               val images = App.dataBase.imageDao().findImage(event.img_ids)
+                uiStateLiveData.postValue(CreateBillUIState.Images(images))
+            }
+        }
     }
-
+    fun launch(exe:()->Unit){
+        launchIO({
+                 exe()
+        },{
+            uiStateLiveData.postValue(CreateBillUIState.Error(it))
+        })
+    }
     /**
      * 保存账单到本地
      * @param billId

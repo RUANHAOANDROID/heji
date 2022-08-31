@@ -170,11 +170,20 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             setDealer(dealer)
             setCategory(category)
             setMoney(money)
+            if (images.isNotEmpty()){
+                viewModel.eventState(CreateBillEvent.GetImages(images))
+            }
         }
         viewModel.subUIState().observe(this) { uiState ->
             when (uiState) {
                 is CreateBillUIState.BillChange -> {
-
+                    val bill =uiState.bill
+                    LogUtils.d(bill)
+                }
+                is CreateBillUIState.Images ->{
+                    val images =uiState.images
+                    LogUtils.d(uiState.images)
+                    popupSelectImage.setImage(images)
                 }
                 is CreateBillUIState.Close -> {
                     findNavController().popBackStack()
@@ -203,6 +212,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
                 is CreateBillUIState.Reset -> {
                     reset()
                 }
+
             }
         }
     }
@@ -324,7 +334,6 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             mBill.dealer = dealer
         }
     }
-
 
     private fun setTime(selectTime: Date) {
         binding.inputInfo.tvBillTime.text = DateConverters.date2Str(selectTime)

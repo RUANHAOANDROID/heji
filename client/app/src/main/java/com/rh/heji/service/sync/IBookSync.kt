@@ -16,6 +16,11 @@ interface IBookSync {
     fun compare()
 
     /**
+     * 获取账本信息
+     */
+    fun getInfo(bookID:String)
+
+    /**
      * 删除账本
      *
      */

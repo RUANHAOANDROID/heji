@@ -124,7 +124,6 @@ class PopSelectImage(activity: MainActivity) :
             image
         }.toMutableList()
         imageAdapter.setNewInstance(imagePaths)
-        imageAdapter.notifyDataSetChanged()
     }
 
 }

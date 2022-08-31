@@ -27,7 +27,8 @@ interface ImageDao {
     @Delete
     fun delete(ticket: Image )
 
-
+    @Query("SELECT * FROM image WHERE image_id IN (:img_ids)")
+    fun findImage(img_ids:List<String>):MutableList<Image>
 
     @Query("DELETE FROM image WHERE bill_id =:billID")
     fun deleteBillImage(billID: String )

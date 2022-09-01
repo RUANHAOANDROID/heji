@@ -26,13 +26,8 @@ class CreateBillViewModel(private val mBillSync: IBillSync) : BaseViewModel() {
     fun eventState(event: CreateBillEvent) = launchIO({
         when (event) {
             is CreateBillEvent.Save -> {
-                launchIO({
-                    save(event.bill)
-                    uiStateLiveData.postValue(CreateBillUIState.Close)
-                }, {
-                    ToastUtils.showLong(it.message)
-                    uiStateLiveData.postValue(CreateBillUIState.Error(it))
-                })
+                save(event.bill)
+                uiStateLiveData.postValue(CreateBillUIState.Close)
             }
             is CreateBillEvent.SaveAgain -> {
                 save(event.bill)
@@ -55,6 +50,10 @@ class CreateBillViewModel(private val mBillSync: IBillSync) : BaseViewModel() {
             is CreateBillEvent.GetImages -> {
                 val images = App.dataBase.imageDao().findImage(event.img_ids)
                 uiStateLiveData.postValue(CreateBillUIState.Images(images))
+            }
+            is CreateBillEvent.DeleteImage->{
+                val imageId =event.imageId
+                App.dataBase.imageDao().preDelete(imageId)
             }
         }
     }, {

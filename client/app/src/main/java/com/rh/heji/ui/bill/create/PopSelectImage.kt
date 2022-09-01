@@ -1,5 +1,6 @@
 package com.rh.heji.ui.bill.create
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
@@ -9,7 +10,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.listener.OnItemChildClickListener
 import com.lxj.xpopup.core.BottomPopupView
 import com.rh.heji.BuildConfig
-import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.db.Image
 import com.rh.heji.ui.bill.create.adapter.BillPhotoAdapter
@@ -20,8 +20,8 @@ import com.rh.heji.ui.bill.create.adapter.BillPhotoAdapter
  * @author: 锅得铁
  * #
  */
-class PopSelectImage(activity: MainActivity) :
-    BottomPopupView(activity) {
+class PopSelectImage(context: Context) :
+    BottomPopupView(context) {
     companion object {
         const val SELECT_MAX_COUNT = 3
     }

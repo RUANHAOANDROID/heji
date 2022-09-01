@@ -32,6 +32,7 @@ sealed class CreateBillUIState {
 
     class Images(val images: MutableList<Image>) : CreateBillUIState()
 
+
 }
 
 sealed class CreateBillEvent {
@@ -60,4 +61,8 @@ sealed class CreateBillEvent {
      * 获取账单图片
      */
     class GetImages(val img_ids: List<String>) : CreateBillEvent()
+    /**
+     * 删除账单图片
+     */
+    class DeleteImage(val imageId :String):CreateBillEvent()
 }

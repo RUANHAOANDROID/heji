@@ -128,16 +128,17 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
     override fun initView(rootView: View) {
         binding = FragmentCreatebillBinding.bind(rootView)
-        popupSelectImage = PopSelectImage(mainActivity).apply {
+        popupSelectImage = PopSelectImage(requireActivity()).apply {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
+                viewModel.eventState(CreateBillEvent.DeleteImage(it.id))
             }
             selectedImagesCall = {
                 getImagesPath()
             }
             selectListener = { maxCount ->
                 MatisseUtils.selectMultipleImage(
-                    mainActivity,
+                    requireActivity(),
                     maxCount,
                     launcher = imageSelectLauncher
                 )

@@ -44,7 +44,7 @@ public class BookController {
         MBookUser bookUser = new MBookUser()
                 .setName(authentication.getName())
                 .setAuthority(MBookUser.AUTHORITYS[0]);
-        book.setFirstBook(1);//not firstBook
+        //book.setFirstBook(1);//not firstBook
         users.add(bookUser);
         book.setUsers(users);
         bookService.createBook(book);

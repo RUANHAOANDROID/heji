@@ -16,6 +16,11 @@ interface IBillSync {
     fun compare()
 
     /**
+     * 获取账单
+     */
+
+    fun getBills(year:String)
+    /**
      * 删除账本
      *
      */

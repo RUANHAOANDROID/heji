@@ -31,6 +31,10 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
 
     }
 
+    override fun getBills(year: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun delete(billID: String) {
         LogUtils.d("sync bill delete", billID)
         scope.launchIO({

@@ -24,7 +24,6 @@ import com.lxj.xpopup.XPopup
 import com.rh.heji.*
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
-import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.converters.MoneyConverters.ZERO_00
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
@@ -129,16 +128,17 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
     override fun initView(rootView: View) {
         binding = FragmentCreatebillBinding.bind(rootView)
-        popupSelectImage = PopSelectImage(mainActivity).apply {
+        popupSelectImage = PopSelectImage(requireActivity()).apply {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
+                viewModel.eventState(CreateBillEvent.DeleteImage(it.id))
             }
             selectedImagesCall = {
                 getImagesPath()
             }
             selectListener = { maxCount ->
                 MatisseUtils.selectMultipleImage(
-                    mainActivity,
+                    requireActivity(),
                     maxCount,
                     launcher = imageSelectLauncher
                 )
@@ -165,16 +165,25 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
         keyboardListener()
         viewModel.eventState(CreateBillEvent.GetDealers(mBill.id))
-        with(mBill){
+        with(mBill) {
             setTime(billTime)
             setDealer(dealer)
             setCategory(category)
             setMoney(money)
+            if (images.isNotEmpty()) {
+                viewModel.eventState(CreateBillEvent.GetImages(images))
+            }
         }
         viewModel.subUIState().observe(this) { uiState ->
             when (uiState) {
                 is CreateBillUIState.BillChange -> {
-
+                    val bill = uiState.bill
+                    LogUtils.d(bill)
+                }
+                is CreateBillUIState.Images -> {
+                    val images = uiState.images
+                    LogUtils.d(uiState.images)
+                    popupSelectImage.setImage(images)
                 }
                 is CreateBillUIState.Close -> {
                     findNavController().popBackStack()
@@ -203,6 +212,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
                 is CreateBillUIState.Reset -> {
                     reset()
                 }
+
             }
         }
     }
@@ -245,7 +255,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             override fun save(result: String) {
                 ToastUtils.showLong(result)
                 mBill.images = popupSelectImage.getImagesPath()
-                this@CreateBillFragment.save()
+                this@CreateBillFragment.save(false)
             }
 
             override fun calculation(result: String) {
@@ -254,7 +264,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
             override fun saveAgain(result: String) {
                 ToastUtils.showLong(result)
-                this@CreateBillFragment.saveAgain()
+                this@CreateBillFragment.save(true)
             }
         })
     }
@@ -325,7 +335,6 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         }
     }
 
-
     private fun setTime(selectTime: Date) {
         binding.inputInfo.tvBillTime.text = DateConverters.date2Str(selectTime)
         mBill.billTime = selectTime
@@ -359,36 +368,27 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         }
     }
 
-    private  fun saveAgain() {
+
+    private fun save(again: Boolean) {
         try {
-            mBill.category = categoryTabFragment.getSelectCategory().category
-            val inputMoney = binding.inputInfo.tvMoney.text.toString()
-            mBill.money = BigDecimal(inputMoney)
-            mBill.createTime = System.currentTimeMillis()
-            checkBill()
-            viewModel.eventState(CreateBillEvent.SaveAgain(mBill))
+            with(mBill) {
+                category = categoryTabFragment.getSelectCategory().category
+                money = BigDecimal(binding.inputInfo.tvMoney.text.toString())
+                createTime = System.currentTimeMillis()
+            }
+            //check value is false throw error
+            check(mBill.money != ZERO_00()) { "金额不能为 ${ZERO_00().toPlainString()}" }
+            check(mBill.money != BigDecimal.ZERO) { "金额不能为 ${BigDecimal.ZERO.toPlainString()}" }
+            check(mBill.category != null) { "未选类别" }
+            viewModel.eventState(
+                if (again)
+                    CreateBillEvent.SaveAgain(mBill)
+                else
+                    CreateBillEvent.Save(mBill)
+            )
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)
         }
-
-    }
-
-   private fun save() {
-        try {
-            mBill.category = categoryTabFragment.getSelectCategory().category
-            val inputMoney = binding.inputInfo.tvMoney.text.toString()
-            mBill.money = BigDecimal(inputMoney)
-            mBill.createTime = System.currentTimeMillis()
-            checkBill()
-            viewModel.eventState(CreateBillEvent.Save(mBill))
-        } catch (e: Exception) {
-            ToastUtils.showLong(e.message)
-        }
-    }
-
-    private fun checkBill() {
-        check(mBill.money != MoneyConverters.ZERO_00()) { "未输入金额" }
-        check(mBill.category != null) { "类别未选" }
     }
 
     private fun reset() {

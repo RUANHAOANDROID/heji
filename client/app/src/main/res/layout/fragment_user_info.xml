@@ -22,9 +22,63 @@
         android:id="@+id/userImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minHeight="60dp"
+        android:minWidth="60dp"
         android:layout_marginTop="32dp"
+        android:src="@drawable/ic_user_blue_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/white"
+        android:minHeight="100dp"
+        app:layout_constraintTop_toBottomOf="@+id/userImage"
+        tools:context=".ui.book.BookSettingFragment">
+
+
+        <TextView
+            android:id="@+id/tvTitleUserInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="用户信息"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTEL"
+            style="@style/TextSelectedBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minHeight="40dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="手机号码"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/tvTitleUserInfo"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleUserInfo" />
+
+        <TextView
+            android:id="@+id/tvNickName"
+            style="@style/TextSelectedBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="昵称"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/tvTEL"
+            app:layout_constraintTop_toBottomOf="@+id/tvTEL" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

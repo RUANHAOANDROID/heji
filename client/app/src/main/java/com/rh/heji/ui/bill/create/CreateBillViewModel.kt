@@ -23,45 +23,43 @@ class CreateBillViewModel(private val mBillSync: IBillSync) : BaseViewModel() {
 
     var keyBoardStack: Stack<String>? = null//用于保存栈
 
-    fun eventState(event: CreateBillEvent) = when (event) {
-        is CreateBillEvent.Save -> {
-            launchIO({
+    fun eventState(event: CreateBillEvent) = launchIO({
+        when (event) {
+            is CreateBillEvent.Save -> {
                 save(event.bill)
                 uiStateLiveData.postValue(CreateBillUIState.Close)
-            }, {
-                ToastUtils.showLong(it.message)
-                uiStateLiveData.postValue(CreateBillUIState.Error(it))
-            })
-        }
-        is CreateBillEvent.SaveAgain -> {
-            launchIO({
+            }
+            is CreateBillEvent.SaveAgain -> {
                 save(event.bill)
                 uiStateLiveData.postValue(CreateBillUIState.Reset)
-            }, {
-                ToastUtils.showLong(it.message)
-                uiStateLiveData.postValue(CreateBillUIState.Error(it))
-            })
-        }
+            }
 
-        is CreateBillEvent.GetBill -> {
-            event.bill_id?.let {
-                launchIO({
+            is CreateBillEvent.GetBill -> {
+                event.bill_id?.let {
                     val bill = App.dataBase.billImageDao().findBillAndImage(it)
                     uiStateLiveData.postValue(CreateBillUIState.BillChange(bill = bill))
-                })
+                }
 
             }
-        }
-
-        is CreateBillEvent.GetDealers -> {
-            launchIO({
+            is CreateBillEvent.GetDealers -> {
                 val users = App.dataBase.dealerDao().findAll().map {
                     it.userName
                 }.toMutableList()
                 uiStateLiveData.postValue(CreateBillUIState.Dealers(users))
-            })
+            }
+            is CreateBillEvent.GetImages -> {
+                val images = App.dataBase.imageDao().findImage(event.img_ids)
+                uiStateLiveData.postValue(CreateBillUIState.Images(images))
+            }
+            is CreateBillEvent.DeleteImage->{
+                val imageId =event.imageId
+                App.dataBase.imageDao().preDelete(imageId)
+            }
         }
-    }
+    }, {
+        uiStateLiveData.postValue(CreateBillUIState.Error(it))
+        ToastUtils.showLong(it.message)
+    })
 
     /**
      * 保存账单到本地

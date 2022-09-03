@@ -14,3 +14,6 @@ VOLUME /mydata
 #RUN touch /heji
 ENTRYPOINT ["java","-jar","hejiserver.jar"]
 #CMD ["java","-jar","hejiserver.jar"]
+
+##### 1 edit this dockerfile #####
+##### 2 run options --net host #####

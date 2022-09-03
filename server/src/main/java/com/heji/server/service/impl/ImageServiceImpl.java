@@ -76,7 +76,7 @@ public class ImageServiceImpl extends BaseMongoTemplate implements ImageService 
 
     @Override
     public void removeImage(String imageId) {
-
+        mImageRepository.deleteById(imageId);
     }
 
     @Override

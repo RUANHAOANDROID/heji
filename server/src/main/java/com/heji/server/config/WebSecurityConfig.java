@@ -95,7 +95,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/bill/info","/bill/getBills","/bill/export").hasAnyAuthority("ROLE_USER","ROLE_READ")//浏览用户可查看导出
                 .antMatchers("/category/**").hasAuthority("ROLE_USER")//对用户开放分类接口
                 .antMatchers("/image/{imageId:.+}").permitAll()//对用户开放票据图片接口
-                .antMatchers("/image/uploadImage","/image/uploadImages").hasAnyAuthority(authorities)//用户开放图片接口,查看则完全开放
+                .antMatchers("/image/uploadImage","/image/uploadImages","/image/delete").hasAnyAuthority(authorities)//用户开放图片接口,查看则完全开放
                 .antMatchers("/log/**").permitAll()//崩溃日志对所有人开放
                 .antMatchers("/operateLog/**").permitAll()//崩溃日志对所有人开放
                 .antMatchers("/favicon.ico").permitAll()//标题.ico

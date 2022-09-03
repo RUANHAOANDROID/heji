@@ -1,6 +1,7 @@
 package com.rh.heji.service.sync
 
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
 import com.rh.heji.FILE_LENGTH_1M
 import com.rh.heji.data.AppDatabase
@@ -70,11 +71,27 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
         })
     }
 
+    override fun deleteImage(image: Image) {
+        scope.launchIO({
+            val response = HejiNetwork.getInstance().imageDelete(image.billID, image.id)
+            if (response.success()) {
+                App.dataBase.imageDao().deleteById(image.id)
+            }
+        }, {
+            ToastUtils.showLong("delete image error " + it.message)
+        })
+
+    }
+
+    override fun addImage(image: Image) {
+
+    }
+
     /**
      * 上传账单图片
      */
     private suspend fun uploadImage(bid: String) {
-        val images = App.dataBase.imageDao().findByBillIdNotAsync(bid)
+        val images = App.dataBase.imageDao().findByBillID(bid, STATUS.NOT_SYNCED)
         if (images.isNotEmpty()) {
             images.forEach { image ->
                 var imgFile = File(image.localPath)

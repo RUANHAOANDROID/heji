@@ -54,7 +54,7 @@ class BillRepository : DataRepository() {
      * 上传账单图片
      */
     private suspend fun uploadImage(bill_id: String) {
-        val images = imgDao.findByBillIdNotAsync(bill_id)
+        val images = imgDao.findByBillID(bill_id,STATUS.NOT_SYNCED)
         if (images.isNotEmpty()) {
             images.forEach { image ->
                 var imgFile = File(image.localPath)

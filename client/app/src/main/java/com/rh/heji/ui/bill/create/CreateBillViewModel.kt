@@ -52,8 +52,9 @@ class CreateBillViewModel(private val mBillSync: IBillSync) : BaseViewModel() {
                 uiStateLiveData.postValue(CreateBillUIState.Images(images))
             }
             is CreateBillEvent.DeleteImage->{
-                val imageId =event.imageId
-                App.dataBase.imageDao().preDelete(imageId)
+                val image =event.image
+                App.dataBase.imageDao().preDelete(image.id)
+                mBillSync.deleteImage(image )
             }
         }
     }, {

@@ -24,16 +24,17 @@ interface ImageDao {
         return count
     }
 
-    @Delete
-    fun delete(ticket: Image )
-
-    @Query("SELECT * FROM image WHERE image_id IN (:img_ids)")
+    @Query("SELECT * FROM image WHERE image_id IN (:img_ids) AND sync_status !=${STATUS.DELETED}")
     fun findImage(img_ids:List<String>):MutableList<Image>
+
+
+    @Query("SELECT * FROM image WHERE image_id =:billID AND sync_status =:status")
+    fun findByBillID(billID:String,status:Int):MutableList<Image>
 
     @Query("DELETE FROM image WHERE bill_id =:billID")
     fun deleteBillImage(billID: String )
 
-    @Query("SELECT image_id FROM image WHERE bill_id =:billID")
+    @Query("SELECT image_id FROM image WHERE bill_id =:billID AND sync_status !=${STATUS.DELETED}")
     fun findImagesId(billID: String ):MutableList<String>
 
     @Transaction
@@ -54,16 +55,10 @@ interface ImageDao {
     @Query("DELETE FROM ${Image.TAB_NAME} WHERE ${Image.COLUMN_ID}=:imgID")
     fun deleteById(imgID: String )
 
-    @Query("SELECT * FROM image WHERE bill_id =:billId")
+    @Query("SELECT * FROM image WHERE bill_id =:billId AND sync_status !=${STATUS.DELETED}")
     fun findByBillId(billId: String ): Flow<MutableList<Image>>
 
-    @Query("SELECT * FROM image WHERE image_id =:id")
-    fun findById(id: String ): MutableList<Image >
-
-    @Query("SELECT * FROM image WHERE bill_id =:billId AND sync_status== ${STATUS.NOT_SYNCED}")
-    fun findByBillIdNotAsync(billId: String): MutableList<Image>
-
-    @Query("SELECT * FROM image WHERE (local_path ISNULL OR local_path=='') AND(online_path!='' OR online_path != NULL)")
+    @Query("SELECT * FROM image WHERE (local_path ISNULL OR local_path='') AND(online_path!='' OR online_path != NULL)")
     fun observerNotDownloadImages(): Flow<MutableList<Image>>
 
 }

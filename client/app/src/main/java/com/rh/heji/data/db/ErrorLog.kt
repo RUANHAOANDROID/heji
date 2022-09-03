@@ -1,6 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.rh.heji.data.db.mongo.ObjectId
 import com.squareup.moshi.Json
@@ -33,6 +34,6 @@ data class ErrorLog(
     var uniqueDeviceId: String? = null
     var networkType: String? = null
     var crashContent: String? = null
-
+    @Ignore
     constructor() : this(id = ObjectId().toHexString())
 }

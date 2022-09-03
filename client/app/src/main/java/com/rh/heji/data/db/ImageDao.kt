@@ -28,7 +28,7 @@ interface ImageDao {
     fun findImage(img_ids:List<String>):MutableList<Image>
 
 
-    @Query("SELECT * FROM image WHERE image_id =:billID AND sync_status =:status")
+    @Query("SELECT * FROM image WHERE bill_id =:billID AND sync_status =:status")
     fun findByBillID(billID:String,status:Int):MutableList<Image>
 
     @Query("DELETE FROM image WHERE bill_id =:billID")

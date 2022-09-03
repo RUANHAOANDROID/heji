@@ -33,7 +33,15 @@ public class ImageController {
         this.imageService = imageService;
         this.billService = billService;
     }
-
+    /**
+     * 删除照片
+     */
+    @PostMapping(value = "/delete")
+    public String deleteImage(@RequestParam String billId,@RequestParam String imageId){
+        imageService.removeImage(imageId);
+        billService.removeImage(billId,imageId);
+        return Result.success( "删除成功");
+    }
     /**
      * @param imageId 图片ID
      * @return

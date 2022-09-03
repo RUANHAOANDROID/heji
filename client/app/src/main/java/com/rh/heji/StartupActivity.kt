@@ -3,13 +3,11 @@ package com.rh.heji
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.gyf.immersionbar.ktx.immersionBar
-import com.rh.heji.data.db.Book
 
 class StartupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (App.userIsInit()) {
-            //TODO 当登录状态下，清除了本地数据再次进入账本会报错，应进入主页前同步账本没有则创建默认账本
+        if (App.userIsInit()&&App.bookIsInit()) {
             startMainActivity()
         } else {
             startLoginActivity()

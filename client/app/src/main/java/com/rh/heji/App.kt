@@ -3,9 +3,11 @@ package com.rh.heji
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Book
+import com.rh.heji.service.sync.SyncService
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.security.UserToken
 import kotlinx.coroutines.flow.first
@@ -28,6 +30,9 @@ class App : Application() {
     }
 
     private fun init() {
+        Intent(this, SyncService::class.java).also {
+            startService(it)
+        }
         runBlocking {
             if (DataStoreManager.startupCount() == 1) {
                 //第一次启动
@@ -64,14 +69,11 @@ class App : Application() {
             private set
 
         fun userIsInit() = this::user.isInitialized
+        fun bookIsInit() = this::currentBook.isInitialized
 
         @JvmName("switchUser")
         fun setUser(currentUser: JWTParse.User) {
             user = currentUser
-        }
-
-        fun autoBaseData(user: JWTParse.User) {
-
         }
 
         /**

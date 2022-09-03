@@ -1,5 +1,6 @@
 package com.rh.heji.data.db.dto
 
+import androidx.room.Ignore
 import java.math.BigDecimal
 
 /**
@@ -11,5 +12,6 @@ data class CategoryPercentage(
     var money: BigDecimal?,
     var percentage: Float
 ) {
+    @Ignore
     constructor() : this(category = null, money = BigDecimal.ZERO, percentage = 0.00f)
 }

@@ -1,6 +1,7 @@
 package com.rh.heji.service.sync
 
 import com.rh.heji.data.db.Bill
+import com.rh.heji.data.db.Image
 
 /**
  * 账单同步
@@ -19,7 +20,8 @@ interface IBillSync {
      * 获取账单
      */
 
-    fun getBills(year:String)
+    fun getBills(year: String)
+
     /**
      * 删除账本
      *
@@ -28,7 +30,6 @@ interface IBillSync {
 
     /**
      * 新增账本
-     * TODO 扩展图片
      *
      */
     fun add(bill: Bill)
@@ -39,4 +40,14 @@ interface IBillSync {
      */
 
     fun update(book: Bill)
+
+    /**
+     * 删除照片
+     */
+    fun deleteImage(image: Image)
+
+    /**
+     * 添加照片
+     */
+    fun addImage(image: Image)
 }

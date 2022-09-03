@@ -131,7 +131,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         popupSelectImage = PopSelectImage(requireActivity()).apply {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
-                viewModel.eventState(CreateBillEvent.DeleteImage(it.id))
+                viewModel.eventState(CreateBillEvent.DeleteImage(it))
             }
             selectedImagesCall = {
                 getImagesPath()

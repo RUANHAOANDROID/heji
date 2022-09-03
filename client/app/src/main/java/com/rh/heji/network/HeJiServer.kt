@@ -134,6 +134,10 @@ interface HeJiServer {
     @GET("image/{imageId}")
     fun getImage(@Path("imageId") _id: String): Call<ResponseBody>
 
+    @Streaming
+    @POST("image/delete")
+    fun imageDelete(@Query("billId") billId: String,@Query("imageId") imageId :String): Call<BaseResponse<String>>
+
     //----------------------LOG FILE---------------------------//
     @POST("log/upload")
     fun logUpload(@Body errorLog: ErrorLog):Call<BaseResponse<String>>

@@ -64,5 +64,5 @@ sealed class CreateBillEvent {
     /**
      * 删除账单图片
      */
-    class DeleteImage(val imageId :String):CreateBillEvent()
+    class DeleteImage(val image :Image):CreateBillEvent()
 }

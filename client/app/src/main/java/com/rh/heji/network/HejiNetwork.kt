@@ -54,6 +54,7 @@ class HejiNetwork {
     ) = hejiServer.uploadImg(part, _id, _bid, time).await()
 
     suspend fun imageDownload(_id: String) = hejiServer.getBillImages(_id).await()
+    suspend fun imageDelete(billId: String,imageId:String) = hejiServer.imageDelete(billId, imageId).await()
     suspend fun billExport(year: String = "0", month: String = "0"): Response<ResponseBody> =
         hejiServer.exportBills(year, month).execute()
 
@@ -108,6 +109,7 @@ class HejiNetwork {
             })
         }
     }
+
 
 
     companion object {

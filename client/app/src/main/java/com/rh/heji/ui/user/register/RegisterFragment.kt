@@ -12,12 +12,13 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.LoginActivity
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentRegisterBinding
+import com.rh.heji.uiState
 
 class RegisterFragment : Fragment() {
 
 
     private val viewModel: RegisterViewModel by lazy {
-        ViewModelProvider(this).get(RegisterViewModel::class.java)
+        ViewModelProvider(this)[RegisterViewModel::class.java]
     }
     private lateinit var binding: FragmentRegisterBinding
     override fun onCreateView(
@@ -38,16 +39,28 @@ class RegisterFragment : Fragment() {
             val code = binding.editInviteCode.text.toString()
             val tel = binding.editTEL.text.toString()
             val username = binding.editUserName.text.toString()
-            viewModel.register(username, tel, code, password1)
+            viewModel.doAction(RegisterAction.Register(username, tel, code, password1))
         }
-        viewModel.registerResult().observe(viewLifecycleOwner) { user ->
-            var mBundle = Bundle()
-            mBundle.putSerializable("user", user)
-            Navigation.findNavController(binding.root).popBackStack()
-            Navigation.findNavController(binding.root).navigate(R.id.nav_login, mBundle)
+        uiState(viewModel) {
+            when (it) {
+                is RegisterUiState.Success -> {
+                    gotoLogin(it.user)
+                }
+                is RegisterUiState.Error -> {
+                    ToastUtils.showLong(it.throwable.message)
+                }
+            }
         }
         return binding.root
     }
+
+    private fun gotoLogin(user: RegisterUser) {
+        var mBundle = Bundle()
+        mBundle.putSerializable("user", user)
+        Navigation.findNavController(binding.root).popBackStack()
+        Navigation.findNavController(binding.root).navigate(R.id.nav_login, mBundle)
+    }
+
 
     override fun onResume() {
         super.onResume()

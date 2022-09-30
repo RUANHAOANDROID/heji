@@ -1,21 +1,23 @@
 package com.rh.heji.ui.user.register
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.network.HejiNetwork
-import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.ui.base.BaseViewModelMVI
 import com.rh.heji.utlis.launch
-import java.io.Serializable
 
-class RegisterViewModel : BaseViewModel() {
-    private val registerLiveData = MutableLiveData<RegisterUser>()
-    fun registerResult(): LiveData<RegisterUser> {
-        return registerLiveData
+class RegisterViewModel : BaseViewModelMVI<RegisterAction, RegisterUiState>() {
+
+    override fun doAction(action: RegisterAction) {
+        super.doAction(action)
+        when (action) {
+            is RegisterAction.Register -> {
+                register(action.username, action.tel, action.code, action.password)
+            }
+        }
     }
 
-    fun register(
+    private fun register(
         username: String,
         tel: String,
         code: String,
@@ -33,7 +35,7 @@ class RegisterViewModel : BaseViewModel() {
             val body = response.data.apply {
                 this.password = password//本地输入的未加密的密码
             }
-            registerLiveData.postValue(body)
+            _uiState.postValue(RegisterUiState.Success(body))
         }, {
             ToastUtils.showLong(it.message)
         })
@@ -45,9 +47,3 @@ class RegisterViewModel : BaseViewModel() {
     }
 }
 
-data class RegisterUser(
-    var name: String,
-    var password: String,
-    var tel: String,
-    var code: String
-) : Serializable

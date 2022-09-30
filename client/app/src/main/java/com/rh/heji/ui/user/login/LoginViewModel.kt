@@ -5,10 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
-import com.rh.heji.currentUser
-import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Book
-import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.HejiNetwork
@@ -31,9 +28,7 @@ class LoginViewModel : BaseViewModel() {
                 encodePassword(password)
             )
             var token = requestBody.data
-
             UserToken.saveToken(token)
-            currentUser = JWTParse.getUser(token)
             App.setUser(currentUser = JWTParse.getUser(token))
             ToastUtils.showLong(requestBody.data)
             initDataBase(App.user)

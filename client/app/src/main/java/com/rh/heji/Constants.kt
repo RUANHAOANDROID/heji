@@ -37,29 +37,21 @@ const val COMPRESSION_SIZE = 1204 * 2
  */
 const val FILE_LENGTH_1M = 1204 * 1024 * 1
 
-/**
- * 当前账本
- */
-const val CURRENT_BOOK = "currentBook"
-
-/**
- * 当前账本ID
- */
-const val CURRENT_BOOK_ID = "currentBookID"
 
 val currentYearMonth: YearMonth = YearMonth(
     year = Calendar.getInstance().get(Calendar.YEAR),
     month = Calendar.getInstance().get(Calendar.MONTH) + 1,
     day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
 )
+
+/**
+ * 默认账本
+ */
 //var currentBook = Book(
 //    name = "个人账本",
 //    createUser = "local",
 //    type = "日常账本"
 //)
-var currentUser: JWTParse.User = JWTParse.User("local", mutableListOf(), "")
-
-
 
 val moshi: Moshi = Moshi.Builder()
     .addLast(KotlinJsonAdapterFactory())

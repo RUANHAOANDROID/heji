@@ -15,9 +15,9 @@ import com.blankj.utilcode.util.LogUtils
  */
 abstract class BaseViewModelMVI<I : IAction, O : IUiState> : ViewModel() {
 
-    protected var _uiState = MutableLiveData<O>()
+    protected var uiState = MutableLiveData<O>()
 
-    fun uiState(): LiveData<O> = _uiState
+    fun uiState(): LiveData<O> = uiState
 
     open fun doAction(action: I) {
         LogUtils.d(action.id())

@@ -9,12 +9,12 @@ import com.rh.heji.databinding.FragmentSettingBinding
 import com.rh.heji.ui.base.BaseFragment
 
 class SettingFragment : BaseFragment() {
-    lateinit var settingViewModel: SettingViewModel
+    //lateinit var settingViewModel: SettingViewModel
     lateinit var binding: FragmentSettingBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        settingViewModel = ViewModelProvider(this)[SettingViewModel::class.java]
+        //settingViewModel = ViewModelProvider(this)[SettingViewModel::class.java]
     }
 
     override fun initView(rootView: View) {

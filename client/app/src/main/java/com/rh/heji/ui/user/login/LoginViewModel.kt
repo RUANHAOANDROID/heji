@@ -39,9 +39,9 @@ class LoginViewModel : BaseViewModelMVI<LoginAction, LoginUiState>() {
             ToastUtils.showLong(requestBody.data)
             initDataBase(App.user)
             initBook(App.user)
-            _uiState.postValue(LoginUiState.Success(token))
+            uiState.postValue(LoginUiState.Success(token))
         }, {
-            _uiState.postValue(LoginUiState.Error(it))
+            uiState.postValue(LoginUiState.Error(it))
         })
 
     }

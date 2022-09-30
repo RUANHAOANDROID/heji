@@ -3,9 +3,12 @@ package com.rh.heji
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.fragment.app.Fragment
+import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.converters.DateConverters
+import com.rh.heji.ui.base.BaseViewModelMVI
+import com.rh.heji.ui.base.IAction
+import com.rh.heji.ui.base.IUiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -57,4 +60,7 @@ fun CoroutineScope.launchIO(
             e.printStackTrace()
         }
     }
+}
+public fun <I : IAction, O : IUiState> Fragment.uiState(viewModel: BaseViewModelMVI<I,O>, function: (o:O) -> Unit) {
+    viewModel.uiState().observe(viewLifecycleOwner,function)
 }

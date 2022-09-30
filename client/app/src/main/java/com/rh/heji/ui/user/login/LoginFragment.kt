@@ -15,6 +15,7 @@ import com.rh.heji.LoginActivity
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentLoginBinding
 import com.rh.heji.ui.user.register.RegisterUser
+import com.rh.heji.uiState
 
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
@@ -28,21 +29,24 @@ class LoginFragment : Fragment() {
         binding = FragmentLoginBinding.inflate(inflater)
 
         initView(binding.root)
-        subLoginResult()
+        uiState(viewModel) {
+            when (it) {
+                is LoginUiState.Success -> {
+                    findNavController().popBackStack()
+                    (activity as LoginActivity).startMainActivity()
+                    AppViewModel.get().asyncData()
+                    LogUtils.d(it.token)
+                }
+                is LoginUiState.Error -> {
+                    ToastUtils.showLong("登陆错误:${it.t.message}")
+
+                }
+            }
+        }
         return binding.root
     }
 
-    private fun subLoginResult() {
-        viewModel.loginResult().observe(viewLifecycleOwner) { token ->
-            findNavController().popBackStack()
-            (activity as LoginActivity).startMainActivity()
-            AppViewModel.get().asyncData()
-            LogUtils.d(token)
-        }
-    }
-
     fun initView(rootView: View) {
-
         binding = FragmentLoginBinding.bind(rootView)
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.nav_register)
@@ -50,7 +54,7 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             val username = binding.editUser.text.toString()
             val password = binding.editPassword.text.toString()
-            viewModel.login(username, password)
+            viewModel.doAction(LoginAction.Login(username, password))
         }
     }
 
@@ -60,6 +64,7 @@ class LoginFragment : Fragment() {
             findViewById<Toolbar>(R.id.toolbar).title = getString(R.string.login)
             this
         }
+        //auto input user info
         arguments?.let {
             var user: RegisterUser = it.getSerializable("user") as RegisterUser
             binding.editUser.setText(user.tel)

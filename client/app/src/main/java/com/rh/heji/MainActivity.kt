@@ -125,8 +125,9 @@ class MainActivity : AppCompatActivity() {
             if (jwtTokenString.isNullOrEmpty()) {
                 toLogin()
             } else {
-                currentUser = JWTParse.getUser(jwtTokenString)
-                setDrawerLayout(App.user)
+                val currentUser =JWTParse.getUser(jwtTokenString)
+                App.setUser(currentUser)
+                setDrawerLayout(currentUser)
                 AppViewModel.get().asyncData()
             }
         }

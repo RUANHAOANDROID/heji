@@ -10,18 +10,24 @@ import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.ui.base.BaseViewModelMVI
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.utlis.launchIO
 
-class LoginViewModel : BaseViewModel() {
+class LoginViewModel : BaseViewModelMVI<LoginAction, LoginUiState>() {
 
-    private val loginLiveData: MediatorLiveData<String> = MediatorLiveData()
-    fun loginResult(): LiveData<String> {
-        return loginLiveData
+
+    override fun doAction(action: LoginAction) {
+        super.doAction(action)
+        when (action) {
+            is LoginAction.Login -> {
+                login(action.userName, action.password)
+            }
+        }
     }
 
-    fun login(username: String, password: String) {
+    private fun login(username: String, password: String) {
         launchIO({
             var requestBody = HejiNetwork.getInstance().login(
                 username,
@@ -33,9 +39,9 @@ class LoginViewModel : BaseViewModel() {
             ToastUtils.showLong(requestBody.data)
             initDataBase(App.user)
             initBook(App.user)
-            loginLiveData.postValue(token)
+            _uiState.postValue(LoginUiState.Success(token))
         }, {
-            ToastUtils.showLong("登陆错误:${it.message}")
+            _uiState.postValue(LoginUiState.Error(it))
         })
 
     }
@@ -50,7 +56,7 @@ class LoginViewModel : BaseViewModel() {
         //var user =HejiNetwork.getInstance().auth(token.trim().split("Bearer")[1]).apply {}
     }
 
-    fun initDataBase(user: JWTParse.User) {
+    private fun initDataBase(user: JWTParse.User) {
         App.setDataBase(user.name)
     }
 

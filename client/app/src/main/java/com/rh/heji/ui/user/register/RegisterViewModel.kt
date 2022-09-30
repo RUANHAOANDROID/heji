@@ -35,7 +35,7 @@ class RegisterViewModel : BaseViewModelMVI<RegisterAction, RegisterUiState>() {
             val body = response.data.apply {
                 this.password = password//本地输入的未加密的密码
             }
-            _uiState.postValue(RegisterUiState.Success(body))
+            uiState.postValue(RegisterUiState.Success(body))
         }, {
             ToastUtils.showLong(it.message)
         })

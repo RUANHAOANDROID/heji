@@ -35,7 +35,7 @@ interface ETCServer {
 
     companion object {
         const val ETC_BASE_URL = "http://hubeiweixin.u-road.com"
-        const val ETC_URL =
+        const val URL =
             "http://hubeiweixin.u-road.com/HuBeiCityAPIServer/index.php/huibeicityserver/showetcacount/" +
                     "42021909230571219224/" +
                     "202008/" +

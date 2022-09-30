@@ -9,11 +9,14 @@ import android.webkit.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
 import com.rh.heji.App.Companion.currentBook
+import com.rh.heji.ETC
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentEtcBinding
 import com.rh.heji.ui.base.BaseFragment
+import com.rh.heji.uiState
 import java.util.*
 
 /**
@@ -23,12 +26,13 @@ import java.util.*
  */
 class ETCFragment : BaseFragment() {
     lateinit var binding: FragmentEtcBinding
-    val etcViewModel: ETCViewModel by lazy {
+    private val etcViewModel: ETCViewModel by lazy {
         ViewModelProvider(
             this,
             ETCViewModelFactory(mainActivity.mService.getBillSyncManager())
         )[ETCViewModel::class.java]
     }
+    private val inputLoading by lazy {XPopup.Builder(requireContext()).asLoading().setTitle("正在导入") }
 
     override fun onResume() {
         super.onResume()
@@ -54,7 +58,7 @@ class ETCFragment : BaseFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true)
         }
-        binding.etcWeb.loadUrl(ETCViewModel.ETC_URL)
+        binding.etcWeb.loadUrl(ETC.URL)
         val client: WebViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(
                 view1: WebView,
@@ -111,6 +115,21 @@ class ETCFragment : BaseFragment() {
             }
         }
         binding.etcWeb.webViewClient = client
+
+        uiState(etcViewModel) {
+            when (it) {
+                is ETCUiState.InputSuccess -> {
+                    inputLoading.setTitle("导入成功")
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        { inputLoading.dismiss() },
+                        1000
+                    )
+                }
+                is ETCUiState.InputError -> {
+                    ToastUtils.showShort("导入失败")
+                }
+            }
+        }
     }
 
     override fun layoutId(): Int {
@@ -135,8 +154,8 @@ class ETCFragment : BaseFragment() {
     private fun inputValue(webView: WebView) {
         val functionInput = "javascript:" +
                 " function inputNumber() { " +
-                "   document.getElementById(\"cardnum\").value = '" + ETCViewModel.DEF_ETC_ID + "';" +
-                "   document.getElementById(\"vehplate\").value = '" + ETCViewModel.DEF_CAR_ID + "';" +
+                "   document.getElementById(\"cardnum\").value = '" + ETC.ID + "';" +
+                "   document.getElementById(\"vehplate\").value = '" + ETC.CAR_ID + "';" +
                 "}"
         webView.loadUrl(functionInput) //写入ETC卡号、车牌号
         //执行
@@ -163,20 +182,15 @@ class ETCFragment : BaseFragment() {
                     "导入" + etcViewModel.yearMonth + "账单",
                     "当前账本【${currentBook.name}】，确认导入吗？"
                 ) {
-                    val inputLoading = XPopup.Builder(requireContext()).asLoading().setTitle("正在导入")
+
                     inputLoading.show()
-                    etcViewModel.requestHBGSETCList(
-                        etcViewModel.etcID,
-                        etcViewModel.yearMonth!!,
-                        etcViewModel.carID
+                    etcViewModel.doAction(
+                        ETCAction.RequestETCBill(
+                            etcViewModel.etcID,
+                            etcViewModel.yearMonth!!,
+                            etcViewModel.carID
+                        )
                     )
-                        .observe(viewLifecycleOwner) { message: String ->
-                            inputLoading.setTitle(message)
-                            Handler(Looper.getMainLooper()).postDelayed(
-                                { inputLoading.dismiss() },
-                                1000
-                            )
-                        }
                 }
                 .show()
         }

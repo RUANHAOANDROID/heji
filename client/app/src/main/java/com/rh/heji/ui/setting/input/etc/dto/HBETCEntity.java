@@ -1,4 +1,4 @@
-package com.rh.heji.ui.setting.input.etc;
+package com.rh.heji.ui.setting.input.etc.dto;
 
 import com.squareup.moshi.Json;
 

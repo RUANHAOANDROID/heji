@@ -1,27 +1,29 @@
 package com.rh.heji.ui.setting.export
 
 import android.os.Environment
-import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.App
 import com.rh.heji.network.HejiNetwork
-import com.rh.heji.ui.base.BaseViewModel
+import com.rh.heji.ui.base.BaseViewModelMVI
+import com.rh.heji.ui.setting.export.ExportAction.ExportExcel
 import com.rh.heji.utlis.MyUtils
 import com.rh.heji.utlis.launchIO
 import okio.buffer
 import okio.sink
 import java.io.File
 
+class ExportViewModel : BaseViewModelMVI<ExportAction, ExportUiState>() {
 
-class ExportViewModel : BaseViewModel() {
-    var exportLiveData = MediatorLiveData<String>()
-
-    init {
-
-
+    override fun doAction(action: ExportAction) {
+        super.doAction(action)
+        when (action) {
+            is ExportExcel -> {
+                exportExcel(action.fileName)
+            }
+        }
     }
 
-    fun exportExcel(fileName: String): MediatorLiveData<String> {
+    private fun exportExcel(fileName: String) {
         launchIO({
             var response = HejiNetwork.getInstance().billExport()
             if (response.isSuccessful && response.code() == 200) {
@@ -38,17 +40,18 @@ class ExportViewModel : BaseViewModel() {
                     response.body()?.source()?.let { sink.writeAll(it) }
                     sink.flush()
                     sink.close()
-                    exportLiveData.postValue(excelFile.absolutePath)
+                    uiState.postValue(ExportUiState.Success(excelFile.absolutePath))
                     LogUtils.d("下载成功：${excelFile.absolutePath}")
-                    MyUtils.galleryAddPic(App.context,excelFile.absolutePath)
+                    MyUtils.galleryAddPic(App.context, excelFile.absolutePath)
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    uiState.postValue(ExportUiState.Error(e))
                 }
             } else {
-                exportLiveData.postValue(response.message())
+                uiState.postValue(ExportUiState.Error(RuntimeException("导入失败 code :${response.code()} ${response.message()}")))
             }
-        }, {})
-
-        return exportLiveData
+        }, {
+            uiState.postValue(ExportUiState.Error(it))
+        })
     }
 }

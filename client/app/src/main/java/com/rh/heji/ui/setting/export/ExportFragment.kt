@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import android.provider.DocumentsContract
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
@@ -15,6 +16,7 @@ import com.lxj.xpopup.interfaces.OnSelectListener
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentExportBinding
+import com.rh.heji.uiState
 
 class ExportFragment : BaseFragment() {
     lateinit var binding: FragmentExportBinding
@@ -26,26 +28,32 @@ class ExportFragment : BaseFragment() {
         const val CREATE_FILE_CVS = 2
     }
 
-    private val viewModel by lazy {ViewModelProvider(this).get(ExportViewModel::class.java) }
-
+    private val viewModel by lazy { ViewModelProvider(this).get(ExportViewModel::class.java) }
+    private val popup by lazy { XPopup.Builder(requireContext()).asLoading().setTitle("正在导出") }
     override fun initView(rootView: View) {
         binding = FragmentExportBinding.bind(rootView)
         binding.tvExportFormat.setOnClickListener {
-
             val onSelectListener = OnSelectListener { _, text ->
-                var popup = XPopup.Builder(requireContext()).asLoading("正在导出").show()
-                var path = mainActivity.filesDir.absolutePath + "/" + TimeUtils.getNowString() + ".xlsx"
-                viewModel.exportExcel(path).observe(viewLifecycleOwner, Observer {
-                    ToastUtils.showLong(it)
-                    if (popup is LoadingPopupView) {
-                        popup.setTitle(it)
-                        popup.postDelayed({ popup.dismiss() }, 2000)
-                    }
-
-                })
+                popup.show()
+                var path =
+                    mainActivity.filesDir.absolutePath + "/" + TimeUtils.getNowString() + ".xlsx"
+                viewModel.doAction(ExportAction.ExportExcel(path))
             }
-            var bottomListPopup = XPopup.Builder(requireContext()).asBottomList("选择导出格式", list.toTypedArray(), onSelectListener)
+            var bottomListPopup = XPopup.Builder(requireContext())
+                .asBottomList("选择导出格式", list.toTypedArray(), onSelectListener)
             bottomListPopup.show()
+        }
+        uiState(viewModel) {
+            when (it) {
+                is ExportUiState.Success -> {
+                    popup.setTitle(it.path)
+                        .postDelayed({ popup.dismiss() }, 1500)
+                }
+                is ExportUiState.Error -> {
+                    popup.setTitle(it.t.message)
+                        .postDelayed({ popup.dismiss() }, 1500)
+                }
+            }
         }
     }
 
@@ -56,7 +64,7 @@ class ExportFragment : BaseFragment() {
     override fun setUpToolBar() {
         super.setUpToolBar()
         showBlack()
-        toolBar.title ="导出"
+        toolBar.title = "导出"
     }
 
     private fun createFile(pickerInitialUri: Uri) {
@@ -71,7 +79,7 @@ class ExportFragment : BaseFragment() {
         }
 
         startActivityForResult(intent, CREATE_FILE_EXCEL)
-        
+
     }
 
 }

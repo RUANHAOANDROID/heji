@@ -26,9 +26,10 @@ import com.rh.heji.ui.base.swipeRefreshLayout
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
-import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.create.ArgAddBill
+import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.popup.PopupBillInfo
+import com.rh.heji.utlis.ClickUtils
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
 import java.math.BigDecimal
@@ -36,10 +37,7 @@ import java.util.*
 
 
 class BillListFragment : BaseFragment() {
-    companion object {
-        // 两次点击间隔不能少于1000ms
-        private const val FAST_CLICK_DELAY_TIME = 500
-    }
+
 
     private lateinit var binding: FragmentBillsHomeBinding
     private lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
@@ -47,10 +45,6 @@ class BillListFragment : BaseFragment() {
 
     private val homeViewModel: BillListViewModel by lazy { ViewModelProvider(mainActivity)[BillListViewModel::class.java] }
     private lateinit var adapter: NodeBillsAdapter
-
-    //最后点击时间
-    private var lastClickTime = 0L
-
 
     public override fun initView(rootView: View) {
         binding = FragmentBillsHomeBinding.bind(rootView)
@@ -206,8 +200,7 @@ class BillListFragment : BaseFragment() {
         }
         adapter.setDiffCallback(Diff())
         adapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>, _: View?, position: Int ->
-            if (System.currentTimeMillis() - lastClickTime >= FAST_CLICK_DELAY_TIME) {
-                lastClickTime = System.currentTimeMillis()
+            ClickUtils.debouncing {
                 if (adapter.getItem(position) is DayIncomeNode) { //日视图
                     val dayIncomeNode = adapter.getItem(position) as DayIncomeNode
                     val dayIncome = dayIncomeNode.dayIncome
@@ -215,7 +208,12 @@ class BillListFragment : BaseFragment() {
                     calendar[dayIncome.year, dayIncome.month - 1] = dayIncome.monthDay
 
                     val args =
-                        CreateBillFragmentArgs.Builder(ArgAddBill(false, Bill(billTime = calendar.time)))
+                        CreateBillFragmentArgs.Builder(
+                            ArgAddBill(
+                                false,
+                                Bill(billTime = calendar.time)
+                            )
+                        )
                             .build() //选择的日期
                     Navigation.findNavController(rootView)
                         .navigate(R.id.nav_bill_add, args.toBundle())
@@ -224,6 +222,7 @@ class BillListFragment : BaseFragment() {
                     val bill = dayBills.bill
                     showBillItemPop(bill)
                 }
+
             }
         }
         binding.homeRecycler.setOnScrollChangeListener { _: View?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
@@ -263,7 +262,7 @@ class BillListFragment : BaseFragment() {
      * @param year  年
      * @param month 月
      */
-    fun notifyData(year: Int, month: Int) {
+    private fun notifyData(year: Int, month: Int) {
         homeViewModel.selectYearMonth = YearMonth(year, month)
         homeViewModel.refreshMonthData()
         totalIncomeExpense()

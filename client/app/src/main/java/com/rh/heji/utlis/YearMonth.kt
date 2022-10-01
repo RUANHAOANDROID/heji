@@ -19,11 +19,11 @@ data class YearMonth(var year: Int, var month: Int = 0, var day: Int = 0) : Seri
     fun isYearMonthDay(): Boolean = (month != 0 && day != 0)
 
 
-    fun toYear() = "$year"
+    fun yearString() = "$year"
 
-    fun toYearMonth() = "${year}-${if (month >= 10) month else "0$month"}"
+    fun yearMonthString() = "${year}-${if (month >= 10) month else "0$month"}"
 
-    fun toYearMonthDay() =
+    fun yearMonthDayString() =
         "${year}-${if (month >= 10) month else "0$month"}-${if (day >= 10) day else "0$day"}"
 
     companion object {
@@ -36,6 +36,14 @@ data class YearMonth(var year: Int, var month: Int = 0, var day: Int = 0) : Seri
                 (if (time[2].contains(" ")) time[2].split(" ")[0] else time[2]).toInt()
             }
             return YearMonth(year, month, day)
+        }
+
+        /**
+         * @param yearMonth yyyy-mm
+         */
+        fun format(yearMonth: String): YearMonth {
+            val split = yearMonth.split("-")
+            return YearMonth(year = split[0].toInt(), split[1].toInt(), 0)
         }
     }
 

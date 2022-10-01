@@ -1,6 +1,5 @@
 package com.rh.heji.ui.list
 
-import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewStub
 import androidx.core.content.ContextCompat
@@ -10,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.google.android.material.appbar.AppBarLayout
@@ -29,6 +29,7 @@ import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.create.ArgAddBill
 import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.popup.PopupBillInfo
+import com.rh.heji.uiState
 import com.rh.heji.utlis.ClickUtils
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
@@ -66,8 +67,8 @@ class BillListFragment : BaseFragment() {
             toolBar.post {
                 swipeRefreshLayout(binding.refreshLayout) {
                     notifyData(
-                        homeViewModel.selectYearMonth.year,
-                        homeViewModel.selectYearMonth.month
+                        homeViewModel.yearMonth().year,
+                        homeViewModel.yearMonth().month
                     )
                 }
                 binding.materialupAppBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
@@ -78,15 +79,37 @@ class BillListFragment : BaseFragment() {
             AppViewModel.get().asyncLiveData.observe(
                 this,
                 asyncNotifyObserver(
-                    homeViewModel.selectYearMonth.year,
-                    homeViewModel.selectYearMonth.month
+                    homeViewModel.yearMonth().year,
+                    homeViewModel.yearMonth().month
                 )
             )
         }
         stubTotalView.setOnInflateListener { stub, inflated ->   //提前设置避免多次设置
             subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)
         }
-        homeViewModel.monthDataChange().observe(this, billsObserver)
+        uiState(homeViewModel) {
+            when (it) {
+                is BillListUiState.Bills -> {
+                    if (it.nodeList.isNullOrEmpty() || it.nodeList.size <= 0) {
+                        adapter.setDiffNewData(mutableListOf())//设置DiffCallback使用setDiffNewData避免setList
+                        binding.homeRecycler.minimumHeight = getRootViewHeight()//占满一屏
+                        stubTotalView.visibility = View.GONE
+                        adapter.setEmptyView(R.layout.layout_empty)
+                    } else {
+                        stubTotalView.visibility = View.VISIBLE
+                        adapter.setDiffNewData(it.nodeList)
+                    }
+                    //adapter.loadMoreModule.loadMoreEnd()//单月不分页，直接显示没有跟多
+                    hideRefreshing(binding.refreshLayout)
+                }
+                is BillListUiState.Summary -> {
+                    totalIncomeExpense(it.income)
+                }
+                is BillListUiState.Error -> {
+                    ToastUtils.showLong(it.t.message)
+                }
+            }
+        }
     }
 
     override fun setUpToolBar() {
@@ -97,8 +120,8 @@ class BillListFragment : BaseFragment() {
                     notifyData(year, month)
                     mainActivity.mainViewModel.globalYearMonth = YearMonth(year, month)
                 },
-                homeViewModel.selectYearMonth.year, //默认为当前时间,
-                homeViewModel.selectYearMonth.month//默认为当前月份
+                homeViewModel.yearMonth().year, //默认为当前时间,
+                homeViewModel.yearMonth().month//默认为当前月份
             )
             toolBar.navigationIcon = ResourcesCompat.getDrawable(
                 resources,
@@ -132,27 +155,24 @@ class BillListFragment : BaseFragment() {
      * @param year  年
      * @param month 月
      */
-    private fun totalIncomeExpense() {
-        homeViewModel.getIncomeExpense().observe(mainActivity) { incomeExpense: Income? ->
-
-            var income = "0"
-            var expenses = "0"
-            incomeExpense?.let { data ->
-                data.income?.let {
-                    income = it.toString()
-                }
-                data.expenditure?.let {
-                    expenses = it.toString()
-                }
-
+    private fun totalIncomeExpense(incomeExpense: Income) {
+        var income = "0"
+        var expenses = "0"
+        incomeExpense?.let { data ->
+            data.income?.let {
+                income = it.toString()
+            }
+            data.expenditure?.let {
+                expenses = it.toString()
             }
 
-            if ((income == "0" && expenses == "0") || (income == "0.00" && expenses == "0.00")) {
-                stubTotalView.visibility = View.GONE
-            } else {
-                stubTotalView.visibility = View.VISIBLE
-                notifyTotalLayout(expenses, income)
-            }
+        }
+
+        if ((income == "0" && expenses == "0") || (income == "0.00" && expenses == "0.00")) {
+            stubTotalView.visibility = View.GONE
+        } else {
+            stubTotalView.visibility = View.VISIBLE
+            notifyTotalLayout(expenses, income)
         }
     }
 
@@ -233,7 +253,7 @@ class BillListFragment : BaseFragment() {
             }
         }
 
-        notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
+        notifyData(homeViewModel.yearMonth().year, homeViewModel.yearMonth().month)
     }
 
 
@@ -244,7 +264,7 @@ class BillListFragment : BaseFragment() {
      */
     private fun showBillItemPop(billTab: Bill) {
         val popupView = PopupBillInfo(bill = billTab, activity = mainActivity, delete = {
-            notifyData(homeViewModel.selectYearMonth.year, homeViewModel.selectYearMonth.month)
+            notifyData(homeViewModel.yearMonth().year, homeViewModel.yearMonth().month)
         }, update = {})
         XPopup.Builder(requireContext()) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
             //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
@@ -263,23 +283,8 @@ class BillListFragment : BaseFragment() {
      * @param month 月
      */
     private fun notifyData(year: Int, month: Int) {
-        homeViewModel.selectYearMonth = YearMonth(year, month)
-        homeViewModel.refreshMonthData()
-        totalIncomeExpense()
-    }
-
-    @SuppressLint("InflateParams")
-    private val billsObserver = { baseNodes: MutableList<BaseNode> ->
-        if (baseNodes.isNullOrEmpty() || baseNodes.size <= 0) {
-            adapter.setDiffNewData(mutableListOf())//设置DiffCallback使用setDiffNewData避免setList
-            binding.homeRecycler.minimumHeight = getRootViewHeight()//占满一屏
-            stubTotalView.visibility = View.GONE
-            adapter.setEmptyView(R.layout.layout_empty)
-        } else {
-            stubTotalView.visibility = View.VISIBLE
-            adapter.setDiffNewData(baseNodes)
-        }
-        //adapter.loadMoreModule.loadMoreEnd()//单月不分页，直接显示没有跟多
-        hideRefreshing(binding.refreshLayout)
+        val yearMonth = YearMonth(year, month)
+        homeViewModel.doAction(BillListAction.MonthBill(yearMonth))
+        homeViewModel.doAction(BillListAction.Summary(yearMonth))
     }
 }

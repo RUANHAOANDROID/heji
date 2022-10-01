@@ -227,7 +227,7 @@ class ReportFragment : BaseFragment() {
             }
             val bills = App.dataBase.billDao().findByCategoryAndMonth(
                 categoryItem.label,
-                reportViewModel.yearMonth.toYearMonth(),
+                reportViewModel.yearMonth.yearMonthString(),
                 billType
             )
             val bottomListPop = BottomListPop(activity = mainActivity, data = bills).apply {

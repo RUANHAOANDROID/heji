@@ -2,6 +2,8 @@ package com.rh.heji.ui.bill.create
 
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
+import com.rh.heji.ui.base.IAction
+import com.rh.heji.ui.base.IUiState
 
 /**
  * Popup基础
@@ -9,7 +11,7 @@ import com.rh.heji.data.db.Image
  * @author 锅得铁
  * @since v1.0
  */
-sealed class CreateBillUIState {
+sealed class CreateBillUIState : IUiState {
     //    class SelectCategory(category: String?) : AddBillUIState()
 //    class Remark(remark: String?) : AddBillUIState()
 //    class Money(money: BigDecimal) : AddBillUIState()
@@ -35,34 +37,35 @@ sealed class CreateBillUIState {
 
 }
 
-sealed class CreateBillEvent {
+sealed class CreateBillAction : IAction {
 
     /**
      * 获取Bill
      */
-    class GetBill(var bill_id: String? = null) : CreateBillEvent()
+    class GetBill(var bill_id: String? = null) : CreateBillAction()
 
     /**
      * 保存Bill至数据库
      */
-    class Save(val bill: Bill) : CreateBillEvent()
+    class Save(val bill: Bill) : CreateBillAction()
 
     /**
      * 保存Bill至数据库
      */
-    class SaveAgain(val bill: Bill) : CreateBillEvent()
+    class SaveAgain(val bill: Bill) : CreateBillAction()
 
     /**
      * 获取经手人
      */
-    class GetDealers(val bill_id: String) : CreateBillEvent()
+    class GetDealers(val bill_id: String) : CreateBillAction()
 
     /**
      * 获取账单图片
      */
-    class GetImages(val img_ids: List<String>) : CreateBillEvent()
+    class GetImages(val img_ids: List<String>) : CreateBillAction()
+
     /**
      * 删除账单图片
      */
-    class DeleteImage(val image :Image):CreateBillEvent()
+    class DeleteImage(val image: Image) : CreateBillAction()
 }

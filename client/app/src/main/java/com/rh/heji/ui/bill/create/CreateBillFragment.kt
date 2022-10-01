@@ -131,7 +131,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         popupSelectImage = PopSelectImage(requireActivity()).apply {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
-                viewModel.eventState(CreateBillEvent.DeleteImage(it))
+                viewModel.doAction(CreateBillAction.DeleteImage(it))
             }
             selectedImagesCall = {
                 getImagesPath()
@@ -164,17 +164,18 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         categoryTabFragment.setIndex()
 
         keyboardListener()
-        viewModel.eventState(CreateBillEvent.GetDealers(mBill.id))
+        viewModel.doAction(CreateBillAction.GetDealers(mBill.id))
         with(mBill) {
             setTime(billTime)
             setDealer(dealer)
             setCategory(category)
             setMoney(money)
             if (images.isNotEmpty()) {
-                viewModel.eventState(CreateBillEvent.GetImages(images))
+                viewModel.doAction(CreateBillAction.GetImages(images))
             }
         }
-        viewModel.subUIState().observe(this) { uiState ->
+        uiState(viewModel){
+                uiState ->
             when (uiState) {
                 is CreateBillUIState.BillChange -> {
                     val bill = uiState.bill
@@ -380,11 +381,11 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             check(mBill.money != ZERO_00()) { "金额不能为 ${ZERO_00().toPlainString()}" }
             check(mBill.money != BigDecimal.ZERO) { "金额不能为 ${BigDecimal.ZERO.toPlainString()}" }
             check(mBill.category != null) { "未选类别" }
-            viewModel.eventState(
+            viewModel.doAction(
                 if (again)
-                    CreateBillEvent.SaveAgain(mBill)
+                    CreateBillAction.SaveAgain(mBill)
                 else
-                    CreateBillEvent.Save(mBill)
+                    CreateBillAction.Save(mBill)
             )
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)

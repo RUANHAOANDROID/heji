@@ -81,7 +81,7 @@ class ReportViewModel : BaseViewModel() {
         launchIO({
             val monthIncomeExpenditureData =
                 App.dataBase.billDao()
-                    .sumMonthIncomeExpenditure(yearMonth.toYearMonth())
+                    .sumMonthIncomeExpenditure(yearMonth.yearMonthString())
             incomeExpenditureLiveData.postValue(monthIncomeExpenditureData)
         }, {})
 
@@ -92,7 +92,7 @@ class ReportViewModel : BaseViewModel() {
             val keyValue = KeyValue(
                 BillType.INCOME.type(),
                 App.dataBase.billDao()
-                    .sumByMonth(yearMonth.toYearMonth(), BillType.INCOME.type())
+                    .sumByMonth(yearMonth.yearMonthString(), BillType.INCOME.type())
             )
             everyNodeIncomeExpenditureLiveData.postValue(keyValue)
         }, {})
@@ -103,7 +103,7 @@ class ReportViewModel : BaseViewModel() {
             val data = KeyValue(
                 BillType.EXPENDITURE.type(),
                 App.dataBase.billDao()
-                    .sumByMonth(yearMonth.toYearMonth(), BillType.EXPENDITURE.type())
+                    .sumByMonth(yearMonth.yearMonthString(), BillType.EXPENDITURE.type())
             )
             everyNodeIncomeExpenditureLiveData.postValue(data)
             LogUtils.d(data)
@@ -114,9 +114,9 @@ class ReportViewModel : BaseViewModel() {
         launchIO({
             val arrays = arrayListOf(
                 App.dataBase.billDao()
-                    .sumByMonth(yearMonth.toYearMonth(), BillType.EXPENDITURE.type()),
+                    .sumByMonth(yearMonth.yearMonthString(), BillType.EXPENDITURE.type()),
                 App.dataBase.billDao()
-                    .sumByMonth(yearMonth.toYearMonth(), BillType.INCOME.type())
+                    .sumByMonth(yearMonth.yearMonthString(), BillType.INCOME.type())
             )
             val data = KeyValue(
                 BillType.ALL.type(),
@@ -134,7 +134,7 @@ class ReportViewModel : BaseViewModel() {
     fun monthCategoryProportion(billType: BillType) {
         launchIO({
             val list =
-                App.dataBase.billDao().reportCategory(billType.type(), yearMonth.toYearMonth())
+                App.dataBase.billDao().reportCategory(billType.type(), yearMonth.yearMonthString())
                     .map {
                         // 支出为负数，收入为正数  money * -1 or money * 1
                         val data = it.money!!.multiply(BigDecimal(billType.type()))
@@ -165,7 +165,7 @@ class ReportViewModel : BaseViewModel() {
     private fun monthReportList() {
         launchIO({
             var data = App.dataBase.billDao()
-                .listIncomeExpSurplusByMonth(yearMonth.toYearMonth())
+                .listIncomeExpSurplusByMonth(yearMonth.yearMonthString())
             reportBillsLiveData.postValue(data)
         }, {})
 

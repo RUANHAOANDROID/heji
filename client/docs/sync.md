@@ -21,7 +21,7 @@ sequenceDiagram
 	Server-->> Client :返回最后更新时间
 	Note over Client:本地库比对最后更新时间<br>判断是否要同步
 	alt 需要更新账单
-		Client -->Server:列出长的那	
+		Client -->Server:拉账本下账单数据	
 	else
 	end 
 ```

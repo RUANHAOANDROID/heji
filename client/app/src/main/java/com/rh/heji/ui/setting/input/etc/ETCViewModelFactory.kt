@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.rh.heji.service.sync.IBillSync
 
 /**
- *Date: 2022/6/20
+ *@date: 2022/6/20
  *Author: 锅得铁
  *#
  */

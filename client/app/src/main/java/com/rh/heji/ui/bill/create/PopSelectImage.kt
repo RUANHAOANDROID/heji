@@ -16,7 +16,7 @@ import com.rh.heji.ui.bill.create.adapter.BillPhotoAdapter
 
 
 /**
- * Date: 2020/10/12
+ * @date: 2020/10/12
  * @author: 锅得铁
  * #
  */

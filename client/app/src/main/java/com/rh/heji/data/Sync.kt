@@ -18,7 +18,7 @@ import retrofit2.http.DELETE
 import java.util.*
 
 /**
- *Date: 2021/6/17
+ *@date: 2021/6/17
  *@author: 锅得铁
  *# entity 为 @Entity类型
  */

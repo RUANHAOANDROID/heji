@@ -67,12 +67,12 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
     /**
      * 是否修改
-     */
-    private var isModify = false//默认新增
-
-    /**
      * 当isModify为true时为要修改的账单
+     * 默认新增
      */
+    private var isModify = false
+
+
     private lateinit var mBill: Bill
 
     override fun layoutId(): Int {
@@ -85,21 +85,20 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
          * 选择照片
          */
         imageSelectLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult(), ActivityResultCallback() { result ->
+            ActivityResultContracts.StartActivityForResult(), ActivityResultCallback { result ->
                 if (result.resultCode != Activity.RESULT_OK) {
                     return@ActivityResultCallback
                 }
-                val data = result.data
-                val obtainResult = Matisse.obtainResult(data)
-                val obtainPathResult = Matisse.obtainPathResult(data)
-                LogUtils.e("OnActivityResult ${Matisse.obtainOriginalState(data)}")
+                val obtainResult = Matisse.obtainResult(result.data)
+                val obtainPathResult = Matisse.obtainPathResult(result.data)
+                LogUtils.d("OnActivityResult ${Matisse.obtainOriginalState(result.data)}")
 
                 val mSelected: MutableList<String> = ArrayList()
                 obtainResult.forEach(Consumer { uri: Uri ->
                     val imgUrl = UriUtils.uri2File(uri).absolutePath
                     mSelected.add(imgUrl)
                 })
-                //setImages(mSelected)
+
                 if (popupSelectImage.getImages().size > 0) {
                     mSelected.forEach { localPath: String ->
                         popupSelectImage.getImages().forEach { image ->
@@ -174,8 +173,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
                 viewModel.doAction(CreateBillAction.GetImages(images))
             }
         }
-        uiState(viewModel){
-                uiState ->
+        uiState(viewModel) { uiState ->
             when (uiState) {
                 is CreateBillUIState.BillChange -> {
                     val bill = uiState.bill
@@ -185,9 +183,6 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
                     val images = uiState.images
                     LogUtils.d(uiState.images)
                     popupSelectImage.setImage(images)
-                }
-                is CreateBillUIState.Close -> {
-                    findNavController().popBackStack()
                 }
                 is CreateBillUIState.Error -> {
                     ToastUtils.showLong(uiState.throws.message)
@@ -210,8 +205,8 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
                             .show()
                     }
                 }
-                is CreateBillUIState.Reset -> {
-                    reset()
+                is CreateBillUIState.Save -> {
+                    if (uiState.again) reset() else findNavController().popBackStack()
                 }
 
             }
@@ -381,12 +376,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             check(mBill.money != ZERO_00()) { "金额不能为 ${ZERO_00().toPlainString()}" }
             check(mBill.money != BigDecimal.ZERO) { "金额不能为 ${BigDecimal.ZERO.toPlainString()}" }
             check(mBill.category != null) { "未选类别" }
-            viewModel.doAction(
-                if (again)
-                    CreateBillAction.SaveAgain(mBill)
-                else
-                    CreateBillAction.Save(mBill)
-            )
+            viewModel.doAction(CreateBillAction.Save(mBill, again))
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)
         }

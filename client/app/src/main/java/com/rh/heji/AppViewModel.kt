@@ -19,13 +19,8 @@ import com.rh.heji.utlis.launchNewThread
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val billRepository = BillRepository()
-
-    val asyncLiveData = MediatorLiveData<Any>()
-
     val localDataEvent = MediatorLiveData<EventMessage>()
-
     val loginEvent = MediatorLiveData<Event<Any>>()
-
 
     init {
         launchIO({
@@ -61,7 +56,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             //DataSyncWork 方法执行在IO线程
             dataAsyncWork.syncBills()
             dataAsyncWork.syncCategory()
-            asyncLiveData.postValue("OJBK")//同步完成通知刷新
         }, {
             it.printStackTrace()
         })

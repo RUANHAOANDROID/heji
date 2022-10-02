@@ -21,7 +21,7 @@ import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.create.ArgAddBill
 
 /**
- * Date: 2020/9/20
+ * @date: 2020/9/20
  * @author: 锅得铁
  * #
  */

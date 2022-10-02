@@ -14,7 +14,7 @@ import com.rh.heji.utlis.launchIO
 import java.util.*
 
 /**
- * Date: 2020/11/3
+ * @date: 2020/11/3
  * @author: 锅得铁
  * # APP运行时 UI常量共享存储
  */

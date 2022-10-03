@@ -20,7 +20,7 @@ import com.rh.heji.ui.bill.create.CreateBillFragment
 import java.util.function.Consumer
 
 /**
- * Date: 2020/10/11
+ * @date: 2020/10/11
  * @author: 锅得铁
  * # 收入/支出标签 复用该Fragment
  */

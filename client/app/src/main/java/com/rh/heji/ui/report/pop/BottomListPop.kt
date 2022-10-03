@@ -12,7 +12,7 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.ui.bill.popup.PopupBillInfo
 
 /**
- *Date: 2021/6/16
+ *@date: 2021/6/16
  *@author: 锅得铁
  *#
  */

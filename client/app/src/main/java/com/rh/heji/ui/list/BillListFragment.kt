@@ -14,7 +14,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.google.android.material.appbar.AppBarLayout
 import com.lxj.xpopup.XPopup
-import com.rh.heji.AppViewModel
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.dto.Income
@@ -76,13 +75,6 @@ class BillListFragment : BaseFragment() {
                     binding.refreshLayout.isEnabled = isFullyShow
                 })
             }
-            AppViewModel.get().asyncLiveData.observe(
-                this,
-                asyncNotifyObserver(
-                    homeViewModel.yearMonth().year,
-                    homeViewModel.yearMonth().month
-                )
-            )
         }
         stubTotalView.setOnInflateListener { stub, inflated ->   //提前设置避免多次设置
             subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)
@@ -145,9 +137,6 @@ class BillListFragment : BaseFragment() {
     override fun layoutId(): Int {
         return R.layout.fragment_bills_home
     }
-
-    private fun asyncNotifyObserver(thisYear: Int, thisMonth: Int): Observer<Any> =
-        Observer { notifyData(thisYear, thisMonth) }
 
     /**
      * 汇总收支

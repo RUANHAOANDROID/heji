@@ -48,7 +48,7 @@ class BillListViewModel : BaseViewModelMVI<BillListAction, BillListUiState>() {
      */
     private fun getMonthBills(yearMonth: String) {
         launchIO({
-            //根据月份查询收入的日子
+            //根据月份查询收支的日子
             var monthEveryDayIncome =
                 billDao.findEveryDayIncomeByMonth(yearMonth = yearMonth)
             //日节点
@@ -89,9 +89,7 @@ class BillListViewModel : BaseViewModelMVI<BillListAction, BillListUiState>() {
     private fun getSummary(yearMonth: String) {
         launchIO({
             LogUtils.d("Between by time:$yearMonth")
-            billDao.sumIncome(yearMonth).collect {
-                uiState.postValue(BillListUiState.Summary(it))
-            }
+            uiState.postValue(BillListUiState.Summary(billDao.sumIncome(yearMonth)))
         }, {
             uiState.postValue(BillListUiState.Error(it))
         })

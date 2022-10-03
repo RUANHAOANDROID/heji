@@ -24,13 +24,8 @@ class CreateBillViewModel(private val mBillSync: IBillSync) :
             when (action) {
                 is CreateBillAction.Save -> {
                     save(action.bill)
-                    uiState.postValue(CreateBillUIState.Close)
+                    uiState.postValue(CreateBillUIState.Save(action.again))
                 }
-                is CreateBillAction.SaveAgain -> {
-                    save(action.bill)
-                    uiState.postValue(CreateBillUIState.Reset)
-                }
-
                 is CreateBillAction.GetBill -> {
                     action.bill_id?.let {
                         val bill = App.dataBase.billImageDao().findBillAndImage(it)

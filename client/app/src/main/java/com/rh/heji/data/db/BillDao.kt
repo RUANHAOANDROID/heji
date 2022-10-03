@@ -12,7 +12,7 @@ import java.math.BigDecimal
 import java.util.*
 
 /**
- * Date: 2020/8/28
+ * @date: 2020/8/28
  * @author: 锅得铁
  * #
  */
@@ -140,7 +140,7 @@ interface BillDao {
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',bill_time)=:yearMonth)")
-    fun sumIncome(yearMonth: String, bookId: String? = currentBook.id): Flow<Income>
+    fun sumIncome(yearMonth: String, bookId: String? = currentBook.id): Income
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',bill_time)=:yearMonth)")

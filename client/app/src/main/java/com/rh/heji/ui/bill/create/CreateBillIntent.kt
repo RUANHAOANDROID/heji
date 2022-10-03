@@ -12,29 +12,17 @@ import com.rh.heji.ui.base.IUiState
  * @since v1.0
  */
 sealed class CreateBillUIState : IUiState {
-    //    class SelectCategory(category: String?) : AddBillUIState()
 //    class Remark(remark: String?) : AddBillUIState()
 //    class Money(money: BigDecimal) : AddBillUIState()
-//    class Dealer(dealer: String?) : AddBillUIState()
-//    class Images(images: List<String>) : AddBillUIState()
+
+
 //    class Time(billTime: Date) : AddBillUIState()
-//    class SaveAgain(bill: Bill) : AddBillUIState()
-//    class Save(bill: Bill) : AddBillUIState()
+
+    class Save(val again: Boolean) : CreateBillUIState()
     class BillChange(val bill: Bill) : CreateBillUIState()
-    object Close : CreateBillUIState()
-
-    /**
-     * 重置页面Save Again的时候调用
-     */
-    object Reset : CreateBillUIState()
-
     class Error(val throws: Throwable) : CreateBillUIState()
-
     class Dealers(val dealers: MutableList<String>) : CreateBillUIState()
-
     class Images(val images: MutableList<Image>) : CreateBillUIState()
-
-
 }
 
 sealed class CreateBillAction : IAction {
@@ -47,12 +35,7 @@ sealed class CreateBillAction : IAction {
     /**
      * 保存Bill至数据库
      */
-    class Save(val bill: Bill) : CreateBillAction()
-
-    /**
-     * 保存Bill至数据库
-     */
-    class SaveAgain(val bill: Bill) : CreateBillAction()
+    class Save(val bill: Bill, val again: Boolean) : CreateBillAction()
 
     /**
      * 获取经手人

@@ -23,10 +23,16 @@ class CalendarNoteViewModule : BaseViewModel() {
 
     var selectYearMonth = currentYearMonth
 
+    /**
+     * 更新日期
+     * @param year 年
+     * @param month 月
+     */
     fun updateYearMonth(year: Int, month: Int) {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
-            var everyDayIncome = billDao.findEveryDayIncomeByMonth( currentBook.id,selectYearMonth.yearMonthString())
+            var everyDayIncome =
+                billDao.findEveryDayIncomeByMonth(currentBook.id, selectYearMonth.yearMonthString())
             everyDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
                 if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {
@@ -46,6 +52,10 @@ class CalendarNoteViewModule : BaseViewModel() {
         }, {})
     }
 
+    /**
+     * 日账单
+     * @param calendar 日历对象
+     */
     fun todayBills(calendar: Calendar) {
         LogUtils.d(calendar.toString())
         launchIO({
@@ -71,7 +81,7 @@ class CalendarNoteViewModule : BaseViewModel() {
             var parentNode = mutableListOf<BaseNode>()//天节点
             var childNodes = emptyList<BaseNode>().toMutableList()//天收支节点
             dayBills.forEach {
-                it.images =App.dataBase.imageDao().findImagesId(it.id)//查询账单下照片ID
+                it.images = App.dataBase.imageDao().findImagesId(it.id)//查询账单下照片ID
                 var billsNode = DayBillsNode(it)
                 childNodes.add(billsNode)
             }
@@ -84,11 +94,11 @@ class CalendarNoteViewModule : BaseViewModel() {
     }
 
     /**
-     * 年
-     * 月
-     * 日
-     * 支出
-     * 收入
+     * @param year 年
+     * @param month 月
+     * @param day 日
+     * @param expenditure 支出
+     * @param income 收入
      */
     private fun getSchemeCalendar(
         year: Int,

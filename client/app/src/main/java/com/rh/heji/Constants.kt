@@ -1,31 +1,12 @@
 package com.rh.heji
 
-import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
-import com.rh.heji.data.db.Book
-import com.rh.heji.data.db.Category
-import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utlis.YearMonth
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.util.*
 
-/**
- * Date: 2020/9/16
- * @author: 锅得铁
- * #
- */
-/**
- * 透明度
- */
-const val BACKGROUND_ALPHA = 255 //0-255
-
-/**
- * 小数点
- */
-const val KEY_POINT = "."
 
 /**
  * 压缩阀值大小 Luban 单位为K
@@ -43,15 +24,6 @@ val currentYearMonth: YearMonth = YearMonth(
     month = Calendar.getInstance().get(Calendar.MONTH) + 1,
     day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
 )
-
-/**
- * 默认账本
- */
-//var currentBook = Book(
-//    name = "个人账本",
-//    createUser = "local",
-//    type = "日常账本"
-//)
 
 val moshi: Moshi = Moshi.Builder()
     .addLast(KotlinJsonAdapterFactory())

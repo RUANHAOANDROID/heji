@@ -8,6 +8,7 @@ import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -19,8 +20,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.*
+import com.google.android.material.tabs.TabLayout
 import com.lxj.xpopup.XPopup
-
 import com.rh.heji.*
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
@@ -29,9 +30,10 @@ import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.databinding.FragmentCreatebillBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.category.CategoryViewModel
+import com.rh.heji.ui.base.FragmentViewPagerAdapter
+import com.rh.heji.ui.bill.category.manager.CategoryManagerFragmentArgs
 import com.rh.heji.ui.bill.create.*
-import com.rh.heji.ui.bill.create.type.TypeTabFragment
+import com.rh.heji.ui.bill.create.type.SelectCategoryFragment
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.matisse.MatisseUtils
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
@@ -48,7 +50,7 @@ import java.util.function.Consumer
  * 账单类别
  * ----------
  */
-class CreateBillFragment : BaseFragment(), ISelectedCategory {
+class CreateBillFragment : BaseFragment() {
 
     val viewModel by lazy {
         ViewModelProvider(
@@ -56,9 +58,21 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             CreateBillViewModelFactory(mainActivity.mService.getBillSyncManager())
         )[CreateBillViewModel::class.java]
     }
-    private lateinit var binding: FragmentCreatebillBinding
-    private lateinit var typeTabFragment: TypeTabFragment
+    lateinit var pagerAdapter: FragmentViewPagerAdapter
+    private val tabTitles = listOf(
+        BillType.EXPENDITURE.text(), BillType.INCOME.text()
+    )
 
+    lateinit var type: BillType
+    lateinit var selectedCategoryFragment: SelectCategoryFragment
+    private val fragments = listOf(
+        SelectCategoryFragment.newInstance(BillType.EXPENDITURE),
+        SelectCategoryFragment.newInstance(BillType.INCOME)
+    )
+
+    val binding: FragmentCreatebillBinding by lazy {
+        FragmentCreatebillBinding.inflate(layoutInflater)
+    }
     lateinit var popupSelectImage: PopSelectImage//图片弹窗
     lateinit var imageSelectLauncher: ActivityResultLauncher<Intent>
 
@@ -72,11 +86,54 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
     private lateinit var mBill: Bill
 
-    override fun layoutId() = R.layout.fragment_createbill
+    override fun layout() = binding.root
 
+    fun setIndex(index: Int = 0) {
+        binding.tab.getTabAt(0)!!.select()
+    }
+
+    /**
+     * 修改时预先选中类别
+     *
+     * @param category
+     * @param type
+     */
+    fun setSelectCategory(category: String, type: Int) {
+        //内容页绘制完成后选中类别
+        binding.vpContent.post {
+            if (type == BillType.EXPENDITURE.type()) {
+                binding.tab.getTabAt(0)?.select()
+                fragments[0].setSelectCategory(category)
+            } else if (type == BillType.INCOME.type()) {
+                binding.tab.getTabAt(1)?.select()
+                fragments[1].setSelectCategory(category)
+            }
+        }
+    }
+
+    /**
+     *
+     * @see SelectCategoryFragment.setCategories
+     * @param type
+     * @param categories
+     */
+    private fun setCategories(type: Int, categories: MutableList<Category>) {
+        LogUtils.d(
+            "TimeTest",
+            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
+        )
+        if (type == BillType.EXPENDITURE.type()) {
+            fragments[0].setCategories(categories)
+        } else if (type == BillType.INCOME.type()) {
+            fragments[1].setCategories(categories)
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        pagerAdapter = FragmentViewPagerAdapter(
+            childFragmentManager, fragments, tabTitles
+        )
         /**
          * 选择照片
          */
@@ -121,8 +178,50 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         LogUtils.d(mBill.toString())
     }
 
+    private fun showPager() {
+        val pagerAdapter = FragmentViewPagerAdapter(
+            childFragmentManager,
+            fragments,
+            tabTitles
+        )
+
+        binding.vpContent.apply {
+            adapter = pagerAdapter
+            //TabLayout+ViewPager联动 1
+            addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.tab))
+        }
+        binding.tab.apply {
+            setupWithViewPager(binding.vpContent)
+            //TabLayout+ViewPager联动 2
+            addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.vpContent))
+            getTabAt(0)!!.select()
+            //mSelectedCategoryListener.selected(categoryFragments[0].getSelectedCategory()!!)//默认支出
+            addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    LogUtils.d("onTabSelected", tab.position)
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab) {
+                    LogUtils.d("onTabUnselected", tab.position)
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab) {
+                    LogUtils.d("onTabReselected", tab.position)
+                }
+            })
+        }
+        binding.tab.getTabAt(0)!!.select()
+    }
+
     override fun initView(rootView: View) {
-        binding = FragmentCreatebillBinding.bind(rootView)
+        binding.imgAddCategory.setOnClickListener {
+            findNavController().navigate(
+                R.id.nav_category_manager,
+                CategoryManagerFragmentArgs.Builder().setIeType(type.type()).build().toBundle()
+            )
+        }
+
+        showPager()
         popupSelectImage = PopSelectImage(requireActivity()).apply {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
@@ -140,23 +239,20 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             }
         }
 
-        binding.inputInfo.imgTicket.setOnClickListener {
+        binding.imgTicket.setOnClickListener {
             XPopup.Builder(requireContext())
                 .asCustom(popupSelectImage)
                 .show()
         }
 
 
-        binding.inputInfo.eidtRemark.addTextChangedListener(object : TextWatcher {
+        binding.eidtRemark.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
                 mBill.remark = s.toString().trim { it <= ' ' }
             }
         })
-        typeTabFragment =
-            childFragmentManager.findFragmentById(R.id.categoryFragment) as TypeTabFragment
-        typeTabFragment.setIndex()
 
         keyboardListener()
         viewModel.doAction(CreateBillAction.GetDealers(mBill.id))
@@ -169,6 +265,10 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
                 viewModel.doAction(CreateBillAction.GetImages(images))
             }
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         uiState(viewModel) { uiState ->
             when (uiState) {
                 is CreateBillUIState.BillChange -> {
@@ -190,7 +290,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
                     } else {
                         setDealer(App.user.name) //设置默经手人当前用户
                     }
-                    binding.inputInfo.tvUserLabel.setOnClickListener {
+                    binding.tvUserLabel.setOnClickListener {
                         XPopup.Builder(requireContext())
                             .maxHeight(binding.keyboard.height)
                             .asBottomList(
@@ -205,7 +305,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
                     if (uiState.again) reset() else findNavController().popBackStack()
                 }
                 is CreateBillUIState.Categories -> {
-                    typeTabFragment.setCategories(uiState.type, uiState.categories)
+                    setCategories(uiState.type, uiState.categories)
                 }
             }
         }
@@ -213,8 +313,8 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
     override fun setUpToolBar() {
         super.setUpToolBar()
-        typeTabFragment.toolBar.setNavigationIcon(R.drawable.ic_baseline_close_24)
-        typeTabFragment.toolBar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationIcon(R.drawable.ic_baseline_close_24)
+        binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
     }
@@ -253,7 +353,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             }
 
             override fun calculation(result: String) {
-                binding.inputInfo.tvMoney.text = result
+                binding.tvMoney.text = result
             }
 
             override fun saveAgain(result: String) {
@@ -278,21 +378,27 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         viewModel.keyBoardStack = binding.keyboard.stack
     }
 
-    override fun selected(category: Category) {
-        val billType = BillType.transform(category.type)
-        //viewModel.setCategory(category)
-        mBill.type = category.type
-        mBill.category = category.name
+    /**
+     * @param type 首先返回Type保证页面响应
+     * @param category
+     */
+    fun selectedCategory(type: Int, category: Category?) {
+        LogUtils.d("selectedCategory : type=$type category= $category")
+        val billType = BillType.transform(type)
+        category?.let {
+            //viewModel.setCategory(category)
+            mBill.type = category.type
+            mBill.category = category.name
+        }
         binding.keyboard.setType(billType)
         val color = if (billType == BillType.EXPENDITURE) R.color.expenditure else R.color.income
-        binding.inputInfo.tvMoney.setTextColor(resources.getColor(color, null))
+        binding.tvMoney.setTextColor(resources.getColor(color, null))
     }
 
-    private fun setCategory(category: String?) {
+    fun setCategory(category: String?) {
         //设置类别
         mBill.category?.let {
-            if (this::typeTabFragment.isInitialized)
-                typeTabFragment.setSelectCategory(it, mBill.type)
+            setSelectCategory(it, mBill.type)
         }
     }
 
@@ -308,7 +414,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             binding.keyboard.input(element.toString())
         }
         //填充输入信息
-        binding.inputInfo.apply {
+        binding.apply {
             tvMoney.text = mBill.money.toString()
             mBill.dealer?.let { setDealer(it) }
             tvBillTime.text = mBill.billTime.string()
@@ -324,22 +430,22 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
     private fun setDealer(dealer: String?) {
         dealer?.let {
-            binding.inputInfo.tvUserLabel.text = "经手人: $dealer"
+            binding.tvUserLabel.text = "经手人: $dealer"
             mBill.dealer = dealer
         }
     }
 
     private fun setTime(selectTime: Date) {
-        binding.inputInfo.tvBillTime.text = DateConverters.date2Str(selectTime)
+        binding.tvBillTime.text = DateConverters.date2Str(selectTime)
         mBill.billTime = selectTime
         LogUtils.d(selectTime)
-        binding.inputInfo.tvBillTime.text = mBill.billTime.string() //设置日历初始选中时间
-        binding.inputInfo.tvBillTime.setOnClickListener {
+        binding.tvBillTime.text = mBill.billTime.string() //设置日历初始选中时间
+        binding.tvBillTime.setOnClickListener {
             val onDateSetListener =
                 OnDateSetListener { datePicker: DatePicker?, year: Int, month: Int, dayOfMonth: Int ->
                     val selectCalendar = mBill.billTime.calendar()
                     selectCalendar[year, month] = dayOfMonth
-                    binding.inputInfo.tvBillTime.text = selectCalendar.time.string()
+                    binding.tvBillTime.text = selectCalendar.time.string()
                     mBill.billTime = selectTime
                     selectHourAndMinute(
                         year = year,
@@ -365,9 +471,8 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
     private fun save(again: Boolean) {
         try {
-            with(mBill) {
-                category = typeTabFragment.getSelectCategory().name
-                money = BigDecimal(binding.inputInfo.tvMoney.text.toString())
+            mBill.apply {
+                money = BigDecimal(binding.tvMoney.text.toString())
                 createTime = System.currentTimeMillis()
             }
             //check value is false throw error
@@ -386,8 +491,8 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
             money = BigDecimal.ZERO
         }
         binding.keyboard.clear()
-        binding.inputInfo.eidtRemark.setText("")
-        binding.inputInfo.tvMoney.text = "0"
+        binding.eidtRemark.setText("")
+        binding.tvMoney.text = "0"
         popupSelectImage.clear()
     }
 }

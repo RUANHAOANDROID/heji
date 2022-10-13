@@ -9,16 +9,15 @@ import com.rh.heji.ui.base.BaseFragment
 
 class UserInfoFragment : BaseFragment() {
     private val viewModel by lazy { ViewModelProvider(this)[UserInfoViewModel::class.java] }
-    lateinit var binding: FragmentUserInfoBinding
-
-    override fun layoutId(): Int {
-        return R.layout.fragment_user_info
+    val binding: FragmentUserInfoBinding by lazy {
+        FragmentUserInfoBinding.inflate(layoutInflater)
     }
 
+    override fun layout() = binding.root
+
     override fun initView(rootView: View) {
-        binding = FragmentUserInfoBinding.bind(rootView)
         binding.tvNickName.text = App.user.name
-        binding.tvTEL.text=App.user.token
+        binding.tvTEL.text = App.user.token
     }
 
     override fun setUpToolBar() {

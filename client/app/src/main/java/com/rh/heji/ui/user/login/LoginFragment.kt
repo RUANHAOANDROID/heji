@@ -18,7 +18,7 @@ import com.rh.heji.ui.user.register.RegisterUser
 import com.rh.heji.uiState
 
 class LoginFragment : Fragment() {
-    lateinit var binding: FragmentLoginBinding
+   private val binding: FragmentLoginBinding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
     private val viewModel by lazy { ViewModelProvider(this)[LoginViewModel::class.java] }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,8 +26,6 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         inflater.inflate(R.layout.fragment_login, container, false)
-        binding = FragmentLoginBinding.inflate(inflater)
-
         initView(binding.root)
         uiState(viewModel) {
             when (it) {
@@ -47,7 +45,6 @@ class LoginFragment : Fragment() {
     }
 
     fun initView(rootView: View) {
-        binding = FragmentLoginBinding.bind(rootView)
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.nav_register)
         }

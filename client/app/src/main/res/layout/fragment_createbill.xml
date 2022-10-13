@@ -1,34 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".ui.bill.create.CreateBillFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical"
-        tools:context=".ui.bill.create.CreateBillFragment">
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize">
 
-    <fragment
-            android:id="@+id/categoryFragment"
-            android:name="com.rh.heji.ui.bill.create.type.TypeTabFragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingTop="@dimen/dp_10"
-            android:tag="categoryFragment"
-            tools:layout="@layout/fragment_category_tab" />
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab"
+            style="@style/MineCustomTabText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/imgAddCategory"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabGravity="center"
+            app:tabIndicatorColor="@color/white"
+            app:tabMinWidth="?attr/actionBarSize"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/white">
 
+        </com.google.android.material.tabs.TabLayout>
 
-    <include
-            android:id="@+id/inputInfo"
-            layout="@layout/layout_addbill_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></include>
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/imgAddCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:minWidth="?attr/actionBarSize"
+            android:minHeight="?attr/actionBarSize"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_add_box_24" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vpContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <TextView
+            android:id="@+id/tvMoney"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="0"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="26sp"
+            app:layout_constraintBottom_toBottomOf="@+id/eidtRemark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/eidtRemark" />
+
+        <EditText
+            android:id="@+id/eidtRemark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
+            android:hint="点此输入备注..."
+            android:lines="1"
+            android:minHeight="40dp"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvBillTime"
+            app:layout_constraintEnd_toStartOf="@+id/tvMoney"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvBillTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shap_tag_background"
+            android:padding="6dp"
+            android:text="  今天00：51"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tvUserLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shap_tag_background"
+            android:padding="6dp"
+            android:text="经手人"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/imgTicket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/shap_tag_background"
+            android:padding="6dp"
+            android:text="图片"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvUserLabel"
+            app:layout_constraintTop_toTopOf="@+id/tvBillTime" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.rh.heji.widget.KeyBoardView
-            android:id="@+id/keyboard"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:minHeight="250dp" />
+        android:id="@+id/keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:minHeight="250dp" />
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

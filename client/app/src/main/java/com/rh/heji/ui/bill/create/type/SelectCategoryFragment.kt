@@ -3,22 +3,20 @@ package com.rh.heji.ui.bill.create.type
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.R
 import com.rh.heji.data.BillType
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryContentBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.category.adapter.CategoryAdapter
-import com.rh.heji.ui.bill.category.manager.CategoryManagerFragmentArgs
 import com.rh.heji.ui.bill.create.CreateBillAction
 import com.rh.heji.ui.bill.create.CreateBillFragment
-import com.rh.heji.ui.bill.create.CreateBillUIState
-import java.util.function.Consumer
 
 /**
  * @date: 2020/10/11
@@ -27,28 +25,28 @@ import java.util.function.Consumer
  */
 class SelectCategoryFragment : BaseFragment() {
     val binding: FragmentCategoryContentBinding by lazy {
-        FragmentCategoryContentBinding.bind(
-            rootView
-        )
+        FragmentCategoryContentBinding.inflate(layoutInflater)
     }
     private lateinit var labelAdapter: CategoryAdapter
 
-    private val viewModel by lazy {
-        (((parentFragment)?.parentFragment) as CreateBillFragment).viewModel
+    private val createBillFragment by lazy {
+        (parentFragment) as CreateBillFragment
     }
+
+    private var selectCategory: Category? = null
 
     //类型 支出 或 收入
     lateinit var type: BillType
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_category_content
-    }
+    override fun layout() = binding.root
 
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onAttach(context: Context) {
         super.onAttach(context)
         arguments?.let {
             type = SelectCategoryFragmentArgs.fromBundle(it).type
+            if (type == BillType.INCOME)//预加载一次
+                createBillFragment.viewModel.doAction(CreateBillAction.GetCategories(type.type()))
         }
 
     }
@@ -56,31 +54,43 @@ class SelectCategoryFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         LogUtils.d(type)
-        viewModel.doAction(CreateBillAction.GetCategories(type.type()))
+        with(createBillFragment) {
+            selectedCategoryFragment = this@SelectCategoryFragment
+            type = this@SelectCategoryFragment.type
+            viewModel.doAction(CreateBillAction.GetCategories(type.type()))
+        }
+        selectCategory?.let {
+            LogUtils.d(it)
+            createBillFragment.selectedCategory(type.type(), it)
+        }
     }
 
     override fun initView(view: View) {
-        labelAdapter = CategoryAdapter(ArrayList())
+        labelAdapter = CategoryAdapter(ArrayList()).apply {
+            setDiffCallback(object : DiffUtil.ItemCallback<Category>() {
+                override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
+                    return oldItem.id == newItem.id
+                }
+
+                override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
+                    return oldItem.id == newItem.id
+                }
+
+            })
+            setOnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int ->
+                selectCategory = labelAdapter.getItem(position) //当前点击的
+                //使其他置为为选中状态
+                labelAdapter.data.forEach {
+                    it.isSelected = it.name == selectCategory!!.name
+                }
+                labelAdapter.notifyDataSetChanged()
+                createBillFragment.selectedCategory(type.type(), selectCategory!!)
+            }
+        }
         binding.categoryRecycler.apply {
             layoutManager = GridLayoutManager(mainActivity, 6)
             adapter = labelAdapter
         }
-        labelAdapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int ->
-            val category = labelAdapter.getItem(position) //当前点击的
-            if (category.name == CategoryAdapter.SETTING) { //设置
-                val args = CategoryManagerFragmentArgs.Builder().setIeType(type.type()).build()
-                findNavController().navigate(R.id.nav_category_manager, args.toBundle())
-            }
-            category.isSelected = !category.isSelected //反选
-            //使其他置为为选中状态
-            labelAdapter.data.forEach(Consumer { i: Category ->
-                if (i.name != category.name) {
-                    i.isSelected = false
-                }
-            })
-            labelAdapter.notifyDataSetChanged()
-        }
-        addCategoryFooterView(labelAdapter) //尾部添加设置按钮
     }
 
 
@@ -90,15 +100,11 @@ class SelectCategoryFragment : BaseFragment() {
      * @param categories
      */
     fun setCategories(categories: MutableList<Category>) {
-        categories.forEach { category: Category ->
-            val isSelected =
-                category.name == getSelectedCategory().name && category.type == getSelectedCategory().type
-            if (isSelected) {
-                category.isSelected = true
-            }
-        }
-        labelAdapter.setNewInstance(categories)
-        addCategoryFooterView(labelAdapter)
+        LogUtils.d(
+            "TimeTest", type,
+            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
+        )
+        labelAdapter.setDiffNewData(categories)
         defSelected()
     }
 
@@ -106,52 +112,18 @@ class SelectCategoryFragment : BaseFragment() {
      * 默认第一个为选中
      */
     private fun defSelected() {
-        if (labelAdapter.data.isNotEmpty() && labelAdapter.data.size > 0) {
+        val data = labelAdapter.data
+        if (selectCategory != null) return
+        if (data.isNotEmpty() && data.size > 0) {
             val count =
-                labelAdapter.data.filter { category: Category -> category.isSelected }.count()
+                data.count { category: Category -> category.isSelected }
             if (count <= 0) {
-                val firstItem = labelAdapter.data.stream().findFirst().get()
-                if (firstItem.name != "管理") {
-                    firstItem.isSelected = true
-                    labelAdapter.notifyDataSetChanged()
-                }
+                selectCategory = data.stream().findFirst().get()
+                createBillFragment.selectedCategory(type.type(), selectCategory!!)
+                selectCategory!!.isSelected = true
+                labelAdapter.notifyDataSetChanged()
             }
         }
-    }
-
-    /**
-     * 添加尾部设置按钮
-     *
-     * @param labelAdapter
-     */
-    private fun addCategoryFooterView(labelAdapter: CategoryAdapter) {
-        if (labelAdapter.data.size > 0) {
-            val lastItem = labelAdapter.data[labelAdapter.itemCount - 1]
-            if (lastItem.name != CategoryAdapter.SETTING) {
-                addSettingItem(labelAdapter)
-            }
-        } else {
-            addSettingItem(labelAdapter)
-        }
-        labelAdapter.notifyDataSetChanged()
-    }
-
-    private fun addSettingItem(labelAdapter: CategoryAdapter) {
-        val category = Category(
-            name = CategoryAdapter.SETTING,
-            bookId = currentBook.id,
-        ).apply { level = 0 }
-        labelAdapter.addData(labelAdapter.itemCount, category)
-    }
-
-    fun getSelectedCategory(): Category {
-        var selectCategory: Category?
-        //选中的类别
-        val selectItem =
-            labelAdapter.data.filter { category: Category -> category.isSelected }.toList()
-        //未选中默认第一个ITEM
-        selectCategory = if (selectItem.isEmpty()) labelAdapter.data.first() else selectItem.first()
-        return selectCategory.apply { this.type = type }
     }
 
     fun setSelectCategory(category: String? = null) {
@@ -171,6 +143,11 @@ class SelectCategoryFragment : BaseFragment() {
          */
         @JvmStatic
         fun newInstance(type: BillType): SelectCategoryFragment {
+            LogUtils.d(
+                "TimeTest",
+                type,
+                TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
+            )
             val categoryFragment = SelectCategoryFragment()
             categoryFragment.arguments =
                 SelectCategoryFragmentArgs.Builder().setType(type).build().toBundle()

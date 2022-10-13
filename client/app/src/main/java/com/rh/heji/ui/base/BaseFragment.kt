@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.blankj.utilcode.util.KeyboardUtils
@@ -43,12 +44,16 @@ abstract class BaseFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        rootView = inflater.inflate(layoutId(), container, false)
-        enableDrawer = true
-        initView(rootView)
-        setHasOptionsMenu(true)
+        if (!this::rootView.isInitialized){
+            rootView = layout()
+            initView(layout())
+            enableDrawer = true
+            setHasOptionsMenu(true)
+        }
         return rootView
     }
+
+    abstract fun initView(rootView: View)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,16 +79,10 @@ abstract class BaseFragment : Fragment() {
     /**
      * 执行在onCreateView的时候
      *
-     * @return layoutID
+     * @return rootView
      */
-    protected abstract fun layoutId(): Int
+    protected abstract fun layout(): View
 
-    /**
-     * 初始化View
-     *
-     * @param view
-     */
-    protected abstract fun initView(rootView: View)
 
     /**
      * 重置并设置tool bar

@@ -39,7 +39,7 @@ class ReportFragment : BaseFragment() {
     private val categoryTotalAdapter: CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
     private val monthYearBillsAdapter: MonthYearBillAdapter = MonthYearBillAdapter(mutableListOf())
     private lateinit var emptyStubView: ViewStub
-    lateinit var binding: FragmentReportBinding
+    val binding: FragmentReportBinding by lazy { FragmentReportBinding.inflate(layoutInflater)  }
 
     val colors = ColorUtils.groupColors()
     override fun onStart() {
@@ -47,9 +47,7 @@ class ReportFragment : BaseFragment() {
         reportViewModel.yearMonth = mainActivity.mainViewModel.globalYearMonth
     }
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_report
-    }
+    override fun layout()=binding.root
 
     override fun setUpToolBar() {
         super.setUpToolBar()
@@ -70,8 +68,6 @@ class ReportFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding = FragmentReportBinding.bind(rootView)
-
         emptyStubView = rootView.findViewById(R.id.emptyStub)
 
         incomeExpenditureInfo()

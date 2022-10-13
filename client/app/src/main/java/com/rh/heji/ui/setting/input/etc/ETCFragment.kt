@@ -25,7 +25,7 @@ import java.util.*
  * #
  */
 class ETCFragment : BaseFragment() {
-    lateinit var binding: FragmentEtcBinding
+    private val binding: FragmentEtcBinding by lazy { FragmentEtcBinding.inflate(layoutInflater) }
     private val etcViewModel: ETCViewModel by lazy {
         ViewModelProvider(
             this,
@@ -47,7 +47,6 @@ class ETCFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding = FragmentEtcBinding.bind(rootView)
         val webSettings = binding.etcWeb.settings
         webSettings.javaScriptEnabled = true
         webSettings.cacheMode = WebSettings.LOAD_DEFAULT
@@ -132,9 +131,7 @@ class ETCFragment : BaseFragment() {
         }
     }
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_etc
-    }
+    override fun layout()=binding.root
 
     override fun setUpToolBar() {
         super.setUpToolBar()

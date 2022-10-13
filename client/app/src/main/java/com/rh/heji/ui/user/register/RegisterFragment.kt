@@ -20,15 +20,13 @@ class RegisterFragment : Fragment() {
     private val viewModel: RegisterViewModel by lazy {
         ViewModelProvider(this)[RegisterViewModel::class.java]
     }
-    private lateinit var binding: FragmentRegisterBinding
+    private val  binding: FragmentRegisterBinding by lazy { FragmentRegisterBinding.inflate(layoutInflater) }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         inflater.inflate(R.layout.fragment_register, container, false)
-        binding = FragmentRegisterBinding.inflate(inflater)
-
         binding.btnRegister.setOnClickListener {
             val password1 = binding.editPassword.text.toString()
             val password2 = binding.editPassword2.text.toString()

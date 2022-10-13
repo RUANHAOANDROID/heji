@@ -30,6 +30,6 @@ public class MBookShare {
     @Field("book_id")
     String bookId;
 
-    @Indexed(name = "expiredTime", expireAfterSeconds = DELAY_SECOND)
+    @Indexed(name = "expired_time", expireAfterSeconds = DELAY_SECOND)
     Date expiredTime;
 }

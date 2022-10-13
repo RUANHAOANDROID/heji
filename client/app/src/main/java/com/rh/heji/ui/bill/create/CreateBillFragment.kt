@@ -29,9 +29,9 @@ import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.databinding.FragmentCreatebillBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.bill.category.CategoryTabFragment
 import com.rh.heji.ui.bill.category.CategoryViewModel
-import com.rh.heji.ui.bill.category.ISelectedCategory
+import com.rh.heji.ui.bill.create.*
+import com.rh.heji.ui.bill.create.type.TypeTabFragment
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.matisse.MatisseUtils
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
@@ -50,17 +50,14 @@ import java.util.function.Consumer
  */
 class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
-    private val viewModel by lazy {
+    val viewModel by lazy {
         ViewModelProvider(
             this,
             CreateBillViewModelFactory(mainActivity.mService.getBillSyncManager())
         )[CreateBillViewModel::class.java]
     }
-
-    val categoryViewModel by lazy { ViewModelProvider(this)[CategoryViewModel::class.java] }
-
     private lateinit var binding: FragmentCreatebillBinding
-    private lateinit var categoryTabFragment: CategoryTabFragment
+    private lateinit var typeTabFragment: TypeTabFragment
 
     lateinit var popupSelectImage: PopSelectImage//图片弹窗
     lateinit var imageSelectLauncher: ActivityResultLauncher<Intent>
@@ -75,9 +72,8 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
 
     private lateinit var mBill: Bill
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_createbill
-    }
+    override fun layoutId() = R.layout.fragment_createbill
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -158,9 +154,9 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
                 mBill.remark = s.toString().trim { it <= ' ' }
             }
         })
-        categoryTabFragment =
-            childFragmentManager.findFragmentById(R.id.categoryFragment) as CategoryTabFragment
-        categoryTabFragment.setIndex()
+        typeTabFragment =
+            childFragmentManager.findFragmentById(R.id.categoryFragment) as TypeTabFragment
+        typeTabFragment.setIndex()
 
         keyboardListener()
         viewModel.doAction(CreateBillAction.GetDealers(mBill.id))
@@ -208,15 +204,17 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
                 is CreateBillUIState.Save -> {
                     if (uiState.again) reset() else findNavController().popBackStack()
                 }
-
+                is CreateBillUIState.Categories -> {
+                    typeTabFragment.setCategories(uiState.type, uiState.categories)
+                }
             }
         }
     }
 
     override fun setUpToolBar() {
         super.setUpToolBar()
-        categoryTabFragment.toolBar.setNavigationIcon(R.drawable.ic_baseline_close_24)
-        categoryTabFragment.toolBar.setNavigationOnClickListener {
+        typeTabFragment.toolBar.setNavigationIcon(R.drawable.ic_baseline_close_24)
+        typeTabFragment.toolBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
     }
@@ -284,7 +282,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
         val billType = BillType.transform(category.type)
         //viewModel.setCategory(category)
         mBill.type = category.type
-        mBill.category = category.category
+        mBill.category = category.name
         binding.keyboard.setType(billType)
         val color = if (billType == BillType.EXPENDITURE) R.color.expenditure else R.color.income
         binding.inputInfo.tvMoney.setTextColor(resources.getColor(color, null))
@@ -293,8 +291,8 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
     private fun setCategory(category: String?) {
         //设置类别
         mBill.category?.let {
-            if (this::categoryTabFragment.isInitialized)
-                categoryTabFragment.setSelectCategory(it, mBill.type)
+            if (this::typeTabFragment.isInitialized)
+                typeTabFragment.setSelectCategory(it, mBill.type)
         }
     }
 
@@ -368,7 +366,7 @@ class CreateBillFragment : BaseFragment(), ISelectedCategory {
     private fun save(again: Boolean) {
         try {
             with(mBill) {
-                category = categoryTabFragment.getSelectCategory().category
+                category = typeTabFragment.getSelectCategory().name
                 money = BigDecimal(binding.inputInfo.tvMoney.text.toString())
                 createTime = System.currentTimeMillis()
             }

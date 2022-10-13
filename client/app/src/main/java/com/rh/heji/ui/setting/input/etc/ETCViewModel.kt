@@ -57,21 +57,25 @@ class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModelMVI<ETCActio
             val categories = App.dataBase.categoryDao().queryByCategoryName("过路费")
             val category: Category
             if (categories.isEmpty()) {
-                category = Category(category = "过路费", level = 0, type = BillType.EXPENDITURE.type())
+                category = Category(name = "过路费", bookId = App.currentBook.id).apply {
+                    level = 0
+                    type = BillType.EXPENDITURE.type()
+                }
                 category.synced = STATUS.NOT_SYNCED
                 App.dataBase.categoryDao().insert(category)
             } else {
                 category = categories[0]
             }
-            return category.category
+            return category.name
         }
 
     override fun doAction(action: ETCAction) {
         super.doAction(action)
-        if (action is ETCAction.RequestETCBill){
-            requestHBGSETCList(action.etcID,action.month,action.carID)
+        if (action is ETCAction.RequestETCBill) {
+            requestHBGSETCList(action.etcID, action.month, action.carID)
         }
     }
+
     /**
      * 保存到数据库
      *
@@ -128,7 +132,7 @@ class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModelMVI<ETCActio
      * @param month 月份
      * @param carID 车牌号
      */
-    private fun requestHBGSETCList(etcID: String, month: String, carID: String){
+    private fun requestHBGSETCList(etcID: String, month: String, carID: String) {
         val requestURL = "http://www.hbgsetc.com/index.php?/newhome/getMonthBillData"
         //www - url 解码方式
         val requestBody =
@@ -197,7 +201,7 @@ class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModelMVI<ETCActio
      * @param month 月份
      * @param carID 车牌号
      */
-    private fun requestETCList2(etcID: String, month: String, carID: String){
+    private fun requestETCList2(etcID: String, month: String, carID: String) {
         //伪装User-Agent
         val url =
             "http://hubeiweixin.u-road.com:80/HuBeiCityAPIServer/index.php/huibeicityserver/loadmonthinfo"

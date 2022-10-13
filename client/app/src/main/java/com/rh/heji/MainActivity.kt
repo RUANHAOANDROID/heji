@@ -3,7 +3,6 @@ package com.rh.heji
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
@@ -38,9 +37,6 @@ import com.rh.heji.service.sync.SyncService
 import com.rh.heji.ui.list.DrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.security.UserToken
-import com.rh.heji.utlis.CrashInfo
-import com.rh.heji.utlis.MyUtils
-import com.rh.heji.utlis.checkPermissions
 import com.rh.heji.utlis.permitDiskReads
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -107,13 +103,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         permitDiskReads { super.onCreate(savedInstanceState) }//StrictMode policy violation; ~duration=127 ms: android.os.strictmode.DiskReadViolation by XiaoMi
-        checkPermissions(this) { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
-            //初始化一些需要权限的功能
-            lifecycleScope.launch(Dispatchers.Default) {
-                MyUtils.initCrashTool(this@MainActivity, CrashInfo())
-            }
-            //Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
-        }
         setContentView(R.layout.activity_main)
         initDrawerLayout()
         checkLogin()

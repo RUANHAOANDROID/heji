@@ -19,7 +19,7 @@ fun FragmentActivity.checkPermissions(
     requestCallback: RequestCallback
 ) {
     PermissionX.init(activity).permissions(
-        Manifest.permission.READ_PHONE_STATE,
+        //Manifest.permission.READ_PHONE_STATE,
         //Manifest.permission.CAMERA,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -30,7 +30,7 @@ fun FragmentActivity.checkPermissions(
         .onExplainRequestReason { scope: ExplainScope, deniedList: List<String> ->
             scope.showRequestReasonDialog(
                 deniedList,
-                "为了正常使用你必须同意以下权限:",
+                "为了正常使用你需要同意以下权限:",
                 "我已明白"
             )
         }

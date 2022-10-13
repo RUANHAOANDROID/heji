@@ -1,5 +1,6 @@
 package com.heji.server.data.mongo;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
@@ -42,6 +43,7 @@ public class MBook {
      * 是否是初始账本，初始账本无法删除，每位用户仅有一个初始账本
      * 0 true 1 false
      */
+    @SerializedName("first_book")
     Integer firstBook;
     /**
      * 每次更新账单和账本时更新该锚点

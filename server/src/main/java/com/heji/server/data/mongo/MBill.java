@@ -39,7 +39,7 @@ public class MBill {
     private String remark;
 
     private String[] images;
-    @SerializedName("billTime")
+    @SerializedName("time")
     private String time;//选择的时间
 
     @CreatedDate

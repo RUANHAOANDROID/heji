@@ -25,17 +25,21 @@ interface CategoryDao {
     @Query("select * from category where sync_status=:syncStatus")
     fun findCategoryByStatic(syncStatus: Int): List<Category>
 
-    @Query("select * from category where category=:name and type=:type")
+    @Query("select * from category where name=:name and type=:type")
     fun findByNameAndType(name: String, type: Int): MutableList<Category>
 
     @Query("select * from  category where book_id=:bookID AND type =:type AND sync_status != ${STATUS.DELETED} ORDER BY `index` DESC,_id DESC ")
-    fun findIncomeOrExpenditure(bookID: String, type: Int): Flow<MutableList<Category>>
+    fun observeIncomeOrExpenditure(bookID: String, type: Int): Flow<MutableList<Category>>
+
+    @Query("select * from  category where book_id=:bookID AND type =:type AND sync_status != ${STATUS.DELETED} ORDER BY `index` DESC,_id DESC ")
+    fun findIncomeOrExpenditure(bookID: String, type: Int): MutableList<Category>
+
 
     @Query("select * from  category where sync_status == ${STATUS.DELETED} or sync_status == ${STATUS.NOT_SYNCED}")
     fun observeNotUploadOrDelete(): Flow<MutableList<Category>>
 
-    @Query("select * from category where category =:category")
-    fun queryByCategoryName(category: String): List<Category>
+    @Query("select * from category where name =:name")
+    fun queryByCategoryName(name: String): List<Category>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun update(category: Category)

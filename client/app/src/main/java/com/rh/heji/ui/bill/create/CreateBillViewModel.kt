@@ -8,6 +8,8 @@ import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.service.sync.IBillSync
 import com.rh.heji.ui.base.BaseViewModelMVI
 import com.rh.heji.utlis.launchIO
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import java.util.*
 
 /**
@@ -47,6 +49,12 @@ class CreateBillViewModel(private val mBillSync: IBillSync) :
                     val image = action.image
                     App.dataBase.imageDao().preDelete(image.id)
                     mBillSync.deleteImage(image)
+                }
+                is CreateBillAction.GetCategories -> {
+                    val categories = App.dataBase.categoryDao()
+                        .findIncomeOrExpenditure(App.currentBook.id, action.type)
+                    uiState.postValue(CreateBillUIState.Categories(action.type, categories))
+
                 }
             }
         }, {

@@ -106,6 +106,7 @@ class BillListFragment : BaseFragment() {
 
     override fun setUpToolBar() {
         super.setUpToolBar()
+        toolBar.title = ""
         toolBar.post {
             showYearMonthTitle(
                 { year, month ->

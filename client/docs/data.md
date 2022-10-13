@@ -6,43 +6,43 @@ App离线优先，服务仅作为多设备的同步备份
 
 #### 用户（MUser）
 
-| 列名      | 类型     | 说 明              |
-| --------- | -------- | ------------------ |
-| _id       | ObjectID | 自增ID             |
-| name      | String   | 用户名             |
-| password  | String   | 密码               |
-| tel       | String   | 电话号码           |
+| 列名        | 类型       | 说 明       |
+|-----------|----------|-----------|
+| _id       | ObjectID | 自增ID      |
+| name      | String   | 用户名       |
+| password  | String   | 密码        |
+| tel       | String   | 电话号码      |
 | authority | List     | 权限（关联权限集） |
 
 #### 权限（MAuthority）
 
-| 列名      | 类型     | 说 明                |
-| --------- | -------- | -------------------- |
-| _id       | ObjectID | 自增ID               |
-| authority | String   | 权限                 |
+| 列名        | 类型       | 说 明         |
+|-----------|----------|-------------|
+| _id       | ObjectID | 自增ID        |
+| authority | String   | 权限          |
 | book_id   | String   | 账本ID（关联账本集） |
 
 #### 账本Client（Book）
 
-| 列名        | 类型     | 说 明                                           |
-| ----------- | -------- | ----------------------------------------------- |
-| _id         | ObjectID | 自增ID                                          |
-| book_name   | String   | 账本名称                                        |
-| create_user | String   | 创建人                                          |
-| cover       | byte[]   | 封面图片                                        |
+| 列名          | 类型       | 说 明                        |
+|-------------|----------|----------------------------|
+| _id         | ObjectID | 自增ID                       |
+| book_name   | String   | 账本名称                       |
+| create_user | String   | 创建人                        |
+| cover       | byte[]   | 封面图片                       |
 | sync_status | Integer  | 0本地新增，-1本地删除、1本地更新，2已同步到服务 |
-| anchor      | long     | 锚点用作记录服务最后修改时间                    |
+| anchor      | long     | 锚点用作记录服务最后修改时间             |
 
 #### 账本Server（MBook）
 
-| 列名         | 类型     | 说 明                                           |
-| ------------ | -------- | ----------------------------------------------- |
-| _id          | ObjectID | 自增ID                                          |
-| book_name    | String   | 账本名称                                        |
-| create_user | String   | 创建人                                          |
-| users | array | 该账本下的用户集 |
-| cover        | byte[]   | 二进制封面图片                              |
-| modified | long     | 最后修改时间 |
+| 列名          | 类型       | 说 明      |
+|-------------|----------|----------|
+| _id         | ObjectID | 自增ID     |
+| book_name   | String   | 账本名称     |
+| create_user | String   | 创建人      |
+| users       | array    | 该账本下的用户集 |
+| cover       | byte[]   | 二进制封面图片  |
+| modified    | long     | 最后修改时间   |
 
 客户端账本同步时根据anchor 和sync_status向服务器发起同步。	
 
@@ -52,20 +52,20 @@ App离线优先，服务仅作为多设备的同步备份
 
 #### 账单（MBill）
 
-| 列名        | 类型     | 说 明                      |
-| ----------- | -------- | -------------------------- |
-| _id         | ObjectID | 自增ID                     |
-| book_id     | String   | 所属账本ID                 |
-| money       | Double   | 货币                       |
-| category    | String   | 账单收支类型               |
-| type        | Integer  | 收入/支出                  |
-| dealer      | String   | 经手人                     |
-| createUser  | String   | 创建人                     |
-| remark      | String   | 备注                       |
-| images      | String[] | 图片集（关联账单图片）     |
+| 列名          | 类型       | 说 明           |
+|-------------|----------|---------------|
+| _id         | ObjectID | 自增ID          |
+| book_id     | String   | 所属账本ID        |
+| money       | Double   | 货币            |
+| category    | String   | 账单收支类型        |
+| type        | Integer  | 收入/支出         |
+| dealer      | String   | 经手人           |
+| createUser  | String   | 创建人           |
+| remark      | String   | 备注            |
+| images      | String[] | 图片集（关联账单图片）   |
 | time        | String   | 账单日期（用户选择的日期） |
-| create_time | long     | 创建时间                   |
-| update_time | long     | 更新时间                   |
+| create_time | long     | 创建时间          |
+| update_time | long     | 更新时间          |
 
 账单作为账本的子集，更新账单时更新账本modified以供客户端询问更新与否
 
@@ -75,45 +75,45 @@ App离线优先，服务仅作为多设备的同步备份
 
 #### 账单票据图片（MBillImage）
 
-| 列名        | 类型     | 说 明      |
-| ----------- | -------- | ---------- |
-| _id         | ObjectID | 自增ID     |
+| 列名          | 类型       | 说 明    |
+|-------------|----------|--------|
+| _id         | ObjectID | 自增ID   |
 | bill_id     | String   | 所属账单ID |
-| filename    | String   | 文件名     |
+| filename    | String   | 文件名    |
 | length      | Long     | 文件长度   |
-| md5         | String   | MD5        |
+| md5         | String   | MD5    |
 | upload_time | Long     | 上传时间   |
-| ext         | String   | 后缀名     |
+| ext         | String   | 后缀名    |
 | isGridFS    | Boolean  | 是否分片   |
-| data        | Binary   | 二进制图片 |
+| data        | Binary   | 二进制图片  |
 
 #### 账单类型（MCategory）
 
-| 列名    | 类型     | 说 明            |
-| ------- | -------- | ---------------- |
-| _id     | ObjectID | 自增ID           |
-| book_id | String   | 所属账本ID       |
-| type    | Integer  | 支出/收入        |
-| name    | String   | 标签名           |
+| 列名      | 类型       | 说 明      |
+|---------|----------|----------|
+| _id     | ObjectID | 自增ID     |
+| book_id | String   | 所属账本ID   |
+| type    | Integer  | 支出/收入    |
+| name    | String   | 标签名      |
 | level   | Integer  | 多级标签所属等级 |
-| index   | Integer  | 排序顺序         |
+| index   | Integer  | 排序顺序     |
 
 #### 同步日志（MOperateLog）
 
-| 列名     | 类型     | 说 明                             |
-| -------- | -------- | --------------------------------- |
-| _id      | ObjectID | 自增ID                            |
-| book_id  | String   | 根据book划分日志                  |
-| opeID    | Integer  | 操作对象的ID                      |
+| 列名       | 类型       | 说 明               |
+|----------|----------|-------------------|
+| _id      | ObjectID | 自增ID              |
+| book_id  | String   | 根据book划分日志        |
+| opeID    | Integer  | 操作对象的ID           |
 | opeClass | String   | 操作对象类别 （操作了账本或账单） |
-| opeType  | Integer  | 操作类型（删除或更新）            |
-| opeDate  | String   | 操作时间（客户端操作时间）        |
+| opeType  | Integer  | 操作类型（删除或更新）       |
+| opeDate  | String   | 操作时间（客户端操作时间）     |
 
 #### 客户端错误日志（MErrorLog）
 
-| 列名        | 类型     | 说 明    |
-| ----------- | -------- | -------- |
-| _id         | ObjectID | 自增ID   |
+| 列名          | 类型       | 说 明  |
+|-------------|----------|------|
+| _id         | ObjectID | 自增ID |
 | deviceModel | String   | 设备型号 |
-| tel         | String   | 电话号   |
+| tel         | String   | 电话号  |
 | contents    | String   | 日志内容 |

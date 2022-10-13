@@ -2,6 +2,7 @@ package com.rh.heji.data.repository
 
 import android.text.TextUtils
 import com.rh.heji.App
+import com.rh.heji.data.BillType
 import com.rh.heji.data.DataRepository
 import com.rh.heji.data.Result
 import com.rh.heji.data.db.Category
@@ -21,7 +22,7 @@ class CategoryRepository : DataRepository() {
         }
     }
 
-    suspend fun deleteCategory(_id: String):Flow<Result<Boolean>> {
+    suspend fun deleteCategory(_id: String): Flow<Result<Boolean>> {
         val response = network.categoryDelete(_id)
         response.let {
             categoryDao.deleteById(_id)

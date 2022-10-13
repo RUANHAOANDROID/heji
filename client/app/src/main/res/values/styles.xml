@@ -61,6 +61,7 @@
 
     <style name="MineCustomTabText" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">@dimen/toolbar_title_size</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
     <!-- fab 灰边 白色-->
     <style name="TodayFloatingActionButton" parent="Widget.Design.FloatingActionButton">

@@ -26,16 +26,17 @@ import androidx.recyclerview.widget.DiffUtil.ItemCallback as ItemCallback
  */
 class BookListFragment : BaseFragment() {
     lateinit var adapter: BookListAdapter
-    lateinit var binding: FragmentBookListBinding
+    private val  binding: FragmentBookListBinding by lazy {
+        FragmentBookListBinding.inflate(layoutInflater)
+    }
     private val bookViewModel: BookViewModel by lazy {
         ViewModelProvider(
             this,
             BookViewModelFactory(mainActivity.mService.getBookSyncManager())
         )[BookViewModel::class.java]
     }
-    override fun layoutId(): Int {
-        return R.layout.fragment_book_list
-    }
+
+    override fun layout()=binding.root
 
     override fun setUpToolBar() {
         super.setUpToolBar()
@@ -44,8 +45,6 @@ class BookListFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding = FragmentBookListBinding.bind(rootView)
-
         adapter = BookListAdapter {
             findNavController().navigate(
                 R.id.nav_book_setting,

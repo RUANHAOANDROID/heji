@@ -10,7 +10,7 @@ import com.rh.heji.ui.base.BaseFragment
 
 class SettingFragment : BaseFragment() {
     //lateinit var settingViewModel: SettingViewModel
-    lateinit var binding: FragmentSettingBinding
+    private val binding: FragmentSettingBinding by lazy { FragmentSettingBinding.inflate(layoutInflater) }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -18,14 +18,11 @@ class SettingFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding = FragmentSettingBinding.bind(rootView)
         binding.inputETC.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_input_etc) }
         binding.exportQianJi.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_export) }
     }
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_setting
-    }
+    override fun layout()=binding.root
 
     override fun setUpToolBar() {
         super.setUpToolBar()

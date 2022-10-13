@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_nav_income_to_nav_category_tab"
             app:destination="@id/_category_tab" />
+        <action
+            android:id="@+id/action_nav_bill_add_to_nav_category_manager"
+            app:destination="@id/nav_category_manager" />
     </fragment>
     <fragment
         android:id="@+id/nav_category_manager"
@@ -104,9 +107,6 @@
         android:name="com.rh.heji.ui.bill.create.type.SelectCategoryFragment"
         android:label="CategoryFragment"
         tools:layout="@layout/fragment_category_content">
-        <action
-            android:id="@+id/action_categoryFragment_to_nav_category_manager"
-            app:destination="@id/nav_category_manager" />
         <argument
             android:name="type"
             android:defaultValue="EXPENDITURE"

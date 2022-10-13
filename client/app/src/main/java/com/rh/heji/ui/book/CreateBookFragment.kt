@@ -8,6 +8,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.interfaces.OnSelectListener
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentBookAddBinding
+import com.rh.heji.databinding.FragmentCreatebillBinding
 import com.rh.heji.ui.base.BaseFragment
 
 class CreateBookFragment : BaseFragment() {
@@ -17,18 +18,19 @@ class CreateBookFragment : BaseFragment() {
             BookViewModelFactory(mainActivity.mService.getBookSyncManager())
         )[BookViewModel::class.java]
     }
-    lateinit var binding: FragmentBookAddBinding
+    private val binding: FragmentBookAddBinding by lazy {
+        FragmentBookAddBinding.inflate(layoutInflater)
+    }
     override fun setUpToolBar() {
         super.setUpToolBar()
         showBlack()
     }
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_book_add
+    override fun layout(): View {
+        return binding.root
     }
 
     override fun initView(rootView: View) {
-        binding = FragmentBookAddBinding.bind(rootView)
         binding.banner.setOnClickListener { }
         binding.layoutType.setOnClickListener {
             XPopup.Builder(requireContext()).asBottomList(

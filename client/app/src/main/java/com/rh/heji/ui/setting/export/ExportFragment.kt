@@ -19,7 +19,7 @@ import com.rh.heji.databinding.FragmentExportBinding
 import com.rh.heji.uiState
 
 class ExportFragment : BaseFragment() {
-    lateinit var binding: FragmentExportBinding
+    private val binding: FragmentExportBinding by lazy {FragmentExportBinding.inflate(layoutInflater)  }
     val list = listOf("EXCEL", "CVS")
 
     //定义静态变量
@@ -31,7 +31,6 @@ class ExportFragment : BaseFragment() {
     private val viewModel by lazy { ViewModelProvider(this).get(ExportViewModel::class.java) }
     private val popup by lazy { XPopup.Builder(requireContext()).asLoading().setTitle("正在导出") }
     override fun initView(rootView: View) {
-        binding = FragmentExportBinding.bind(rootView)
         binding.tvExportFormat.setOnClickListener {
             val onSelectListener = OnSelectListener { _, text ->
                 popup.show()
@@ -57,9 +56,7 @@ class ExportFragment : BaseFragment() {
         }
     }
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_export
-    }
+    override fun layout()=binding.root
 
     override fun setUpToolBar() {
         super.setUpToolBar()

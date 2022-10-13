@@ -1,5 +1,6 @@
 package com.rh.heji.ui.list
 
+import android.os.Bundle
 import android.view.View
 import android.view.ViewStub
 import androidx.core.content.ContextCompat
@@ -38,16 +39,15 @@ import java.util.*
 
 class BillListFragment : BaseFragment() {
 
-
-    private lateinit var binding: FragmentBillsHomeBinding
+    private val binding: FragmentBillsHomeBinding by lazy {
+        FragmentBillsHomeBinding.inflate(layoutInflater)
+    }
     private lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
     private lateinit var stubTotalView: ViewStub
 
     private val homeViewModel: BillListViewModel by lazy { ViewModelProvider(mainActivity)[BillListViewModel::class.java] }
     private lateinit var adapter: NodeBillsAdapter
-
-    public override fun initView(rootView: View) {
-        binding = FragmentBillsHomeBinding.bind(rootView)
+     override fun initView(rootView: View) {
         stubTotalView = rootView.findViewById(R.id.total)
         adapter = NodeBillsAdapter()
         rootView.post {
@@ -79,6 +79,10 @@ class BillListFragment : BaseFragment() {
         stubTotalView.setOnInflateListener { stub, inflated ->   //提前设置避免多次设置
             subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         uiState(homeViewModel) {
             when (it) {
                 is BillListUiState.Bills -> {
@@ -103,7 +107,11 @@ class BillListFragment : BaseFragment() {
             }
         }
     }
-
+    override fun onResume() {
+        super.onResume()
+        notifyData( homeViewModel.yearMonth().year,
+            homeViewModel.yearMonth().month)
+    }
     override fun setUpToolBar() {
         super.setUpToolBar()
         toolBar.title = ""
@@ -135,10 +143,7 @@ class BillListFragment : BaseFragment() {
 
     }
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_bills_home
-    }
-
+    override fun layout(): View =binding.root
     /**
      * 汇总收支
      *

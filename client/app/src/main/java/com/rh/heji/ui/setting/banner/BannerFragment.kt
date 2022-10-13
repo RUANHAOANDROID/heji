@@ -13,9 +13,7 @@ class BannerFragment : BaseFragment() {
     }
 
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_banner
-    }
+    override fun layout()= TODO()
 
     override fun initView(rootView: View) {
 

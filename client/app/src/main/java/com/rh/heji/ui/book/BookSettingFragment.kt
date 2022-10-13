@@ -31,11 +31,11 @@ class BookSettingFragment : BaseFragment() {
             BookViewModelFactory(mainActivity.mService.getBookSyncManager())
         )[BookViewModel::class.java]
     }
-    private lateinit var binding: FragmentBookSettingBinding
+    private val  binding: FragmentBookSettingBinding by lazy {  FragmentBookSettingBinding.inflate(layoutInflater) }
     private lateinit var book: Book
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_book_setting
+    override fun layout(): View {
+        return binding.root
     }
 
     override fun setUpToolBar() {
@@ -45,8 +45,6 @@ class BookSettingFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding = FragmentBookSettingBinding.bind(rootView)
-
         arguments?.let {
             book = BookSettingFragmentArgs.fromBundle(it).book
             binding.tvBookType.text = book.type

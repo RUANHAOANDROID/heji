@@ -21,7 +21,9 @@ import com.rh.heji.ui.bill.category.adapter.CategoryManagerAdapter
  *
  */
 class CategoryManagerFragment : BaseFragment() {
-    lateinit var binding: FragmentCategoryManagerBinding
+    val binding: FragmentCategoryManagerBinding by lazy {
+        FragmentCategoryManagerBinding.inflate(layoutInflater)
+    }
     private lateinit var adapter: CategoryManagerAdapter
     private val categoryViewModule: CategoryViewModel by lazy {
         ViewModelProvider(this).get(
@@ -36,7 +38,6 @@ class CategoryManagerFragment : BaseFragment() {
     }
 
     override fun initView(view: View) {
-        binding = FragmentCategoryManagerBinding.bind(view)
         args = CategoryManagerFragmentArgs.fromBundle(requireArguments())
 
         binding.btnAdd.setOnClickListener { v: View? ->
@@ -81,8 +82,8 @@ class CategoryManagerFragment : BaseFragment() {
 
     }
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_category_manager
+    override fun layout(): View {
+        return binding.root
     }
 
     private fun alertDeleteTip(label: Category) {}

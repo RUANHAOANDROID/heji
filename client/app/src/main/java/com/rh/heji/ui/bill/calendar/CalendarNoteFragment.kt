@@ -24,13 +24,15 @@ import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
 
 class CalendarNoteFragment : BaseFragment() {
-    lateinit var binding: FragmentCalendarNoteBinding
+    val binding: FragmentCalendarNoteBinding by lazy {
+        FragmentCalendarNoteBinding.inflate(layoutInflater)
+    }
     private val viewModel by lazy { ViewModelProvider(this).get(CalendarNoteViewModule::class.java) }
     var adapter: NodeBillsAdapter? = null
 
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_calendar_note
+    override fun layout(): View {
+        return binding.root
     }
 
     override fun onAttach(context: Context) {
@@ -52,8 +54,6 @@ class CalendarNoteFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding = FragmentCalendarNoteBinding.bind(rootView)
-
         initFab(rootView)
         initCalendarView()
         initAdapter()

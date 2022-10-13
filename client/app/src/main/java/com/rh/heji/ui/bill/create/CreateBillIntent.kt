@@ -1,6 +1,7 @@
 package com.rh.heji.ui.bill.create
 
 import com.rh.heji.data.db.Bill
+import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.Image
 import com.rh.heji.ui.base.IAction
 import com.rh.heji.ui.base.IUiState
@@ -23,6 +24,7 @@ sealed class CreateBillUIState : IUiState {
     class Error(val throws: Throwable) : CreateBillUIState()
     class Dealers(val dealers: MutableList<String>) : CreateBillUIState()
     class Images(val images: MutableList<Image>) : CreateBillUIState()
+    class Categories(val type: Int, val categories: MutableList<Category>) : CreateBillUIState()
 }
 
 sealed class CreateBillAction : IAction {
@@ -51,4 +53,9 @@ sealed class CreateBillAction : IAction {
      * 删除账单图片
      */
     class DeleteImage(val image: Image) : CreateBillAction()
+
+    /**
+     * 获取账本下收入或支出类别标签
+     */
+    class GetCategories(val type: Int) : CreateBillAction()
 }

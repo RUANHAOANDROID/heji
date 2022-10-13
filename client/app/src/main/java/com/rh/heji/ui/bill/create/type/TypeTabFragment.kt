@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.category
+package com.rh.heji.ui.bill.create.type
 
 import android.content.Context
 import android.view.View
@@ -13,6 +13,7 @@ import com.rh.heji.databinding.FragmentCategoryTabBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.FragmentViewPagerAdapter
 import com.rh.heji.ui.bill.create.CreateBillFragment
+import com.rh.heji.ui.bill.create.ISelectedCategory
 
 
 /**
@@ -21,26 +22,31 @@ import com.rh.heji.ui.bill.create.CreateBillFragment
  * @author: 锅得铁
  *
  */
-class CategoryTabFragment : BaseFragment() {
+class TypeTabFragment : BaseFragment() {
 
-    private val tabTitles = listOf(BillType.EXPENDITURE.text(), BillType.INCOME.text())
+    private val tabTitles = listOf(
+        BillType.EXPENDITURE.text(),
+        BillType.INCOME.text()
+    )
     lateinit var binding: FragmentCategoryTabBinding
     private var currentType: BillType = BillType.EXPENDITURE
 
     private lateinit var mSelectedCategoryListener: ISelectedCategory
 
+    /**
+     * parent fragment
+     */
     private lateinit var addBillFragment: CreateBillFragment
 
     val categoryFragments = listOf(
-        CategoryFragment.newInstance(BillType.EXPENDITURE),
-        CategoryFragment.newInstance(BillType.INCOME)
+        SelectCategoryFragment.newInstance(BillType.EXPENDITURE),
+        SelectCategoryFragment.newInstance(BillType.INCOME)
     )
 
     init {
         categoryFragments.isNotEmpty()
     }
 
-    lateinit var categoryViewModel: CategoryViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -51,17 +57,13 @@ class CategoryTabFragment : BaseFragment() {
     override fun initView(view: View) {
         binding = FragmentCategoryTabBinding.bind(view)
         showPager()
-        //从父Fragment拿到ViewModule
-        categoryViewModel = addBillFragment.categoryViewModel
         mSelectedCategoryListener = addBillFragment
     }
 
-    override fun layoutId(): Int {
-        return R.layout.fragment_category_tab
-    }
+    override fun layoutId() = R.layout.fragment_category_tab
+
 
     private fun showPager() {
-
         val pagerAdapter = FragmentViewPagerAdapter(
             childFragmentManager,
             categoryFragments,
@@ -122,6 +124,20 @@ class CategoryTabFragment : BaseFragment() {
                 binding.tab.getTabAt(1)?.select()
                 categoryFragments[1].setSelectCategory(category)
             }
+        }
+    }
+
+    /**
+     *
+     * @see SelectCategoryFragment.setCategories
+     * @param type
+     * @param categories
+     */
+    fun setCategories(type: Int, categories: MutableList<Category>) {
+        if (type == BillType.EXPENDITURE.type()) {
+            categoryFragments[0].setCategories(categories)
+        } else if (type == BillType.INCOME.type()) {
+            categoryFragments[1].setCategories(categories)
         }
     }
 

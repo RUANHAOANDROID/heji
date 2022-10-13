@@ -9,7 +9,8 @@ class FragmentViewPagerAdapter(
     private val fragmentList: List<Fragment>,
     private val textList: List<String>
 ) : FragmentPagerAdapter(
-    fm
+    fm,
+    BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 ) {
     override fun getPageTitle(position: Int): CharSequence? {
         return textList[position]

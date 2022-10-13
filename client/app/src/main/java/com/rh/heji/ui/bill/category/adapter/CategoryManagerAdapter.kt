@@ -22,15 +22,15 @@ open class CategoryManagerAdapter :
         itemBinding = ItemCategoryManagerBinding.bind(holder.itemView)
         val bgColor =
             context.getColor(if (category.isSelected) R.color.category_ico_selected else R.color.category_ico)
-        if (TextUtils.isEmpty(category.category)) return
-        val drawable = TextDrawable.builder().buildRound(category.category.substring(0, 1), bgColor)
+        if (TextUtils.isEmpty(category.name)) return
+        val drawable = TextDrawable.builder().buildRound(category.name.substring(0, 1), bgColor)
         itemBinding.roundImageView.setImageDrawable(drawable)
-        itemBinding.tvName.text = category.category
+        itemBinding.tvName.text = category.name
         addChildClickViewIds(itemBinding.btnDelete.id)
         //        itemBinding.btnDelete.setOnClickListener(v -> {
 //            deleteCategory(category);
 //        });
-        if (category.category == "其他") {
+        if (category.name == "其他") {
             itemBinding.btnEdit.visibility = View.INVISIBLE
             itemBinding.btnDelete.visibility = View.INVISIBLE
         } else {

@@ -1,4 +1,4 @@
-package com.rh.heji.ui.bill.category
+package com.rh.heji.ui.bill.create
 
 import com.rh.heji.data.db.Category
 

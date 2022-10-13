@@ -36,20 +36,20 @@ class CategoryViewModel : BaseViewModel() {
          * observer 观察变化
          */
         incomeCategory.addSource(
-            categoryDao.findIncomeOrExpenditure(App.currentBook.id, BillType.INCOME.type())
+            categoryDao.observeIncomeOrExpenditure(App.currentBook.id, BillType.INCOME.type())
                 .asLiveData(viewModelScope.coroutineContext)
         ) { incomeCategories ->
             incomeCategory.value = incomeCategories.apply {
-                add(size, Category(category = "其他"))
+                add(size, Category(name = "其他", bookId = App.currentBook.id))
             }
         }
         expenditureCategory.addSource(
             categoryDao
-                .findIncomeOrExpenditure(App.currentBook.id, BillType.EXPENDITURE.type())
+                .observeIncomeOrExpenditure(App.currentBook.id, BillType.EXPENDITURE.type())
                 .asLiveData(viewModelScope.coroutineContext)
         ) { expenditureCategories: MutableList<Category> ->
             expenditureCategory.value = expenditureCategories.apply {
-                add(size, Category(category = "其他"))
+                add(size, Category(name = "其他", bookId = App.currentBook.id))
             }
         }
     }
@@ -69,7 +69,10 @@ class CategoryViewModel : BaseViewModel() {
             return
         }
         launchIO({
-            val category = Category(category = name, type = type, level = 0)
+            val category = Category(name = name, bookId = App.currentBook.id).apply {
+                this.type = type
+                level = 0
+            }
             category.synced = STATUS.NOT_SYNCED
             val categories = categoryDao.findByNameAndType(name, type)
             if (categories.size > 0) {

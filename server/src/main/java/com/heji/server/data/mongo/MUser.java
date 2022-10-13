@@ -6,6 +6,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 
 import java.util.List;
@@ -26,6 +27,8 @@ public class MUser {
     List<MAuthority> authority;//角色权限
     @Ignore
     String code;//邀请码
+
+    @Field("first_book_id")
     String firstBookId;
 
 }

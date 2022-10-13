@@ -11,11 +11,15 @@ import com.rh.heji.data.db.Category
 data class CategoryEntity(val category: Category) {
     var id: String = category.id
     var bookId: String = category.bookId
-    var name: String = category.category
+    var name: String = category.name
     var type: Int = category.type
     var level: Int = category.level
     fun toDbCategory(): Category {
-        return Category(id, bookId, name, level, type)
+        return Category(bookId, name).apply {
+            id = category.id
+            level = category.level
+            type = category.type
+        }
     }
 
 }

@@ -8,8 +8,6 @@ import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.ItemCategoryBinding
 import com.rh.heji.utlis.textdraw.ColorGenerator
 import com.rh.heji.utlis.textdraw.TextDrawable
-import kotlinx.coroutines.withTimeoutOrNull
-import java.lang.Throwable
 
 /**
  * Date: 2020/9/16
@@ -24,11 +22,11 @@ open class CategoryAdapter(data: MutableList<Category>) :
         val bgColor =
             context.getColor(if (label.isSelected) R.color.category_ico_selected else R.color.category_ico)
 //        val bgColor =if (!label.selected) ColorUtils.groupColors()[holder.adapterPosition] else context.getColor( R.color.category_ico)
-        if (TextUtils.isEmpty(label.category)) return
-        val drawable = TextDrawable.builder().buildRound(label.category.substring(0, 1), bgColor)
+        if (TextUtils.isEmpty(label.name)) return
+        val drawable = TextDrawable.builder().buildRound(label.name.substring(0, 1), bgColor)
         itemBinding.roundImageView.setImageDrawable(drawable)
-        itemBinding.tvLabel.text = label.category
-        if (label.category == SETTING) {
+        itemBinding.tvLabel.text = label.name
+        if (label.name == SETTING) {
             itemBinding.roundImageView.setImageDrawable(
                 TextDrawable.builder().buildRound(
                     SETTING,
@@ -46,7 +44,7 @@ open class CategoryAdapter(data: MutableList<Category>) :
                 it.isSelected = false
             }
             if (any is String) {
-                if (it.category == any) {
+                if (it.name == any) {
                     it.isSelected=true
                 }
             } else if (any is Category) {

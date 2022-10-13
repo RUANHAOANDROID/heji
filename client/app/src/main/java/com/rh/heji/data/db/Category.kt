@@ -1,7 +1,9 @@
 package com.rh.heji.data.db
 
-import androidx.room.*
-import com.rh.heji.App.Companion.currentBook
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.rh.heji.data.db.mongo.ObjectId
 import java.util.*
 
@@ -20,31 +22,20 @@ data class Category(
      */
     @JvmField
     @ColumnInfo(name = "book_id")
-    var bookId: String = currentBook.id,
+    val bookId: String,
 
-    @ColumnInfo(name = "category")
-    var category: String = "其他"
-) {
-    @Ignore
-    constructor(
-        id: String = ObjectId().toHexString(),
-        bookId: String = currentBook.id,
-        category: String,
-        level: Int,
-        type: Int
-    ) : this(id, bookId, category) {
-        this.level = level
-        this.type = type
-    }
-
-    @ColumnInfo(name = "level")
-    var level: Int = 0
-
+    @ColumnInfo(name = "name")
+    var name: String = "其他",
     /**
      * 收入、支出
      */
     @ColumnInfo(name = "type", defaultValue = "-1")
     var type: Int = 0
+) {
+
+
+    @ColumnInfo(name = "level")
+    var level: Int = 0
 
 
     /**
@@ -67,6 +58,12 @@ data class Category(
     var userId: String? = null
 
     /**
+     * 同步状态
+     */
+    @ColumnInfo(name = "sync_status", defaultValue = "0")
+    var synced: Int = STATUS.NOT_SYNCED
+
+    /**
      * 是否在记账页面显示
      */
     @Ignore
@@ -76,28 +73,8 @@ data class Category(
     @Ignore
     var isSelected: Boolean = false
 
-    @ColumnInfo(name = "sync_status", defaultValue = "0")
-    var synced: Int = STATUS.NOT_SYNCED
-
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val category1 = o as Category
-        return type == category1.type && category == category1.category
-    }
 
     override fun hashCode(): Int {
-        return Objects.hash(category, type)
-    }
-
-    override fun toString(): String {
-        return "Category{" +
-                "category='" + category + '\'' +
-                ", level=" + level +
-                ", type=" + type +
-                ", visibility=" + visibility +
-                ", selected=" + isSelected +
-                ", synced=" + synced +
-                '}'
+        return Objects.hash(name, type)
     }
 }

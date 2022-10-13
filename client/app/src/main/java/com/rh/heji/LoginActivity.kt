@@ -6,9 +6,15 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.lifecycleScope
 import com.gyf.immersionbar.ktx.immersionBar
 import com.rh.heji.data.db.Book
 import com.rh.heji.ui.user.login.LoginFragment
+import com.rh.heji.utlis.CrashInfo
+import com.rh.heji.utlis.MyUtils
+import com.rh.heji.utlis.checkPermissions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * 用户登录注册
@@ -30,6 +36,13 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkPermissions(this) { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
+            //初始化一些需要权限的功能
+            lifecycleScope.launch(Dispatchers.Default) {
+                MyUtils.initCrashTool(this@LoginActivity, CrashInfo())
+            }
+            //Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
+        }
         setContentView(R.layout.activity_login)
         setSupportActionBar(findViewById(R.id.toolbar))
 

@@ -33,7 +33,7 @@ public class MOperateLog {
     @Id
     String _id;
 
-    //book ID
+    @Field("book_id")
     String bookId;//根据book划分日志
 
     //操作对象ID

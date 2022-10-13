@@ -8,17 +8,8 @@ package com.rh.heji.data
 enum class BillType(private val type: Int, private val text: String) {
     INCOME(+1, "收入"), EXPENDITURE(-1, "支出"), ALL(0, "收支");
 
-    fun type(): Int {
-        return type
-    }
-
-    fun text(): String {
-        return text
-    }
-
-    fun typeString(): String {
-        return type.toString()
-    }
+    fun type(): Int = type
+    fun text(): String = text
 
     companion object {
         fun transform(type: Int): BillType {

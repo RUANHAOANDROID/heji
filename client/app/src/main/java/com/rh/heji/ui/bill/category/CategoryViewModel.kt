@@ -1,18 +1,14 @@
 package com.rh.heji.ui.bill.category
 
 import android.text.TextUtils
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.*
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.ToastUtils
 
 import com.rh.heji.App
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
-import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
 
 /**
@@ -20,7 +16,7 @@ import com.rh.heji.utlis.launchIO
  * @author: 锅得铁
  * # 分类
  */
-class CategoryViewModel : BaseViewModel() {
+class CategoryViewModel : ViewModel() {
     private val categoryDao = App.dataBase.categoryDao()
 
     //支出标签

@@ -61,6 +61,20 @@ fun CoroutineScope.launchIO(
         }
     }
 }
-public fun <I : IAction, O : IUiState> Fragment.uiState(viewModel: BaseViewModelMVI<I,O>, function: (o:O) -> Unit) {
-    viewModel.uiState().observe(viewLifecycleOwner,function)
+
+/**
+ * 在以下状态可观察
+ *  Lifecycle.State.STARTED
+ *  Lifecycle.State.RESUMED
+ *  当Lifecycle.State.DESTROYED状态时移除
+ * @param I
+ * @param O
+ * @param viewModel
+ * @param function
+ */
+fun <I : IAction, O : IUiState> Fragment.uiState(
+    viewModel: BaseViewModelMVI<I, O>,
+    function: (o: O) -> Unit
+) {
+    viewModel.uiState().observe(viewLifecycleOwner, function)
 }

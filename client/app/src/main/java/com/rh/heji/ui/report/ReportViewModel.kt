@@ -2,22 +2,21 @@ package com.rh.heji.ui.report
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.LogUtils
 import com.github.mikephil.charting.data.PieEntry
 import com.rh.heji.currentYearMonth
 import com.rh.heji.App
 import com.rh.heji.data.BillType
-import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.dto.Income
 import com.rh.heji.data.db.dto.IncomeTimeSurplus
-import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.KeyValue
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
 import java.math.BigDecimal
 import java.util.*
 
-class ReportViewModel : BaseViewModel() {
+class ReportViewModel : ViewModel() {
 
     private val incomeExpenditureLiveData: MutableLiveData<Income> = MutableLiveData()//发射器
     val incomeExpenditure: LiveData<Income>

@@ -1,7 +1,5 @@
 package com.rh.heji.ui.user.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
@@ -9,7 +7,6 @@ import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.HejiNetwork
-import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.base.BaseViewModelMVI
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.security.UserToken

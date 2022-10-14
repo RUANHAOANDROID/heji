@@ -79,33 +79,34 @@ class BillListFragment : BaseFragment() {
         stubTotalView.setOnInflateListener { stub, inflated ->   //提前设置避免多次设置
             subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)
         }
+         uiState(homeViewModel) {
+             when (it) {
+                 is BillListUiState.Bills -> {
+                     if (it.nodeList.isNullOrEmpty() || it.nodeList.size <= 0) {
+                         adapter.setDiffNewData(mutableListOf())//设置DiffCallback使用setDiffNewData避免setList
+                         binding.homeRecycler.minimumHeight = getRootViewHeight()//占满一屏
+                         stubTotalView.visibility = View.GONE
+                         adapter.setEmptyView(R.layout.layout_empty)
+                     } else {
+                         stubTotalView.visibility = View.VISIBLE
+                         adapter.setDiffNewData(it.nodeList)
+                     }
+                     //adapter.loadMoreModule.loadMoreEnd()//单月不分页，直接显示没有跟多
+                     hideRefreshing(binding.refreshLayout)
+                 }
+                 is BillListUiState.Summary -> {
+                     totalIncomeExpense(it.income)
+                 }
+                 is BillListUiState.Error -> {
+                     ToastUtils.showLong(it.t.message)
+                 }
+             }
+         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        uiState(homeViewModel) {
-            when (it) {
-                is BillListUiState.Bills -> {
-                    if (it.nodeList.isNullOrEmpty() || it.nodeList.size <= 0) {
-                        adapter.setDiffNewData(mutableListOf())//设置DiffCallback使用setDiffNewData避免setList
-                        binding.homeRecycler.minimumHeight = getRootViewHeight()//占满一屏
-                        stubTotalView.visibility = View.GONE
-                        adapter.setEmptyView(R.layout.layout_empty)
-                    } else {
-                        stubTotalView.visibility = View.VISIBLE
-                        adapter.setDiffNewData(it.nodeList)
-                    }
-                    //adapter.loadMoreModule.loadMoreEnd()//单月不分页，直接显示没有跟多
-                    hideRefreshing(binding.refreshLayout)
-                }
-                is BillListUiState.Summary -> {
-                    totalIncomeExpense(it.income)
-                }
-                is BillListUiState.Error -> {
-                    ToastUtils.showLong(it.t.message)
-                }
-            }
-        }
+
     }
     override fun onResume() {
         super.onResume()

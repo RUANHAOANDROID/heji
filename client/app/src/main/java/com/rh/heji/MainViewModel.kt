@@ -2,15 +2,13 @@ package com.rh.heji
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.rh.heji.App
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.data.repository.CategoryRepository
-import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.YearMonth
-import com.rh.heji.utlis.launchIO
 import java.util.*
 
 /**
@@ -18,7 +16,7 @@ import java.util.*
  * @author: 锅得铁
  * # APP运行时 UI常量共享存储
  */
-class MainViewModel : BaseViewModel() {
+class MainViewModel : ViewModel() {
     var billRepository = BillRepository()
     var categoryRepository = CategoryRepository()
 

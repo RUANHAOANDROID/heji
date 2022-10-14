@@ -88,17 +88,13 @@ class CreateBillFragment : BaseFragment() {
 
     override fun layout() = binding.root
 
-    fun setIndex(index: Int = 0) {
-        binding.tab.getTabAt(0)!!.select()
-    }
-
     /**
      * 修改时预先选中类别
      *
      * @param category
      * @param type
      */
-    fun setSelectCategory(category: String, type: Int) {
+    private fun setSelectCategory(category: String, type: Int) {
         //内容页绘制完成后选中类别
         binding.vpContent.post {
             if (type == BillType.EXPENDITURE.type()) {
@@ -209,8 +205,9 @@ class CreateBillFragment : BaseFragment() {
                     LogUtils.d("onTabReselected", tab.position)
                 }
             })
+            getTabAt(0)!!.select()
         }
-        binding.tab.getTabAt(0)!!.select()
+
     }
 
     override fun initView(rootView: View) {

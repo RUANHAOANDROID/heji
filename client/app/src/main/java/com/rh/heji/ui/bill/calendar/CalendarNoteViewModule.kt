@@ -1,6 +1,7 @@
 package com.rh.heji.ui.bill.calendar
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
@@ -9,13 +10,12 @@ import com.rh.heji.*
 import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.App
 import com.rh.heji.data.db.BillDao
-import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.launchIO
 
-class CalendarNoteViewModule : BaseViewModel() {
+class CalendarNoteViewModule : ViewModel() {
     val billDao: BillDao = App.dataBase.billDao()
     val calendarLiveData = MutableLiveData<Map<String, Calendar>>()
     val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>()

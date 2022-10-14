@@ -3,6 +3,7 @@ package com.rh.heji.ui.book
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
 import com.rh.heji.data.Result
@@ -13,7 +14,6 @@ import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BookRepository
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.service.sync.IBookSync
-import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launch
 import com.rh.heji.utlis.launchIO
 import com.rh.heji.utlis.runMainThread
@@ -21,7 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
-class BookViewModel(private val mBookSync: IBookSync) : BaseViewModel() {
+class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
     private val _bookLiveData = MediatorLiveData<Book>()
     private val _bookListLiveData = MediatorLiveData<MutableList<Book>>()
     private val bookDao = App.dataBase.bookDao()

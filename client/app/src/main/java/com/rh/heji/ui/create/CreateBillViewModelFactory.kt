@@ -9,7 +9,7 @@ import com.rh.heji.service.sync.IBillSync
  *Author: 锅得铁
  *#
  */
-class CreateBillViewModelFactory(private val mBillSync: IBillSync) : ViewModelProvider.Factory {
+internal class CreateBillViewModelFactory(private val mBillSync: IBillSync) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass === CreateBillViewModel::class.java) {
             return CreateBillViewModel(mBillSync = mBillSync) as T

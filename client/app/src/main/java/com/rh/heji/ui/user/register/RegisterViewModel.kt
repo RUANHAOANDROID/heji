@@ -6,7 +6,7 @@ import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launch
 
-class RegisterViewModel : BaseViewModel<RegisterAction, RegisterUiState>() {
+internal class RegisterViewModel : BaseViewModel<RegisterAction, RegisterUiState>() {
 
     override fun doAction(action: RegisterAction) {
         super.doAction(action)

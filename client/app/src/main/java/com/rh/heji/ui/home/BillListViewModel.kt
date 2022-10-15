@@ -16,7 +16,7 @@ import com.rh.heji.utlis.launchIO
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
+internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
 
     private var selectYearMonth = currentYearMonth
 

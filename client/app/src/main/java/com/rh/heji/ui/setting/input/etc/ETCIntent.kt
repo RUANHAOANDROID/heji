@@ -10,11 +10,11 @@ import com.rh.heji.ui.base.IUiState
  * @since v1.0
  */
 
-sealed class ETCUiState : IUiState {
-    class InputSuccess() : ETCUiState()
-    class InputError(val t: Throwable) : ETCUiState()
+internal sealed interface ETCUiState : IUiState {
+    object InputSuccess : ETCUiState
+    class InputError(val t: Throwable) : ETCUiState
 }
 
-sealed class ETCAction : IAction {
-    class RequestETCBill(val etcID: String, var month: String, val carID: String) : ETCAction()
+internal sealed interface ETCAction : IAction {
+    class RequestETCBill(val etcID: String, var month: String, val carID: String) : ETCAction
 }

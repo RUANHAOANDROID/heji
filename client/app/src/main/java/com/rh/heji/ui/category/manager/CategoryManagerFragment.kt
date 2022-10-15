@@ -1,19 +1,17 @@
 package com.rh.heji.ui.category.manager
 
+import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.KeyboardUtils
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
-import com.rh.heji.R
-import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryManagerBinding
+import com.rh.heji.doAction
+import com.rh.heji.render
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.category.manager.CategoryManagerFragmentArgs
-import com.rh.heji.ui.category.CategoryViewModel
 import com.rh.heji.ui.category.adapter.CategoryManagerAdapter
 
 /**
@@ -27,12 +25,12 @@ class CategoryManagerFragment : BaseFragment() {
         FragmentCategoryManagerBinding.inflate(layoutInflater)
     }
     private lateinit var adapter: CategoryManagerAdapter
-    private val categoryViewModule: CategoryViewModel by lazy {
+    private val viewModel: CategoryViewModel by lazy {
         ViewModelProvider(this).get(
             CategoryViewModel::class.java
         )
     }
-    private var args: CategoryManagerFragmentArgs? = null
+    lateinit var args: CategoryManagerFragmentArgs
 
     override fun onDetach() {
         super.onDetach()
@@ -41,10 +39,10 @@ class CategoryManagerFragment : BaseFragment() {
 
     override fun initView(view: View) {
         args = CategoryManagerFragmentArgs.fromBundle(requireArguments())
-
+        viewModel.doAction(CategoryManagerAction.GetCategories(args.ieType))
         binding.btnAdd.setOnClickListener { v: View ->
             val name = binding.editCategoryValue.text.toString().trim { it <= ' ' }
-            categoryViewModule.saveCategory(name, args!!.ieType)
+            viewModel.doAction(CategoryManagerAction.SaveCategory(name, args.ieType))
             KeyboardUtils.hideSoftInput(v) //隐藏键盘
             binding.editCategoryValue.setText("")
             binding.editCategoryValue.clearFocus() //清除聚焦
@@ -54,23 +52,22 @@ class CategoryManagerFragment : BaseFragment() {
             override fun convert(holder: BaseViewHolder, category: Category) {
                 super.convert(holder, category)
                 itemBinding.btnDelete.setOnClickListener {
-                    categoryViewModule.deleteCategory(category)
+                    viewModel.doAction(CategoryManagerAction.DeleteCategory(category))
                 }
             }
         }
-        val isIncomeType = args!!.ieType == BillType.INCOME.type()
-        if (isIncomeType)
-            categoryViewModule.getIncomeCategory()
-        else
-            categoryViewModule.getExpenditureCategory()
-                .observe(viewLifecycleOwner, categoryObserver)
-
         binding.categoryRecycler.adapter = adapter
     }
 
-    private val categoryObserver: (t: MutableList<Category>) -> Unit = {
-        adapter.setNewInstance(it)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        render(viewModel) {
+            when (it) {
+                is CategoryManagerUiState.Categories -> adapter.setNewInstance(it.data)
+            }
+        }
     }
+
 
     override fun setUpToolBar() {
         super.setUpToolBar()
@@ -84,9 +81,8 @@ class CategoryManagerFragment : BaseFragment() {
 
     }
 
-    override fun layout(): View {
-        return binding.root
-    }
+    override fun layout() = binding.root
+
 
     private fun alertDeleteTip(label: Category) {}
 

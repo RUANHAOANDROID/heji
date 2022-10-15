@@ -63,7 +63,6 @@ class CreateBillFragment : BaseFragment() {
         BillType.EXPENDITURE.text(), BillType.INCOME.text()
     )
 
-    lateinit var type: BillType
     lateinit var selectedCategoryFragment: SelectCategoryFragment
     private val fragments = listOf(
         SelectCategoryFragment.newInstance(BillType.EXPENDITURE),
@@ -82,7 +81,6 @@ class CreateBillFragment : BaseFragment() {
      * 默认新增
      */
     private var isModify = false
-
 
     private lateinit var mBill: Bill
 
@@ -214,7 +212,7 @@ class CreateBillFragment : BaseFragment() {
         binding.imgAddCategory.setOnClickListener {
             findNavController().navigate(
                 R.id.nav_category_manager,
-                CategoryManagerFragmentArgs.Builder().setIeType(type.type()).build().toBundle()
+                CategoryManagerFragmentArgs.Builder().setIeType(mBill.type).build().toBundle()
             )
         }
 
@@ -256,7 +254,7 @@ class CreateBillFragment : BaseFragment() {
         with(mBill) {
             setTime(billTime)
             setDealer(dealer)
-            setCategory(category)
+            category?.let { setSelectCategory(it, type) }
             setMoney(money)
             if (images.isNotEmpty()) {
                 viewModel.doAction(CreateBillAction.GetImages(images))
@@ -391,14 +389,6 @@ class CreateBillFragment : BaseFragment() {
         val color = if (billType == BillType.EXPENDITURE) R.color.expenditure else R.color.income
         binding.tvMoney.setTextColor(resources.getColor(color, null))
     }
-
-    fun setCategory(category: String?) {
-        //设置类别
-        mBill.category?.let {
-            setSelectCategory(it, mBill.type)
-        }
-    }
-
 
     private fun setMoney(money: BigDecimal) {
         //填充money到键盘，抹0再输入到键盘

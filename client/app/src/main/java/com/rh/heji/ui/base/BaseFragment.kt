@@ -10,9 +10,7 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.LogUtils
@@ -23,7 +21,7 @@ import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
 import com.rh.heji.MainActivity
 import com.rh.heji.R
-import com.rh.heji.ui.bill.PopYearSelect
+import com.rh.heji.ui.popup.YearSelectPopup
 import java.util.*
 
 /**
@@ -150,7 +148,7 @@ abstract class BaseFragment : Fragment() {
         year: Int = Calendar.getInstance().get(Calendar.YEAR),
         month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1,
         showAllYear: Boolean = false,
-        onTabSelected: PopYearSelect.OnTabSelected
+        onTabSelected: YearSelectPopup.OnTabSelected
     ) {
         rootView.post {
             with(centerTitle) {
@@ -164,7 +162,7 @@ abstract class BaseFragment : Fragment() {
                     null
                 )
                 setOnClickListener {
-                    val yearSelectPop = PopYearSelect(
+                    val yearSelectPop = YearSelectPopup(
                         requireContext(),
                         { selectYear, selectMonth ->
                             text = "$selectYear.$selectMonth"

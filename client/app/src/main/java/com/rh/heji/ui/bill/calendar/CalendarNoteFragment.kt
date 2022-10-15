@@ -18,7 +18,7 @@ import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.create.ArgAddBill
 import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
-import com.rh.heji.ui.bill.popup.PopupBillInfo
+import com.rh.heji.ui.popup.PopupBillInfo
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
 

@@ -1,18 +1,21 @@
-package com.rh.heji.ui.report.pop
+package com.rh.heji.ui.popup
 
+import android.text.TextUtils
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.LogUtils
-import com.lxj.xpopup.XPopup
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.lxj.xpopup.widget.VerticalRecyclerView
 import com.rh.heji.MainActivity
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
-import com.rh.heji.ui.bill.popup.PopupBillInfo
+import com.rh.heji.widget.CircleView
 
 /**
+ * 统计底部
  *@date: 2021/6/16
  *@author: 锅得铁
  *#
@@ -61,6 +64,35 @@ class BottomListPop(
             billInfoPop.show(bill = item)
         }
         recyclerView.adapter = adapter
+    }
+
+}
+
+internal class ReportBillsAdapter(layoutResId: Int, data: MutableList<Bill>) :
+    BaseQuickAdapter<Bill, BaseViewHolder>(layoutResId, data) {
+    override fun convert(holder: BaseViewHolder, item: Bill) {
+        var bill = item
+        var incomeColor =
+            if (bill.type == -1) context.getColor(R.color.expenditure) else context.getColor(R.color.income)
+
+        holder.getView<CircleView>(R.id.circleView).setColor(incomeColor)
+        holder.setText(R.id.tvCategory, bill.category)
+        holder.setText(R.id.tvMoney, "${if (bill.type == -1) "- " else "+ "}${bill.money}")
+        holder.setTextColor(R.id.tvMoney, incomeColor)
+        holder.setText(R.id.tvInfo, bill.remark)
+        if (bill.images.isNotEmpty()) {
+            holder.getView<TextView>(R.id.tvInfo).setCompoundDrawablesWithIntrinsicBounds(
+                context.getDrawable(R.drawable.ic_baseline_image_18),
+                null,
+                null,
+                null
+            )
+        } else {
+            holder.getView<TextView>(R.id.tvInfo)
+                .setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+        }
+        holder.setGone(R.id.tvInfo, TextUtils.isEmpty(bill.remark) && bill.images.isEmpty())
+
     }
 
 }

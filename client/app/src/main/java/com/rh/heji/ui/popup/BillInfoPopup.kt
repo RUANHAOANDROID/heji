@@ -1,25 +1,31 @@
-package com.rh.heji.ui.bill.popup
+package com.rh.heji.ui.popup
 
+import android.graphics.Color
+import android.view.View
+import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.core.BottomPopupView
+import com.lxj.xpopup.core.ImageViewerPopupView
+import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener
+import com.lxj.xpopup.util.SmartGlideImageLoader
 import com.lxj.xpopup.util.XPopupUtils
-import com.rh.heji.App
-import com.rh.heji.BuildConfig
-import com.rh.heji.MainActivity
-import com.rh.heji.R
+import com.rh.heji.*
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
+import com.rh.heji.databinding.ItemImgBinding
 import com.rh.heji.databinding.PopLayoutBilliInfoBinding
 import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.create.ArgAddBill
+import com.rh.heji.utlis.ImageUtils
 
 /**
  * @date: 2020/9/20
@@ -144,5 +150,52 @@ class PopupBillInfo(
         if (mBill.images.isNotEmpty()) {
             imageObservable.removeObserver(this)
         }
+    }
+}
+
+/**
+ * 票据图片Adapter
+ */
+internal class ImageAdapter : BaseQuickAdapter<Image, BaseViewHolder>(R.layout.item_img) {
+    lateinit var binding: ItemImgBinding
+    override fun convert(holder: BaseViewHolder, image: Image) {
+        binding = ItemImgBinding.bind(holder.itemView)
+        val path = ImageUtils.getImagePath(image)
+        GlideApp.with(binding!!.itemImage)
+            .asBitmap()
+            .load(path)
+            .error(R.drawable.ic_baseline_image_load_error_24)
+            .placeholder(R.drawable.ic_baseline_image_24)
+            .into(binding.itemImage)
+        binding.itemImage.setOnClickListener { v: View? -> showGallery(holder.layoutPosition) }
+        LogUtils.d(
+            "local path:${image.localPath}",
+            "online path:${image.onlinePath}",
+            "use path:${path}"
+        )
+    }
+
+    private fun showGallery(startPosition: Int) {
+        val srcViewUpdateListener =
+            OnSrcViewUpdateListener { popupView: ImageViewerPopupView, position: Int ->
+                popupView.updateSrcView(recyclerView.getChildAt(position) as ImageView)
+            }
+        XPopup.Builder(context)
+            .asImageViewer(
+                recyclerView.getChildAt(startPosition) as ImageView,
+                startPosition,
+                ImageUtils.getPaths(data),
+                false,
+                false,
+                -1,
+                -1,
+                -1,
+                false,
+                Color.rgb(32, 36, 46),
+                srcViewUpdateListener,
+                SmartGlideImageLoader(R.mipmap.ic_launcher),
+                null
+            )
+            .show()
     }
 }

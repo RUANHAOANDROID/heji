@@ -7,6 +7,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.App
@@ -27,12 +28,29 @@ import com.rh.heji.ui.bill.create.ArgAddBill
  */
 class PopupBillInfo(
     val activity: MainActivity,
-    val bill: Bill,
     val delete: (Bill) -> Unit, val update: (Bill) -> Unit
 ) : BottomPopupView(activity), Observer<List<Image>> {
+    private lateinit var mBill: Bill
+
+    companion object {
+        fun create(
+            activity: MainActivity,
+            delete: (Bill) -> Unit,
+            update: (Bill) -> Unit,
+        ): PopupBillInfo {
+            return XPopup.Builder(activity).hasNavigationBar(false)
+                .asCustom(PopupBillInfo(activity, delete, update)) as PopupBillInfo
+        }
+    }
+
+    fun show(bill: Bill) {
+        mBill = bill
+        show()
+    }
+
     //观察 当前账单下图片
     private val imageObservable by lazy {
-        App.dataBase.imageDao().findByBillId(billId = bill.id).asLiveData()
+        App.dataBase.imageDao().findByBillId(billId = mBill.id).asLiveData()
     }
 
     lateinit var binding: PopLayoutBilliInfoBinding
@@ -49,9 +67,10 @@ class PopupBillInfo(
             deleteTip()
         }
         binding.tvUpdate.setOnClickListener {
-            update(bill)
+            update(mBill)
             val bundle =
-                CreateBillFragmentArgs.Builder(ArgAddBill(isModify = true, bill)).build().toBundle()
+                CreateBillFragmentArgs.Builder(ArgAddBill(isModify = true, mBill)).build()
+                    .toBundle()
             activity.navController.navigate(R.id.nav_bill_add, bundle)
             dismiss()
         }
@@ -61,14 +80,14 @@ class PopupBillInfo(
             popupInfo.borderRadius, popupInfo.borderRadius, 0f, 0f
         )
         binding.apply {
-            tvMonney.text = bill.money.toString()
-            tvType.text = bill.category
-            tvRecordTime.text = bill.createTime?.let { TimeUtils.millis2String(it) }
-            tvTicketTime.text = DateConverters.date2Str(bill.billTime)
-            rePeople.text = bill.dealer
+            tvMonney.text = mBill.money.toString()
+            tvType.text = mBill.category
+            tvRecordTime.text = mBill.createTime?.let { TimeUtils.millis2String(it) }
+            tvTicketTime.text = DateConverters.date2Str(mBill.billTime)
+            rePeople.text = mBill.dealer
         }
         initBillImageList()//初始化列表和适配器
-        if (bill.images.isNotEmpty()) {
+        if (mBill.images.isNotEmpty()) {
             imageObservable.observeForever(this)
         }
     }
@@ -89,8 +108,8 @@ class PopupBillInfo(
         XPopup.Builder(context).asConfirm(
             "删除提示", "确认删除该条账单吗？"
         ) {
-            val mainActivity = context as MainActivity
-            bill.also {
+            context as MainActivity
+            mBill.also {
                 if (it.createUser == App.user.name) {
                     //状态删除
                     App.dataBase.billDao().preDelete(it.id)
@@ -122,7 +141,7 @@ class PopupBillInfo(
 
     override fun onDismiss() {
         super.onDismiss()
-        if (bill.images.isNotEmpty()) {
+        if (mBill.images.isNotEmpty()) {
             imageObservable.removeObserver(this)
         }
     }

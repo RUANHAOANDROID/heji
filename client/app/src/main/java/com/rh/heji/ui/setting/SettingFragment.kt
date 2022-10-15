@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentSettingBinding
 import com.rh.heji.ui.base.BaseFragment
@@ -18,8 +19,8 @@ class SettingFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding.inputETC.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_input_etc) }
-        binding.exportQianJi.setOnClickListener { Navigation.findNavController(rootView).navigate(R.id.nav_export) }
+        binding.inputETC.setOnClickListener { findNavController().navigate(R.id.nav_input_etc) }
+        binding.exportQianJi.setOnClickListener { findNavController().navigate(R.id.nav_export) }
     }
 
     override fun layout()=binding.root
@@ -29,7 +30,7 @@ class SettingFragment : BaseFragment() {
         toolBar.title = "设置"
         toolBar.navigationIcon = blackDrawable()
         toolBar.setNavigationOnClickListener {
-            Navigation.findNavController(rootView).navigateUp()
+            findNavController().navigateUp()
         }
     }
 

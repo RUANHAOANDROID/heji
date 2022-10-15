@@ -19,7 +19,7 @@ sealed class BillListUiState : IUiState {
 }
 
 sealed class BillListAction : IAction {
-    class Refresh() : BillListAction()
+    object Refresh : BillListAction()
     class Summary(val yearMonth: YearMonth) : BillListAction()
     class MonthBill(val yearMonth: YearMonth) : BillListAction()
 //    class YearBill(val year: String) : BillListAction()

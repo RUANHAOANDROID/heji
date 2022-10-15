@@ -10,15 +10,14 @@ import com.blankj.utilcode.util.LogUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
-import com.lxj.xpopup.XPopup
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
-import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.create.ArgAddBill
+import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.popup.PopupBillInfo
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
@@ -26,6 +25,12 @@ import com.rh.heji.widget.CardDecoration
 class CalendarNoteFragment : BaseFragment() {
     val binding: FragmentCalendarNoteBinding by lazy {
         FragmentCalendarNoteBinding.inflate(layoutInflater)
+    }
+    private val popupView by lazy {
+        PopupBillInfo.create(
+            activity = mainActivity,
+            delete = { notifyCalendar() },
+            update = {})
     }
     private val viewModel by lazy { ViewModelProvider(this).get(CalendarNoteViewModule::class.java) }
     var adapter: NodeBillsAdapter? = null
@@ -102,7 +107,7 @@ class CalendarNoteFragment : BaseFragment() {
         adapter?.setOnItemClickListener { adapter, _, position ->
             if (adapter.getItem(position) is DayBillsNode) {
                 var billNode = adapter.getItem(position) as DayBillsNode
-                showBillItemPop(billNode.bill)
+                popupView.show(billNode.bill)
             }
         }
     }
@@ -150,28 +155,6 @@ class CalendarNoteFragment : BaseFragment() {
             binding.todayFab.show()
 
     }
-
-    /**
-     * 显示单条账单
-     *
-     * @param billTab
-     */
-    private fun showBillItemPop(bill: Bill) {
-        val popupView =
-            PopupBillInfo(
-                bill = bill,
-                activity = mainActivity,
-                delete = { notifyCalendar() },
-                update = {})
-        XPopup.Builder(requireContext()) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
-            //.isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
-            //.hasBlurBg(true)//模糊默认false
-            //.hasShadowBg(true)//默认true
-            .asCustom(popupView) /*.enableDrag(false)*/
-            .show()
-        popupView.show()
-    }
-
 
     private fun notifyBillsList() {
         binding.calendarView.post {

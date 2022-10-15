@@ -3,6 +3,7 @@ package com.rh.heji.ui.bill.category.manager
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.KeyboardUtils
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -40,10 +41,10 @@ class CategoryManagerFragment : BaseFragment() {
     override fun initView(view: View) {
         args = CategoryManagerFragmentArgs.fromBundle(requireArguments())
 
-        binding.btnAdd.setOnClickListener { v: View? ->
+        binding.btnAdd.setOnClickListener { v: View ->
             val name = binding.editCategoryValue.text.toString().trim { it <= ' ' }
             categoryViewModule.saveCategory(name, args!!.ieType)
-            KeyboardUtils.hideSoftInput(view) //隐藏键盘
+            KeyboardUtils.hideSoftInput(v) //隐藏键盘
             binding.editCategoryValue.setText("")
             binding.editCategoryValue.clearFocus() //清除聚焦
         }
@@ -51,7 +52,7 @@ class CategoryManagerFragment : BaseFragment() {
         adapter = object : CategoryManagerAdapter() {
             override fun convert(holder: BaseViewHolder, category: Category) {
                 super.convert(holder, category)
-                itemBinding.btnDelete.setOnClickListener { v: View? ->
+                itemBinding.btnDelete.setOnClickListener {
                     categoryViewModule.deleteCategory(category)
                 }
             }
@@ -76,7 +77,7 @@ class CategoryManagerFragment : BaseFragment() {
             it.title = "分类管理"
             it.navigationIcon = blackDrawable()
             it.setNavigationOnClickListener { v: View? ->
-                Navigation.findNavController(rootView).navigateUp()
+                findNavController().navigateUp()
             }
         }
 

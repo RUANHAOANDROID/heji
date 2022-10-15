@@ -12,7 +12,7 @@ import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.utlis.launchIO
 
-class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
+internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
 
 
     override fun doAction(action: LoginAction) {

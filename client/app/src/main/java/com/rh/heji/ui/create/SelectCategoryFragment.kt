@@ -1,4 +1,4 @@
-package com.rh.heji.ui.create.type
+package com.rh.heji.ui.create
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,20 +12,18 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryContentBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.category.adapter.CategoryAdapter
-import com.rh.heji.ui.create.CreateBillAction
-import com.rh.heji.ui.create.CreateBillFragment
+import com.rh.heji.ui.create.adapter.SelectCategoryAdapter
 
 /**
  * @date: 2020/10/11
  * @author: 锅得铁
  * # 收入/支出标签 复用该Fragment
  */
-class SelectCategoryFragment : BaseFragment() {
+internal class SelectCategoryFragment : BaseFragment() {
     val binding: FragmentCategoryContentBinding by lazy {
         FragmentCategoryContentBinding.inflate(layoutInflater)
     }
-    private lateinit var labelAdapter: CategoryAdapter
+    private lateinit var labelAdapter: SelectCategoryAdapter
 
     private val createBillFragment by lazy {
         (parentFragment) as CreateBillFragment
@@ -64,7 +62,7 @@ class SelectCategoryFragment : BaseFragment() {
     }
 
     override fun initView(view: View) {
-        labelAdapter = CategoryAdapter(ArrayList()).apply {
+        labelAdapter = SelectCategoryAdapter(ArrayList()).apply {
             setDiffCallback(object : DiffUtil.ItemCallback<Category>() {
                 override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
                     return oldItem.id == newItem.id

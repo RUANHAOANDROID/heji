@@ -33,7 +33,7 @@ import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.FragmentViewPagerAdapter
 import com.rh.heji.ui.category.manager.CategoryManagerFragmentArgs
 import com.rh.heji.ui.create.*
-import com.rh.heji.ui.create.type.SelectCategoryFragment
+import com.rh.heji.ui.popup.SelectImagePopup
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.matisse.MatisseUtils
 import com.rh.heji.widget.KeyBoardView.OnKeyboardListener
@@ -52,18 +52,18 @@ import java.util.function.Consumer
  */
 class CreateBillFragment : BaseFragment() {
 
-    val viewModel by lazy {
+    internal val viewModel by lazy {
         ViewModelProvider(
             this,
             CreateBillViewModelFactory(mainActivity.mService.getBillSyncManager())
         )[CreateBillViewModel::class.java]
     }
-    lateinit var pagerAdapter: FragmentViewPagerAdapter
+    private lateinit var pagerAdapter: FragmentViewPagerAdapter
     private val tabTitles = listOf(
         BillType.EXPENDITURE.text(), BillType.INCOME.text()
     )
 
-    lateinit var selectedCategoryFragment: SelectCategoryFragment
+    internal lateinit var selectedCategoryFragment: SelectCategoryFragment
     private val fragments = listOf(
         SelectCategoryFragment.newInstance(BillType.EXPENDITURE),
         SelectCategoryFragment.newInstance(BillType.INCOME)
@@ -72,7 +72,7 @@ class CreateBillFragment : BaseFragment() {
     val binding: FragmentCreatebillBinding by lazy {
         FragmentCreatebillBinding.inflate(layoutInflater)
     }
-    lateinit var popupSelectImage: PopSelectImage//图片弹窗
+    lateinit var popupSelectImage: SelectImagePopup//图片弹窗
     lateinit var imageSelectLauncher: ActivityResultLauncher<Intent>
 
     /**
@@ -217,7 +217,7 @@ class CreateBillFragment : BaseFragment() {
         }
 
         showPager()
-        popupSelectImage = PopSelectImage(requireActivity()).apply {
+        popupSelectImage = SelectImagePopup(requireActivity()).apply {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
                 viewModel.doAction(CreateBillAction.DeleteImage(it))

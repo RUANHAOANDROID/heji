@@ -10,16 +10,16 @@ import com.rh.heji.ui.user.JWTParse
  * @author 锅得铁
  * @since v1.0
  */
-sealed class RegisterUiState : IUiState {
-    class Success(val user: RegisterUser) : RegisterUiState()
-    class Error(val throwable: Throwable) : RegisterUiState()
+internal sealed interface RegisterUiState : IUiState {
+    class Success(val user: RegisterUser) : RegisterUiState
+    class Error(val throwable: Throwable) : RegisterUiState
 }
 
-sealed class RegisterAction : IAction {
+internal sealed interface RegisterAction : IAction {
     class Register(
         val username: String,
         val tel: String,
         val code: String,
         var password: String
-    ) : RegisterAction()
+    ) : RegisterAction
 }

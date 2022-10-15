@@ -15,7 +15,8 @@ import java.util.*
 /**
  * 账单添加页ViewModel 不要在其他页面应用该ViewModel
  */
-class CreateBillViewModel(private val mBillSync: IBillSync) :
+@PublishedApi
+internal class CreateBillViewModel(private val mBillSync: IBillSync) :
     BaseViewModel<CreateBillAction, CreateBillUIState>() {
 
     var keyBoardStack: Stack<String>? = null//用于保存栈

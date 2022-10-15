@@ -1,4 +1,4 @@
-package com.rh.heji.ui.create
+package com.rh.heji.ui.popup
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -20,7 +20,7 @@ import com.rh.heji.ui.create.adapter.BillPhotoAdapter
  * @author: 锅得铁
  * #
  */
-class PopSelectImage(context: Context) :
+class SelectImagePopup(context: Context) :
     BottomPopupView(context) {
     companion object {
         const val SELECT_MAX_COUNT = 3

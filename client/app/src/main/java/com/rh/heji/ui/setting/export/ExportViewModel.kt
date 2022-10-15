@@ -12,7 +12,7 @@ import okio.buffer
 import okio.sink
 import java.io.File
 
-class ExportViewModel : BaseViewModel<ExportAction, ExportUiState>() {
+internal class ExportViewModel : BaseViewModel<ExportAction, ExportUiState>() {
 
     override fun doAction(action: ExportAction) {
         super.doAction(action)

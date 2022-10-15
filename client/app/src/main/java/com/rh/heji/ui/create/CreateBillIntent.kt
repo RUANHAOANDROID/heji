@@ -12,7 +12,7 @@ import com.rh.heji.ui.base.IUiState
  * @author 锅得铁
  * @since v1.0
  */
-sealed class CreateBillUIState : IUiState {
+internal sealed class CreateBillUIState : IUiState {
 //    class Remark(remark: String?) : AddBillUIState()
 //    class Money(money: BigDecimal) : AddBillUIState()
 
@@ -27,7 +27,7 @@ sealed class CreateBillUIState : IUiState {
     class Categories(val type: Int, val categories: MutableList<Category>) : CreateBillUIState()
 }
 
-sealed class CreateBillAction : IAction {
+internal sealed class CreateBillAction : IAction {
 
     /**
      * 获取Bill

@@ -12,13 +12,13 @@ import com.rh.heji.utlis.YearMonth
  * @author 锅得铁
  * @since v1.0
  */
-sealed class BillListUiState : IUiState {
+internal sealed class BillListUiState : IUiState {
     class Bills(val nodeList: MutableList<BaseNode>) : BillListUiState()
     class Summary(val income: Income) : BillListUiState()
     class Error(val t: Throwable) : BillListUiState()
 }
 
-sealed class BillListAction : IAction {
+internal sealed class BillListAction : IAction {
     object Refresh : BillListAction()
     class Summary(val yearMonth: YearMonth) : BillListAction()
     class MonthBill(val yearMonth: YearMonth) : BillListAction()

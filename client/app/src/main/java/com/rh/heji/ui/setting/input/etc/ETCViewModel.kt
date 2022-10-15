@@ -40,7 +40,7 @@ import java.util.function.Consumer
  * @author: 锅得铁
  * #
  */
-class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ETCAction, ETCUiState>() {
+internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ETCAction, ETCUiState>() {
 
 
     var etcID = ETC.ID
@@ -118,7 +118,7 @@ class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ETCAction, 
                     LogUtils.d("ETC账单已存在", bills)
                 }
             })
-            send(ETCUiState.InputSuccess())
+            send(ETCUiState.InputSuccess)
 
         } else {
             send(ETCUiState.InputError(RuntimeException("input fail :null data ")))
@@ -166,7 +166,7 @@ class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ETCAction, 
                                 if (hbetcEntity?.data != null && hbetcEntity.data.orderArr.size > 0) {
                                     val data = hbetcEntity.data.orderArr
                                     data.forEach(Consumer { info: OrderArrBean -> saveToBillDB(info) })
-                                    send(ETCUiState.InputSuccess())
+                                    send(ETCUiState.InputSuccess)
                                 } else {
                                     ToastUtils.showShort("导入失败")
                                     send(ETCUiState.InputError(RuntimeException("导入失败")))

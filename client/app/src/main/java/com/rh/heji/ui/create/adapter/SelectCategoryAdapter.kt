@@ -1,4 +1,4 @@
-package com.rh.heji.ui.category.adapter
+package com.rh.heji.ui.create.adapter
 
 import android.text.TextUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -14,7 +14,7 @@ import com.rh.heji.utlis.textdraw.TextDrawable
  * @author: 锅得铁
  * #分类适配器
  */
-open class CategoryAdapter(data: MutableList<Category>) :
+internal class SelectCategoryAdapter(data: MutableList<Category>) :
     BaseQuickAdapter<Category, BaseViewHolder>(R.layout.item_category, data) {
     private lateinit var itemBinding: ItemCategoryBinding
     override fun convert(holder: BaseViewHolder, label: Category) {

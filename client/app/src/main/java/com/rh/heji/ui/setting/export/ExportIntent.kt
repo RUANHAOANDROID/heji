@@ -9,11 +9,11 @@ import com.rh.heji.ui.base.IUiState
  * @author 锅得铁
  * @since v1.0
  */
-sealed class ExportUiState : IUiState {
-    class Success(val path: String) : ExportUiState()
-    class Error(val t: Throwable) : ExportUiState()
+internal sealed interface ExportUiState : IUiState {
+    class Success(val path: String) : ExportUiState
+    class Error(val t: Throwable) : ExportUiState
 }
 
-sealed class ExportAction : IAction {
-    class ExportExcel(val fileName: String) : ExportAction()
+internal sealed interface ExportAction : IAction {
+    class ExportExcel(val fileName: String) : ExportAction
 }

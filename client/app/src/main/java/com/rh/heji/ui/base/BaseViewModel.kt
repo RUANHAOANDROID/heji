@@ -13,14 +13,18 @@ import com.blankj.utilcode.util.LogUtils
  * @param I input ui action
  * @param O output ui state
  */
-abstract class BaseViewModelMVI<I : IAction, O : IUiState> : ViewModel() {
+abstract class BaseViewModel<I : IAction, O : IUiState> : ViewModel() {
 
-    protected var uiState = MutableLiveData<O>()
+    private var _uiState = MutableLiveData<O>()
 
-    fun uiState(): LiveData<O> = uiState
+    val uiState: LiveData<O> = _uiState
 
     open fun doAction(action: I) {
         LogUtils.d(action.id())
+    }
+
+    fun send(o: O) {
+        _uiState.postValue(o)
     }
 
     override fun onCleared() {

@@ -14,7 +14,7 @@ import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.moshi
 import com.rh.heji.service.sync.IBillSync
-import com.rh.heji.ui.base.BaseViewModelMVI
+import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.setting.input.etc.dto.ETCListInfoEntity
 import com.rh.heji.ui.setting.input.etc.dto.HBETCEntity
 import com.rh.heji.ui.setting.input.etc.dto.HBETCEntity.DataBean.OrderArrBean
@@ -40,7 +40,7 @@ import java.util.function.Consumer
  * @author: 锅得铁
  * #
  */
-class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModelMVI<ETCAction, ETCUiState>() {
+class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ETCAction, ETCUiState>() {
 
 
     var etcID = ETC.ID
@@ -118,10 +118,10 @@ class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModelMVI<ETCActio
                     LogUtils.d("ETC账单已存在", bills)
                 }
             })
-            uiState.postValue(ETCUiState.InputSuccess())
+            send(ETCUiState.InputSuccess())
 
         } else {
-            uiState.postValue(ETCUiState.InputError(RuntimeException("input fail :null data ")))
+            send(ETCUiState.InputError(RuntimeException("input fail :null data ")))
         }
     }
 
@@ -166,16 +166,16 @@ class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModelMVI<ETCActio
                                 if (hbetcEntity?.data != null && hbetcEntity.data.orderArr.size > 0) {
                                     val data = hbetcEntity.data.orderArr
                                     data.forEach(Consumer { info: OrderArrBean -> saveToBillDB(info) })
-                                    uiState.postValue(ETCUiState.InputSuccess())
+                                    send(ETCUiState.InputSuccess())
                                 } else {
                                     ToastUtils.showShort("导入失败")
-                                    uiState.postValue(ETCUiState.InputError(RuntimeException("导入失败")))
+                                    send(ETCUiState.InputError(RuntimeException("导入失败")))
                                 }
                             }
                         } catch (e: JSONException) {
                             e.printStackTrace()
                             ToastUtils.showShort("解析失败")
-                            uiState.postValue(ETCUiState.InputError(RuntimeException("解析错误")))
+                            send(ETCUiState.InputError(RuntimeException("解析错误")))
                         }
                     }
                 } else if (response.code == 404) {
@@ -186,7 +186,7 @@ class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModelMVI<ETCActio
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 ToastUtils.showLong(e.message)
-                uiState.postValue(ETCUiState.InputError(RuntimeException("请求错误")))
+                send(ETCUiState.InputError(RuntimeException("请求错误")))
                 requestETCList2(etcID, month, carID)
             }
         })
@@ -236,7 +236,7 @@ class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModelMVI<ETCActio
                         } catch (e: JSONException) {
                             e.printStackTrace()
                             ToastUtils.showShort("解析失败")
-                            uiState.postValue(ETCUiState.InputError(RuntimeException("解析错误")))
+                            send(ETCUiState.InputError(RuntimeException("解析错误")))
                         }
                     }
                 }
@@ -245,7 +245,7 @@ class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModelMVI<ETCActio
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 ToastUtils.showLong(e.message)
-                uiState.postValue(ETCUiState.InputError(RuntimeException("请求错误")))
+                send(ETCUiState.InputError(RuntimeException("请求错误")))
             }
         })
     }

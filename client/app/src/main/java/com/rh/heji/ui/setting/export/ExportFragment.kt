@@ -16,7 +16,8 @@ import com.lxj.xpopup.interfaces.OnSelectListener
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentExportBinding
-import com.rh.heji.uiState
+import com.rh.heji.render
+
 
 class ExportFragment : BaseFragment() {
     private val binding: FragmentExportBinding by lazy {FragmentExportBinding.inflate(layoutInflater)  }
@@ -42,7 +43,7 @@ class ExportFragment : BaseFragment() {
                 .asBottomList("选择导出格式", list.toTypedArray(), onSelectListener)
             bottomListPopup.show()
         }
-        uiState(viewModel) {
+        render(viewModel) {
             when (it) {
                 is ExportUiState.Success -> {
                     popup.setTitle(it.path)

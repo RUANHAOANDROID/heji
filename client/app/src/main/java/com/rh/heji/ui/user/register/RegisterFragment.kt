@@ -12,7 +12,8 @@ import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.LoginActivity
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentRegisterBinding
-import com.rh.heji.uiState
+import com.rh.heji.render
+
 
 class RegisterFragment : Fragment() {
 
@@ -39,7 +40,7 @@ class RegisterFragment : Fragment() {
             val username = binding.editUserName.text.toString()
             viewModel.doAction(RegisterAction.Register(username, tel, code, password1))
         }
-        uiState(viewModel) {
+        render(viewModel) {
             when (it) {
                 is RegisterUiState.Success -> {
                     gotoLogin(it.user)

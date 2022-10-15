@@ -266,7 +266,7 @@ class CreateBillFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        uiState(viewModel) { uiState ->
+        render(viewModel) { uiState ->
             when (uiState) {
                 is CreateBillUIState.BillChange -> {
                     val bill = uiState.bill

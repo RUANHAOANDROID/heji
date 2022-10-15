@@ -3,10 +3,10 @@ package com.rh.heji.ui.user.register
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.network.HejiNetwork
-import com.rh.heji.ui.base.BaseViewModelMVI
+import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launch
 
-class RegisterViewModel : BaseViewModelMVI<RegisterAction, RegisterUiState>() {
+class RegisterViewModel : BaseViewModel<RegisterAction, RegisterUiState>() {
 
     override fun doAction(action: RegisterAction) {
         super.doAction(action)
@@ -35,7 +35,7 @@ class RegisterViewModel : BaseViewModelMVI<RegisterAction, RegisterUiState>() {
             val body = response.data.apply {
                 this.password = password//本地输入的未加密的密码
             }
-            uiState.postValue(RegisterUiState.Success(body))
+            send(RegisterUiState.Success(body))
         }, {
             ToastUtils.showLong(it.message)
         })

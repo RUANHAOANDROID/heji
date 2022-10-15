@@ -6,16 +6,15 @@ import com.chad.library.adapter.base.entity.node.BaseNode
 import com.rh.heji.App
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.db.BillDao
-import com.rh.heji.ui.base.BaseViewModelMVI
+import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.bill.adapter.DayBillsNode
 import com.rh.heji.ui.bill.adapter.DayIncome
 import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
-import kotlinx.coroutines.flow.collect
 
-class BillListViewModel : BaseViewModelMVI<BillListAction, BillListUiState>() {
+class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
 
     private var selectYearMonth = currentYearMonth
 
@@ -76,9 +75,9 @@ class BillListViewModel : BaseViewModelMVI<BillListAction, BillListUiState>() {
                 listDayNodes.add(dayItemNode)
             }
             LogUtils.d("Select YearMonth:${yearMonth}${listDayNodes}")
-            uiState.postValue(BillListUiState.Bills(listDayNodes))
+            send(BillListUiState.Bills(listDayNodes))
         }, {
-            uiState.postValue(BillListUiState.Error(it))
+            send(BillListUiState.Error(it))
         })
     }
 
@@ -89,9 +88,9 @@ class BillListViewModel : BaseViewModelMVI<BillListAction, BillListUiState>() {
     private fun getSummary(yearMonth: String) {
         launchIO({
             LogUtils.d("Between by time:$yearMonth")
-            uiState.postValue(BillListUiState.Summary(billDao.sumIncome(yearMonth)))
+            send(BillListUiState.Summary(billDao.sumIncome(yearMonth)))
         }, {
-            uiState.postValue(BillListUiState.Error(it))
+            send(BillListUiState.Error(it))
         })
 
     }

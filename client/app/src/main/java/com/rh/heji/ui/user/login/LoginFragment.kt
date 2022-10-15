@@ -10,12 +10,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.AppViewModel
-import com.rh.heji.LoginActivity
-import com.rh.heji.R
+import com.rh.heji.*
 import com.rh.heji.databinding.FragmentLoginBinding
 import com.rh.heji.ui.user.register.RegisterUser
-import com.rh.heji.uiState
 
 class LoginFragment : Fragment() {
    private val binding: FragmentLoginBinding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
@@ -27,7 +24,7 @@ class LoginFragment : Fragment() {
     ): View {
         inflater.inflate(R.layout.fragment_login, container, false)
         initView(binding.root)
-        uiState(viewModel) {
+        render(viewModel) {
             when (it) {
                 is LoginUiState.Success -> {
                     findNavController().popBackStack()

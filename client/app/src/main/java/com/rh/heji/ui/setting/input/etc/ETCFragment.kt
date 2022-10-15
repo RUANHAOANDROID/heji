@@ -15,8 +15,9 @@ import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.ETC
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentEtcBinding
+import com.rh.heji.render
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.uiState
+
 import java.util.*
 
 /**
@@ -115,7 +116,7 @@ class ETCFragment : BaseFragment() {
         }
         binding.etcWeb.webViewClient = client
 
-        uiState(etcViewModel) {
+        render(etcViewModel) {
             when (it) {
                 is ETCUiState.InputSuccess -> {
                     inputLoading.setTitle("导入成功")

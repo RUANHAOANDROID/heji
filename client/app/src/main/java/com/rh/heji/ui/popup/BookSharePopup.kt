@@ -1,10 +1,7 @@
-package com.rh.heji.ui.book.pop
+package com.rh.heji.ui.popup
 
-import android.content.ClipData
 import android.content.Context
-import android.text.Layout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.ClipboardUtils
 import com.blankj.utilcode.util.ToastUtils
@@ -15,7 +12,7 @@ import com.rh.heji.R
 /**
  * 邀请码POP
  */
-class BottomSharePop(context: Context, val code: String) : BottomPopupView(context) {
+class BookSharePopup(context: Context, val code: String) : BottomPopupView(context) {
 
     init {
         addInnerContent()

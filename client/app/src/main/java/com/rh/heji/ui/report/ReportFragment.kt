@@ -9,7 +9,6 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.github.mikephil.charting.data.*
 import com.lxj.xpopup.XPopup
-import com.rh.heji.AppViewModel
 import com.rh.heji.R
 import com.rh.heji.App
 import com.rh.heji.data.BillType
@@ -21,7 +20,7 @@ import com.rh.heji.data.db.dto.IncomeTimeSurplus
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.databinding.LayoutEmptyBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.report.pop.BottomListPop
+import com.rh.heji.ui.popup.BottomListPop
 import com.rh.heji.utlis.ColorUtils
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth

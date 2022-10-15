@@ -18,10 +18,7 @@ import com.rh.heji.data.db.BookUser
 import com.rh.heji.databinding.FragmentBookSettingBinding
 import com.rh.heji.databinding.ItemBookUsersBinding
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.book.pop.BottomSharePop
-import com.rh.heji.utlis.runMainThread
-import kotlinx.coroutines.flow.collect
-import java.lang.Error
+import com.rh.heji.ui.popup.BookSharePopup
 
 class BookSettingFragment : BaseFragment() {
 
@@ -122,7 +119,7 @@ class BookSettingFragment : BaseFragment() {
                 viewModel.sharedBook(bookId = book.id) {
                     when (it) {
                         is Result.Success -> XPopup.Builder(requireContext())
-                            .asCustom(BottomSharePop(requireContext(), it.data))
+                            .asCustom(BookSharePopup(requireContext(), it.data))
                             .show()
                         is Result.Error -> ToastUtils.showLong(it.exception.message)
                         is Result.Loading -> null

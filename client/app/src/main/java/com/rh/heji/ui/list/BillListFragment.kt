@@ -6,7 +6,6 @@ import android.view.ViewStub
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
@@ -29,7 +28,7 @@ import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.create.ArgAddBill
 import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
-import com.rh.heji.ui.bill.popup.PopupBillInfo
+import com.rh.heji.ui.popup.PopupBillInfo
 import com.rh.heji.utlis.ClickUtils
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration

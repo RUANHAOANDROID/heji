@@ -23,8 +23,8 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.ItemImgBinding
 import com.rh.heji.databinding.PopLayoutBilliInfoBinding
-import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
-import com.rh.heji.ui.bill.create.ArgAddBill
+import com.rh.heji.ui.create.CreateBillFragmentArgs
+import com.rh.heji.ui.create.ArgAddBill
 import com.rh.heji.utlis.ImageUtils
 
 /**

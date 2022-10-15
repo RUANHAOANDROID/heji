@@ -39,31 +39,31 @@ class ReportFragment : BaseFragment() {
     private val categoryTotalAdapter: CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
     private val monthYearBillsAdapter: MonthYearBillAdapter = MonthYearBillAdapter(mutableListOf())
     private lateinit var emptyStubView: ViewStub
-    val binding: FragmentReportBinding by lazy { FragmentReportBinding.inflate(layoutInflater)  }
+    val binding: FragmentReportBinding by lazy { FragmentReportBinding.inflate(layoutInflater) }
 
     val colors = ColorUtils.groupColors()
     override fun onStart() {
         super.onStart()
-        reportViewModel.yearMonth = mainActivity.mainViewModel.globalYearMonth
+        reportViewModel.yearMonth = mainActivity.viewModel.globalYearMonth
     }
 
-    override fun layout()=binding.root
+    override fun layout() = binding.root
 
     override fun setUpToolBar() {
         super.setUpToolBar()
         showBlack()
         toolBar.title = "统计"
         showYearMonthTitle(
-            selected = { year, month ->
+            year = reportViewModel.yearMonth.year,
+            month = reportViewModel.yearMonth.month,
+            showAllYear = true,
+            onTabSelected = { year, month ->
                 if (month == 0) {//全年
                     reportViewModel.allYear = year
                 } else {//单月
                     reportViewModel.yearMonth = YearMonth(year, month)
                 }
-            },
-            year = reportViewModel.yearMonth.year,
-            month = reportViewModel.yearMonth.month,
-            showAllYear = true
+            }
         )
     }
 

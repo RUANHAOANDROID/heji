@@ -4,9 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
-import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.converters.DateConverters
-import com.rh.heji.ui.base.BaseViewModelMVI
+import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.base.IAction
 import com.rh.heji.ui.base.IUiState
 import kotlinx.coroutines.CoroutineScope
@@ -62,19 +61,16 @@ fun CoroutineScope.launchIO(
     }
 }
 
-/**
- * 在以下状态可观察
- *  Lifecycle.State.STARTED
- *  Lifecycle.State.RESUMED
- *  当Lifecycle.State.DESTROYED状态时移除
- * @param I
- * @param O
- * @param viewModel
- * @param function
- */
-fun <I : IAction, O : IUiState> Fragment.uiState(
-    viewModel: BaseViewModelMVI<I, O>,
+internal fun <I : IAction, O : IUiState> Fragment.render(
+    vm: BaseViewModel<I, O>,
     function: (o: O) -> Unit
 ) {
-    viewModel.uiState().observe(viewLifecycleOwner, function)
+    vm.uiState.observe(viewLifecycleOwner, function)
+}
+
+fun <I : IAction, O : IUiState> doAction(
+    vm: BaseViewModel<I, O>,
+    action: I
+) {
+    vm.doAction(action)
 }

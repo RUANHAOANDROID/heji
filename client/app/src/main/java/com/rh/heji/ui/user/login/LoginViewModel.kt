@@ -7,12 +7,12 @@ import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.HejiNetwork
-import com.rh.heji.ui.base.BaseViewModelMVI
+import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.utlis.launchIO
 
-class LoginViewModel : BaseViewModelMVI<LoginAction, LoginUiState>() {
+class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
 
 
     override fun doAction(action: LoginAction) {
@@ -36,9 +36,9 @@ class LoginViewModel : BaseViewModelMVI<LoginAction, LoginUiState>() {
             ToastUtils.showLong(requestBody.data)
             initDataBase(App.user)
             initBook(App.user)
-            uiState.postValue(LoginUiState.Success(token))
+            send(LoginUiState.Success(token))
         }, {
-            uiState.postValue(LoginUiState.Error(it))
+            send(LoginUiState.Error(it))
         })
 
     }

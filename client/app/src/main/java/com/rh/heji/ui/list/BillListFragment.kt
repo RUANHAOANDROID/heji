@@ -29,7 +29,7 @@ import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.create.ArgAddBill
 import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.popup.PopupBillInfo
-import com.rh.heji.uiState
+import com.rh.heji.render
 import com.rh.heji.utlis.ClickUtils
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
@@ -79,7 +79,7 @@ class BillListFragment : BaseFragment() {
         stubTotalView.setOnInflateListener { stub, inflated ->   //提前设置避免多次设置
             subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)
         }
-         uiState(homeViewModel) {
+         render(homeViewModel) {
              when (it) {
                  is BillListUiState.Bills -> {
                      if (it.nodeList.isNullOrEmpty() || it.nodeList.size <= 0) {

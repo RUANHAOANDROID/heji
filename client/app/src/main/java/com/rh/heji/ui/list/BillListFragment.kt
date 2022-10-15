@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewStub
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
@@ -20,6 +19,7 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.dto.Income
 import com.rh.heji.databinding.FragmentBillsHomeBinding
 import com.rh.heji.databinding.LayoutBillsTopBinding
+import com.rh.heji.render
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.hideRefreshing
 import com.rh.heji.ui.base.swipeRefreshLayout
@@ -29,7 +29,6 @@ import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
 import com.rh.heji.ui.bill.create.ArgAddBill
 import com.rh.heji.ui.bill.create.CreateBillFragmentArgs
 import com.rh.heji.ui.bill.popup.PopupBillInfo
-import com.rh.heji.render
 import com.rh.heji.utlis.ClickUtils
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
@@ -76,7 +75,7 @@ class BillListFragment : BaseFragment() {
                 })
             }
         }
-        stubTotalView.setOnInflateListener { stub, inflated ->   //提前设置避免多次设置
+        stubTotalView.setOnInflateListener { _, inflated ->   //提前设置避免多次设置
             subTotalLayoutBinding = LayoutBillsTopBinding.bind(inflated)
         }
          render(homeViewModel) {

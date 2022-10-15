@@ -34,7 +34,7 @@ import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.service.sync.SyncService
-import com.rh.heji.ui.list.DrawerListener
+import com.rh.heji.ui.home.DrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.utlis.permitDiskReads

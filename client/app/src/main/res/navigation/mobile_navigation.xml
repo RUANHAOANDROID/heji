@@ -22,12 +22,12 @@
     </fragment>
     <fragment
         android:id="@+id/nav_bill_add"
-        android:name="com.rh.heji.ui.bill.create.CreateBillFragment"
+        android:name="com.rh.heji.ui.create.CreateBillFragment"
         android:label="@string/income"
         tools:layout="@layout/fragment_createbill">
         <argument
             android:name="argAddBill"
-            app:argType="com.rh.heji.ui.bill.create.ArgAddBill" />
+            app:argType="com.rh.heji.ui.create.ArgAddBill" />
         <action
             android:id="@+id/action_nav_income_to_nav_category_tab"
             app:destination="@id/_category_tab" />
@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_category_manager"
-        android:name="com.rh.heji.ui.bill.category.manager.CategoryManagerFragment"
+        android:name="com.rh.heji.ui.category.manager.CategoryManagerFragment"
         android:label="@string/category_manager"
         tools:layout="@layout/fragment_category_manager">
         <argument
@@ -57,7 +57,7 @@
         tools:layout="@layout/fragment_export"></fragment>
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.rh.heji.ui.list.BillListFragment"
+        android:name="com.rh.heji.ui.home.BillListFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_bills_home">
         <action
@@ -84,7 +84,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_calendar_note"
-        android:name="com.rh.heji.ui.bill.calendar.CalendarNoteFragment"
+        android:name="com.rh.heji.ui.calendar.CalendarNoteFragment"
         android:label="日历记账"
         tools:layout="@layout/fragment_calendar_note">
         <action
@@ -104,7 +104,7 @@
 
     <fragment
         android:id="@+id/_category"
-        android:name="com.rh.heji.ui.bill.create.type.SelectCategoryFragment"
+        android:name="com.rh.heji.ui.create.type.SelectCategoryFragment"
         android:label="CategoryFragment"
         tools:layout="@layout/fragment_category_content">
         <argument
@@ -131,7 +131,7 @@
         tools:layout="@layout/fragment_banner" />
     <fragment
         android:id="@+id/_category_tab"
-        android:name="com.rh.heji.ui.bill.create.type.TypeTabFragment"
+        android:name="com.rh.heji.ui.create.type.TypeTabFragment"
         android:label="CategoryTabFragment"
         tools:layout="@layout/fragment_category_tab">
         <action

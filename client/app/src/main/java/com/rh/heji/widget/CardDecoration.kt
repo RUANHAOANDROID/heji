@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.chad.library.adapter.base.BaseNodeAdapter
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.R
-import com.rh.heji.ui.bill.adapter.NodeBillsAdapter
-import com.rh.heji.ui.bill.adapter.TYPE_TITLE
+import com.rh.heji.ui.adapter.NodeBillsAdapter
+import com.rh.heji.ui.adapter.TYPE_TITLE
 
 /**
  * 账单按日期ItemDecoration

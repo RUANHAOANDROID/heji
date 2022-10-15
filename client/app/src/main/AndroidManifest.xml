@@ -36,7 +36,8 @@
         <activity
             android:name=".StartupActivity"
             android:exported="true"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,7 +47,8 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/login"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
         <!--  功能页 -->
         <activity
             android:name=".MainActivity"
@@ -54,6 +56,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppStartup"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <service android:name=".service.sync.SyncService"></service>
         <provider

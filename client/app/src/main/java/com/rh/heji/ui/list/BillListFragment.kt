@@ -7,12 +7,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.entity.node.BaseNode
-import com.lxj.xpopup.XPopup
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.dto.Income
@@ -37,28 +38,35 @@ import java.util.*
 
 class BillListFragment : BaseFragment() {
 
-    private val binding: FragmentBillsHomeBinding by lazy {
-        FragmentBillsHomeBinding.inflate(layoutInflater).apply {
-            viewClick()
-        }
-    }
     private lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
     private lateinit var stubTotalView: ViewStub
 
     private val homeViewModel: BillListViewModel by lazy { ViewModelProvider(mainActivity)[BillListViewModel::class.java] }
     private lateinit var adapter: NodeBillsAdapter
+    private val binding: FragmentBillsHomeBinding by lazy {
+        FragmentBillsHomeBinding.inflate(layoutInflater).apply {
+            viewClick()
+        }
+    }
+
     private fun FragmentBillsHomeBinding.viewClick() {
         fab.setOnClickListener {
             val bill = Bill(billTime = Date())
             val bundle = CreateBillFragmentArgs.Builder(
                 ArgAddBill(false, bill)
             ).build().toBundle()
-            bundle.putBoolean("isModify", true)
-            Navigation.findNavController(rootView).navigate(
+            findNavController().navigate(
                 R.id.nav_bill_add, bundle
             )
         }
     }
+
+    private val popupView by lazy {
+        PopupBillInfo.create(activity = mainActivity, delete = {
+            ToastUtils.showLong("Delete OK")
+        }, update = {})
+    }
+
 
     override fun initView(rootView: View) {
         stubTotalView = rootView.findViewById(R.id.total)
@@ -120,10 +128,10 @@ class BillListFragment : BaseFragment() {
                 mainActivity.openDrawer()
             }
             binding.imgCalendar.setOnClickListener {
-                Navigation.findNavController(rootView).navigate(R.id.nav_calendar_note)
+                findNavController().navigate(R.id.nav_calendar_note)
             }
             binding.imgTotal.setOnClickListener {
-                Navigation.findNavController(rootView).navigate(R.id.nav_report)
+                findNavController().navigate(R.id.nav_report)
             }
             swipeRefreshLayout(binding.refreshLayout) {
                 notifyData()
@@ -207,12 +215,12 @@ class BillListFragment : BaseFragment() {
                             )
                         )
                             .build() //选择的日期
-                    Navigation.findNavController(rootView)
+                    findNavController()
                         .navigate(R.id.nav_bill_add, args.toBundle())
                 } else { //日详细列表ITEM
                     val dayBills = adapter.getItem(position) as DayBillsNode
                     val bill = dayBills.bill
-                    showBillItemPop(bill)
+                    popupView.show(bill)
                 }
 
             }
@@ -225,24 +233,6 @@ class BillListFragment : BaseFragment() {
             }
         }
 
-    }
-
-
-    /**
-     * 显示单条账单
-     *
-     * @param billTab
-     */
-    private fun showBillItemPop(billTab: Bill) {
-        val popupView = PopupBillInfo(bill = billTab, activity = mainActivity, delete = {
-            ToastUtils.showLong("Delete OK")
-        }, update = {})
-        XPopup.Builder(requireContext()) //.maxHeight(ViewGroup.LayoutParams.WRAP_CONTENT)//默认wrap更具实际布局
-             .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            //.hasBlurBg(true)//模糊默认false
-            //.hasShadowBg(true)//默认true
-            .asCustom(popupView) /*.enableDrag(false)*/
-            .show()
     }
 
     /**

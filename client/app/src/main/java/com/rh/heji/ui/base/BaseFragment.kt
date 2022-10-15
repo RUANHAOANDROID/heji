@@ -13,7 +13,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
@@ -49,6 +51,7 @@ abstract class BaseFragment : Fragment() {
             initView(layout())
             enableDrawer = true
             setHasOptionsMenu(true)
+            LogUtils.d("Fragment onCreateView : ${this.javaClass.name} ")
         }
         return rootView
     }
@@ -107,7 +110,7 @@ abstract class BaseFragment : Fragment() {
      */
     protected fun showBlack() {
         toolBar.navigationIcon = blackDrawable()
-        toolBar.setNavigationOnClickListener { Navigation.findNavController(rootView).navigateUp() }
+        toolBar.setNavigationOnClickListener { findNavController().navigateUp() }
         KeyboardUtils.hideSoftInput(toolBar)
     }
 
@@ -160,7 +163,7 @@ abstract class BaseFragment : Fragment() {
                     resources.getDrawable(R.drawable.ic_baseline_arrow_down_white_32, null),
                     null
                 )
-                setOnClickListener { v: View? ->
+                setOnClickListener {
                     val yearSelectPop = PopYearSelect(
                         requireContext(),
                         { selectYear, selectMonth ->

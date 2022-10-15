@@ -2,6 +2,7 @@ package com.rh.heji.ui.report.pop
 
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.blankj.utilcode.util.LogUtils
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.util.XPopupUtils
@@ -34,9 +35,10 @@ class BottomListPop(
         return R.layout.pop_layout_bills
     }
 
+    private lateinit var billInfoPop: PopupBillInfo
     override fun onCreate() {
         super.onCreate()
-
+        LogUtils.d("${this.javaClass.name} create")
         //设置圆角背景
         popupImplView.background = XPopupUtils.createDrawable(
             ContextCompat.getColor(context, R.color._xpopup_light_color),
@@ -44,7 +46,7 @@ class BottomListPop(
         )
         adapter.setOnItemClickListener { adapter, view, position ->
             val item = adapter.getItem(position) as Bill
-            val billInfoPop = PopupBillInfo(activity = activity, bill = item, delete = {
+            billInfoPop = PopupBillInfo.create(activity = activity, delete = {
 
                 adapter.removeAt(position)
                 if (adapter.data.size <= 0) {
@@ -56,8 +58,7 @@ class BottomListPop(
                 update = {
                     dismiss()
                 })
-            XPopup.Builder(context).asCustom(billInfoPop).show()
-
+            billInfoPop.show(bill = item)
         }
         recyclerView.adapter = adapter
     }

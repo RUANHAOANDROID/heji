@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.KeyboardUtils
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.lxj.xpopup.XPopup
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryManagerBinding
 import com.rh.heji.doAction
@@ -22,37 +23,36 @@ import com.rh.heji.ui.category.adapter.CategoryManagerAdapter
  */
 class CategoryManagerFragment : BaseFragment() {
     val binding: FragmentCategoryManagerBinding by lazy {
-        FragmentCategoryManagerBinding.inflate(layoutInflater)
+        FragmentCategoryManagerBinding.inflate(layoutInflater).apply {
+            btnAdd.setOnClickListener { v: View ->
+                val name = binding.editCategoryValue.text.toString().trim { it <= ' ' }
+                viewModel.doAction(CategoryManagerAction.SaveCategory(name, args.ieType))
+                KeyboardUtils.hideSoftInput(v) //隐藏键盘
+                binding.editCategoryValue.setText("")
+                binding.editCategoryValue.clearFocus() //清除聚焦
+            }
+        }
     }
-    private lateinit var adapter: CategoryManagerAdapter
+
     private val viewModel: CategoryViewModel by lazy {
         ViewModelProvider(this).get(
             CategoryViewModel::class.java
         )
     }
     lateinit var args: CategoryManagerFragmentArgs
-
-    override fun onDetach() {
-        super.onDetach()
-        mainActivity.hideInput()
-    }
+    private lateinit var adapter: CategoryManagerAdapter
+    override fun layout() = binding.root
 
     override fun initView(view: View) {
         args = CategoryManagerFragmentArgs.fromBundle(requireArguments())
         viewModel.doAction(CategoryManagerAction.GetCategories(args.ieType))
-        binding.btnAdd.setOnClickListener { v: View ->
-            val name = binding.editCategoryValue.text.toString().trim { it <= ' ' }
-            viewModel.doAction(CategoryManagerAction.SaveCategory(name, args.ieType))
-            KeyboardUtils.hideSoftInput(v) //隐藏键盘
-            binding.editCategoryValue.setText("")
-            binding.editCategoryValue.clearFocus() //清除聚焦
-        }
+
         binding.categoryRecycler.layoutManager = LinearLayoutManager(context)
         adapter = object : CategoryManagerAdapter() {
             override fun convert(holder: BaseViewHolder, category: Category) {
                 super.convert(holder, category)
                 itemBinding.btnDelete.setOnClickListener {
-                    viewModel.doAction(CategoryManagerAction.DeleteCategory(category))
+                    alertDeleteTip(category)
                 }
             }
         }
@@ -68,7 +68,6 @@ class CategoryManagerFragment : BaseFragment() {
         }
     }
 
-
     override fun setUpToolBar() {
         super.setUpToolBar()
         toolBar.let {
@@ -81,9 +80,10 @@ class CategoryManagerFragment : BaseFragment() {
 
     }
 
-    override fun layout() = binding.root
-
-
-    private fun alertDeleteTip(label: Category) {}
+    private fun alertDeleteTip(label: Category) {
+        XPopup.Builder(requireContext()).asConfirm("提示", "确认删除该标签？") {
+            doAction(viewModel, CategoryManagerAction.DeleteCategory(label))
+        }.show()
+    }
 
 }

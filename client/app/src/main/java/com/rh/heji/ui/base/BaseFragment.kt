@@ -44,7 +44,7 @@ abstract class BaseFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        if (!this::rootView.isInitialized){
+        if (!this::rootView.isInitialized) {
             rootView = layout()
             initView(layout())
             enableDrawer = true
@@ -144,9 +144,10 @@ abstract class BaseFragment : Fragment() {
      * 该Menu属于全局所以在这里控制
      */
     fun showYearMonthTitle(
-        selected: PopYearSelect.OnTabSelected,
         year: Int = Calendar.getInstance().get(Calendar.YEAR),
-        month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1, showAllYear: Boolean = false
+        month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1,
+        showAllYear: Boolean = false,
+        onTabSelected: PopYearSelect.OnTabSelected
     ) {
         rootView.post {
             with(centerTitle) {
@@ -164,7 +165,7 @@ abstract class BaseFragment : Fragment() {
                         requireContext(),
                         { selectYear, selectMonth ->
                             text = "$selectYear.$selectMonth"
-                            selected.selected(selectYear, selectMonth)
+                            onTabSelected.selected(selectYear, selectMonth)
                         },
                         showAllYear
                     )

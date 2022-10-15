@@ -44,6 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- 鉴权 -->
         <activity
             android:name=".LoginActivity"
             android:label="@string/login"
@@ -52,11 +53,11 @@
         <!--  功能页 -->
         <activity
             android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppStartup"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <service android:name=".service.sync.SyncService"></service>
         <provider
@@ -72,7 +73,8 @@
         <!-- 适配华为（huawei）刘海屏 -->
         <meta-data
             android:name="android.notch_support"
-            android:value="true" /> <!-- 适配小米（xiaomi）刘海屏 -->
+            android:value="true" />
+        <!-- 适配小米（xiaomi）刘海屏 -->
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />

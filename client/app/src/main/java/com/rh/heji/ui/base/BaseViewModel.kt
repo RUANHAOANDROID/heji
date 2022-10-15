@@ -20,10 +20,11 @@ abstract class BaseViewModel<I : IAction, O : IUiState> : ViewModel() {
     val uiState: LiveData<O> = _uiState
 
     open fun doAction(action: I) {
-        LogUtils.d(action.id())
+        LogUtils.d("${action.id()}")
     }
 
     fun send(o: O) {
+        LogUtils.d(o.id())
         _uiState.postValue(o)
     }
 

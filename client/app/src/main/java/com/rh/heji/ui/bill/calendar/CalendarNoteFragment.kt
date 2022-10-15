@@ -37,7 +37,7 @@ class CalendarNoteFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        viewModel.selectYearMonth = mainActivity.mainViewModel.globalYearMonth
+        viewModel.selectYearMonth = mainActivity.viewModel.globalYearMonth
     }
 
     override fun setUpToolBar() {
@@ -45,11 +45,14 @@ class CalendarNoteFragment : BaseFragment() {
         //toolBar.title = "日历记账"
         showBlack()
         viewModel.selectYearMonth.apply {
-            showYearMonthTitle(selected = { year, month ->
-                binding.calendarView.scrollToCalendar(year, month, 1)
-                this.year = year
-                this.month = month
-            }, year = this.year, month = this.month)
+            showYearMonthTitle(
+                year = this.year, month = this.month,
+                onTabSelected = { year, month ->
+                    binding.calendarView.scrollToCalendar(year, month, 1)
+                    this.year = year
+                    this.month = month
+                },
+            )
         }
     }
 
@@ -140,7 +143,7 @@ class CalendarNoteFragment : BaseFragment() {
     }
 
     private fun fabShow() {
-        val currentYearMonth = mainActivity.mainViewModel.currentYearMonth
+        val currentYearMonth = mainActivity.viewModel.currentYearMonth
         if (viewModel.selectYearMonth == currentYearMonth)
             binding.todayFab.hide()
         else

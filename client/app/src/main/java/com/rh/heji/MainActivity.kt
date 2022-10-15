@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var navController: NavController private set
     private lateinit var drawerLayout: DrawerLayout
-    val mainViewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
+    val viewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
     private lateinit var navHeaderMainBinding: HeaderMainNavBinding//侧拉头像
     private lateinit var navigationView: NavigationView
 

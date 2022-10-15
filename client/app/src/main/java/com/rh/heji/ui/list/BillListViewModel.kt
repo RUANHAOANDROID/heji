@@ -13,6 +13,9 @@ import com.rh.heji.ui.bill.adapter.DayIncomeNode
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 
 class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
 
@@ -74,7 +77,7 @@ class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
                 var dayItemNode = DayIncomeNode(dayListNodes, incomeNode)
                 listDayNodes.add(dayItemNode)
             }
-            LogUtils.d("Select YearMonth:${yearMonth}${listDayNodes}")
+            LogUtils.d("Select YearMonth:${yearMonth} ${listDayNodes.size}")
             send(BillListUiState.Bills(listDayNodes))
         }, {
             send(BillListUiState.Error(it))
@@ -88,7 +91,10 @@ class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
     private fun getSummary(yearMonth: String) {
         launchIO({
             LogUtils.d("Between by time:$yearMonth")
-            send(BillListUiState.Summary(billDao.sumIncome(yearMonth)))
+            billDao.sumIncome(yearMonth).distinctUntilChanged().collect {
+                LogUtils.d(it)
+                send(BillListUiState.Summary(it))
+            }
         }, {
             send(BillListUiState.Error(it))
         })

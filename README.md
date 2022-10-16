@@ -99,15 +99,15 @@ Android client 采用单Activity 多Fragment 项目结构偏向于MVVM模式
 *   OkHttp + retrofit 网络请求
 *   navigation Fragment导航
 *   BaseRecyclerViewAdapterHelper 列表的展示
-*   gson 数据格式化
+*   moshi 数据格式化
 *   MatisseKotlin 图片选择
 *   permissionx 人性化的权限封装
 *   room 更简单好调试的Sqlite数据库
 *   utilcode 强大简单的工具集
 *   xpopup 多样式的弹窗
 *   Luban 账单图片压缩
-*   calendarview 日历记账
-*   mmkv  KevValue存储
+*   calendarview 日历账单视图与记账
+*   datastore  少量数据的本地存储
 *   MPAndroidChart 强大的图表用做统计
 *   immersionbar 多机型强大Toobar的封装适配
 

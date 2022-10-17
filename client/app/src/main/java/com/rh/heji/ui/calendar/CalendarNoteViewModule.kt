@@ -1,34 +1,39 @@
 package com.rh.heji.ui.calendar
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
-import com.rh.heji.*
-import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.App
+import com.rh.heji.App.Companion.currentBook
+import com.rh.heji.R
+import com.rh.heji.currentYearMonth
 import com.rh.heji.data.db.BillDao
 import com.rh.heji.ui.adapter.DayBillsNode
 import com.rh.heji.ui.adapter.DayIncome
 import com.rh.heji.ui.adapter.DayIncomeNode
+import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
 
-class CalendarNoteViewModule : ViewModel() {
-    val billDao: BillDao = App.dataBase.billDao()
-    val calendarLiveData = MutableLiveData<Map<String, Calendar>>()
-    val dayBillsLiveData = MutableLiveData<Collection<BaseNode>>()
 
-
+internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUiState>() {
+    private val billDao: BillDao = App.dataBase.billDao()
     var selectYearMonth = currentYearMonth
+
+    override fun doAction(action: CalenderAction) {
+        super.doAction(action)
+        when (action) {
+            is CalenderAction.GetDayBills -> getDayBills(action.calendar)
+            is CalenderAction.Update -> updateYearMonth(action.year, action.month)
+        }
+    }
 
     /**
      * 更新日期
      * @param year 年
      * @param month 月
      */
-    fun updateYearMonth(year: Int, month: Int) {
+    private fun updateYearMonth(year: Int, month: Int) {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
             var everyDayIncome =
@@ -47,7 +52,7 @@ class CalendarNoteViewModule : ViewModel() {
                     map[calender.toString()] = calender// Key需是calendar string
                 }
             }
-            calendarLiveData.postValue(map)
+            send(CalenderUiState.Calender(map))
             LogUtils.d(year, month, "$map")
         }, {})
     }
@@ -56,7 +61,7 @@ class CalendarNoteViewModule : ViewModel() {
      * 日账单
      * @param calendar 日历对象
      */
-    fun todayBills(calendar: Calendar) {
+    private fun getDayBills(calendar: Calendar) {
         LogUtils.d(calendar.toString())
         launchIO({
             val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
@@ -88,7 +93,7 @@ class CalendarNoteViewModule : ViewModel() {
             if (childNodes.size > 0) {
                 parentNode.add(DayIncomeNode(childNodes, dayIncome))
             }
-            dayBillsLiveData.postValue(parentNode)
+            send(CalenderUiState.DayBills(parentNode))
             LogUtils.d(dayIncome.toString())
         }, {})
     }
@@ -126,7 +131,6 @@ class CalendarNoteViewModule : ViewModel() {
             incomeScheme.obj = "+$income"
             calendar.addScheme(incomeScheme)
         }
-
         return calendar
     }
 }

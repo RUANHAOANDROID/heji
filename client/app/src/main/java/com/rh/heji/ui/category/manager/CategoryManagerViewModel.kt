@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.collect
  * @author: 锅得铁
  * # 分类
  */
-internal class CategoryViewModel : BaseViewModel<CategoryManagerAction, CategoryManagerUiState>() {
+internal class CategoryManagerViewModel : BaseViewModel<CategoryManagerAction, CategoryManagerUiState>() {
     private val categoryDao = App.dataBase.categoryDao()
 
     override fun doAction(action: CategoryManagerAction) {

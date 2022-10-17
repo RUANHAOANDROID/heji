@@ -13,6 +13,8 @@ import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
+import com.rh.heji.doAction
+import com.rh.heji.render
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.adapter.DayBillsNode
 import com.rh.heji.ui.adapter.NodeBillsAdapter
@@ -32,9 +34,8 @@ class CalendarNoteFragment : BaseFragment() {
             delete = { notifyCalendar() },
             update = {})
     }
-    private val viewModel by lazy { ViewModelProvider(this).get(CalendarNoteViewModule::class.java) }
-    var adapter: NodeBillsAdapter? = null
-
+    private val viewModel by lazy { ViewModelProvider(this)[CalendarNoteViewModule::class.java] }
+    lateinit var adapter: NodeBillsAdapter
 
     override fun layout(): View {
         return binding.root
@@ -66,6 +67,22 @@ class CalendarNoteFragment : BaseFragment() {
         initCalendarView()
         initAdapter()
         notifyCalendar()
+        render(viewModel) {
+            when (it) {
+                is CalenderUiState.DayBills -> {
+                    adapter.setNewInstance(it.data as MutableList<BaseNode>)
+                    adapter.notifyDataSetChanged()
+                }
+                is CalenderUiState.Calender -> {
+                    if (it.data.isEmpty()) {
+                        binding.calendarView.clearSchemeDate()
+                    } else {
+                        binding.calendarView.setSchemeDate(it.data)//更新日历视图
+                    }
+                    notifyBillsList()
+                }
+            }
+        }
     }
 
     private fun initFab(view: View) {
@@ -92,18 +109,11 @@ class CalendarNoteFragment : BaseFragment() {
         fabShow()
     }
 
-    private val dayBillsObserver = Observer<Collection<BaseNode>> {
-        adapter?.setNewInstance(it as MutableList<BaseNode>)
-        adapter?.notifyDataSetChanged()
-    }
-
     private fun initAdapter() {
         binding.recycler.layoutManager = LinearLayoutManager(mainActivity)
         adapter = NodeBillsAdapter()
         binding.recycler.adapter = adapter
         binding.recycler.addItemDecoration(CardDecoration(8))
-
-        viewModel.dayBillsLiveData.observe(this, dayBillsObserver)
         adapter?.setOnItemClickListener { adapter, _, position ->
             if (adapter.getItem(position) is DayBillsNode) {
                 var billNode = adapter.getItem(position) as DayBillsNode
@@ -114,37 +124,28 @@ class CalendarNoteFragment : BaseFragment() {
 
     private fun initCalendarView() {
         viewModel.selectYearMonth.apply {
-            binding.calendarView.scrollToCalendar(year, month, 1)
+            binding.calendarView.scrollToCalendar(year, month, day)
         }
-        binding.calendarView.setOnMonthChangeListener { year, month -> //月份滑动事件
-            viewModel.selectYearMonth = YearMonth(year, month)
-            centerTitle.text = "$year.$month"
-            notifyCalendar()
-            fabShow()
-            notifyBillsList()
-        }
-        binding.calendarView.setOnCalendarSelectListener(object : OnCalendarSelectListener {
-            override fun onCalendarOutOfRange(calendar: Calendar) {
-                LogUtils.d(calendar.toString())
+        binding.calendarView.apply {
+            setOnMonthChangeListener { year, month -> //月份滑动事件
+                viewModel.selectYearMonth = YearMonth(year, month)
+                centerTitle.text = "$year.$month"
+                notifyCalendar()
+                fabShow()
+                notifyBillsList()
             }
-
-            override fun onCalendarSelect(calendar: Calendar, isClick: Boolean) {//选择日期事件
-                if (isClick) {
-                    notifyBillsList()
+            setOnCalendarSelectListener(object : OnCalendarSelectListener {
+                override fun onCalendarOutOfRange(calendar: Calendar) {
+                    LogUtils.d(calendar.toString())
                 }
-            }
-        })
-        viewModel.calendarLiveData.observe(this, monthObserver)
-    }
 
-    private var monthObserver = Observer<Map<String, Calendar>> {
-        if (it.isEmpty()) {
-            binding.calendarView.clearSchemeDate()
-        } else {
-            binding.calendarView.setSchemeDate(it)//更新日历视图
+                override fun onCalendarSelect(calendar: Calendar, isClick: Boolean) {//选择日期事件
+                    if (isClick) {
+                        notifyBillsList()
+                    }
+                }
+            })
         }
-
-        notifyBillsList()
     }
 
     private fun fabShow() {
@@ -153,17 +154,20 @@ class CalendarNoteFragment : BaseFragment() {
             binding.todayFab.hide()
         else
             binding.todayFab.show()
-
     }
 
     private fun notifyBillsList() {
         binding.calendarView.post {
-            viewModel.todayBills(binding.calendarView.selectedCalendar)//刷新列表
+            viewModel.doAction(CalenderAction.GetDayBills((binding.calendarView.selectedCalendar)))
         }
-
     }
 
     private fun notifyCalendar() {
-        viewModel.updateYearMonth(viewModel.selectYearMonth.year, viewModel.selectYearMonth.month)
+        viewModel.doAction(
+            CalenderAction.Update(
+                viewModel.selectYearMonth.year,
+                viewModel.selectYearMonth.month
+            )
+        )
     }
 }

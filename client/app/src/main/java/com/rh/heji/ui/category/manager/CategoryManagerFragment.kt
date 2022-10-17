@@ -34,8 +34,8 @@ class CategoryManagerFragment : BaseFragment() {
         }
     }
 
-    private val viewModel: CategoryViewModel by lazy {
-        ViewModelProvider(this)[CategoryViewModel::class.java]
+    private val viewModel: CategoryManagerViewModel by lazy {
+        ViewModelProvider(this)[CategoryManagerViewModel::class.java]
     }
     lateinit var args: CategoryManagerFragmentArgs
     private lateinit var adapter: CategoryManagerAdapter

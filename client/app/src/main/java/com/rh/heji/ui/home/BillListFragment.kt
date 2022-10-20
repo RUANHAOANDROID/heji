@@ -34,7 +34,10 @@ import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.CardDecoration
 import java.util.*
 
-
+/**
+ * 账单列表
+ *
+ */
 class BillListFragment : BaseFragment() {
 
     private lateinit var subTotalLayoutBinding: LayoutBillsTopBinding
@@ -100,6 +103,9 @@ class BillListFragment : BaseFragment() {
                 }
                 is BillListUiState.Error -> {
                     ToastUtils.showLong(it.t.message)
+                }
+                is BillListUiState.Images -> {
+                    popupView.setImages(it.data)
                 }
             }
         }
@@ -188,7 +194,7 @@ class BillListFragment : BaseFragment() {
         binding.homeRecycler.layoutManager = LinearLayoutManager(mainActivity)
         binding.homeRecycler.adapter = adapter
         binding.homeRecycler.addItemDecoration(CardDecoration(8))
-        class Diff : ItemCallback<BaseNode>() {
+        adapter.setDiffCallback(object : ItemCallback<BaseNode>() {
             override fun areItemsTheSame(oldItem: BaseNode, newItem: BaseNode): Boolean {
                 return oldItem == newItem
             }
@@ -196,8 +202,7 @@ class BillListFragment : BaseFragment() {
             override fun areContentsTheSame(oldItem: BaseNode, newItem: BaseNode): Boolean {
                 return oldItem == newItem
             }
-        }
-        adapter.setDiffCallback(Diff())
+        })
         adapter.setOnItemClickListener { adapter: BaseQuickAdapter<*, *>, _: View?, position: Int ->
             ClickUtils.debouncing {
                 if (adapter.getItem(position) is DayIncomeNode) { //日视图
@@ -220,6 +225,9 @@ class BillListFragment : BaseFragment() {
                     val dayBills = adapter.getItem(position) as DayBillsNode
                     val bill = dayBills.bill
                     popupView.show(bill)
+                    if (bill.images.isNotEmpty()) {
+                        doAction(homeViewModel, BillListAction.GetImages(bill.id))
+                    }
                 }
 
             }

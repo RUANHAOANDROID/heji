@@ -27,7 +27,7 @@ import java.util.*
  * 统计ReportFragment折线图样式设置
  * @author hao
  */
-fun ReportFragment.lineChartStyle(lineChart: LineChart) {
+internal fun ReportFragment.lineChartStyle(lineChart: LineChart) {
     lineChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
         override fun onValueSelected(e: Entry, h: Highlight) {
         }
@@ -94,12 +94,12 @@ private fun lineChartConvertAdapter(bills: List<BillTotal>, yearMonth: YearMonth
             val month = it.time.split("-")[1]
             map.replace(
                 month,
-                Entry(month.toFloat(), it.money.toFloat(), BillType.transform(it.type).text())
+                Entry(month.toFloat(), it.money.toFloat(), BillType.transform(it.type).valueString())
             )
             return@map Entry(
                 month.toFloat(),
                 it.money.toFloat(),
-                BillType.transform(it.type).text()
+                BillType.transform(it.type).valueString()
             )
         }.toMutableList()
         val entries = map.values.toMutableList()
@@ -121,9 +121,9 @@ private fun lineChartConvertAdapter(bills: List<BillTotal>, yearMonth: YearMonth
             val day = it.time.split("-")[2]
             map.replace(
                 day,
-                Entry(day.toFloat(), it.money.toFloat(), BillType.transform(it.type).text())
+                Entry(day.toFloat(), it.money.toFloat(), BillType.transform(it.type).valueString())
             )
-            return@map Entry(day.toFloat(), it.money.toFloat(), BillType.transform(it.type).text())
+            return@map Entry(day.toFloat(), it.money.toFloat(), BillType.transform(it.type).valueString())
         }.toMutableList()
 
         val entries = map.values.toMutableList()
@@ -132,7 +132,7 @@ private fun lineChartConvertAdapter(bills: List<BillTotal>, yearMonth: YearMonth
 }
 
 private fun parserBillsType(bills: List<BillTotal>) =
-    if (bills.isEmpty()) "收入" else BillType.transform(bills[0].type).text()
+    if (bills.isEmpty()) "收入" else BillType.transform(bills[0].type).valueString()
 
 fun ReportFragment.setIncomeLineChartNodes(yearMonth: YearMonth, bills: MutableList<BillTotal>) {
     lineChartConvertAdapter(bills, yearMonth).apply {
@@ -142,7 +142,7 @@ fun ReportFragment.setIncomeLineChartNodes(yearMonth: YearMonth, bills: MutableL
     }
 }
 
-fun ReportFragment.setExpenditureLineChartNodes(yearMonth: YearMonth, bills: List<BillTotal>) {
+internal fun ReportFragment.setExpenditureLineChartNodes(yearMonth: YearMonth, bills: MutableList<BillTotal>) {
     lineChartConvertAdapter(bills, yearMonth).apply {
         lineDataSetStyle(this, R.color.expenditure, R.drawable.shape_gradient_expenditure)
         binding.lineChart.data = LineData(this)
@@ -150,7 +150,7 @@ fun ReportFragment.setExpenditureLineChartNodes(yearMonth: YearMonth, bills: Lis
     }
 }
 
-fun ReportFragment.setIELineChartNodes(
+internal fun ReportFragment.setIELineChartNodes(
     yearMonth: YearMonth,
     expenditures: List<BillTotal>,
     incomes: List<BillTotal>
@@ -188,7 +188,7 @@ private fun ReportFragment.lineDataSetStyle(
 /**
  * 饼图样式
  */
-fun ReportFragment.pieChartStyle(pieChart: PieChart) {
+internal fun ReportFragment.pieChartStyle(pieChart: PieChart) {
 
     pieChart.setUsePercentValues(true)
     pieChart.description.isEnabled = false
@@ -248,7 +248,7 @@ fun ReportFragment.pieChartStyle(pieChart: PieChart) {
 /**
  * 饼图数据
  */
-fun ReportFragment.setPieChartData(entries: MutableList<PieEntry>) {
+internal fun ReportFragment.setPieChartData(entries: MutableList<PieEntry>) {
 
     // NOTE: The order of the entries when being added to the entries array determines their position around the center of
     // the chart.

@@ -15,7 +15,7 @@ import com.rh.heji.utlis.textdraw.TextDrawable
  *@author: 锅得铁
  *#
  */
-class CategoryTotalAdapter(
+internal class CategoryTotalAdapter(
     data: MutableList<PieEntry>?
 ) :
     BaseQuickAdapter<PieEntry, BaseViewHolder>(layoutResId = R.layout.item_category_total, data) {

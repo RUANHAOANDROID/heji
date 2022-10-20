@@ -81,6 +81,7 @@ class CalendarNoteFragment : BaseFragment() {
                     }
                     notifyBillsList()
                 }
+                is CalenderUiState.Images -> popupView.setImages(it.data)
             }
         }
     }
@@ -118,6 +119,9 @@ class CalendarNoteFragment : BaseFragment() {
             if (adapter.getItem(position) is DayBillsNode) {
                 var billNode = adapter.getItem(position) as DayBillsNode
                 popupView.show(billNode.bill)
+                if (billNode.bill.images.isNotEmpty()) {
+                    viewModel.doAction(CalenderAction.GetImages(billNode.bill.id))
+                }
             }
         }
     }

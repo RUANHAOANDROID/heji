@@ -3,7 +3,6 @@ package com.rh.heji.ui.popup
 import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
@@ -23,8 +22,8 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.ItemImgBinding
 import com.rh.heji.databinding.PopLayoutBilliInfoBinding
-import com.rh.heji.ui.create.CreateBillFragmentArgs
 import com.rh.heji.ui.create.ArgAddBill
+import com.rh.heji.ui.create.CreateBillFragmentArgs
 import com.rh.heji.utlis.ImageUtils
 
 /**
@@ -35,7 +34,7 @@ import com.rh.heji.utlis.ImageUtils
 class PopupBillInfo(
     val activity: MainActivity,
     val delete: (Bill) -> Unit, val update: (Bill) -> Unit
-) : BottomPopupView(activity), Observer<List<Image>> {
+) : BottomPopupView(activity) {
     private lateinit var mBill: Bill
 
     companion object {
@@ -52,11 +51,6 @@ class PopupBillInfo(
     fun show(bill: Bill) {
         mBill = bill
         show()
-    }
-
-    //观察 当前账单下图片
-    private val imageObservable by lazy {
-        App.dataBase.imageDao().findByBillId(billId = mBill.id).asLiveData()
     }
 
     lateinit var binding: PopLayoutBilliInfoBinding
@@ -93,9 +87,6 @@ class PopupBillInfo(
             rePeople.text = mBill.dealer
         }
         initBillImageList()//初始化列表和适配器
-        if (mBill.images.isNotEmpty()) {
-            imageObservable.observeForever(this)
-        }
     }
 
     private fun initBillImageList() {
@@ -131,10 +122,10 @@ class PopupBillInfo(
         }.show()
     }
 
-    override fun onChanged(images: List<Image>) {
-        if (images.isEmpty()) return
+    fun setImages(data: List<Image>) {
+        if (data.isEmpty()) return
         //服务器返回的是图片的ID、需要加上前缀
-        val imagePaths = images.map { image: Image ->
+        val imagePaths = data.map { image: Image ->
             val onlinePath = image.onlinePath
             if (onlinePath != null && !image.onlinePath!!.contains("http")) { //在线Image路径
                 val path = BuildConfig.HTTP_URL + "/image/" + image.onlinePath
@@ -145,57 +136,51 @@ class PopupBillInfo(
         imageAdapter.setNewInstance(imagePaths)
     }
 
-    override fun onDismiss() {
-        super.onDismiss()
-        if (mBill.images.isNotEmpty()) {
-            imageObservable.removeObserver(this)
+    /**
+     * 票据图片Adapter
+     */
+    private class ImageAdapter : BaseQuickAdapter<Image, BaseViewHolder>(R.layout.item_img) {
+        lateinit var binding: ItemImgBinding
+        override fun convert(holder: BaseViewHolder, image: Image) {
+            binding = ItemImgBinding.bind(holder.itemView)
+            val path = ImageUtils.getImagePath(image)
+            GlideApp.with(binding!!.itemImage)
+                .asBitmap()
+                .load(path)
+                .error(R.drawable.ic_baseline_image_load_error_24)
+                .placeholder(R.drawable.ic_baseline_image_24)
+                .into(binding.itemImage)
+            binding.itemImage.setOnClickListener { v: View? -> showGallery(holder.layoutPosition) }
+            LogUtils.d(
+                "local path:${image.localPath}",
+                "online path:${image.onlinePath}",
+                "use path:${path}"
+            )
+        }
+
+        private fun showGallery(startPosition: Int) {
+            val srcViewUpdateListener =
+                OnSrcViewUpdateListener { popupView: ImageViewerPopupView, position: Int ->
+                    popupView.updateSrcView(recyclerView.getChildAt(position) as ImageView)
+                }
+            XPopup.Builder(context)
+                .asImageViewer(
+                    recyclerView.getChildAt(startPosition) as ImageView,
+                    startPosition,
+                    ImageUtils.getPaths(data),
+                    false,
+                    false,
+                    -1,
+                    -1,
+                    -1,
+                    false,
+                    Color.rgb(32, 36, 46),
+                    srcViewUpdateListener,
+                    SmartGlideImageLoader(R.mipmap.ic_launcher),
+                    null
+                )
+                .show()
         }
     }
 }
 
-/**
- * 票据图片Adapter
- */
-internal class ImageAdapter : BaseQuickAdapter<Image, BaseViewHolder>(R.layout.item_img) {
-    lateinit var binding: ItemImgBinding
-    override fun convert(holder: BaseViewHolder, image: Image) {
-        binding = ItemImgBinding.bind(holder.itemView)
-        val path = ImageUtils.getImagePath(image)
-        GlideApp.with(binding!!.itemImage)
-            .asBitmap()
-            .load(path)
-            .error(R.drawable.ic_baseline_image_load_error_24)
-            .placeholder(R.drawable.ic_baseline_image_24)
-            .into(binding.itemImage)
-        binding.itemImage.setOnClickListener { v: View? -> showGallery(holder.layoutPosition) }
-        LogUtils.d(
-            "local path:${image.localPath}",
-            "online path:${image.onlinePath}",
-            "use path:${path}"
-        )
-    }
-
-    private fun showGallery(startPosition: Int) {
-        val srcViewUpdateListener =
-            OnSrcViewUpdateListener { popupView: ImageViewerPopupView, position: Int ->
-                popupView.updateSrcView(recyclerView.getChildAt(position) as ImageView)
-            }
-        XPopup.Builder(context)
-            .asImageViewer(
-                recyclerView.getChildAt(startPosition) as ImageView,
-                startPosition,
-                ImageUtils.getPaths(data),
-                false,
-                false,
-                -1,
-                -1,
-                -1,
-                false,
-                Color.rgb(32, 36, 46),
-                srcViewUpdateListener,
-                SmartGlideImageLoader(R.mipmap.ic_launcher),
-                null
-            )
-            .show()
-    }
-}

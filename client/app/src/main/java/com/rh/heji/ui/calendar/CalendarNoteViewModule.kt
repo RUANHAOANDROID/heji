@@ -14,6 +14,8 @@ import com.rh.heji.ui.adapter.DayIncome
 import com.rh.heji.ui.adapter.DayIncomeNode
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 
 
 internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUiState>() {
@@ -25,7 +27,15 @@ internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUi
         when (action) {
             is CalenderAction.GetDayBills -> getDayBills(action.calendar)
             is CalenderAction.Update -> updateYearMonth(action.year, action.month)
+            is CalenderAction.GetImages -> getImages(action.bid)
         }
+    }
+
+    private fun getImages(bid: String) {
+        launchIO({
+            val images = App.dataBase.imageDao().findByBillId(billId = bid)
+            send(CalenderUiState.Images(images))
+        })
     }
 
     /**

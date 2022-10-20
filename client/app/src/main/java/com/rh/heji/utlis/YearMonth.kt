@@ -26,6 +26,9 @@ data class YearMonth(var year: Int, var month: Int = 0, var day: Int = 0) : Seri
     fun yearMonthDayString() =
         "${year}-${if (month >= 10) month else "0$month"}-${if (day >= 10) day else "0$day"}"
 
+    fun monthDayString() =
+        "${if (month >= 10) month else "0$month"}-${if (day >= 10) day else "0$day"}"
+
     companion object {
         fun format(date: Date?): YearMonth {
             if (Objects.isNull(date)) return currentYearMonth

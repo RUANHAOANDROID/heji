@@ -6,44 +6,50 @@ import android.view.ViewStub
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.github.mikephil.charting.data.*
-import com.lxj.xpopup.XPopup
-import com.rh.heji.R
+import com.github.mikephil.charting.data.PieEntry
 import com.rh.heji.App
+import com.rh.heji.R
 import com.rh.heji.data.BillType
-import com.rh.heji.data.DataBus
-import com.rh.heji.data.converters.MoneyConverters
-import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.dto.BillTotal
+import com.rh.heji.data.db.dto.Income
 import com.rh.heji.data.db.dto.IncomeTimeSurplus
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.databinding.LayoutEmptyBinding
+import com.rh.heji.render
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.popup.BottomListPop
+import com.rh.heji.ui.popup.BillsPopup
 import com.rh.heji.utlis.ColorUtils
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.widget.DividerItemDecorator
 import java.math.BigDecimal
-import java.util.*
 
 
 /**
  * 报告统计页面
  */
 class ReportFragment : BaseFragment() {
-    //private val homeViewModel: BillsHomeViewModel by lazy { getActivityViewModel(BillsHomeViewModel::class.java) }
-    private val reportViewModel: ReportViewModel by lazy { ViewModelProvider(this)[ReportViewModel::class.java] }
+    private val viewModel: ReportViewModel by lazy { ViewModelProvider(this)[ReportViewModel::class.java] }
     private val categoryTotalAdapter: CategoryTotalAdapter = CategoryTotalAdapter(mutableListOf())
     private val monthYearBillsAdapter: MonthYearBillAdapter = MonthYearBillAdapter(mutableListOf())
     private lateinit var emptyStubView: ViewStub
-    val binding: FragmentReportBinding by lazy { FragmentReportBinding.inflate(layoutInflater) }
+    internal val binding: FragmentReportBinding by lazy {
+        FragmentReportBinding.inflate(
+            layoutInflater
+        )
+    }
 
-    val colors = ColorUtils.groupColors()
+    private val billsPopup by lazy {
+        val maxHeight = ScreenUtils.getScreenHeight() - toolBar.height
+        BillsPopup.create(mainActivity, maxHeight)
+    }
+
+    internal val colors = ColorUtils.groupColors()
+    private val defType = BillType.EXPENDITURE.valueInt()
     override fun onStart() {
         super.onStart()
-        reportViewModel.yearMonth = mainActivity.viewModel.globalYearMonth
+        viewModel.yearMonth = mainActivity.viewModel.globalYearMonth
     }
 
     override fun layout() = binding.root
@@ -52,91 +58,82 @@ class ReportFragment : BaseFragment() {
         super.setUpToolBar()
         showBlack()
         toolBar.title = "统计"
-        showYearMonthTitle(
-            year = reportViewModel.yearMonth.year,
-            month = reportViewModel.yearMonth.month,
+        showYearMonthTitle(year = viewModel.yearMonth.year,
+            month = viewModel.yearMonth.month,
             showAllYear = true,
             onTabSelected = { year, month ->
-                if (month == 0) {//全年
-                    reportViewModel.allYear = year
-                } else {//单月
-                    reportViewModel.yearMonth = YearMonth(year, month)
-                }
-            }
-        )
+                viewModel.doAction(
+                    ReportAction.SelectTime(yearMonth = YearMonth(year, month))
+                )
+            })
+    }
+
+    private fun setLinChart(type: Int, state: ReportUiState.LinChart) {
+        if (type == BillType.EXPENDITURE.valueInt()) {
+            setExpenditureLineChartNodes(
+                viewModel.yearMonth, state.data
+            )
+        }
+        if (type == BillType.INCOME.valueInt()) {
+            setIncomeLineChartNodes(
+                viewModel.yearMonth, state.data
+            )
+        }
+        if (type == BillType.ALL.valueInt()) {
+            val arrays = state.all
+            setIELineChartNodes(
+                viewModel.yearMonth, expenditures = arrays[0], incomes = arrays[1]
+            )
+        }
     }
 
     override fun initView(rootView: View) {
         emptyStubView = rootView.findViewById(R.id.emptyStub)
 
-        incomeExpenditureInfo()
-
         lineChartStyle(binding.lineChart)
+        val yearMonth = viewModel.yearMonth
         binding.tvTypeExpenditure.setOnClickListener {
-            reportViewModel.expenditure()
+            viewModel.doAction(
+                ReportAction.GetLinChartData(BillType.EXPENDITURE.valueInt())
+            )
             lineChartSelectType(BillType.EXPENDITURE)
         }
         binding.tvTypeIncome.setOnClickListener {
-            reportViewModel.income()
+            viewModel.doAction(
+                ReportAction.GetLinChartData(BillType.INCOME.valueInt())
+            )
             lineChartSelectType(BillType.INCOME)
         }
         binding.tvTypeAll.setOnClickListener {
-            reportViewModel.incomeAndExpenditure()
+            viewModel.doAction(
+                ReportAction.GetLinChartData(BillType.ALL.valueInt())
+            )
             lineChartSelectType(BillType.ALL)
         }
 
         pieChartStyle(binding.pieChartCategory)
 
         binding.tvTypeExpenditurePie.setOnClickListener {
-            reportViewModel.monthCategoryProportion(BillType.EXPENDITURE)
+            viewModel.doAction(
+                ReportAction.GetProportionChart(
+                    BillType.EXPENDITURE.valueInt()
+                )
+            )
             pieChartSelectType(BillType.EXPENDITURE)
         }
         binding.tvTypeIncomePie.setOnClickListener {
-            reportViewModel.monthCategoryProportion(BillType.INCOME)
+            viewModel.doAction(
+                ReportAction.GetProportionChart(
+                    BillType.INCOME.valueInt()
+                )
+            )
             pieChartSelectType(BillType.INCOME)
         }
 
         initCategoryListView()
         initTotalTitleView()
         initTotalListView()
-        reportViewModel.everyNodeIncomeExpenditure.observe(this) {
-            it.apply {
-                if (key == BillType.EXPENDITURE.type()) {
-                    setExpenditureLineChartNodes(
-                        reportViewModel.yearMonth,
-                        value as MutableList<BillTotal>
-                    )
-                }
-                if (key == BillType.INCOME.type()) {
-                    setIncomeLineChartNodes(
-                        reportViewModel.yearMonth,
-                        value as MutableList<BillTotal>
-                    )
-                }
-                if (key == BillType.ALL.type()) {
-                    val arrays = value as ArrayList<MutableList<BillTotal>>
-                    setIELineChartNodes(
-                        reportViewModel.yearMonth,
-                        expenditures = arrays[0],
-                        incomes = arrays[1]
-                    )
-                }
-            }
-        }
-        reportViewModel.categoryProportion
-            .observe(this) { categoryDataList ->
-                setPieChartData(categoryDataList)
-                categoryTotalAdapter.setList(categoryDataList)
-            }
 
-        reportViewModel.reportBillsList.observe(this) {
-            monthYearBillsAdapter.setList(it)
-        }
-        DataBus.subscriber(this) {
-            if (it.entity is Bill) {
-                reportViewModel.refreshData(BillType.EXPENDITURE)
-            }
-        }
         emptyStubView.setOnInflateListener { stub, inflated ->
             val emptyLayoutBinding = LayoutEmptyBinding.bind(inflated)
             emptyLayoutBinding.tvContext.text = "没有更多账单数据"
@@ -145,66 +142,83 @@ class ReportFragment : BaseFragment() {
             }
             LogUtils.d("empty view inflated")
         }
+
+
+        viewModel.doAction(ReportAction.Total(yearMonth))
+        viewModel.doAction(
+            ReportAction.GetLinChartData(defType)
+        )
+        viewModel.doAction(
+            ReportAction.GetProportionChart(defType)
+        )
+        viewModel.doAction(ReportAction.GetReportList())
+        render(viewModel) { state ->
+            LogUtils.d(state)
+            when (state) {
+                is ReportUiState.Total -> {
+                    incomeExpenditureInfo(state.data)
+                }
+                is ReportUiState.Images -> {
+
+                }
+                is ReportUiState.LinChart -> {
+                    val type = state.type
+                    setLinChart(type, state)
+                }
+                is ReportUiState.ProportionChart -> {
+                    setPieChartData(state.data)
+                    categoryTotalAdapter.setList(state.data)
+                }
+                is ReportUiState.ReportList -> {
+                    monthYearBillsAdapter.setList(state.data)
+                }
+            }
+        }
     }
 
     /**
      * 收支总览
      */
-    private fun incomeExpenditureInfo() {
-        reportViewModel.incomeExpenditure.observe(
-            this
-        ) {
-
-            it?.let { money ->
-                if (money.income == null) money.income = MoneyConverters.ZERO_00()
-                if (money.expenditure == null) money.expenditure = MoneyConverters.ZERO_00()
-                binding.tvIncomeValue.text = money.income.toString()
-                binding.tvExpenditureValue.text = money.expenditure.toString()
-                val jieYu = money.income!!.minus(money.expenditure!!)//结余
-                binding.tvJieYuValue.text = jieYu.toPlainString()
-                val dayCount = MyTimeUtils.lastDayOfMonth(
-                    reportViewModel.yearMonth.year,
-                    reportViewModel.yearMonth.month
-                )
-                    .split("-")[2].toInt()//月份天数
-                binding.tvDayAVGValue.text =
-                    jieYu.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
-
-                showEmptyView()
-
-                //----列表标题年/月平均值
-                var avg = if (reportViewModel.yearMonth.isYear()) {
-                    var month12 = BigDecimal(12)
-                    "月均支出：${
-                        money.expenditure!!.divide(
-                            month12,
-                            2,
-                            BigDecimal.ROUND_DOWN
-                        )
-                    }  收入：${money.expenditure!!.div(month12)}"
-                } else {
-                    val monthDayCount = BigDecimal(
-                        MyTimeUtils.getMonthLastDay(
-                            reportViewModel.yearMonth.year,
-                            reportViewModel.yearMonth.month
-                        )
-                    )
-                    "日均支出：${
-                        money.expenditure!!.divide(
-                            monthDayCount,
-                            2,
-                            BigDecimal.ROUND_DOWN
-                        )
-                    }  收入：${
-                        money.income!!.div(
-                            monthDayCount
-                        )
-                    }"
-                }
-                binding.tvYearMonthAVG.text = SpannableString.valueOf(avg)
-            }
-
+    private fun incomeExpenditureInfo(money: Income) {
+        val balance = money.income.minus(money.expenditure)//结余
+        //月份天数
+        val dayCount = MyTimeUtils.lastDayOfMonth(
+            viewModel.yearMonth.year, viewModel.yearMonth.month
+        ).split("-")[2].toInt()
+        binding.apply {
+            tvIncomeValue.text = money.income.toString()
+            tvExpenditureValue.text = money.expenditure.toString()
+            tvJieYuValue.text = balance.toPlainString()
+            tvDayAVGValue.text =
+                balance.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
         }
+        showEmptyView()
+
+        //----列表标题年/月平均值
+        var avg = if (viewModel.yearMonth.isYear()) {
+            var month12 = BigDecimal(12)
+            "月均支出：${
+                money.expenditure.divide(
+                    month12, 2, BigDecimal.ROUND_DOWN
+                )
+            }  收入：${money.expenditure.div(month12)}"
+        } else {
+            val monthDayCount = BigDecimal(
+                MyTimeUtils.getMonthLastDay(
+                    viewModel.yearMonth.year, viewModel.yearMonth.month
+                )
+            )
+            "日均支出：${
+                money.expenditure.divide(
+                    monthDayCount, 2, BigDecimal.ROUND_DOWN
+                )
+            }  收入：${
+                money.income.div(
+                    monthDayCount
+                )
+            }"
+        }
+        binding.tvYearMonthAVG.text = SpannableString.valueOf(avg)
     }
 
     /**
@@ -221,17 +235,9 @@ class ReportFragment : BaseFragment() {
                 money.signum()//返回 -1 | 0 | 1  与BillType一致
             }
             val bills = App.dataBase.billDao().findByCategoryAndMonth(
-                categoryItem.label,
-                reportViewModel.yearMonth.yearMonthString(),
-                billType
+                categoryItem.label, viewModel.yearMonth.yearMonthString(), billType
             )
-            val bottomListPop = BottomListPop(activity = mainActivity, data = bills).apply {
-                title.text = categoryItem.label + "(${bills.size}条)"
-            }
-            XPopup.Builder(requireContext())
-                .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
-                .asCustom(bottomListPop)
-                .show()
+            billsPopup.show(categoryItem.label, bills)
         }
     }
 
@@ -250,8 +256,7 @@ class ReportFragment : BaseFragment() {
             addItemDecoration(
                 DividerItemDecorator(
                     resources.getDrawable(
-                        R.drawable.inset_recyclerview_divider,
-                        mainActivity.theme
+                        R.drawable.inset_recyclerview_divider, mainActivity.theme
                     )
                 )
             )
@@ -260,18 +265,13 @@ class ReportFragment : BaseFragment() {
         //listener
         monthYearBillsAdapter.setOnItemClickListener { adapter, view, position ->
             val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
-            val yearMonthDay = "${reportViewModel.yearMonth.year}-${itemEntity.time}"
+            val yearMonthDay = "${viewModel.yearMonth.year}-${itemEntity.time}"
             val bills = App.dataBase.billDao().findByDay(yearMonthDay).filter {
                 it.images = App.dataBase.imageDao().findImagesId(it.id)//c
                 return@filter true
             }.toMutableList()
-            val bottomListPop = BottomListPop(activity = mainActivity, data = bills).apply {
-                title.text = "$yearMonthDay (${bills.size}条)"
-            }
-            XPopup.Builder(requireContext())
-                .maxHeight(rootView.height - toolBar.height)//与最大高度与toolbar对齐
-                .asCustom(bottomListPop)
-                .show()
+
+            billsPopup.show(yearMonthDay, bills)
         }
 
     }
@@ -280,7 +280,7 @@ class ReportFragment : BaseFragment() {
      * 报表标题【日期】-【收入】-【支出】-【结余】
      */
     private fun initTotalTitleView() {
-        val year = reportViewModel.yearMonth.isYear()
+        val year = viewModel.yearMonth.isYear()
 
         binding.layoutTotalList.apply {
             if (year) {

@@ -1,10 +1,7 @@
 package com.rh.heji
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.repository.BillRepository
 import com.rh.heji.data.repository.CategoryRepository
@@ -36,10 +33,5 @@ class MainViewModel : ViewModel() {
             Calendar.getInstance()[Calendar.YEAR],
             Calendar.getInstance()[Calendar.MONTH] + 1
         )
-    }
-
-    fun getBillImages(billId: String): LiveData<MutableList<Image>> {
-        return App.dataBase.imageDao().findByBillId(billId)
-            .asLiveData(viewModelScope.coroutineContext)
     }
 }

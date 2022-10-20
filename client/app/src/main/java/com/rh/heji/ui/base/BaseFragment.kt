@@ -117,9 +117,14 @@ abstract class BaseFragment : Fragment() {
     val centerTitle: TextView
         get() = rootView.findViewById(R.id.toolbar_center_title)
 
+    /**
+     * 屏幕的高度-底部导航栏高度-顶部toolbar高度
+     *
+     * @return
+     */
     fun getRootViewHeight(): Int {
         var height = ScreenUtils.getScreenHeight() - navigationBarHeight
-        toolBar.let {
+        kotlin.runCatching {
             height -= toolBar.height
         }
         return height //占满一屏

@@ -1,173 +1,138 @@
 package com.rh.heji.ui.report
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.LogUtils
 import com.github.mikephil.charting.data.PieEntry
-import com.rh.heji.currentYearMonth
 import com.rh.heji.App
+import com.rh.heji.currentYearMonth
 import com.rh.heji.data.BillType
-import com.rh.heji.data.db.dto.Income
-import com.rh.heji.data.db.dto.IncomeTimeSurplus
-import com.rh.heji.utlis.KeyValue
+import com.rh.heji.data.db.STATUS
+import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
 import java.math.BigDecimal
-import java.util.*
 
-class ReportViewModel : ViewModel() {
-
-    private val incomeExpenditureLiveData: MutableLiveData<Income> = MutableLiveData()//发射器
-    val incomeExpenditure: LiveData<Income>
-        get() = incomeExpenditureLiveData
-
-    private var categoryLiveData = MutableLiveData<MutableList<PieEntry>>()
-    val categoryProportion: LiveData<MutableList<PieEntry>>
-        get() = categoryLiveData
-
-    private var reportBillsLiveData = MutableLiveData<MutableList<IncomeTimeSurplus>>()
-    val reportBillsList: LiveData<MutableList<IncomeTimeSurplus>>
-        get() = reportBillsLiveData
-
-    private var everyNodeIncomeExpenditureLiveData = MutableLiveData<KeyValue>()
-    val everyNodeIncomeExpenditure: LiveData<KeyValue>
-        get() {
-            expenditure()
-            return everyNodeIncomeExpenditureLiveData
-        }
-
-    /**
-     * 是否是全年统计
-     */
-    var allYear = Calendar.getInstance().get(Calendar.YEAR)
-        set(value) {
-            field = value
-            LogUtils.d("$value 全年")
-        }
-
-    /**
-     * 统计类型
-     */
-    var totalType = BillType.EXPENDITURE.type()
-        set(value) {
-            field = value
-            LogUtils.d("Type $value")
-        }
-
+/**
+ * 统计ViewModel
+ *
+ */
+class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
     /**
      * 日期
      */
     var yearMonth: YearMonth = currentYearMonth
         set(value) {
+            isAnnual = value.isYear()
             field = value
-            monthIncomeExpenditure()
-            expenditure()
-            monthCategoryProportion(BillType.EXPENDITURE)
-            monthReportList()
-
-            LogUtils.d(value)
+            LogUtils.d("${field.yearString()}annual : $value ")
         }
 
-    fun refreshData(billType: BillType) {
-        monthIncomeExpenditure()
-        expenditure()
-        monthCategoryProportion(billType)
-        monthReportList()
-    }
-
-    private fun monthIncomeExpenditure() {
-        launchIO({
-            val monthIncomeExpenditureData =
-                App.dataBase.billDao()
-                    .sumMonthIncomeExpenditure(yearMonth.yearMonthString())
-            incomeExpenditureLiveData.postValue(monthIncomeExpenditureData)
-        }, {})
-
-    }
-
-    fun income() {
-        launchIO({
-            val keyValue = KeyValue(
-                BillType.INCOME.type(),
-                App.dataBase.billDao()
-                    .sumByMonth(yearMonth.yearMonthString(), BillType.INCOME.type())
-            )
-            everyNodeIncomeExpenditureLiveData.postValue(keyValue)
-        }, {})
-    }
-
-    fun expenditure() {
-        launchIO({
-            val data = KeyValue(
-                BillType.EXPENDITURE.type(),
-                App.dataBase.billDao()
-                    .sumByMonth(yearMonth.yearMonthString(), BillType.EXPENDITURE.type())
-            )
-            everyNodeIncomeExpenditureLiveData.postValue(data)
-            LogUtils.d(data)
-        }, {})
-    }
-
-    fun incomeAndExpenditure() {
-        launchIO({
-            val arrays = arrayListOf(
-                App.dataBase.billDao()
-                    .sumByMonth(yearMonth.yearMonthString(), BillType.EXPENDITURE.type()),
-                App.dataBase.billDao()
-                    .sumByMonth(yearMonth.yearMonthString(), BillType.INCOME.type())
-            )
-            val data = KeyValue(
-                BillType.ALL.type(),
-                arrays
-            )
-            everyNodeIncomeExpenditureLiveData.postValue(data)
-            LogUtils.d()
-        }, {})
-    }
-
     /**
-     * 分类所占百分比
-     * 分类所占金额和百分比
+     * Annual 年度报表，默认月报表
      */
-    fun monthCategoryProportion(billType: BillType) {
+    private var isAnnual: Boolean = false
+
+    private var lineDataType: Int = BillType.EXPENDITURE.valueInt()
+
+    private var pieDataType: Int = BillType.EXPENDITURE.valueInt()
+
+    override fun doAction(action: ReportAction) {
+        super.doAction(action)
+        when (action) {
+            is ReportAction.SelectTime -> {
+                yearMonth = action.yearMonth
+                total()
+                getLinChartData()
+                getProportionChart()
+                getReportList()
+            }
+            is ReportAction.Total -> {
+                total()
+            }
+            is ReportAction.GetLinChartData -> {
+                val type = action.type
+                getLinChartData(type)
+            }
+            is ReportAction.GetProportionChart -> {
+                val type = action.type
+                getProportionChart(type)
+            }
+            is ReportAction.GetReportList -> {
+                getReportList()
+            }
+            is ReportAction.GetImages -> {
+                val billID = action.bid
+                getBillId(billID)
+            }
+
+        }
+    }
+
+    private fun getBillId(billID: String) {
         launchIO({
+            val data = App.dataBase.imageDao().findByBillID(billID, STATUS.DELETED)
+            send(ReportUiState.Images(data))
+        })
+    }
+
+    private fun getReportList() {
+        launchIO({
+            var data =
+                App.dataBase.billDao()
+                    .listIncomeExpSurplusByMonth(yearMonth.yearMonthString())
+            send(ReportUiState.ReportList(data))
+        })
+    }
+
+    private fun getProportionChart(type: Int = pieDataType) {
+        launchIO({
+
             val list =
-                App.dataBase.billDao().reportCategory(billType.type(), yearMonth.yearMonthString())
+                App.dataBase.billDao()
+                    .reportCategory(type, yearMonth.yearMonthString())
                     .map {
                         // 支出为负数，收入为正数  money * -1 or money * 1
-                        val data = it.money!!.multiply(BigDecimal(billType.type()))
+                        val data = it.money!!.multiply(BigDecimal(type))
                         return@map PieEntry(
                             it.percentage, it.category, data
                         )
                     }.toMutableList()
-            categoryLiveData.postValue(list)
-            LogUtils.d(list)
-        }, {})
+            send(ReportUiState.ProportionChart(type, list))
+        })
     }
 
-    /**
-     * 月报表（每日统计）
-     * 日期|收入|支出|结余
-     *
-     */
-    fun yearReportList() {
-
-    }
-
-
-    /**
-     * 月报表（一年中每个月）
-     * 月份|收入|支出|结余
-     * @date yyyy-mm
-     */
-    private fun monthReportList() {
+    private fun getLinChartData(type: Int = lineDataType) {
         launchIO({
-            var data = App.dataBase.billDao()
-                .listIncomeExpSurplusByMonth(yearMonth.yearMonthString())
-            reportBillsLiveData.postValue(data)
-        }, {})
-
+            if (type == BillType.ALL.valueInt()) {
+                val uiStateData = with(ReportUiState.LinChart(type)) {
+                    all = arrayListOf(
+                        App.dataBase.billDao()
+                            .sumByMonth(
+                                yearMonth.yearMonthString(),
+                                BillType.EXPENDITURE.valueInt()
+                            ),
+                        App.dataBase.billDao()
+                            .sumByMonth(
+                                yearMonth.yearMonthString(),
+                                BillType.INCOME.valueInt()
+                            )
+                    )
+                    this
+                }
+                send(uiStateData)
+            } else {
+                val data = App.dataBase.billDao()
+                    .sumByMonth(yearMonth.yearMonthString(), type)
+                send(ReportUiState.LinChart(type, data))
+            }
+        })
     }
 
+    private fun total() {
+        launchIO({
+            val monthIncomeExpenditureData =
+                App.dataBase.billDao()
+                    .sumMonthIncomeExpenditure(yearMonth.yearMonthString())
+            send(ReportUiState.Total(monthIncomeExpenditureData))
+        })
+    }
 }

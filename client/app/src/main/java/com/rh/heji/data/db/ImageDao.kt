@@ -56,7 +56,10 @@ interface ImageDao {
     fun deleteById(imgID: String )
 
     @Query("SELECT * FROM image WHERE bill_id =:billId AND sync_status !=${STATUS.DELETED}")
-    fun findByBillId(billId: String ): Flow<MutableList<Image>>
+    fun observeByBillId(billId: String ): Flow<MutableList<Image>>
+
+    @Query("SELECT * FROM image WHERE bill_id =:billId AND sync_status !=${STATUS.DELETED}")
+    fun findByBillId(billId: String): MutableList<Image>
 
     @Query("SELECT * FROM image WHERE (local_path ISNULL OR local_path='') AND(online_path!='' OR online_path != NULL)")
     fun observerNotDownloadImages(): Flow<MutableList<Image>>

@@ -59,7 +59,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
             if (categories.isEmpty()) {
                 category = Category(name = "过路费", bookId = App.currentBook.id).apply {
                     level = 0
-                    type = BillType.EXPENDITURE.type()
+                    type = BillType.EXPENDITURE.valueInt()
                 }
                 category.synced = STATUS.NOT_SYNCED
                 App.dataBase.categoryDao().insert(category)
@@ -104,7 +104,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
                 bill.category = categoryName
                 bill.dealer = "ETC"
                 bill.createTime = TimeUtils.getNowMills()
-                bill.type = BillType.EXPENDITURE.type()
+                bill.type = BillType.EXPENDITURE.valueInt()
                 /**
                  * 如果不存在才插入
                  */
@@ -262,7 +262,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
         bill.category = categoryName
         bill.dealer = "ETC"
         bill.createTime = TimeUtils.getNowMills()
-        bill.type = BillType.EXPENDITURE.type()
+        bill.type = BillType.EXPENDITURE.valueInt()
         /**
          * 如果不存在才插入(插入时必须保持格式一致)
          */

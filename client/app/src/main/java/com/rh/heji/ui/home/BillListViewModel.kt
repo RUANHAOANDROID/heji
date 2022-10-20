@@ -6,15 +6,16 @@ import com.chad.library.adapter.base.entity.node.BaseNode
 import com.rh.heji.App
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.db.BillDao
-import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.adapter.DayBillsNode
 import com.rh.heji.ui.adapter.DayIncome
 import com.rh.heji.ui.adapter.DayIncomeNode
+import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
 import com.rh.heji.utlis.launchIO
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 
 internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
 
@@ -41,7 +42,17 @@ internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState
             is BillListAction.Summary -> {
                 getSummary(yearMonth = action.yearMonth.yearMonthString())
             }
+            is BillListAction.GetImages -> {
+                getImages(action.bid)
+            }
         }
+    }
+
+    private fun getImages(billId: String) {
+        launchIO({
+            val data = App.dataBase.imageDao().findByBillId(billId = billId)
+            send(BillListUiState.Images(data))
+        })
     }
 
     /**

@@ -8,15 +8,15 @@ package com.rh.heji.data
 enum class BillType(private val type: Int, private val text: String) {
     INCOME(+1, "收入"), EXPENDITURE(-1, "支出"), ALL(0, "收支");
 
-    fun type(): Int = type
-    fun text(): String = text
+    fun valueInt(): Int = type
+    fun valueString(): String = text
 
     companion object {
         fun transform(type: Int): BillType {
-            if (type == INCOME.type()) {
+            if (type == INCOME.valueInt()) {
                 return INCOME
             }
-            return if (type == EXPENDITURE.type()) {
+            return if (type == EXPENDITURE.valueInt()) {
                 EXPENDITURE
             } else {
                 ALL
@@ -24,9 +24,9 @@ enum class BillType(private val type: Int, private val text: String) {
         }
 
         fun transform(text: String): BillType {
-            if (text == INCOME.text()) {
+            if (text == INCOME.valueString()) {
                 return INCOME
-            } else if (text == EXPENDITURE.text()) {
+            } else if (text == EXPENDITURE.valueString()) {
                 return EXPENDITURE
             }
             return ALL

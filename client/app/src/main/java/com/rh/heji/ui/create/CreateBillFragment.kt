@@ -60,7 +60,7 @@ class CreateBillFragment : BaseFragment() {
     }
     private lateinit var pagerAdapter: FragmentViewPagerAdapter
     private val tabTitles = listOf(
-        BillType.EXPENDITURE.text(), BillType.INCOME.text()
+        BillType.EXPENDITURE.valueString(), BillType.INCOME.valueString()
     )
 
     internal lateinit var selectedCategoryFragment: SelectCategoryFragment
@@ -95,10 +95,10 @@ class CreateBillFragment : BaseFragment() {
     private fun setSelectCategory(category: String, type: Int) {
         //内容页绘制完成后选中类别
         binding.vpContent.post {
-            if (type == BillType.EXPENDITURE.type()) {
+            if (type == BillType.EXPENDITURE.valueInt()) {
                 binding.tab.getTabAt(0)?.select()
                 fragments[0].setSelectCategory(category)
-            } else if (type == BillType.INCOME.type()) {
+            } else if (type == BillType.INCOME.valueInt()) {
                 binding.tab.getTabAt(1)?.select()
                 fragments[1].setSelectCategory(category)
             }
@@ -116,9 +116,9 @@ class CreateBillFragment : BaseFragment() {
             "TimeTest",
             TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
         )
-        if (type == BillType.EXPENDITURE.type()) {
+        if (type == BillType.EXPENDITURE.valueInt()) {
             fragments[0].setCategories(categories)
-        } else if (type == BillType.INCOME.type()) {
+        } else if (type == BillType.INCOME.valueInt()) {
             fragments[1].setCategories(categories)
         }
     }

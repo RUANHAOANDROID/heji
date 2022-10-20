@@ -1,5 +1,6 @@
 package com.rh.heji.ui.report
 
+import android.os.Bundle
 import android.text.SpannableString
 import android.view.View
 import android.view.ViewStub
@@ -40,7 +41,6 @@ class ReportFragment : BaseFragment() {
             layoutInflater
         )
     }
-
     private val billsPopup by lazy {
         val maxHeight = ScreenUtils.getScreenHeight() - toolBar.height
         BillsPopup.create(mainActivity, maxHeight) {
@@ -49,10 +49,12 @@ class ReportFragment : BaseFragment() {
     }
 
     internal val colors = ColorUtils.groupColors()
-    private val defType = BillType.EXPENDITURE.valueInt()
+
     override fun onStart() {
         super.onStart()
-        viewModel.yearMonth = mainActivity.viewModel.globalYearMonth
+        viewModel.doAction(
+            ReportAction.SelectTime(yearMonth = mainActivity.viewModel.globalYearMonth)
+        )
     }
 
     override fun layout() = binding.root
@@ -87,6 +89,38 @@ class ReportFragment : BaseFragment() {
             setIELineChartNodes(
                 viewModel.yearMonth, expenditures = arrays[0], incomes = arrays[1]
             )
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        render(viewModel) { state ->
+            when (state) {
+                is ReportUiState.Total -> {
+                    incomeExpenditureInfo(state.data)
+                }
+                is ReportUiState.Images -> {
+                    billsPopup.setImages(state.data)
+                }
+                is ReportUiState.LinChart -> {
+                    val type = state.type
+                    setLinChart(type, state)
+                }
+                is ReportUiState.ProportionChart -> {
+                    setPieChartData(state.data)
+                    categoryTotalAdapter.setList(state.data)
+                }
+                is ReportUiState.CategoryList -> {
+                    billsPopup.show(state.category, state.data)
+                }
+                is ReportUiState.ReportList -> {
+                    monthYearBillsAdapter.setList(state.data)
+                }
+                is ReportUiState.ReportBillInfoList -> {
+                    billsPopup.show(state.time, state.data)
+                }
+            }
         }
     }
 
@@ -146,42 +180,6 @@ class ReportFragment : BaseFragment() {
             LogUtils.d("empty view inflated")
         }
 
-
-        viewModel.doAction(ReportAction.Total(yearMonth))
-        viewModel.doAction(
-            ReportAction.GetLinChartData(defType)
-        )
-        viewModel.doAction(
-            ReportAction.GetProportionChart(defType)
-        )
-        viewModel.doAction(ReportAction.GetReportList())
-        render(viewModel) { state ->
-            when (state) {
-                is ReportUiState.Total -> {
-                    incomeExpenditureInfo(state.data)
-                }
-                is ReportUiState.Images -> {
-                    billsPopup.setImages(state.data)
-                }
-                is ReportUiState.LinChart -> {
-                    val type = state.type
-                    setLinChart(type, state)
-                }
-                is ReportUiState.ProportionChart -> {
-                    setPieChartData(state.data)
-                    categoryTotalAdapter.setList(state.data)
-                }
-                is ReportUiState.CategoryList -> {
-                    billsPopup.show(state.category, state.data)
-                }
-                is ReportUiState.ReportList -> {
-                    monthYearBillsAdapter.setList(state.data)
-                }
-                is ReportUiState.ReportBillInfoList -> {
-                    billsPopup.show(state.time, state.data)
-                }
-            }
-        }
     }
 
     /**
@@ -236,14 +234,12 @@ class ReportFragment : BaseFragment() {
         binding.recyclerCategory.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerCategory.adapter = categoryTotalAdapter
         categoryTotalAdapter.setOnItemClickListener { adapter, view, position ->
-
             val categoryItem: PieEntry = adapter.getItem(position) as PieEntry
             val billType: Int = with(categoryItem) {
                 val money = data as BigDecimal
                 money.signum()//返回 -1 | 0 | 1  与BillType一致
             }
             viewModel.doAction(ReportAction.GetCategoryBillList(billType, categoryItem.label))
-
         }
     }
 

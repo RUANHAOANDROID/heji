@@ -16,6 +16,7 @@ import com.rh.heji.data.db.dto.Income
 import com.rh.heji.data.db.dto.IncomeTimeSurplus
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.databinding.LayoutEmptyBinding
+import com.rh.heji.doAction
 import com.rh.heji.render
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.popup.BillsPopup
@@ -42,7 +43,9 @@ class ReportFragment : BaseFragment() {
 
     private val billsPopup by lazy {
         val maxHeight = ScreenUtils.getScreenHeight() - toolBar.height
-        BillsPopup.create(mainActivity, maxHeight)
+        BillsPopup.create(mainActivity, maxHeight) {
+            viewModel.doAction(ReportAction.GetImages(it.images as MutableList<String>))
+        }
     }
 
     internal val colors = ColorUtils.groupColors()
@@ -153,13 +156,12 @@ class ReportFragment : BaseFragment() {
         )
         viewModel.doAction(ReportAction.GetReportList())
         render(viewModel) { state ->
-            LogUtils.d(state)
             when (state) {
                 is ReportUiState.Total -> {
                     incomeExpenditureInfo(state.data)
                 }
                 is ReportUiState.Images -> {
-
+                    billsPopup.setImages(state.data)
                 }
                 is ReportUiState.LinChart -> {
                     val type = state.type
@@ -169,8 +171,14 @@ class ReportFragment : BaseFragment() {
                     setPieChartData(state.data)
                     categoryTotalAdapter.setList(state.data)
                 }
+                is ReportUiState.CategoryList -> {
+                    billsPopup.show(state.category, state.data)
+                }
                 is ReportUiState.ReportList -> {
                     monthYearBillsAdapter.setList(state.data)
+                }
+                is ReportUiState.ReportBillInfoList -> {
+                    billsPopup.show(state.time, state.data)
                 }
             }
         }
@@ -234,10 +242,8 @@ class ReportFragment : BaseFragment() {
                 val money = data as BigDecimal
                 money.signum()//返回 -1 | 0 | 1  与BillType一致
             }
-            val bills = App.dataBase.billDao().findByCategoryAndMonth(
-                categoryItem.label, viewModel.yearMonth.yearMonthString(), billType
-            )
-            billsPopup.show(categoryItem.label, bills)
+            viewModel.doAction(ReportAction.GetCategoryBillList(billType, categoryItem.label))
+
         }
     }
 
@@ -265,13 +271,18 @@ class ReportFragment : BaseFragment() {
         //listener
         monthYearBillsAdapter.setOnItemClickListener { adapter, view, position ->
             val itemEntity: IncomeTimeSurplus = adapter.getItem(position) as IncomeTimeSurplus
-            val yearMonthDay = "${viewModel.yearMonth.year}-${itemEntity.time}"
-            val bills = App.dataBase.billDao().findByDay(yearMonthDay).filter {
-                it.images = App.dataBase.imageDao().findImagesId(it.id)//c
-                return@filter true
-            }.toMutableList()
-
-            billsPopup.show(yearMonthDay, bills)
+            val ymd = viewModel.yearMonth
+            itemEntity.time?.let {
+                //时间可以是月份和天
+                if (it.contains("月")) {//根据全年的情况
+                    ymd.month = it.split("月")[0].toInt()
+                } else {
+                    val arrays = it.split("-")
+                    ymd.month = arrays[0].toInt()
+                    ymd.day = arrays[1].toInt()
+                }
+            }
+            viewModel.doAction(ReportAction.GetReportBillInfoList(ymd))
         }
 
     }

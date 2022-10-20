@@ -1,6 +1,7 @@
 package com.rh.heji.ui.report
 
 import com.github.mikephil.charting.data.PieEntry
+import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.dto.BillTotal
 import com.rh.heji.data.db.dto.Income
@@ -14,6 +15,13 @@ import com.rh.heji.utlis.YearMonth
  *
  */
 sealed interface ReportAction : IAction {
+
+    /**
+     * 选择时间
+     * @property yearMonth 月 或 全年
+     */
+    class SelectTime(val yearMonth: YearMonth) : ReportAction
+
     /**
      * 统计总览
      */
@@ -39,9 +47,21 @@ sealed interface ReportAction : IAction {
      *
      * @property bid
      */
-    class GetImages(val bid: String) : ReportAction
+    class GetImages(val img_ids: MutableList<String>) : ReportAction
 
-    class SelectTime(val yearMonth: YearMonth) : ReportAction
+    /**
+     * 获取分类账单列表
+     *
+     */
+    class GetCategoryBillList(val type: Int, val category: String) : ReportAction
+
+    /**
+     * 获取统计账单下的详情列表
+     *
+     * @property yearMonth
+     */
+    class GetReportBillInfoList(val yearMonth: YearMonth) : ReportAction
+
 
 }
 
@@ -86,4 +106,17 @@ sealed interface ReportUiState : IUiState {
      */
     class Images(val data: MutableList<Image>) : ReportUiState
 
+    /**
+     * 分类账单列表 show Popup bill list
+     *
+     * @property data
+     */
+    class CategoryList(val category: String, val data: MutableList<Bill>) : ReportUiState
+
+    /**
+     * 列表 day list
+     *
+     * @property data
+     */
+    class ReportBillInfoList(val time: String, val data: MutableList<Bill>) : ReportUiState
 }

@@ -18,12 +18,12 @@ import kotlinx.coroutines.launch
  */
 abstract class BaseViewModel<I : IAction, O : IUiState> : ViewModel() {
 
-    protected var _uiState = MutableLiveData<O>()
+    private var _uiState = MutableLiveData<O>()
 
     val uiState: LiveData<O> = _uiState
 
     open fun doAction(action: I) {
-        LogUtils.d("${action.id()}")
+        LogUtils.d("action : ${action.id()}")
     }
 
 
@@ -34,22 +34,12 @@ abstract class BaseViewModel<I : IAction, O : IUiState> : ViewModel() {
      */
 
     fun send(o: O) {
-        LogUtils.d(o.id())
+        LogUtils.d("send : ${o.id()}")
         viewModelScope.launch {
             runMainThread {
                 _uiState.value = o
             }
         }
-    }
-
-    /**
-     *
-     * 仅发射最后一个值
-     * @param o
-     */
-    fun sendLast(o: O) {
-        LogUtils.d(o.id())
-        _uiState.postValue(o)
     }
 
     override fun onCleared() {

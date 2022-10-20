@@ -1,6 +1,7 @@
 package com.rh.heji.ui.popup
 
 import android.text.TextUtils
+import android.widget.AdapterView.OnItemClickListener
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.LogUtils
@@ -24,7 +25,8 @@ import com.rh.heji.widget.CircleView
  */
 class BillsPopup(
     val activity: MainActivity,
-    layoutResId: Int = R.layout.item_bill_daylist
+    layoutResId: Int = R.layout.item_bill_daylist,
+    val itemClickListener: (Bill) -> Unit
 ) :
     BottomPopupView(activity) {
 
@@ -34,12 +36,13 @@ class BillsPopup(
 
     companion object {
         fun create(
-            activity: MainActivity, maxHeight: Int
+            activity: MainActivity, maxHeight: Int,
+            itemClickListener: (Bill) -> Unit
         ): BillsPopup {
             return XPopup.Builder(activity)
                 .hasNavigationBar(false)
                 .maxHeight(maxHeight)
-                .asCustom(BillsPopup(activity)) as BillsPopup
+                .asCustom(BillsPopup(activity, itemClickListener = itemClickListener)) as BillsPopup
         }
     }
 
@@ -63,6 +66,7 @@ class BillsPopup(
         )
         adapter.setOnItemClickListener { adapter, view, position ->
             val item = adapter.getItem(position) as Bill
+            itemClickListener(item)
             billInfoPop = PopupBillInfo.create(activity = activity, delete = {
 
                 adapter.removeAt(position)

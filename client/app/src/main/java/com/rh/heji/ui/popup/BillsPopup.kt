@@ -77,7 +77,8 @@ class BillsPopup(
                 }
             },
                 update = {
-                    dismiss()
+                    this.dismiss()
+                    this@BillsPopup.dismiss()
                 })
             billInfoPop.show(bill = item)
         }

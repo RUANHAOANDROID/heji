@@ -1,4 +1,4 @@
-package com.heji.server.result;
+package com.heji.server.model.base;
 
 import com.google.gson.Gson;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @Slf4j
 @ToString
-public class Result<T>{
+public class ApiResponse<T>{
 
     /**
      * 成功
@@ -18,11 +18,11 @@ public class Result<T>{
      * @return
      */
     public static String success(String msg, Object data) {
-        Result result = new Result();
-        result.setCode(Response.SUCCESS.code());
-        result.setMsg(msg);
-        result.setData(data);
-        return result.toJson();
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(Status.SUCCESS.code());
+        apiResponse.setMsg(msg);
+        apiResponse.setData(data);
+        return apiResponse.toJson();
     }
 
     /**
@@ -32,57 +32,35 @@ public class Result<T>{
      * @return
      */
     public static String success(Object data) {
-        Result result = new Result();
-        result.setCode(Response.SUCCESS.code());
-        result.setMsg(Response.SUCCESS.msg());
-        result.setData(data);
-        return result.toJson();
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(Status.SUCCESS.code());
+        apiResponse.setMsg(Status.SUCCESS.msg());
+        apiResponse.setData(data);
+        return apiResponse.toJson();
     }
 
     /**
      * 失败
      **/
     public static String error(String msg) {
-        Result result = new Result();
-        result.setCode(Response.UNKNOWN_ERROR.code());
-        result.setMsg(msg);
-        String errorStr = result.toJson();
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(Status.FAIL.code());
+        apiResponse.setMsg(msg);
+        String errorStr = apiResponse.toJson();
         return errorStr;
     }
 
     /**
      * 失败
      **/
-    public static String error(Integer code, String msg) {
-        Result result = new Result();
-        result.setCode(code);
-        result.setMsg(msg);
-        return result.toJson();
-    }
-
-    /**
-     * 失败
-     **/
     public static String error(Integer code, String msg, Object data) {
-        Result result = new Result();
-        result.setCode(code);
-        result.setMsg(msg);
-        result.setData(data);
-        return result.toJson();
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(code);
+        apiResponse.setMsg(msg);
+        apiResponse.setData(data);
+        return apiResponse.toJson();
     }
 
-
-    /**
-     * 失败
-     *
-     * @return
-     */
-    public static String error(Response response) {
-        Result result = new Result();
-        result.setCode(response.code());
-        result.setMsg(response.msg());
-        return result.toJson();
-    }
 
     private Integer code;
     private String msg;

@@ -3,7 +3,7 @@ package com.heji.server.controller;
 import com.heji.server.data.mongo.MBook;
 import com.heji.server.data.mongo.MUser;
 import com.heji.server.model.UserInfo;
-import com.heji.server.result.Result;
+import com.heji.server.model.base.ApiResponse;
 import com.heji.server.service.BookService;
 import com.heji.server.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -40,14 +40,14 @@ public class UserController {
         mUser.setFirstBookId(mFirstBook.get_id());
         userInfo.setFirstBookId(mFirstBook.get_id());
         userService.register(mUser);
-        return Result.success(userInfo);
+        return ApiResponse.success(userInfo);
     }
 
     @ResponseBody
     @PostMapping(value = {"/login"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String login(@RequestParam String  username,@RequestParam String password) {
         String auth = userService.login(username,password);
-        return Result.success("登陆成功",auth);
+        return ApiResponse.success("登陆成功",auth);
     }
     @ResponseBody
         @PostMapping(value = {"/auth"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -55,7 +55,7 @@ public class UserController {
         if (token.trim().contains("Bearer"))
             token =token.split("Bearer")[1];
         User user =userService.getUserId(token);
-        return Result.success(user);
+        return ApiResponse.success(user);
     }
 
     @ResponseBody
@@ -63,7 +63,7 @@ public class UserController {
     public String logout(@RequestParam String token) {
 
         userService.logout(token);
-        return Result.success("退出成功");
+        return ApiResponse.success("退出成功");
     }
 
 }

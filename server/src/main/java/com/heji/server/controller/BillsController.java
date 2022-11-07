@@ -7,7 +7,7 @@ import com.heji.server.data.mongo.MBillBackup;
 import com.heji.server.data.mongo.MOperateLog;
 import com.heji.server.exception.NotFoundException;
 import com.heji.server.file.StorageService;
-import com.heji.server.result.Result;
+import com.heji.server.model.base.ApiResponse;
 import com.heji.server.service.*;
 import com.heji.server.utils.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -56,7 +55,7 @@ public class BillsController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         mBill.setCreateUser(username);
         String billID = billService.addBill(mBill);
-        return Result.success(billID);
+        return ApiResponse.success(billID);
     }
     @ResponseBody
     @PostMapping(value = {"/addBills"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -64,7 +63,7 @@ public class BillsController {
         checkBookExists(book_id);
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         List<String> ids = billService.addBills(bills);
-        return Result.success(ids);
+        return ApiResponse.success(ids);
     }
     private void checkBookExists(String book_id) {
         if (!bookService.exists(book_id))
@@ -75,7 +74,7 @@ public class BillsController {
     @GetMapping(value = {"/info"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getBillInfo(@RequestParam String billId) {
         MBill bills = billService.getBillInfo(billId);
-        return Result.success(bills);
+        return ApiResponse.success(bills);
     }
 
 
@@ -84,7 +83,7 @@ public class BillsController {
     public String getBills(@RequestParam String book_id, @RequestParam String startTime, @RequestParam String endTime) {
         checkBookExists(book_id);
         List<MBill> bills = billService.getBills(book_id, startTime, endTime);
-        return Result.success(bills);
+        return ApiResponse.success(bills);
     }
 
     @ResponseBody
@@ -95,7 +94,7 @@ public class BillsController {
 
         if (null != mBill) {
             if (!mBill.getCreateUser().equals(username)) {//查询是否是该用户创建
-                return Result.error("非法跨权限删除操作");
+                return ApiResponse.error("非法跨权限删除操作");
             }
         } else {
             log.info("该账单已经不存在 id{}", _id);
@@ -115,7 +114,7 @@ public class BillsController {
                         .setOpeDate(TimeUtils.getNowString())
                         .setOpeClass(MOperateLog.BILL)
                         .setOpeType(MOperateLog.DELETE));
-        return Result.success("删除成功:", _id);
+        return ApiResponse.success("删除成功:", _id);
         //return Result.success(_id);
     }
 
@@ -129,7 +128,7 @@ public class BillsController {
                 .setOpeType(MOperateLog.DELETE)
                 .setOpeDate(TimeUtils.getNowString())
                 .setOpeClass(MOperateLog.BILL));
-        return Result.success("更新成功", bill.get_id());
+        return ApiResponse.success("更新成功", bill.get_id());
     }
 
     @PostMapping("/export")

@@ -6,7 +6,7 @@ import com.heji.server.data.mongo.MBookUser;
 import com.heji.server.data.mongo.MOperateLog;
 import com.heji.server.exception.NotFoundException;
 import com.heji.server.exception.OperationException;
-import com.heji.server.result.Result;
+import com.heji.server.model.base.ApiResponse;
 import com.heji.server.service.BookService;
 import com.heji.server.service.BookShareService;
 import com.heji.server.service.OperateLogService;
@@ -16,9 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Book;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,19 +46,19 @@ public class BookController {
         users.add(bookUser);
         book.setUsers(users);
         bookService.createBook(book);
-        return Result.success(book.get_id());
+        return ApiResponse.success(book.get_id());
     }
 
     @ResponseBody
     @PostMapping(value = {"/getBooks"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getBooks(Authentication authentication) {
-        return Result.success(bookService.getBooks(new MBookUser().setName(authentication.getName())));
+        return ApiResponse.success(bookService.getBooks(new MBookUser().setName(authentication.getName())));
     }
 
     @ResponseBody
     @PostMapping(value = {"/findBook"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getBookById(@RequestParam String bookId) {
-        return Result.success(bookService.findBook(bookId));
+        return ApiResponse.success(bookService.findBook(bookId));
     }
 
 
@@ -85,7 +83,7 @@ public class BookController {
                 .setOpeDate(TimeUtils.getNowString())
                 .setOpeClass(MOperateLog.BOOK)
                 .setOpeType(MOperateLog.UPDATE));
-        return Result.success(bookId);
+        return ApiResponse.success(bookId);
     }
 
     @ResponseBody
@@ -107,7 +105,7 @@ public class BookController {
                 .setOpeType(MOperateLog.DELETE)
                 .setOpeDate(TimeUtils.getNowString())
                 .setOpeClass(MOperateLog.BOOK));
-        return Result.success(bookId);
+        return ApiResponse.success(bookId);
     }
 
     @ResponseBody
@@ -115,7 +113,7 @@ public class BookController {
     public String getBookUsers(@RequestParam String bookId, Authentication auth) {
         //校验操作用户是否是账本创建人
         List<MBookUser> users = bookService.getBookUsers(bookId);
-        return Result.success(users);
+        return ApiResponse.success(users);
     }
 
     @ResponseBody
@@ -126,7 +124,7 @@ public class BookController {
             throw new OperationException("移除失败，账本权限不匹配");
         }
         bookService.removeBookUser(new MBook().set_id(bookId), userId);
-        return Result.success(bookId);
+        return ApiResponse.success(bookId);
     }
 
     @ResponseBody
@@ -138,7 +136,7 @@ public class BookController {
             throw new OperationException("分享失败，账本权限不匹配");
         }
         String code = bookShareService.generateCode(bookId);
-        return Result.success(code);
+        return ApiResponse.success(code);
     }
 
     @ResponseBody
@@ -148,7 +146,7 @@ public class BookController {
         MBookShare sharedBook = bookShareService.getShareBook(sharedCode);
         if (Objects.isNull(sharedBook)) throw new OperationException("加入账本失败，请核对邀请码");
         bookService.joinBook(sharedBook.getBookId(), bookUser);
-        return Result.success(sharedBook.getBookId());
+        return ApiResponse.success(sharedBook.getBookId());
     }
 
 }

@@ -4,7 +4,7 @@ import com.heji.server.data.mongo.MCategory;
 import com.heji.server.data.mongo.MOperateLog;
 import com.heji.server.exception.NotFoundException;
 import com.heji.server.exception.OperationException;
-import com.heji.server.result.Result;
+import com.heji.server.model.base.ApiResponse;
 import com.heji.server.service.CategoryService;
 import com.heji.server.service.OperateLogService;
 import com.heji.server.utils.TimeUtils;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,14 +33,14 @@ public class CategoryController {
     @PostMapping(value = {"/add"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String add(@RequestBody MCategory category) {
         String _id = categoryService.save(category);
-        return Result.success(_id);
+        return ApiResponse.success(_id);
     }
 
     @ResponseBody
     @PostMapping(value = {"/addCategories"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String addCategories(@RequestBody List<MCategory> category) {
         List<String> _ids = categoryService.saveAll(category);
-        return Result.success(_ids);
+        return ApiResponse.success(_ids);
     }
 
     @ResponseBody
@@ -49,8 +48,8 @@ public class CategoryController {
     public String getCategories(@RequestParam(defaultValue = "0") String book_id) {
         List<MCategory> mCategories = categoryService.findByBookId(book_id);
         if (Objects.isNull(mCategories) || mCategories.size() <= 0)
-            return Result.error("类别不存在");
-        return Result.success(mCategories);
+            return ApiResponse.error("类别不存在");
+        return ApiResponse.success(mCategories);
     }
 
     @ResponseBody
@@ -59,7 +58,7 @@ public class CategoryController {
         List<MCategory> mCategories = categoryService.findByBookId(book_id);
         if (Objects.isNull(mCategories) || mCategories.size() <= 0)
             throw new NotFoundException("类别不存在");
-        return Result.success(mCategories);
+        return ApiResponse.success(mCategories);
     }
 
     @ResponseBody
@@ -75,6 +74,6 @@ public class CategoryController {
                 .setOpeType(MOperateLog.DELETE)
                 .setOpeDate(TimeUtils.getNowString())
                 .setOpeClass(MOperateLog.CATEGORY));
-        return Result.success("删除成功");
+        return ApiResponse.success("删除成功");
     }
 }

@@ -1,14 +1,12 @@
 package com.heji.server.exception;
 
-import com.heji.server.result.Result;
+import com.heji.server.model.base.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,52 +14,53 @@ import javax.servlet.http.HttpServletRequest;
  * 全局异常处理
  * 该拦截器会优先于 MyErrorAttributes
  * throw Exception -> ExceptionHandler -> ErrorAttributes
- *
  */
 @ControllerAdvice
 @Slf4j
 public class MyExceptionHandler {
-    //处理自定义的业务异常
+    /**
+     * 自定义的全局错误
+     *
+     * @param e
+     * @param request
+     * @return
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)//Http状态码设置为500
     @ResponseBody  //异常信息返回给接口
     @ExceptionHandler(value = GlobalException.class)// 仅仅拦截value对应的异常
-    public String handle(GlobalException e,HttpServletRequest request) {
+    public String handle(GlobalException e, HttpServletRequest request) {
         if (e instanceof GlobalException) {
             GlobalException ge = (GlobalException) e;
-            return Result.error(ge.getCode(), ge.getMessage(),"error");
+            return ApiResponse.error(ge.getCode(), ge.getMessage(), "error");
         }
-        return Result.error(-1, e.getMessage(),"error");
-    }
-
-
-    @ResponseBody
-    @ExceptionHandler
-    public String testError(ArithmeticException e, HttpServletRequest request) {
-        log.error("出现了ArithmeticException异常", e);
-        request.setAttribute("javax.servlet.error.status_code", 500);
-        request.setAttribute("code", 66);
-        request.setAttribute("message", "出现了ArithmeticException异常");
-        return "forward:/error";
-    }
-
-    private String generateErrorInfo(int code, String message) {
-        return generateErrorInfo(code, message, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return ApiResponse.error(-1, e.getMessage(), "error");
     }
 
     /**
-     * 生成错误信息, 放到 request 域中.
+     * 业务上功能性错误
      *
-     * @param code       错误码
-     * @param message    错误信息
-     * @param httpStatus HTTP 状态码
-     * @return SpringBoot 默认提供的 /error Controller 处理器
+     * @param request
+     * @param e
+     * @return
      */
-    private String generateErrorInfo(int code, String message, int httpStatus) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        request.setAttribute("code", code);
-        request.setAttribute("message", message);
-        request.setAttribute("javax.servlet.error.status_code", httpStatus);
-        return "forward:/error";
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public String exceptionHandler(HttpServletRequest request, FeatureException e) {
+        String failed = ApiResponse.error(e.getMessage());
+        return failed;
     }
 
+    /**
+     * 其他全局性错误
+     *
+     * @param request
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public String exceptionHandler(HttpServletRequest request, Exception e) {
+        String failed = ApiResponse.error(e.getMessage());
+        return failed;
+    }
 }

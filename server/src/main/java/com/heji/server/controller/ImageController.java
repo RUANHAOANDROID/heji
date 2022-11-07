@@ -4,7 +4,7 @@ import com.heji.server.data.mongo.MBill;
 import com.heji.server.data.mongo.MBillImage;
 import com.heji.server.exception.NotFoundException;
 import com.heji.server.exception.NullFileException;
-import com.heji.server.result.Result;
+import com.heji.server.model.base.ApiResponse;
 import com.heji.server.service.BillService;
 import com.heji.server.service.ImageService;
 import com.heji.server.utils.MD5Util;
@@ -40,7 +40,7 @@ public class ImageController {
     public String deleteImage(@RequestParam String billId,@RequestParam String imageId){
         imageService.removeImage(imageId);
         billService.removeImage(billId,imageId);
-        return Result.success( "删除成功");
+        return ApiResponse.success( "删除成功");
     }
     /**
      * @param imageId 图片ID
@@ -68,7 +68,7 @@ public class ImageController {
         List<MBillImage> img = imageService.getBillImages(bill_id);
         if (img.isEmpty() || img.size() == 0)
             throw new NotFoundException("账单图片没找到");
-        return Result.success(img);
+        return ApiResponse.success(img);
     }
 
 
@@ -78,7 +78,7 @@ public class ImageController {
                               @RequestParam(name = "billId", defaultValue = "0") String billId,
                               @RequestParam(name = "time", defaultValue = "0") long time) throws IOException, NoSuchAlgorithmException {
         if (Objects.isNull(billId) && billId.equals(""))
-            return Result.error("账单不存在");
+            return ApiResponse.error("账单不存在");
         if (time == 0)
             time = TimeUtils.getNowMills();
         MBill bill = billService.getBillInfo(billId);
@@ -112,7 +112,7 @@ public class ImageController {
 
         log.info("上传文件 OriginalFilename={}, SaveFileName={}", imageFile.getOriginalFilename(), imgId);
         image.setData(null);
-        return Result.success(image);
+        return ApiResponse.success(image);
     }
 
 
@@ -146,6 +146,6 @@ public class ImageController {
         }
         //更新账单照片
         billService.upInstImages(billId, imageIds.toArray(new String[imageIds.size()]));
-        return Result.success(imageIds);
+        return ApiResponse.success(imageIds);
     }
 }

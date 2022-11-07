@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @ControllerAdvice
 @Slf4j
-public class MyExceptionHandler {
+public class GlobalExceptionHandler {
     /**
      * 自定义的全局错误
      *

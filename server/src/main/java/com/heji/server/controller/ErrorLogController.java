@@ -1,7 +1,7 @@
 package com.heji.server.controller;
 
 import com.heji.server.data.mongo.MErrorLog;
-import com.heji.server.result.Result;
+import com.heji.server.model.base.ApiResponse;
 import com.heji.server.service.ErrorLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -23,7 +23,7 @@ public class ErrorLogController {
     @GetMapping(value = {"/get"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getErrorLog() {
         List<MErrorLog> logs = errorLogService.getErrorLog();
-        return Result.success(logs);
+        return ApiResponse.success(logs);
     }
 
     @ResponseBody

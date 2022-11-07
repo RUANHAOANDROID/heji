@@ -1,7 +1,6 @@
 package com.heji.server;
 
 import com.heji.server.file.StorageService;
-import com.heji.server.result.Result;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;

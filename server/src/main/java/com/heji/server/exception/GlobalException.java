@@ -1,7 +1,7 @@
 package com.heji.server.exception;
 
 public class GlobalException extends RuntimeException {
-
+    private static final long serialVersionUID = 1L;
     private Integer code = -1; //因为我需要将异常信息也返回给接口中，所以添加code区分
 
     public GlobalException(Integer code, String message) {

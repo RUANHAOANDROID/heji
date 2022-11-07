@@ -1,16 +1,12 @@
 package com.heji.server.data.mongo;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.io.Serializable;
 

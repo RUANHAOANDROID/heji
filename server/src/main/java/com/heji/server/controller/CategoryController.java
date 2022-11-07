@@ -45,7 +45,7 @@ public class CategoryController {
     }
 
     @ResponseBody
-    @GetMapping(value = {"/getByBookId"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = {"/getByBookId"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public String getCategories(@RequestParam(defaultValue = "0") String book_id) {
         List<MCategory> mCategories = categoryService.findByBookId(book_id);
         if (Objects.isNull(mCategories) || mCategories.size() <= 0)

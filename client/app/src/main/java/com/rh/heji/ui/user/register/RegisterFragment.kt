@@ -16,18 +16,26 @@ import com.rh.heji.render
 
 
 class RegisterFragment : Fragment() {
-
-
     private val viewModel: RegisterViewModel by lazy {
         ViewModelProvider(this)[RegisterViewModel::class.java]
     }
-    private val  binding: FragmentRegisterBinding by lazy { FragmentRegisterBinding.inflate(layoutInflater) }
+    private val binding: FragmentRegisterBinding by lazy {
+        FragmentRegisterBinding.inflate(
+            layoutInflater
+        )
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        inflater.inflate(R.layout.fragment_register, container, false)
+        initView()
+        renderView()
+        return binding.root
+    }
+
+    private fun initView() {
         binding.btnRegister.setOnClickListener {
             val password1 = binding.editPassword.text.toString()
             val password2 = binding.editPassword2.text.toString()
@@ -40,20 +48,23 @@ class RegisterFragment : Fragment() {
             val username = binding.editUserName.text.toString()
             viewModel.doAction(RegisterAction.Register(username, tel, code, password1))
         }
+    }
+
+    private fun renderView() {
         render(viewModel) {
             when (it) {
                 is RegisterUiState.Success -> {
-                    gotoLogin(it.user)
+                    toLogin(it.user)
                 }
                 is RegisterUiState.Error -> {
                     ToastUtils.showLong(it.throwable.message)
                 }
             }
         }
-        return binding.root
     }
 
-    private fun gotoLogin(user: RegisterUser) {
+
+    private fun toLogin(user: RegisterUser) {
         var mBundle = Bundle()
         mBundle.putSerializable("user", user)
         Navigation.findNavController(binding.root).popBackStack()
@@ -63,6 +74,10 @@ class RegisterFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        setTitle()
+    }
+
+    private fun setTitle() {
         with(activity as LoginActivity) {
             findViewById<Toolbar>(R.id.toolbar).title = getString(R.string.register)
             this

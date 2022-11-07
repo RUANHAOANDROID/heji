@@ -15,21 +15,25 @@ import com.rh.heji.databinding.FragmentLoginBinding
 import com.rh.heji.ui.user.register.RegisterUser
 
 class LoginFragment : Fragment() {
-   private val binding: FragmentLoginBinding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
+    private val binding: FragmentLoginBinding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
     private val viewModel by lazy { ViewModelProvider(this)[LoginViewModel::class.java] }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        inflater.inflate(R.layout.fragment_login, container, false)
-        initView(binding.root)
+        initView()
+        renderView()
+        return binding.root
+    }
+
+    private fun renderView() {
         render(viewModel) {
             when (it) {
                 is LoginUiState.Success -> {
+                    AppViewModel.get().asyncData()
                     findNavController().popBackStack()
                     (activity as LoginActivity).startMainActivity()
-                    AppViewModel.get().asyncData()
                     LogUtils.d(it.token)
                 }
                 is LoginUiState.Error -> {
@@ -38,10 +42,9 @@ class LoginFragment : Fragment() {
                 }
             }
         }
-        return binding.root
     }
 
-    fun initView(rootView: View) {
+    fun initView() {
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.nav_register)
         }
@@ -54,16 +57,24 @@ class LoginFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        with(activity as LoginActivity) {
-            findViewById<Toolbar>(R.id.toolbar).title = getString(R.string.login)
-            this
-        }
+        setTitle()
         //auto input user info
+        autoInputUserInfo()
+    }
+
+    private fun autoInputUserInfo() {
         arguments?.let {
             var user: RegisterUser = it.getSerializable("user") as RegisterUser
             binding.editUser.setText(user.tel)
             binding.editPassword.setText(user.password)
             ToastUtils.showLong(user.name)
+        }
+    }
+
+    private fun setTitle() {
+        with(activity as LoginActivity) {
+            findViewById<Toolbar>(R.id.toolbar).title = getString(R.string.login)
+            this
         }
     }
 

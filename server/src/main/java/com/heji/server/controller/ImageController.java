@@ -45,11 +45,10 @@ public class ImageController {
     /**
      * @param imageId 图片ID
      * @return
-     * @throws IOException
      */
     @GetMapping(value = "/{imageId:.+}", produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
-    public byte[] getImage(@PathVariable String imageId) throws IOException {
+    public byte[] getImage(@PathVariable String imageId) {
         MBillImage img = imageService.getImage(imageId);
         if (Objects.isNull(img))
             throw new NotFoundException("账单图片没找到");

@@ -30,26 +30,6 @@ enum class SyncEvent {
     ADD, PULL, UPDATE, DELETE
 }
 
-
-object DataBus {
-    fun post(eventMessage: EventMessage) {
-        AppViewModel.get().localDataEvent.postValue(eventMessage)
-    }
-
-    fun post(crud: SyncEvent, entity: Any) {
-        AppViewModel.get().localDataEvent.postValue(EventMessage(crud, entity))
-    }
-
-    fun subscriberForever(observer: (EventMessage) -> Unit) {
-        AppViewModel.get().localDataEvent.observeForever(observer)
-    }
-
-    fun subscriber(lifecycleOwner: LifecycleOwner, observer: (EventMessage) -> Unit) {
-        AppViewModel.get().localDataEvent.observe(lifecycleOwner, observer)
-    }
-
-}
-
 class BookTask(private val crud: SyncEvent, val book: Book) {
     private val bookRepository = BookRepository()
     suspend fun sync() {

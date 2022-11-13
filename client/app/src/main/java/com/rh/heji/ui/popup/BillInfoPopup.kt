@@ -51,6 +51,15 @@ class PopupBillInfo(
     fun show(bill: Bill) {
         mBill = bill
         show()
+        post {
+            binding.apply {
+                tvMonney.text = mBill.money.toString()
+                tvType.text = mBill.category
+                tvRecordTime.text = mBill.createTime?.let { TimeUtils.millis2String(it) }
+                tvTicketTime.text = DateConverters.date2Str(mBill.billTime)
+                rePeople.text = mBill.dealer
+            }
+        }
     }
 
     lateinit var binding: PopLayoutBilliInfoBinding
@@ -79,13 +88,7 @@ class PopupBillInfo(
             resources.getColor(R.color._xpopup_light_color, null),
             popupInfo.borderRadius, popupInfo.borderRadius, 0f, 0f
         )
-        binding.apply {
-            tvMonney.text = mBill.money.toString()
-            tvType.text = mBill.category
-            tvRecordTime.text = mBill.createTime?.let { TimeUtils.millis2String(it) }
-            tvTicketTime.text = DateConverters.date2Str(mBill.billTime)
-            rePeople.text = mBill.dealer
-        }
+
         initBillImageList()//初始化列表和适配器
     }
 

@@ -19,7 +19,7 @@ import java.util.List;
 import static com.google.android.material.tabs.TabLayout.MODE_AUTO;
 
 /**
- * Date: 2020/11/3
+ * @date: 2020/11/3
  * @author: 锅得铁
  * #
  */

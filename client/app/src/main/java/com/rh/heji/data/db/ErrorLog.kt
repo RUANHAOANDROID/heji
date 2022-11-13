@@ -8,7 +8,7 @@ import com.squareup.moshi.Json
 import org.jetbrains.annotations.NotNull
 
 /**
- * Date: 2021/3/2
+ * @date: 2021/3/2
  * @author: 锅得铁
  * #
  */

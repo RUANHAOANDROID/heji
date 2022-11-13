@@ -13,7 +13,7 @@ import java.math.BigDecimal
 import java.util.*
 
 /**
- * Date: 2020/8/28
+ * @date: 2020/8/28
  * @author: 锅得铁
  * # onDelete ：当账本创建人删除了账本，联动删除账本账单
  * # onUpdate ：当账本更新，账单不联动

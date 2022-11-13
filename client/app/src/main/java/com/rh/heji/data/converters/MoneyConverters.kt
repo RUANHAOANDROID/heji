@@ -7,7 +7,7 @@ import com.squareup.moshi.ToJson
 import java.math.BigDecimal
 
 /**
- * Date: 2020/9/20
+ * @date: 2020/9/20
  * @author: 锅得铁
  * #货币转换
  */

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.runBlocking
 
 /**
- * Date: 2020/8/28
+ * @date: 2020/8/28
  * @author: 锅得铁
  * # 启动初始化顺序：
  *  1.AppInitializer

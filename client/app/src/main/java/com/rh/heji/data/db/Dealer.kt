@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
- * Date: 2020/9/22
+ * @date: 2020/9/22
  * @author: 锅得铁
  * #经手人
  */

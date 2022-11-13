@@ -10,7 +10,7 @@ import com.rh.heji.databinding.ItemCategoryManagerBinding
 import com.rh.heji.utlis.textdraw.TextDrawable
 
 /**
- * Date: 2020/9/16
+ * @date: 2020/9/16
  * @author: 锅得铁
  * #分类适配器
  */

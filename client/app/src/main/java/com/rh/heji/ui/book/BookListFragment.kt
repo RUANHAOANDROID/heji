@@ -20,7 +20,7 @@ import com.rh.heji.ui.base.swipeRefreshLayout
 import androidx.recyclerview.widget.DiffUtil.ItemCallback as ItemCallback
 
 /**
- * Date: 2021/7/9
+ * @date: 2021/7/9
  * @author: 锅得铁
  * #
  */

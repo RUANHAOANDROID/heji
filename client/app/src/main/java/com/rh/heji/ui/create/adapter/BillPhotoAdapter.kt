@@ -17,7 +17,7 @@ import com.rh.heji.utlis.ImageUtils
 
 /**
  * 账单票据图片适配器
- * Date: 2020/9/16
+ * @date: 2020/9/16
  * @author: 锅得铁
  * #
  */

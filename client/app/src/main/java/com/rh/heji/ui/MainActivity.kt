@@ -38,7 +38,6 @@ import com.rh.heji.service.sync.SyncService
 import com.rh.heji.ui.home.DrawerListener
 import com.rh.heji.ui.user.login.LoginActivity
 import com.rh.heji.ui.user.JWTParse
-import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.utlis.permitDiskReads
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

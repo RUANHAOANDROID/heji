@@ -1,10 +1,7 @@
-package com.rh.heji.utlis.http.basic
+package com.rh.heji.network.interceptor
 
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.App
-import com.rh.heji.AppViewModel
-import com.rh.heji.BuildConfig
-import com.rh.heji.Event
+import com.rh.heji.*
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -25,6 +22,7 @@ class AuthorizedInterceptor : Interceptor {
         if (BuildConfig.DEBUG) {
             ToastUtils.showLong("请登录")
         }
-        AppViewModel.get(App.context).loginEvent.postValue(Event(401))
+        if (!Config.enableOfflineMode)
+            AppViewModel.get(App.context).loginEvent.postValue(Event(401))
     }
 }

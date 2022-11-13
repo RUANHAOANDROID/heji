@@ -1,10 +1,11 @@
-package com.rh.heji.utlis.http.basic
+package com.rh.heji.network.interceptor
 
 import android.text.TextUtils
 import android.util.Log
 import com.rh.heji.App
 import com.rh.heji.AppViewModel
-import com.rh.heji.DataStoreManager
+import com.rh.heji.Config
+import com.rh.heji.store.DataStoreManager
 import com.rh.heji.Event
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -17,7 +18,7 @@ import okhttp3.Response
  */
 class HttpHeaderInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        var bearerToken: String = runBlocking { DataStoreManager.getToken().first() ?: "" }
+        var bearerToken: String = Config.token
         Log.d("OKHTTP", "HttpHeaderInterceptor $bearerToken")
         if (TextUtils.isEmpty(bearerToken)) {
             Log.d("OKHTTP", "HttpHeaderInterceptor not login")
@@ -36,6 +37,7 @@ class HttpHeaderInterceptor : Interceptor {
     }
 
     private fun sendLoginBroadcast() {
-        AppViewModel.get(App.context).loginEvent.postValue(Event(401))
+        if (!Config.enableOfflineMode)
+            AppViewModel.get(App.context).loginEvent.postValue(Event(401))
     }
 }

@@ -7,20 +7,18 @@ import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterUser
-import com.rh.heji.utlis.http.basic.HttpRetrofit
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.http.HTTP
 import retrofit2.http.Part
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class HejiNetwork {
+class HttpManager {
     private val hejiServer = HttpRetrofit.create(BuildConfig.HTTP_URL, HeJiServer::class.java)
 
     suspend fun register(registerUser: RegisterUser) = hejiServer.register(registerUser).await()
@@ -114,13 +112,13 @@ class HejiNetwork {
 
     companion object {
 
-        private var network: HejiNetwork? = null
+        private var network: HttpManager? = null
 
-        fun getInstance(): HejiNetwork {
+        fun getInstance(): HttpManager {
             if (network == null) {
-                synchronized(HejiNetwork::class.java) {
+                synchronized(HttpManager::class.java) {
                     if (network == null) {
-                        network = HejiNetwork()
+                        network = HttpManager()
                     }
                 }
             }

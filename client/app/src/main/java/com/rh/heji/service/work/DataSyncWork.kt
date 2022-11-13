@@ -4,11 +4,11 @@ import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.currentYearMonth
 import com.rh.heji.App
 import com.rh.heji.Config
-import com.rh.heji.DataStoreManager
+import com.rh.heji.store.DataStoreManager
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
-import com.rh.heji.network.HejiNetwork
+import com.rh.heji.network.HttpManager
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.network.response.OperateLog
 import com.rh.heji.ui.user.JWTParse
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class DataSyncWork {
-    private val network = HejiNetwork.getInstance()
+    private val network = HttpManager.getInstance()
     private val bookDao = App.dataBase.bookDao()
     private val billDao = App.dataBase.billDao()
     private val categoryDao = App.dataBase.categoryDao()
@@ -28,7 +28,7 @@ class DataSyncWork {
         /**
          * 根据服务器账本删除日志，同步删除本地数据
          */
-        val response = HejiNetwork.getInstance().bookOperateLogs( Config.book.id)
+        val response = HttpManager.getInstance().bookOperateLogs( Config.book.id)
         if (response.code == 0 && response.data.isNotEmpty()) {
             val operates = response.data
             for (operate in operates) {

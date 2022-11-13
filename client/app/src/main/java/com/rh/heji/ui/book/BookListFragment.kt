@@ -3,6 +3,7 @@ package com.rh.heji.ui.book
 import android.graphics.Rect
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,9 +15,12 @@ import com.rh.heji.R
 import com.rh.heji.data.Result
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookListBinding
+import com.rh.heji.launchIO
+import com.rh.heji.store.DataStoreManager
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.base.hideRefreshing
 import com.rh.heji.ui.base.swipeRefreshLayout
+import kotlinx.coroutines.runBlocking
 
 import androidx.recyclerview.widget.DiffUtil.ItemCallback as ItemCallback
 
@@ -103,7 +107,10 @@ class BookListFragment : BaseFragment() {
         adapter.setOnItemClickListener { adapter, view, position ->
             val book: Book = adapter.getItem(position) as Book
             mainActivity.setCurrentBook(book.name)
-            Config.setBook(book)
+            runBlocking {
+                Config.setBook(book)
+                DataStoreManager.saveBook(book)
+            }
             findNavController().popBackStack()
         }
         binding.fab.setOnClickListener {

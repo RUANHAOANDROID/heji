@@ -2,17 +2,15 @@ package com.rh.heji.ui.user
 
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.StringUtils
+import com.rh.heji.Config
 import org.json.JSONObject
 
 
 object JWTParse {
-
     data class User(val name: String, val auth: List<String>, val token: String)
 
-    private val localUser = User("localUser", mutableListOf(), "")
-
     fun getUser(jwt: String): User {
-        if (jwt == "") return localUser
+        if (jwt == "" || jwt == "LocalUser") return Config.localUser
         val token = resolveToken(jwt)
         //val index = token.lastIndexOf(".")
         //var withoutSignature = token.substring(0, index)

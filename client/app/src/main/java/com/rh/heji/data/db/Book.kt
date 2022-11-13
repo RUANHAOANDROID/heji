@@ -42,6 +42,7 @@ data class Book(
     @ColumnInfo(name = COLUMN_ANCHOR)
     var anchor: Long = 0L,//锚点用作记录服务最后修改时间
 
+    @Json(name="first_book")
     @ColumnInfo(name = COLUMN_FIRST)
     var firstBook: Int = 1// 0 true |1 false
 

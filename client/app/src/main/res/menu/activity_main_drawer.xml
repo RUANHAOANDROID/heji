@@ -10,11 +10,11 @@
             android:title="@string/menu_book" />
         <item
             android:id="@+id/nav_report"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_baseline_pie_chart_black_24"
             android:title="@string/menu_report" />
         <item
             android:id="@+id/nav_setting"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_baseline_settings_24"
             android:title="@string/menu_setting" />
     </group>
     <item android:title="用户">

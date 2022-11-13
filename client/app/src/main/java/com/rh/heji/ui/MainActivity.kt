@@ -21,7 +21,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavController.OnDestinationChangedListener
 import androidx.navigation.NavDestination
@@ -32,16 +31,17 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
-import com.rh.heji.*
+import com.rh.heji.AppViewModel
+import com.rh.heji.Config
+import com.rh.heji.R
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.service.sync.SyncService
+import com.rh.heji.store.DataStoreManager
 import com.rh.heji.ui.home.DrawerListener
-import com.rh.heji.ui.user.login.LoginActivity
 import com.rh.heji.ui.user.JWTParse
+import com.rh.heji.ui.user.login.LoginActivity
 import com.rh.heji.utlis.permitDiskReads
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
 
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var navController: NavController private set
     private lateinit var drawerLayout: DrawerLayout
-    val viewModel: MainViewModel by lazy { ViewModelProvider(this).get(MainViewModel::class.java) }
+    val viewModel: MainViewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
     private lateinit var navHeaderMainBinding: HeaderMainNavBinding//侧拉头像
     private lateinit var navigationView: NavigationView
 
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
-        fun startMainActivity(activity: Activity) {
+        fun start(activity: Activity) {
             val intent = Intent(activity, MainActivity::class.java)
             activity.startActivity(intent)
         }
@@ -107,25 +107,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initDrawerLayout()
         checkLogin()
+        setDrawerLayout(Config.user)
     }
 
     private fun checkLogin() {
-        lifecycleScope.launch {
-            val jwtTokenString = DataStoreManager.getToken().first()
-            if (jwtTokenString.isNullOrEmpty()) {
-                toLogin()
-            } else {
-                val currentUser =JWTParse.getUser(jwtTokenString)
-                Config.setUser(currentUser)
-                setDrawerLayout(currentUser)
-                AppViewModel.get().asyncData()
-            }
-        }
         //观察拦截器发出的登录消息
         AppViewModel.get().loginEvent.observe(this) {
             navController.currentBackStackEntry?.let {
                 if (it.destination.label != resources.getString(R.string.login)) {
-                    toLogin()
+                    if (!Config.isInitUser())
+                        toLogin()
                 }
             }
         }
@@ -167,7 +158,11 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.menu
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener {
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                runBlocking(Dispatchers.IO) { DataStoreManager.deleteToken() }
+                runBlocking{
+                    DataStoreManager.removeToken()
+                    DataStoreManager.removeUseMode()
+                    DataStoreManager.removeBook()
+                }
                 finish()
             }.show()
             false
@@ -185,7 +180,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
-        if (Config.isInitBook()){
+        if (Config.isInitBook()) {
             setCurrentBook(Config.book.name)
         }
     }

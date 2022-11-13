@@ -10,9 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.interfaces.OnConfirmListener
 import com.rh.heji.*
 import com.rh.heji.databinding.FragmentLoginBinding
+import com.rh.heji.store.DataStoreManager
+import com.rh.heji.ui.MainActivity
 import com.rh.heji.ui.user.register.RegisterUser
+import kotlinx.coroutines.runBlocking
 
 class LoginFragment : Fragment() {
     private val binding: FragmentLoginBinding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
@@ -30,15 +35,16 @@ class LoginFragment : Fragment() {
     private fun renderView() {
         render(viewModel) {
             when (it) {
-                is LoginUiState.Success -> {
-                    AppViewModel.get().asyncData()
+                is LoginUiState.LoginSuccess -> {
                     findNavController().popBackStack()
                     (activity as LoginActivity).startMainActivity()
                     LogUtils.d(it.token)
                 }
-                is LoginUiState.Error -> {
+                is LoginUiState.LoginError -> {
                     ToastUtils.showLong("登陆错误:${it.t.message}")
-
+                }
+                is LoginUiState.OfflineRun -> {
+                    MainActivity.start(requireActivity())
                 }
             }
         }
@@ -52,6 +58,15 @@ class LoginFragment : Fragment() {
             val username = binding.editUser.text.toString()
             val password = binding.editPassword.text.toString()
             viewModel.doAction(LoginAction.Login(username, password))
+        }
+        binding.tvOnlyLocalUse.setOnClickListener {
+            XPopup.Builder(requireActivity()).asConfirm(
+                "离线提示",
+                "1.不支持合伙记账等功能   \n" +
+                        "2.删除应用会丢失所有数据"
+            ) {
+                viewModel.doAction(LoginAction.EnableOfflineMode())
+            }.show()
         }
     }
 

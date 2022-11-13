@@ -1,12 +1,7 @@
 package com.rh.heji.data
 
 import com.rh.heji.App
-import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Book
-import com.rh.heji.data.db.STATUS
-import com.rh.heji.network.HejiNetwork
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.rh.heji.network.HttpManager
 
 /**
  * ·····························
@@ -36,7 +31,7 @@ open class DataRepository {
         const val OK = 0
     }
 
-    protected val network = HejiNetwork.getInstance()
+    protected val network = HttpManager.getInstance()
     protected val database = App.dataBase
     protected val bookDao = database.bookDao()
     protected val billDao = database.billDao()

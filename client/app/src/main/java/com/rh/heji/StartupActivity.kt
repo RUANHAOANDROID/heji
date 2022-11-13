@@ -14,9 +14,9 @@ import com.rh.heji.ui.user.login.LoginActivity
 class StartupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Config.isInitUser() && Config.isInitBook()) {
+        if (Config.isInitUser()) {
             startMainActivity()
-        } else {
+        }else{
             startLoginActivity()
         }
     }
@@ -27,7 +27,7 @@ class StartupActivity : AppCompatActivity() {
     }
 
     private fun startMainActivity() {
-        MainActivity.startMainActivity(this)
+        MainActivity.start(this)
         this.finish()
     }
 

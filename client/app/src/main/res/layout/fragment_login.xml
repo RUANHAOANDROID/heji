@@ -34,10 +34,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@color/transparent"
+                android:drawableRight="@drawable/ic_baseline_phone_24"
                 android:ems="10"
                 android:hint="@string/tel"
                 android:inputType="textPersonName"
-                android:drawableRight="@drawable/ic_baseline_phone_24"
                 android:minWidth="260dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,11 +52,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@color/transparent"
+                android:drawableRight="@drawable/ic_baseline_lock_24"
                 android:ems="10"
                 android:hint="@string/password"
                 android:inputType="textPassword"
                 android:minWidth="260dp"
-                android:drawableRight="@drawable/ic_baseline_lock_24"
                 app:layout_constraintStart_toStartOf="@+id/editUser"
                 app:layout_constraintTop_toBottomOf="@+id/editUser" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -106,6 +106,16 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvOnlyLocalUse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="仅离线使用"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

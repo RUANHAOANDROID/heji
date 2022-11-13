@@ -1,7 +1,9 @@
-package com.rh.heji.utlis.http.basic
+package com.rh.heji.network
 
 import com.rh.heji.BuildConfig
 import com.rh.heji.moshi
+import com.rh.heji.network.interceptor.AuthorizedInterceptor
+import com.rh.heji.network.interceptor.HttpHeaderInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

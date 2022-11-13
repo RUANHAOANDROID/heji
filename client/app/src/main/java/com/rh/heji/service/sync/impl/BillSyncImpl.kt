@@ -1,20 +1,19 @@
-package com.rh.heji.service.sync
+package com.rh.heji.service.sync.impl
 
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
+import com.rh.heji.Config
 import com.rh.heji.FILE_LENGTH_1M
-import com.rh.heji.data.AppDatabase
 import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.launchIO
 import com.rh.heji.network.BaseResponse
-import com.rh.heji.network.HejiNetwork
+import com.rh.heji.network.HttpManager
 import com.rh.heji.network.response.ImageEntity
+import com.rh.heji.service.sync.IBillSync
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -39,7 +38,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
     override fun delete(billID: String) {
         LogUtils.d("sync bill delete", billID)
         scope.launchIO({
-            val response = HejiNetwork.getInstance().billDelete(billID)
+            val response = HttpManager.getInstance().billDelete(billID)
             if (response.success()) {
                 App.dataBase.billDao().deleteById(response.data)
             }
@@ -47,8 +46,9 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
     }
 
     override fun add(bill: Bill) {
+        if (Config.enableOfflineMode) return
         scope.launchIO({
-            val response = HejiNetwork.getInstance().billPush(bill)
+            val response = HttpManager.getInstance().billPush(bill)
             if (response.success()) {
                 App.dataBase.billDao().update(bill.apply {
                     synced = STATUS.SYNCED
@@ -60,7 +60,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
 
     override fun update(bill: Bill) {
         scope.launchIO({
-            val response = HejiNetwork.getInstance()
+            val response = HttpManager.getInstance()
                 .billUpdate(bill)
             if (response.success()) {
                 App.dataBase.billDao().update(bill.apply {
@@ -73,7 +73,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
 
     override fun deleteImage(image: Image) {
         scope.launchIO({
-            val response = HejiNetwork.getInstance().imageDelete(image.billID, image.id)
+            val response = HttpManager.getInstance().imageDelete(image.billID, image.id)
             if (response.success()) {
                 App.dataBase.imageDao().deleteById(image.id)
             }
@@ -110,7 +110,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
                     MultipartBody.Part.createFormData("file", fileName, requestBody)
                 val time = imgFile.lastModified()
                 val objectId = image.id
-                val response: BaseResponse<ImageEntity> = HejiNetwork.getInstance().imageUpload(
+                val response: BaseResponse<ImageEntity> = HttpManager.getInstance().imageUpload(
                     part,
                     objectId, bid, time
                 )

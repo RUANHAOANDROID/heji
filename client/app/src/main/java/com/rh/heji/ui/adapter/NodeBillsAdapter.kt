@@ -11,7 +11,9 @@ import com.chad.library.adapter.base.module.LoadMoreModule
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import org.jetbrains.annotations.NotNull
 
-
+/**
+ * @author hao
+ */
 class NodeBillsAdapter : BaseNodeAdapter() , LoadMoreModule {
     init {
         addNodeProvider(DayIncomeNodeProvider())

@@ -3,6 +3,7 @@ package com.rh.heji.data.db
 import android.os.Parcelable
 import androidx.room.*
 import com.rh.heji.App
+import com.rh.heji.Config
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
@@ -35,7 +36,7 @@ data class Bill(
     var id: String = ObjectId().toHexString(),
 
     @ColumnInfo(name = COLUMN_BOOK_ID, index = true)
-    var bookId: String = App.currentBook.id,
+    var bookId: String = Config.book.id,
     /**
      * 钱
      */
@@ -78,7 +79,7 @@ data class Bill(
     var dealer: String? = null,
 
     @ColumnInfo(name = "create_user")
-    var createUser: String = App.user.name,
+    var createUser: String = Config.user.name,
 
     /**
      * 备注

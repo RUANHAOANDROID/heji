@@ -19,7 +19,7 @@ import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ktx.navigationBarHeight
 import com.lxj.xpopup.XPopup
-import com.rh.heji.MainActivity
+import com.rh.heji.ui.MainActivity
 import com.rh.heji.R
 import com.rh.heji.ui.popup.YearSelectPopup
 import java.util.*

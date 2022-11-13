@@ -3,6 +3,7 @@ package com.rh.heji.ui.category.manager
 import android.text.TextUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
+import com.rh.heji.Config
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.ui.base.BaseViewModel
@@ -24,7 +25,7 @@ internal class CategoryManagerViewModel : BaseViewModel<CategoryManagerAction, C
             is GetCategories -> {
                 launchIO({
                     categoryDao.observeIncomeOrExpenditure(
-                        App.currentBook.id,
+                        Config.book.id,
                         action.type
                     ).collect {
                         send(CategoryManagerUiState.Categories(it))
@@ -47,7 +48,7 @@ internal class CategoryManagerViewModel : BaseViewModel<CategoryManagerAction, C
             return
         }
         launchIO({
-            val category = Category(name = name, bookId = App.currentBook.id).apply {
+            val category = Category(name = name, bookId = Config.book.id).apply {
                 this.type = type
                 level = 0
             }

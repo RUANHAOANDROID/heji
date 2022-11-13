@@ -1,9 +1,10 @@
 package com.rh.heji.service.work
 
 import com.blankj.utilcode.util.LogUtils
-import com.rh.heji.App.Companion.currentBook
 import com.rh.heji.currentYearMonth
 import com.rh.heji.App
+import com.rh.heji.Config
+import com.rh.heji.DataStoreManager
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
@@ -28,7 +29,7 @@ class DataSyncWork {
         /**
          * 根据服务器账本删除日志，同步删除本地数据
          */
-        val response = HejiNetwork.getInstance().bookOperateLogs( currentBook.id)
+        val response = HejiNetwork.getInstance().bookOperateLogs( Config.book.id)
         if (response.code == 0 && response.data.isNotEmpty()) {
             val operates = response.data
             for (operate in operates) {
@@ -206,7 +207,7 @@ class DataSyncWork {
         val notAsyncBooks = bookDao.books(STATUS.NOT_SYNCED)//未上传同步的账本
         for (book in notAsyncBooks) {
             book.synced = STATUS.SYNCED
-            book.createUser = JWTParse.getUser(UserToken.getToken().first() ?: "").name
+            book.createUser = JWTParse.getUser(DataStoreManager.getToken().first() ?: "").name
             val response = network.bookCreate(book)
             if (response.code == 0) {
                 val count = bookDao.update(book)

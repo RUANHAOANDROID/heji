@@ -1,4 +1,4 @@
-package com.rh.heji
+package com.rh.heji.ui
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel

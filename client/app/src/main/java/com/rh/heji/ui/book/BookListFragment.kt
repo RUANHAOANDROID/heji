@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
 import com.rh.heji.App
+import com.rh.heji.Config
 import com.rh.heji.R
 import com.rh.heji.data.Result
 import com.rh.heji.data.db.Book
@@ -102,7 +103,7 @@ class BookListFragment : BaseFragment() {
         adapter.setOnItemClickListener { adapter, view, position ->
             val book: Book = adapter.getItem(position) as Book
             mainActivity.setCurrentBook(book.name)
-            App.setCurrentBook(book)
+            Config.setBook(book)
             findNavController().popBackStack()
         }
         binding.fab.setOnClickListener {

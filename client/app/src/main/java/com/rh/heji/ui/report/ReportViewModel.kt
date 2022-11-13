@@ -3,6 +3,7 @@ package com.rh.heji.ui.report
 import com.blankj.utilcode.util.LogUtils
 import com.github.mikephil.charting.data.PieEntry
 import com.rh.heji.App
+import com.rh.heji.Config
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Bill
@@ -80,7 +81,7 @@ class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
             var data: MutableList<Bill> = mutableListOf()
             if (yearMonth.day == 0) {//按月查
                 //TODO 目前暂未实现按年统计
-                data = App.dataBase.billDao().findByMonth(ymd, type = null, App.currentBook.id)
+                data = App.dataBase.billDao().findByMonth(ymd, type = null, Config.book.id)
                     .filter { bill ->
                         bill.images = App.dataBase.imageDao().findImagesId(bill.id)
                         return@filter true

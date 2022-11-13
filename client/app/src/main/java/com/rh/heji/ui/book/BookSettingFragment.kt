@@ -68,7 +68,7 @@ class BookSettingFragment : BaseFragment() {
                 ToastUtils.showLong("该账本下没有更多账单")
                 return@setOnClickListener
             }
-            if (book.createUser != App.user.name) {//非自建账本
+            if (book.createUser != Config.user.name) {//非自建账本
                 ToastUtils.showLong("非自建账本，无权该操作")
                 return@setOnClickListener
             }

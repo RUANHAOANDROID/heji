@@ -1,4 +1,4 @@
-package com.rh.heji
+package com.rh.heji.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -32,9 +32,11 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
+import com.rh.heji.*
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.service.sync.SyncService
 import com.rh.heji.ui.home.DrawerListener
+import com.rh.heji.ui.user.login.LoginActivity
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.utlis.permitDiskReads
@@ -110,12 +112,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkLogin() {
         lifecycleScope.launch {
-            val jwtTokenString = UserToken.getToken().first()
+            val jwtTokenString = DataStoreManager.getToken().first()
             if (jwtTokenString.isNullOrEmpty()) {
                 toLogin()
             } else {
                 val currentUser =JWTParse.getUser(jwtTokenString)
-                App.setUser(currentUser)
+                Config.setUser(currentUser)
                 setDrawerLayout(currentUser)
                 AppViewModel.get().asyncData()
             }
@@ -166,9 +168,8 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.menu
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener {
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                runBlocking(Dispatchers.IO) { UserToken.deleteToken() }
+                runBlocking(Dispatchers.IO) { DataStoreManager.deleteToken() }
                 finish()
-                App.reset()
             }.show()
             false
         }
@@ -185,8 +186,9 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
-
-        setCurrentBook(App.currentBook.name)
+        if (Config.isInitBook()){
+            setCurrentBook(Config.book.name)
+        }
     }
 
     private fun navigationDrawerController() {

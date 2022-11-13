@@ -77,6 +77,7 @@ public class TokenProvider implements InitializingBean {
                 .claim(AUTHORITIES_KEY, authorities2)
                 .claim("tel",authentication.getName())
                 .signWith(key, SignatureAlgorithm.HS512)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(validity)
                 .compact();
     }

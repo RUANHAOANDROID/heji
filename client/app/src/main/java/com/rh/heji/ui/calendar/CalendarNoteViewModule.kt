@@ -5,7 +5,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
 import com.rh.heji.App
-import com.rh.heji.App.Companion.currentBook
+import com.rh.heji.Config
 import com.rh.heji.R
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.db.BillDao
@@ -14,8 +14,6 @@ import com.rh.heji.ui.adapter.DayIncome
 import com.rh.heji.ui.adapter.DayIncomeNode
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utlis.launchIO
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterNotNull
 
 
 internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUiState>() {
@@ -47,7 +45,7 @@ internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUi
         launchIO({
             var map = mutableMapOf<String, Calendar>()
             var everyDayIncome =
-                billDao.findEveryDayIncomeByMonth(currentBook.id, selectYearMonth.yearMonthString())
+                billDao.findEveryDayIncomeByMonth(Config.book.id, selectYearMonth.yearMonthString())
             everyDayIncome.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
                 if (dayIncome.expenditure.toString() != "0" || dayIncome.income.toString() != "0") {

@@ -3,16 +3,22 @@ package com.rh.heji
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.gyf.immersionbar.ktx.immersionBar
+import com.rh.heji.ui.MainActivity
+import com.rh.heji.ui.user.login.LoginActivity
 
+/**
+ * @date 2022/11/13
+ * @author hao
+ * app start page
+ */
 class StartupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (App.userIsInit()&&App.bookIsInit()) {
+        if (Config.isInitUser() && Config.isInitBook()) {
             startMainActivity()
         } else {
             startLoginActivity()
         }
-
     }
 
     private fun startLoginActivity() {

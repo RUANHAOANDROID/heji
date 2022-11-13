@@ -1,7 +1,7 @@
 package com.rh.heji.network
 
 import com.rh.heji.BuildConfig
-import com.rh.heji.App.Companion.currentBook
+import com.rh.heji.Config
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.ErrorLog
@@ -43,7 +43,7 @@ class HejiNetwork {
     suspend fun billPush(bill: Bill) = hejiServer.saveBill(bill.apply { images= mutableListOf() }).await()
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
     suspend fun billUpdate(bill: Bill) = hejiServer.updateBill(bill).await()
-    suspend fun billPull(startTime: String, endTime: String, book_id: String = currentBook.id) =
+    suspend fun billPull(startTime: String, endTime: String, book_id: String = Config.book.id) =
         hejiServer.getBills(book_id, startTime, endTime).await()
 
     suspend fun imageUpload(

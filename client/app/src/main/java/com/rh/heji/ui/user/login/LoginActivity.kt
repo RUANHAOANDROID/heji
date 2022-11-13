@@ -1,4 +1,4 @@
-package com.rh.heji
+package com.rh.heji.ui.user.login
 
 import android.app.Activity
 import android.content.Intent
@@ -8,8 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.lifecycleScope
 import com.gyf.immersionbar.ktx.immersionBar
-import com.rh.heji.data.db.Book
-import com.rh.heji.ui.user.login.LoginFragment
+import com.rh.heji.App
+import com.rh.heji.Config
+import com.rh.heji.ui.MainActivity
+import com.rh.heji.R
 import com.rh.heji.utlis.CrashInfo
 import com.rh.heji.utlis.MyUtils
 import com.rh.heji.utlis.checkPermissions
@@ -71,6 +73,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initUserBaseData() {
-        App.setDataBase(App.user.name)
+        App.setDataBase(Config.user.name)
     }
 }

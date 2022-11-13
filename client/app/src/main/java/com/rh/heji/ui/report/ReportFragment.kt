@@ -10,17 +10,15 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.github.mikephil.charting.data.PieEntry
-import com.rh.heji.App
 import com.rh.heji.R
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.dto.Income
 import com.rh.heji.data.db.dto.IncomeTimeSurplus
 import com.rh.heji.databinding.FragmentReportBinding
 import com.rh.heji.databinding.LayoutEmptyBinding
-import com.rh.heji.doAction
 import com.rh.heji.render
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.ui.popup.BillsPopup
+import com.rh.heji.ui.popup.BillListPopup
 import com.rh.heji.utlis.ColorUtils
 import com.rh.heji.utlis.MyTimeUtils
 import com.rh.heji.utlis.YearMonth
@@ -41,9 +39,9 @@ class ReportFragment : BaseFragment() {
             layoutInflater
         )
     }
-    private val billsPopup by lazy {
+    private val billListPopup by lazy {
         val maxHeight = ScreenUtils.getScreenHeight() - toolBar.height
-        BillsPopup.create(mainActivity, maxHeight) {
+        BillListPopup.create(mainActivity, maxHeight) {
             viewModel.doAction(ReportAction.GetImages(it.images as MutableList<String>))
         }
     }
@@ -101,7 +99,7 @@ class ReportFragment : BaseFragment() {
                     incomeExpenditureInfo(state.data)
                 }
                 is ReportUiState.Images -> {
-                    billsPopup.setImages(state.data)
+                    billListPopup.setImages(state.data)
                 }
                 is ReportUiState.LinChart -> {
                     val type = state.type
@@ -112,13 +110,13 @@ class ReportFragment : BaseFragment() {
                     categoryTotalAdapter.setList(state.data)
                 }
                 is ReportUiState.CategoryList -> {
-                    billsPopup.show(state.category, state.data)
+                    billListPopup.show(state.category, state.data)
                 }
                 is ReportUiState.ReportList -> {
                     monthYearBillsAdapter.setList(state.data)
                 }
                 is ReportUiState.ReportBillInfoList -> {
-                    billsPopup.show(state.time, state.data)
+                    billListPopup.show(state.time, state.data)
                 }
             }
         }

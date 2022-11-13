@@ -1,7 +1,6 @@
 package com.rh.heji.ui.popup
 
 import android.text.TextUtils
-import android.widget.AdapterView.OnItemClickListener
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.LogUtils
@@ -23,7 +22,7 @@ import com.rh.heji.widget.CircleView
  *@author: 锅得铁
  *#
  */
-class BillsPopup(
+class BillListPopup(
     val activity: MainActivity,
     layoutResId: Int = R.layout.item_bill_daylist,
     val itemClickListener: (Bill) -> Unit
@@ -38,11 +37,11 @@ class BillsPopup(
         fun create(
             activity: MainActivity, maxHeight: Int,
             itemClickListener: (Bill) -> Unit
-        ): BillsPopup {
+        ): BillListPopup {
             return XPopup.Builder(activity)
                 .hasNavigationBar(false)
                 .maxHeight(maxHeight)
-                .asCustom(BillsPopup(activity, itemClickListener = itemClickListener)) as BillsPopup
+                .asCustom(BillListPopup(activity, itemClickListener = itemClickListener)) as BillListPopup
         }
     }
 
@@ -78,7 +77,7 @@ class BillsPopup(
             },
                 update = {
                     this.dismiss()
-                    this@BillsPopup.dismiss()
+                    this@BillListPopup.dismiss()
                 })
             billInfoPop.show(bill = item)
         }

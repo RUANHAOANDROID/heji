@@ -52,11 +52,7 @@ public final class MyAppGlideModule extends AppGlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {
-        final OkHttpClient.Builder builder = HttpRetrofit.INSTANCE.okHttpClient(10,
-                10,
-                10,
-                1024 * 8,
-                "").newBuilder();
+        final OkHttpClient.Builder builder = HttpRetrofit.INSTANCE.okHttpClient(15, 15, 15).newBuilder();
         registry.append(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory((Call.Factory) builder.build()));
     }
 

@@ -22,22 +22,22 @@ object HttpRetrofit {
      * @param client
      */
     fun okHttpClient(
-        connectTimeout: Long = 10,
-        readTimeout: Long = 10,
-        writeTimeout: Long = 10,
-        bufferSize: Long = 1028 * 8,
-        servletDownloadUserHeadImg: String = ""
+        connectTimeout: Long = 15,
+        readTimeout: Long = 15,
+        writeTimeout: Long = 15
     ): OkHttpClient {
-
 
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
+
         if (!BuildConfig.DEBUG) {
             logging.redactHeader("Authorization")
-            logging.redactHeader("Cookie")
         }
+
         val headerInterceptor = HttpHeaderInterceptor()
-        val authorizedInterceptor =AuthorizedInterceptor()
+
+        val authorizedInterceptor = AuthorizedInterceptor()
+
         return OkHttpClient.Builder()
             .addInterceptor(headerInterceptor)
             .addInterceptor(logging)
@@ -56,14 +56,9 @@ object HttpRetrofit {
      * @return 返回服务实例
     </T> */
     fun <T> create(url: String?, service: Class<T>?): T {
-//        Gson gson =new GsonBuilder().serializeNulls()
-//                .setDateFormat("yyyy-mm-dd HH:mm:ss")
-//                .create();
         val rt = Retrofit.Builder()
             .baseUrl(url)
             .client(okHttpClient())
-            //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            //.addConverterFactory(GsonConverterFactory.create(gson))
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
         return rt.create(service)

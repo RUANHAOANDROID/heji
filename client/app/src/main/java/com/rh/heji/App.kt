@@ -7,7 +7,6 @@ import android.content.Intent
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.service.sync.SyncService
 import com.rh.heji.ui.user.JWTParse
-import com.rh.heji.ui.user.security.UserToken
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 

@@ -49,7 +49,11 @@ public class BookServiceImpl extends BaseMongoTemplate implements BookService {
         users.add(new MBookUser()
                 .setName(registerUser.getName())
                 .setAuthority(MBookUser.AUTHORITYS[0]));
-        MBook firstBook = new MBook().setFirstBook(0).setName("个人账本").setType("初始账本").setUsers(users);
+        MBook firstBook = new MBook()
+                .setFirstBook(0)
+                .setName("个人账本")
+                .setType("初始账本")
+                .setUsers(users);
         mBookRepository.save(firstBook);
         return firstBook;
     }

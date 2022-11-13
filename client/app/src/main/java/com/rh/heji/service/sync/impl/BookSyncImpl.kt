@@ -1,12 +1,13 @@
-package com.rh.heji.service.sync
+package com.rh.heji.service.sync.impl
 
 import com.rh.heji.App
+import com.rh.heji.Config
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.launchIO
-import com.rh.heji.network.HejiNetwork
+import com.rh.heji.network.HttpManager
+import com.rh.heji.service.sync.IBookSync
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 /**
  * 账本同步实现
@@ -25,7 +26,7 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
 
     override fun delete(bookID: String) {
         scope.launchIO({
-            val response = HejiNetwork.getInstance().bookDelete(bookID)
+            val response = HttpManager.getInstance().bookDelete(bookID)
             if (response.success()) {
                 App.dataBase.bookDao().deleteById(response.data)
             }
@@ -40,8 +41,9 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
     }
 
     override fun add(book: Book) {
+        if (Config.enableOfflineMode) return
         scope.launchIO({
-            val response = HejiNetwork.getInstance().bookCreate(book)
+            val response = HttpManager.getInstance().bookCreate(book)
             if (response.success()) {
                 val newBook = Book(name = book.name).apply {
                     id = book.id
@@ -55,7 +57,7 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
 
     override fun update(book: Book) {
         scope.launchIO({
-            val response = HejiNetwork.getInstance()
+            val response = HttpManager.getInstance()
                 .bookUpdate(
                     book_id = book.id,
                     bookName = book.name,

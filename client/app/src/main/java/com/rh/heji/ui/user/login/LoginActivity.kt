@@ -68,11 +68,11 @@ class LoginActivity : AppCompatActivity() {
 
     fun startMainActivity() {
         initUserBaseData()
-        MainActivity.startMainActivity(this)
+        MainActivity.start(this)
         this.finish()
     }
 
     private fun initUserBaseData() {
-        App.setDataBase(Config.user.name)
+        App.switchDataBase(Config.user.name)
     }
 }

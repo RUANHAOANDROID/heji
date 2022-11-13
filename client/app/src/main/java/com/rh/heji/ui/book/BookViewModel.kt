@@ -13,7 +13,7 @@ import com.rh.heji.data.db.BookUser
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BookRepository
-import com.rh.heji.network.HejiNetwork
+import com.rh.heji.network.HttpManager
 import com.rh.heji.service.sync.IBookSync
 import com.rh.heji.utlis.launch
 import com.rh.heji.utlis.launchIO
@@ -78,7 +78,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
 
     fun getBookList() {
         launchIO({
-            val response = HejiNetwork.getInstance().bookPull()
+            val response = HttpManager.getInstance().bookPull()
             val netBooks = response.data
             if (netBooks.isNotEmpty()) {
                 for (book in netBooks) {
@@ -97,7 +97,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
 
     fun getBookUsers(bookId: String, @MainThread call: (MutableList<BookUser>) -> Unit) {
         launchIO({
-            val response = HejiNetwork.getInstance().bookGetUsers(bookId)
+            val response = HttpManager.getInstance().bookGetUsers(bookId)
             if (response.data.isNotEmpty()) {
                 withContext(Dispatchers.Main) {
                     call(response.data)
@@ -120,7 +120,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
             if (billsCount > 0) {
                 ToastUtils.showLong("该账本下存在账单，无法直接删除")
             } else {
-                val response = HejiNetwork.getInstance().bookDelete(id)
+                val response = HttpManager.getInstance().bookDelete(id)
                 if (response.code == 0) {
                     App.dataBase.bookDao().deleteById(id)
                     runMainThread {
@@ -135,7 +135,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
 
     fun sharedBook(bookId: String, @MainThread call: (Result<String>) -> Unit) {
         launchIO({
-            val response = HejiNetwork.getInstance().bookShared(book_id = bookId)
+            val response = HttpManager.getInstance().bookShared(book_id = bookId)
             if (response.data.isNotEmpty()) {
                 val shareCode = response.data as String
                 runMainThread {
@@ -150,7 +150,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
     fun joinBook(code: String, call: (Result<String>) -> Unit) {
         launch({
             call(Result.Loading)
-            val response = HejiNetwork.getInstance().bookJoin(code)
+            val response = HttpManager.getInstance().bookJoin(code)
             call(Result.Success(response.data))
         }, { call(Result.Error(it)) })
 

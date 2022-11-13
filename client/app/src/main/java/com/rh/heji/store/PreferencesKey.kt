@@ -1,107 +1,92 @@
-package com.rh.heji
+package com.rh.heji.store
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.rh.heji.App
 import com.rh.heji.data.db.Book
-import com.squareup.moshi.Moshi
+import com.rh.heji.dataStore
+import com.rh.heji.moshi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
- * PreferencesKey
+ * DataStoreManager
  * @date 2022/5/9
  * @author 锅得铁
  * @since v1.0
  */
-object PreferencesKey {
-    /**
-     * 用户当前账本
-     */
-    val STARTUP_COUNT = intPreferencesKey("startup_count")
-
-    /**
-     * JWT_TOKEN
-     */
-    val JWT_TOKEN = stringPreferencesKey("jwt_token")
-
-    /**
-     * 用户当前账本
-     */
-    val CURRENT_BOOK = stringPreferencesKey("current_book")
-
-    /**
-     *当前登录用户
-     */
-    val CURRENT_USER = stringPreferencesKey("current_user")
-}
-
 object DataStoreManager {
     /**
-     * 启动次数计数
-     *
+     * 当前登录用户凭证
      */
-    suspend fun startupCount(context: Context) {
+    private val JWT_TOKEN = stringPreferencesKey("jwt_token")
+
+    /**
+     * 当前登录用户凭证
+     */
+    private val USE_MODE = booleanPreferencesKey("use_mode")
+
+    /**
+     * 用户当前账本
+     */
+    private val CURRENT_BOOK = stringPreferencesKey("current_book")
+
+
+    suspend fun saveUseMode(enableOffline: Boolean, context: Context = App.context) {
         context.dataStore.edit {
-            val startupCount = it[PreferencesKey.STARTUP_COUNT] ?: 0
-            it[PreferencesKey.STARTUP_COUNT] = startupCount + 1
+            it[USE_MODE] = enableOffline
         }
     }
 
-    suspend fun startupCount(): Int {
-        return App.context.dataStore.data.map {
-            it[PreferencesKey.STARTUP_COUNT] ?: 1
-        }.first()
+    suspend fun getUseMode(context: Context = App.context): Flow<Boolean?> {
+        return context.dataStore.data.map { it[USE_MODE] }
     }
 
-    /**
-     * Save token
-     *
-     * @param token
-     */
-    suspend fun saveToken(token: String) {
-        App.context.dataStore.edit {
-            it[PreferencesKey.JWT_TOKEN] = token
+    suspend fun removeUseMode(context: Context = App.context) {
+        context.dataStore.edit {
+            it.remove(USE_MODE)
         }
     }
 
-    /**
-     * Save token
-     *
-     * @param token
-     */
-    suspend fun deleteToken() {
-        App.context.dataStore.edit {
-            it.remove(PreferencesKey.JWT_TOKEN)
+    suspend fun saveToken(token: String, context: Context = App.context) {
+        context.dataStore.edit {
+            it[JWT_TOKEN] = token
         }
     }
 
-    /**
-     * 获取TOKEN,可能Token不存在
-     *
-     * @return
-     */
-    suspend fun getToken(): Flow<String?> {
-        return App.context.dataStore.data.map { it[PreferencesKey.JWT_TOKEN] }
+    suspend fun getToken(context: Context = App.context): Flow<String?> {
+        return context.dataStore.data.map { it[JWT_TOKEN] }
     }
 
-    suspend fun saveCurrentBook(book: Book) {
-        App.context.dataStore.edit {
-            it[PreferencesKey.CURRENT_BOOK] = moshi.adapter(Book::class.java).toJson(book)
+    suspend fun removeToken(context: Context = App.context) {
+        context.dataStore.edit {
+            it.remove(JWT_TOKEN)
         }
     }
 
-    suspend fun getCurrentBook(): Flow<Book?> {
-        return App.context.dataStore.data.map {
+
+    suspend fun saveBook(book: Book, context: Context = App.context) {
+        context.dataStore.edit {
+            it[CURRENT_BOOK] = moshi.adapter(Book::class.java).toJson(book)
+        }
+    }
+
+    suspend fun getBook(context: Context = App.context): Flow<Book?> {
+        return context.dataStore.data.map {
             var currentBook: Book? = null
-            val bookJsonString = it[PreferencesKey.CURRENT_BOOK]
-            if (!bookJsonString.isNullOrEmpty()) {
-                currentBook = moshi.adapter<Book>(Book::class.java).fromJson(bookJsonString)
+            val bookJsonStr = it[CURRENT_BOOK]
+            if (!bookJsonStr.isNullOrEmpty()) {
+                currentBook = moshi.adapter(Book::class.java).fromJson(bookJsonStr)
             }
             currentBook
+        }
+    }
+
+    suspend fun removeBook(context: Context = App.context) {
+        context.dataStore.edit {
+            it.remove(CURRENT_BOOK)
         }
     }
 

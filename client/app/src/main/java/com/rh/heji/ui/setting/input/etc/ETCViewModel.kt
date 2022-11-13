@@ -19,7 +19,7 @@ import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.setting.input.etc.dto.ETCListInfoEntity
 import com.rh.heji.ui.setting.input.etc.dto.HBETCEntity
 import com.rh.heji.ui.setting.input.etc.dto.HBETCEntity.DataBean.OrderArrBean
-import com.rh.heji.utlis.http.basic.HttpRetrofit
+import com.rh.heji.network.HttpRetrofit
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

@@ -6,9 +6,6 @@ import android.content.Context
 import android.content.Intent
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.service.sync.SyncService
-import com.rh.heji.ui.user.JWTParse
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 /**
  * @date: 2020/8/28
@@ -29,16 +26,8 @@ class App : Application() {
         Intent(this, SyncService::class.java).also {
             startService(it)
         }
-        val lastUserToken = runBlocking { DataStoreManager.getToken().first() }
-        if (lastUserToken != null) {
-            val user = JWTParse.getUser(lastUserToken)
-            Config.setUser(user = user)
-            setDataBase(user.name)
-        }
-        val lastBook = runBlocking { DataStoreManager.getCurrentBook().first() }
-        if (lastBook != null) {
-            Config.setBook(lastBook)
-        }
+        if (Config.isInitUser())
+            switchDataBase(Config.user.name)
     }
 
     companion object {
@@ -54,7 +43,7 @@ class App : Application() {
             private set
 
         @JvmName("switchDataBase")
-        fun setDataBase(userName: String) {
+        fun switchDataBase(userName: String) {
             //选择数据库时关闭上一个数据库连接并重建
             if (this::dataBase.isInitialized)
                 dataBase.reset()

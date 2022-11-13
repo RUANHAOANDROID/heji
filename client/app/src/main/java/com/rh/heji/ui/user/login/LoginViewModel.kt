@@ -1,17 +1,16 @@
 package com.rh.heji.ui.user.login
 
-import android.os.storage.StorageManager
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
 import com.rh.heji.Config
-import com.rh.heji.DataStoreManager
 import com.rh.heji.data.db.Book
-import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.network.HejiNetwork
+import com.rh.heji.network.HttpManager
+import com.rh.heji.store.DataStoreManager
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.user.JWTParse
+import com.rh.heji.utlis.launch
 import com.rh.heji.utlis.launchIO
 
 internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
@@ -23,24 +22,46 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
             is LoginAction.Login -> {
                 login(action.userName, action.password)
             }
+            is LoginAction.EnableOfflineMode -> {
+                enableOfflineMode()
+            }
         }
     }
 
     private fun login(username: String, password: String) {
         launchIO({
-            var requestBody = HejiNetwork.getInstance().login(
+            val loginJob = launch({
+
+            })
+            var requestBody = HttpManager.getInstance().login(
                 username,
                 encodePassword(password)
             )
-            var token = requestBody.data
-            DataStoreManager.saveToken(token)
-            Config.setUser(JWTParse.getUser(token))
             ToastUtils.showLong(requestBody.data)
-            initDataBase(Config.user)
-            initBook(Config.user)
-            send(LoginUiState.Success(token))
+
+            var token = requestBody.data
+
+            Config.setToken(token)
+            Config.setUser(JWTParse.getUser(token))
+            Config.setUseMode(enableOffline = false)
+            App.switchDataBase(Config.user.name)
+            val initBooksJob = launch({
+                val remoteBooks = getRemoteBooks()
+                if (remoteBooks.isNotEmpty()) {
+                    remoteBooks.forEach {
+                        App.dataBase.bookDao().upsert(it)
+                        if (it.firstBook == 0) {
+                            Config.setBook(it)
+                        }
+                    }
+                }
+            })
+            initBooksJob.join()
+            DataStoreManager.saveUseMode(enableOffline = false)
+            DataStoreManager.saveBook(Config.book)
+            send(LoginUiState.LoginSuccess(token))
         }, {
-            send(LoginUiState.Error(it))
+            send(LoginUiState.LoginError(it))
         })
 
     }
@@ -50,18 +71,17 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
         return EncryptUtils.encryptSHA512ToString(String(EncryptUtils.encryptSHA512(password.toByteArray())))
     }
 
-    private fun auth(token: JWTParse) {
-        //在服务验证一次拿用户，登陆仅仅返回Token
-        //var user =HejiNetwork.getInstance().auth(token.trim().split("Bearer")[1]).apply {}
+    private suspend fun getRemoteBooks(): MutableList<Book> {
+        val response = HttpManager.getInstance().bookPull()
+        if (response.success()) {
+            return response.data
+        }
+        return mutableListOf()
     }
 
-    private fun initDataBase(user: JWTParse.User) {
-        App.setDataBase(user.name)
-    }
-
-    private suspend fun initBook(user: JWTParse.User) {
+    private suspend fun getRemoteBook(user: JWTParse.User) {
         //账本同步到本地，如果没有账本，创建一个默认账本
-        val response = HejiNetwork.getInstance().bookPull()
+        val response = HttpManager.getInstance().bookPull()
         if (response.code == 0 && response.data.isNotEmpty()) {
             response.data.forEach {
                 App.dataBase.bookDao().upsert(it)
@@ -69,9 +89,16 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
                     Config.setBook(it)
                 }
             }
-
         } else {
-            createDefBook()
+            val firstBook = Book(
+                id = "0",
+                name = "个人账本",
+                createUser = user.name,
+                firstBook = 0,
+                type = "离线账本",
+            )
+            createBook(firstBook)
+            Config.setBook(Config.defaultBook)
         }
     }
 
@@ -79,23 +106,31 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
      * 在线创建失败则创建默认账本
      *
      */
-    @Deprecated("server created book")
-    private fun createDefBook() {
+
+    private fun createBook(book: Book = Config.defaultBook) {
         val bookDao = App.dataBase.bookDao()
         if (bookDao.count() == 0) {
-            val firstBook =
-                Book(
-                    id = ObjectId().toHexString(),
-                    name = "个人账本",
-                    firstBook = 0,
-                    createUser = Config.user.name,
-                    type = "个人账本"
-                ).apply {
-                    synced = STATUS.NOT_SYNCED
-                }
-            Config.setBook(firstBook)
-            bookDao.insert(firstBook)
+            bookDao.insert(book)
         }
+    }
+
+    /**
+     * 开启离线使用模式
+     */
+    private fun enableOfflineMode() {
+        with(Config) {
+            App.switchDataBase(localUser.name)
+            setBook(defaultBook)
+            setUser(localUser)
+            setUseMode(true)
+        }
+        launchIO({
+            createBook(Config.defaultBook)
+            DataStoreManager.saveUseMode(true)
+            DataStoreManager.saveBook(Config.defaultBook)
+            send(LoginUiState.OfflineRun())
+        })
+
     }
 }
 

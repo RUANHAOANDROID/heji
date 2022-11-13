@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(FeatureException.class)
     @ResponseBody
     public String exceptionHandler(HttpServletRequest request, FeatureException e) {
         String failed = ApiResponse.error(e.getMessage());

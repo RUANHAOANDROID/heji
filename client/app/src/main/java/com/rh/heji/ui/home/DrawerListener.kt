@@ -3,7 +3,7 @@ package com.rh.heji.ui.home
 import android.util.DisplayMetrics
 import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
-import com.rh.heji.MainActivity
+import com.rh.heji.ui.MainActivity
 
 class DrawerListener(private val mainActivity: MainActivity, val offset:(left:Int, top:Int, right:Int, bottom:Int) -> Unit ) :
     DrawerListener {

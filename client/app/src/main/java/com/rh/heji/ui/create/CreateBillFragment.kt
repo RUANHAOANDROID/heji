@@ -283,7 +283,7 @@ class CreateBillFragment : BaseFragment() {
                     if (uiState.dealers.size > 0) {
                         setDealer(uiState.dealers[0])//设置默经手人
                     } else {
-                        setDealer(App.user.name) //设置默经手人当前用户
+                        setDealer(Config.user.name) //设置默经手人当前用户
                     }
                     binding.tvUserLabel.setOnClickListener {
                         XPopup.Builder(requireContext())

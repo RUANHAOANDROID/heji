@@ -3,7 +3,6 @@ package com.rh.heji.ui.popup
 import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
-import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -22,6 +21,7 @@ import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.ItemImgBinding
 import com.rh.heji.databinding.PopLayoutBilliInfoBinding
+import com.rh.heji.ui.MainActivity
 import com.rh.heji.ui.create.ArgAddBill
 import com.rh.heji.ui.create.CreateBillFragmentArgs
 import com.rh.heji.utlis.ImageUtils
@@ -110,7 +110,7 @@ class PopupBillInfo(
         ) {
             context as MainActivity
             mBill.also {
-                if (it.createUser == App.user.name) {
+                if (it.createUser == Config.user.name) {
                     //状态删除
                     App.dataBase.billDao().preDelete(it.id)
                     //异步删除->删除成功->本地删除

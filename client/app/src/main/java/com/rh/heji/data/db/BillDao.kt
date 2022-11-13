@@ -1,8 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
-import com.rh.heji.App
-import com.rh.heji.App.Companion.currentBook
+import com.rh.heji.Config
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.dto.*
@@ -67,7 +66,7 @@ interface BillDao {
         time: Date,
         money: BigDecimal,
         remark: String,
-        bookId: String = App. currentBook.id
+        bookId: String = Config.book.id
     ): MutableList<String>
 
     @Query("select count(*)  from bill where bill_id =:id")
@@ -94,7 +93,7 @@ interface BillDao {
     fun findBetweenTime(
         start: String,
         end: String,
-        bookId: String? = currentBook.id
+        bookId: String? = Config.book.id
     ): MutableList<Bill>
 
     /**
@@ -108,11 +107,11 @@ interface BillDao {
     fun findHaveBillDays(
         start: String,
         end: String,
-        bookId: String? = currentBook.id
+        bookId: String? = Config.book.id
     ): MutableList<String>
 
     @Query("SELECT * FROM bill WHERE date(bill_time) =:time AND book_id=:bookId AND sync_status!=-1")
-    fun findByDay(time: String, bookId: String? = currentBook.id): MutableList<Bill>
+    fun findByDay(time: String, bookId: String? = Config.book.id): MutableList<Bill>
 
     /**
      * 时间内收入、支出
@@ -127,24 +126,24 @@ interface BillDao {
         start: String,
         end: String,
         sz: Int,
-        bookId: String? = currentBook.id
+        bookId: String? = Config.book.id
     ): Flow<Double>
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND date(bill_time)=:time")
-    fun sumDayIncome(time: String, bookId: String? = currentBook.id): Income
+    fun sumDayIncome(time: String, bookId: String? = Config.book.id): Income
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income ,date(bill_time) as time from bill  where sync_status!=-1 AND book_id=:bookId AND strftime('%Y-%m',bill_time)=:yearMonth group by date(bill_time) ORDER BY bill_time DESC ,bill_id DESC")
-    fun findEveryDayIncomeByMonth(bookId: String?= currentBook.id, yearMonth: String): MutableList<IncomeTime>
+    fun findEveryDayIncomeByMonth(bookId: String?= Config.book.id, yearMonth: String): MutableList<IncomeTime>
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',bill_time)=:yearMonth)")
-    fun sumIncome(yearMonth: String, bookId: String? = currentBook.id): Flow<Income>
+    fun sumIncome(yearMonth: String, bookId: String? = Config.book.id): Flow<Income>
 
     @TypeConverters(MoneyConverters::class)
     @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',bill_time)=:yearMonth)")
-    fun sumMonthIncomeExpenditure(yearMonth: String, bookId: String? = currentBook.id): Income
+    fun sumMonthIncomeExpenditure(yearMonth: String, bookId: String? = Config.book.id): Income
 
 
     @Query("SELECT * FROM bill WHERE  sync_status==:syncStatus")
@@ -158,7 +157,7 @@ interface BillDao {
     @TypeConverters(MoneyConverters::class)
     @Transaction
     @Query("SELECT sum(money) AS money,type,date(bill_time) AS time FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND type=:type AND sync_status!= ${STATUS.DELETED} group by date(bill_time)")
-    fun sumByMonth(date: String, type: Int, bookId: String = currentBook.id): MutableList<BillTotal>
+    fun sumByMonth(date: String, type: Int, bookId: String = Config.book.id): MutableList<BillTotal>
 
     /**
      * 根据月份查询账单
@@ -167,7 +166,7 @@ interface BillDao {
      * @return
      */
     @Query("SELECT * FROM bill WHERE strftime('%Y-%m',bill_time) ==:date AND book_id=:bookId AND type=:type AND sync_status!= ${STATUS.DELETED}")
-    fun findByMonth(date: String, type: Int?, bookId: String? = currentBook.id): MutableList<Bill>
+    fun findByMonth(date: String, type: Int?, bookId: String? = Config.book.id): MutableList<Bill>
 
     /**
      * 根据月份查询账单
@@ -176,7 +175,7 @@ interface BillDao {
      * @return
      */
     @Query("SELECT * FROM bill WHERE strftime('%Y-%m-%d',bill_time) ==:date AND book_id=:bookId AND sync_status!= ${STATUS.DELETED} AND type=:type order by date(bill_time)")
-    fun findByDay(date: String, type: Int, bookId: String? = currentBook.id): MutableList<Bill>
+    fun findByDay(date: String, type: Int, bookId: String? = Config.book.id): MutableList<Bill>
 
     /**
      * 根据月份查询账单
@@ -188,7 +187,7 @@ interface BillDao {
     fun findByMonthGroupByDay(
         date: String,
         type: Int,
-        bookId: String? = currentBook.id
+        bookId: String? = Config.book.id
     ): MutableList<Bill>
 
     /**
@@ -201,7 +200,7 @@ interface BillDao {
     fun findByMonthGroupByCategory(
         date: String,
         type: Int,
-        bookId: String = currentBook.id
+        bookId: String = Config.book.id
     ): MutableList<Bill>
 
     /**
@@ -215,7 +214,7 @@ interface BillDao {
         category: String,
         date: String,
         type: Int,
-        bookId: String? = currentBook.id
+        bookId: String? = Config.book.id
     ): MutableList<Bill>
 
     //---------------统计----------------//
@@ -229,7 +228,7 @@ interface BillDao {
     )
     fun listIncomeExpSurplusByMonth(
         yearMonth: String,
-        bookId: String? = currentBook.id
+        bookId: String? = Config.book.id
     ): MutableList<IncomeTimeSurplus>
 
     @TypeConverters(MoneyConverters::class)
@@ -242,7 +241,7 @@ interface BillDao {
     )
     fun listIncomeExpSurplusByYear(
         year: String,
-        bookId: String? = currentBook.id
+        bookId: String? = Config.book.id
     ): MutableList<IncomeTimeSurplus>
     /**
      * 根据月份查询账单
@@ -275,7 +274,7 @@ interface BillDao {
     fun reportCategory(
         type: Int,
         date: String,
-        bookId: String? = currentBook.id
+        bookId: String? = Config.book.id
     ): List<CategoryPercentage>
 
     /**

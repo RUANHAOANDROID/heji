@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
-import com.rh.heji.App.Companion.currentBook
+import com.rh.heji.Config
 import com.rh.heji.ETC
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentEtcBinding
@@ -178,7 +178,7 @@ class ETCFragment : BaseFragment() {
             XPopup.Builder(requireContext())
                 .asConfirm(
                     "导入" + etcViewModel.yearMonth + "账单",
-                    "当前账本【${currentBook.name}】，确认导入吗？"
+                    "当前账本【${Config.book.name}】，确认导入吗？"
                 ) {
 
                     inputLoading.show()

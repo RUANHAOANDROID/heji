@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.blankj.utilcode.util.ToastUtils
-import com.rh.heji.LoginActivity
+import com.rh.heji.ui.user.login.LoginActivity
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentRegisterBinding
 import com.rh.heji.render

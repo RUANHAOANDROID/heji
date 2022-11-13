@@ -1,15 +1,17 @@
 package com.rh.heji.ui.user.login
 
+import android.os.storage.StorageManager
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
+import com.rh.heji.Config
+import com.rh.heji.DataStoreManager
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.HejiNetwork
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.user.JWTParse
-import com.rh.heji.ui.user.security.UserToken
 import com.rh.heji.utlis.launchIO
 
 internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
@@ -31,11 +33,11 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
                 encodePassword(password)
             )
             var token = requestBody.data
-            UserToken.saveToken(token)
-            App.setUser(currentUser = JWTParse.getUser(token))
+            DataStoreManager.saveToken(token)
+            Config.setUser(JWTParse.getUser(token))
             ToastUtils.showLong(requestBody.data)
-            initDataBase(App.user)
-            initBook(App.user)
+            initDataBase(Config.user)
+            initBook(Config.user)
             send(LoginUiState.Success(token))
         }, {
             send(LoginUiState.Error(it))
@@ -48,7 +50,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
         return EncryptUtils.encryptSHA512ToString(String(EncryptUtils.encryptSHA512(password.toByteArray())))
     }
 
-    private fun auth(token: UserToken) {
+    private fun auth(token: JWTParse) {
         //在服务验证一次拿用户，登陆仅仅返回Token
         //var user =HejiNetwork.getInstance().auth(token.trim().split("Bearer")[1]).apply {}
     }
@@ -64,7 +66,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
             response.data.forEach {
                 App.dataBase.bookDao().upsert(it)
                 if (it.firstBook == 0) {
-                    App.setCurrentBook(it)
+                    Config.setBook(it)
                 }
             }
 
@@ -86,12 +88,12 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
                     id = ObjectId().toHexString(),
                     name = "个人账本",
                     firstBook = 0,
-                    createUser = App.user.name,
+                    createUser = Config.user.name,
                     type = "个人账本"
                 ).apply {
                     synced = STATUS.NOT_SYNCED
                 }
-            App.setCurrentBook(firstBook)
+            Config.setBook(firstBook)
             bookDao.insert(firstBook)
         }
     }

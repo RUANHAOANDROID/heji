@@ -5,6 +5,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
+import com.rh.heji.Config
 import com.rh.heji.data.db.*
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.service.sync.IBillSync
@@ -55,7 +56,7 @@ internal class CreateBillViewModel(private val mBillSync: IBillSync) :
                 is CreateBillAction.GetCategories -> {
                     LogUtils.d("TimeTest",TimeUtils.millis2String(System.currentTimeMillis(),"yyyy/MM/dd HH:mm:ss"))
                     val categories = App.dataBase.categoryDao()
-                        .findIncomeOrExpenditure(App.currentBook.id, action.type)
+                        .findIncomeOrExpenditure(Config.book.id, action.type)
                     send(CreateBillUIState.Categories(action.type, categories))
                     LogUtils.d("TimeTest",categories,TimeUtils.millis2String(System.currentTimeMillis(),"yyyy/MM/dd HH:mm:ss"))
                 }

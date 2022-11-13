@@ -4,6 +4,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
+import com.rh.heji.Config
 import com.rh.heji.ETC
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
@@ -57,7 +58,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
             val categories = App.dataBase.categoryDao().queryByCategoryName("过路费")
             val category: Category
             if (categories.isEmpty()) {
-                category = Category(name = "过路费", bookId = App.currentBook.id).apply {
+                category = Category(name = "过路费", bookId = Config.book.id).apply {
                     level = 0
                     type = BillType.EXPENDITURE.valueInt()
                 }

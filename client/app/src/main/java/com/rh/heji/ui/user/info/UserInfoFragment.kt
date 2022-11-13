@@ -2,8 +2,7 @@ package com.rh.heji.ui.user.info
 
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import com.rh.heji.App
-import com.rh.heji.R
+import com.rh.heji.Config
 import com.rh.heji.databinding.FragmentUserInfoBinding
 import com.rh.heji.ui.base.BaseFragment
 
@@ -16,8 +15,8 @@ class UserInfoFragment : BaseFragment() {
     override fun layout() = binding.root
 
     override fun initView(rootView: View) {
-        binding.tvNickName.text = App.user.name
-        binding.tvTEL.text = App.user.token
+        binding.tvNickName.text = Config.user.name
+        binding.tvTEL.text = Config.user.token
     }
 
     override fun setUpToolBar() {

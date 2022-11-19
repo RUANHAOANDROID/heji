@@ -48,10 +48,6 @@
 3. 账本具备{账本名称\账本所属类别}
 4. 账单有金额、时间、票据、记账人、经手人、类别等属性
 
-#### 目前已有账本
-
-* 运营账本（目前单一账本，多用户同时记账，非自身记账不可删除）
-
 #### 账单
 1. 账单分为收入\支出
   
@@ -70,6 +66,8 @@
 5. 账单导出
 
    > 导出支持 EXCEL、CVS、钱迹
+   >
+6. 多人记账用户仅能删除或修改自身账单
 
 #### 统计
 1. 支出人员支出占比
@@ -92,7 +90,7 @@
 
 ## Client Android
 
-Android client 采用单Activity 多Fragment 项目结构偏向于MVVM模式
+Android client 采用单Activity 多Fragment的MVI模式
 
 ### 技术栈
 *   基于AndroidX,使用Java + kotlin 混合开发
@@ -193,7 +191,7 @@ opeID| Integer | 操作对象的ID
 opeClass| String | 操作对象类别 （操作了账本或账单）
 opeType| Integer | 操作类型（删除或更新）
 opeDate| String | 操作时间（客户端操作时间） 
-    
+
 #### 客户端错误日志（MErrorLog）
 列名| 类型| 说 明 
 ------------ | :-----------:|:----------: 
@@ -211,7 +209,7 @@ contents| String | 日志内容
 *   gson  数据的格式化
 *   Easyexcel Excel导入导出操作
 *   Lombok 减少样板代码
-    
+  
 ## 感谢 JetBrains 免费的开源授权
 
 <a href="https://www.jetbrains.com/" target="_blank">

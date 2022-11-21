@@ -18,7 +18,7 @@ import java.util.Date;
 public class JsonJavaTest {
     @Test
     public void jsonTest() throws IOException {
-        String jsonString = "{\"id\":\"611e854692891153fb00ae14\",\"bookId\":\"mybook\",\"money\":0.00,\"type\":-1,\"category\":null,\"billTime\":\"2021-22-20 00:22:30\",\"updateTime\":0,\"dealer\":null,\"createUser\":\"App.getInstance().currentUser.username\",\"remark\":null,\"imgCount\":0,\"synced\":0,\"images\":[]}";
+        String jsonString = "{\"id\":\"611e854692891153fb00ae14\",\"bookId\":\"mybook\",\"money\":0.00,\"type\":-1,\"category\":null,\"time\":\"2021-22-20 00:22:30\",\"updateTime\":0,\"dealer\":null,\"createUser\":\"App.getInstance().currentUser.username\",\"remark\":null,\"imgCount\":0,\"synced\":0,\"images\":[]}";
         Moshi moshi = new Moshi.Builder()
                 .addLast(new KotlinJsonAdapterFactory())//Java 测试添加kotlin转换器
                 .add(new DateAdapter())

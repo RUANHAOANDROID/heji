@@ -53,7 +53,7 @@ class BillListFragment : BaseFragment() {
 
     private fun FragmentBillsHomeBinding.viewClick() {
         fab.setOnClickListener {
-            val bill = Bill(billTime = Date())
+            val bill = Bill(time = Date())
             val bundle = CreateBillFragmentArgs.Builder(
                 ArgAddBill(false, bill)
             ).build().toBundle()
@@ -215,7 +215,7 @@ class BillListFragment : BaseFragment() {
                         CreateBillFragmentArgs.Builder(
                             ArgAddBill(
                                 false,
-                                Bill(billTime = calendar.time)
+                                Bill(time = calendar.time)
                             )
                         )
                             .build() //选择的日期

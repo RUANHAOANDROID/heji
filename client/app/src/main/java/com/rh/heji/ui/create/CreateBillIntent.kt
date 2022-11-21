@@ -17,7 +17,7 @@ internal sealed class CreateBillUIState : IUiState {
 //    class Money(money: BigDecimal) : AddBillUIState()
 
 
-//    class Time(billTime: Date) : AddBillUIState()
+//    class Time(time: Date) : AddBillUIState()
 
     class Save(val again: Boolean) : CreateBillUIState()
     class BillChange(val bill: Bill) : CreateBillUIState()

@@ -58,8 +58,8 @@ data class Bill(
      * 账单时间-产生费用的日期-以这个为主
      */
 
-    @ColumnInfo(name = "bill_time")
-    var billTime: Date = Date(),
+    @ColumnInfo(name = "time")
+    var time: Date = Date(),
 
     /**
      * 更新时间
@@ -112,7 +112,7 @@ data class Bill(
                 ", money=" + money +
                 ", type=" + type +
                 ", category='" + category + '\'' +
-                ", time=" + billTime +
+                ", time=" + time +
                 ", updateTime=" + updateTime +
                 ", dealer='" + dealer + '\'' +
                 ", remark='" + remark + '\'' +

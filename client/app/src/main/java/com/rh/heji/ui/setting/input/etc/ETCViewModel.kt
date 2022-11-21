@@ -96,19 +96,19 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
         if (etcListInfo?.data != null && etcListInfo.data.size > 0) {
             val data = etcListInfo.data
             data.forEach(Consumer { info: ETCListInfoEntity.Info ->
-                val billTime = TimeUtils.string2Date(info.exchargetime, "yyyy-MM-dd HH:mm:ss")
+                val time = TimeUtils.string2Date(info.exchargetime, "yyyy-MM-dd HH:mm:ss")
                 val bill = Bill()
-                bill.id = ObjectId(billTime).toString()
+                bill.id = ObjectId(time).toString()
                 bill.money = BigDecimal(info.etcPrice).divide(BigDecimal(100))
                 bill.remark = info.exEnStationName
-                bill.billTime = billTime
+                bill.time = time
                 bill.category = categoryName
                 bill.dealer = "ETC"
                 bill.type = BillType.EXPENDITURE.valueInt()
                 /**
                  * 如果不存在才插入
                  */
-                val bills = App.dataBase.billDao().findIds(bill.billTime, bill.money, bill.remark!!)
+                val bills = App.dataBase.billDao().findIds(bill.time, bill.money, bill.remark!!)
                 if (bills.size <= 0) {
                     val count = App.dataBase.billDao().install(bill)
                     LogUtils.d("导入ETC账单：", bill)
@@ -253,12 +253,12 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
     private fun saveToBillDB(info: OrderArrBean) {
         val money = info.totalFee
         val remark = info.enStationName + "|" + info.exStationName
-        val billTime = DateConverters.str2Date(info.exTime)
+        val time = DateConverters.str2Date(info.exTime)
         val bill = Bill()
-        bill.id = ObjectId(billTime).toString()
+        bill.id = ObjectId(time).toString()
         bill.money = BigDecimal(money).divide(BigDecimal(100))
         bill.remark = remark
-        bill.billTime = billTime
+        bill.time = time
         bill.category = categoryName
         bill.dealer = "ETC"
         bill.type = BillType.EXPENDITURE.valueInt()
@@ -266,7 +266,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
          * 如果不存在才插入(插入时必须保持格式一致)
          */
         val bills = App.dataBase.billDao().findIds(
-            bill.billTime, bill.money,
+            bill.time, bill.money,
             bill.remark!!
         )
         if (bills.size <= 0) {

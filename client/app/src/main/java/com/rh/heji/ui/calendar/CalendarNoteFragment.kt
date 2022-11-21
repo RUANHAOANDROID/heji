@@ -97,7 +97,7 @@ class CalendarNoteFragment : BaseFragment() {
                 CreateBillFragmentArgs.Builder(
                     ArgAddBill(
                         isModify = false,
-                        bill = Bill(billTime = calendar.time)
+                        bill = Bill(time = calendar.time)
                     )
                 )
                     .build()//选择的日期

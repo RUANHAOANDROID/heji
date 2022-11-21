@@ -168,7 +168,7 @@ class CreateBillFragment : BaseFragment() {
 
         val mArgs = CreateBillFragmentArgs.fromBundle(requireArguments()).argAddBill
         isModify = mArgs.isModify
-        mBill = mArgs.bill ?: Bill(billTime = Date())
+        mBill = mArgs.bill ?: Bill(time = Date())
         LogUtils.d(mBill.toString())
     }
 
@@ -252,7 +252,7 @@ class CreateBillFragment : BaseFragment() {
         keyboardListener()
         viewModel.doAction(CreateBillAction.GetDealers(mBill.id))
         with(mBill) {
-            setTime(billTime)
+            setTime(time)
             setDealer(dealer)
             category?.let { setSelectCategory(it, type) }
             setMoney(money)
@@ -404,7 +404,7 @@ class CreateBillFragment : BaseFragment() {
         binding.apply {
             tvMoney.text = mBill.money.toString()
             mBill.dealer?.let { setDealer(it) }
-            tvBillTime.text = mBill.billTime.string()
+            tvBillTime.text = mBill.time.string()
             mBill.remark?.let { remark ->
                 eidtRemark.setText(remark)
             }
@@ -424,16 +424,16 @@ class CreateBillFragment : BaseFragment() {
 
     private fun setTime(selectTime: Date) {
         binding.tvBillTime.text = DateConverters.date2Str(selectTime)
-        mBill.billTime = selectTime
+        mBill.time = selectTime
         LogUtils.d(selectTime)
-        binding.tvBillTime.text = mBill.billTime.string() //设置日历初始选中时间
+        binding.tvBillTime.text = mBill.time.string() //设置日历初始选中时间
         binding.tvBillTime.setOnClickListener {
             val onDateSetListener =
                 OnDateSetListener { datePicker: DatePicker?, year: Int, month: Int, dayOfMonth: Int ->
-                    val selectCalendar = mBill.billTime.calendar()
+                    val selectCalendar = mBill.time.calendar()
                     selectCalendar[year, month] = dayOfMonth
                     binding.tvBillTime.text = selectCalendar.time.string()
-                    mBill.billTime = selectTime
+                    mBill.time = selectTime
                     selectHourAndMinute(
                         year = year,
                         month = month + 1,//实际保存时，选择的时间需要+1（month：0-11 ）
@@ -442,7 +442,7 @@ class CreateBillFragment : BaseFragment() {
                         minute = selectCalendar[Calendar.MINUTE]
                     )
                 }
-            val yearMonth = YearMonth.format(mBill.billTime)
+            val yearMonth = YearMonth.format(mBill.time)
             val dialog = DatePickerDialog(
                 mainActivity,
                 onDateSetListener,

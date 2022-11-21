@@ -54,7 +54,7 @@ class PopupBillInfo(
                 tvMonney.text = mBill.money.toString()
                 tvType.text = mBill.category
                 tvRecordTime.text = mBill.id.getObjectTime().string()
-                tvTicketTime.text = mBill.billTime.string()
+                tvTicketTime.text = mBill.time.string()
                 rePeople.text = mBill.dealer
             }
         }

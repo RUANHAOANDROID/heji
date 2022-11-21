@@ -458,10 +458,7 @@ class CreateBillFragment : BaseFragment() {
 
     private fun save(again: Boolean) {
         try {
-            mBill.apply {
-                money = BigDecimal(binding.tvMoney.text.toString())
-                createTime = System.currentTimeMillis()
-            }
+            mBill.money = BigDecimal(binding.tvMoney.text.toString())
             //check value is false throw error
             check(mBill.money != ZERO_00()) { "金额不能为 ${ZERO_00().toPlainString()}" }
             check(mBill.money != BigDecimal.ZERO) { "金额不能为 ${BigDecimal.ZERO.toPlainString()}" }

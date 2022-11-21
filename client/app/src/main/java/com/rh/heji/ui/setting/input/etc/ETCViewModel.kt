@@ -104,7 +104,6 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
                 bill.billTime = billTime
                 bill.category = categoryName
                 bill.dealer = "ETC"
-                bill.createTime = TimeUtils.getNowMills()
                 bill.type = BillType.EXPENDITURE.valueInt()
                 /**
                  * 如果不存在才插入
@@ -262,7 +261,6 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
         bill.billTime = billTime
         bill.category = categoryName
         bill.dealer = "ETC"
-        bill.createTime = TimeUtils.getNowMills()
         bill.type = BillType.EXPENDITURE.valueInt()
         /**
          * 如果不存在才插入(插入时必须保持格式一致)

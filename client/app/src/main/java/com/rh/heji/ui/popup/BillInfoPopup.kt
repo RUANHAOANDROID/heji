@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -16,7 +15,6 @@ import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener
 import com.lxj.xpopup.util.SmartGlideImageLoader
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.*
-import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.ItemImgBinding
@@ -55,8 +53,8 @@ class PopupBillInfo(
             binding.apply {
                 tvMonney.text = mBill.money.toString()
                 tvType.text = mBill.category
-                tvRecordTime.text = mBill.createTime?.let { TimeUtils.millis2String(it) }
-                tvTicketTime.text = DateConverters.date2Str(mBill.billTime)
+                tvRecordTime.text = mBill.id.getObjectTime().string()
+                tvTicketTime.text = mBill.billTime.string()
                 rePeople.text = mBill.dealer
             }
         }

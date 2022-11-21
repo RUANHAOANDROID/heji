@@ -45,8 +45,7 @@ class BookSettingFragment : BaseFragment() {
         arguments?.let {
             book = BookSettingFragmentArgs.fromBundle(it).book
             binding.tvBookType.text = book.type
-            val createTime = DateConverters.date2Str(book.id.getObjectTime())
-            binding.tvCreateTime.text = createTime
+            binding.tvCreateTime.text = book.id.getObjectTime().string()
             val adapter = UsersAdapter(mutableListOf())
             viewModel.getBookUsers(book.id) { bookUsers ->
                 adapter.addData(bookUsers)

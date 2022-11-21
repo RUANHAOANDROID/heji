@@ -1,10 +1,7 @@
 package com.rh.heji
 
 import com.rh.heji.data.db.Book
-import com.rh.heji.data.db.BookUser
-import com.rh.heji.store.DataStoreManager
 import com.rh.heji.ui.user.JWTParse
-import kotlinx.coroutines.runBlocking
 
 /**
  *Date: 2022/11/13
@@ -56,7 +53,6 @@ object Config {
 
     //默认账本离线账本-离线用户可以创建多个账本
     var defaultBook = Book(
-        id = "0",
         name = "个人账本",
         createUser = this.localUser.name,
         firstBook = 0,

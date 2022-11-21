@@ -2,12 +2,12 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
-import com.rh.heji.App
 import com.rh.heji.Config
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.mongo.ObjectId
+import com.rh.heji.getObjectTime
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
@@ -62,12 +62,6 @@ data class Bill(
     var billTime: Date = Date(),
 
     /**
-     * 创建时间
-     */
-    @ColumnInfo(name = "create_time")
-    var createTime: Long? = 0,
-
-    /**
      * 更新时间
      */
     @ColumnInfo(name = "update_time")
@@ -119,7 +113,6 @@ data class Bill(
                 ", type=" + type +
                 ", category='" + category + '\'' +
                 ", time=" + billTime +
-                ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", dealer='" + dealer + '\'' +
                 ", remark='" + remark + '\'' +

@@ -26,29 +26,25 @@ class AppInitializer : Initializer<Unit> {
     override fun create(context: Context) {
         Log.d(tag, "create: ")
         this.context = context
-        if (BuildConfig.DEBUG) {
-            StrictMode.setThreadPolicy(
-                StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
-                    .detectNetwork() // or .detectAll() for all detectable problems
-                    .penaltyLog()
-                    .build()
-            )
-            StrictMode.setVmPolicy(
-                StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .detectLeakedClosableObjects()
-                    .penaltyLog()
-                    //.penaltyDeath()
-                    .build()
-            )
-        }
+//        if (BuildConfig.DEBUG) {
+//            StrictMode.setThreadPolicy(
+//                StrictMode.ThreadPolicy.Builder()
+//                    .detectDiskReads()
+//                    .detectDiskWrites()
+//                    .detectNetwork() // or .detectAll() for all detectable problems
+//                    .penaltyLog()
+//                    .build()
+//            )
+//            StrictMode.setVmPolicy(
+//                StrictMode.VmPolicy.Builder()
+//                    .detectLeakedSqlLiteObjects()
+//                    .detectLeakedClosableObjects()
+//                    .penaltyLog()
+//                    //.penaltyDeath()
+//                    .build()
+//            )
+//        }
         runBlocking {
-            LogUtils.getConfig().apply {
-                isLogSwitch = BuildConfig.DEBUG
-                stackDeep = 1
-            }
             DataStoreManager.getUseMode(context).first()?.let {
                 Config.setUseMode(it)
             }
@@ -60,12 +56,17 @@ class AppInitializer : Initializer<Unit> {
                     Config.setUser(JWTParse.getUser(it))
                 }
             }
-            Log.d(tag, "Config isInitUser: ${Config.isInitUser()}")
-
             DataStoreManager.getBook(context).first()?.let {
                 Config.setBook(it)
+                LogUtils.d(it)
             }
-            Log.d(tag, "Config isInitBook: ${Config.isInitBook()}")
+
+            LogUtils.d(
+                tag,
+                "Config enableOfflineMode=${Config.enableOfflineMode}",
+                "Config isInitBook=${Config.isInitBook()}",
+                "Config isInitUser=${Config.isInitUser()}"
+            )
         }
     }
 

@@ -1,6 +1,8 @@
 package com.rh.heji.ui
 
 import androidx.lifecycle.ViewModel
+import com.blankj.utilcode.util.LogUtils
+import com.rh.heji.Config
 import com.rh.heji.utlis.YearMonth
 import java.util.*
 
@@ -10,6 +12,15 @@ import java.util.*
  * # APP运行时 UI常量共享存储
  */
 class MainViewModel : ViewModel() {
+    init {
+        LogUtils.d(
+            "MainViewModel",
+            "Config enableOfflineMode=${Config.enableOfflineMode}",
+            "Config isInitBook=${Config.isInitBook()}",
+            "Config isInitUser=${Config.isInitUser()}"
+        )
+    }
+
     /**
      * 全局选择的年月（home to subpage）
      */

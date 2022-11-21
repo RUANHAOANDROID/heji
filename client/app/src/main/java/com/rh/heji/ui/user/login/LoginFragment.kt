@@ -45,6 +45,7 @@ class LoginFragment : Fragment() {
                 }
                 is LoginUiState.OfflineRun -> {
                     MainActivity.start(requireActivity())
+                    activity?.finish()
                 }
             }
         }

@@ -46,4 +46,6 @@ interface BookDao {
     @Query("select * from book where book_id =:id")
     fun findBook(id: String): MutableList<Book>
 
+    @Query("SELECT book_id FROM book WHERE create_user=:user")
+    fun findBookIdsByUser(user: String): MutableList<String>
 }

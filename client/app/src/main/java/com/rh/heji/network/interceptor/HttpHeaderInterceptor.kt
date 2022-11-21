@@ -38,6 +38,6 @@ class HttpHeaderInterceptor : Interceptor {
 
     private fun sendLoginBroadcast() {
         if (!Config.enableOfflineMode)
-            AppViewModel.get(App.context).loginEvent.postValue(Event(401))
+            App.viewModel.loginEvent.postValue(Event(401))
     }
 }

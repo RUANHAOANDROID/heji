@@ -23,6 +23,6 @@ class AuthorizedInterceptor : Interceptor {
             ToastUtils.showLong("请登录")
         }
         if (!Config.enableOfflineMode)
-            AppViewModel.get(App.context).loginEvent.postValue(Event(401))
+            App.viewModel.loginEvent.postValue(Event(401))
     }
 }

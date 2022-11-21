@@ -18,6 +18,7 @@ import com.rh.heji.service.sync.SyncService
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        viewModel = AppViewModel(this)
         context = this
         init()
     }
@@ -33,6 +34,10 @@ class App : Application() {
     companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
+            private set
+
+        @SuppressLint("StaticFieldLeak")
+        lateinit var viewModel: AppViewModel
             private set
 
         /**

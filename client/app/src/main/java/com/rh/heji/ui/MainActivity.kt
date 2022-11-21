@@ -31,6 +31,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
+import com.rh.heji.App
 import com.rh.heji.AppViewModel
 import com.rh.heji.Config
 import com.rh.heji.R
@@ -111,8 +112,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkLogin() {
+        if (!Config.enableOfflineMode) {
+            if (Config.user == Config.localUser) {
+                toLogin()
+            }
+        }
         //观察拦截器发出的登录消息
-        AppViewModel.get().loginEvent.observe(this) {
+        App.viewModel.loginEvent.observe(this) {
             navController.currentBackStackEntry?.let {
                 if (it.destination.label != resources.getString(R.string.login)) {
                     if (!Config.isInitUser())
@@ -158,12 +164,14 @@ class MainActivity : AppCompatActivity() {
         val navMenu = navigationView.menu
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener {
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
-                runBlocking{
+                runBlocking {
                     DataStoreManager.removeToken()
                     DataStoreManager.removeUseMode()
+                    Config.setUseMode(false)
                     DataStoreManager.removeBook()
                 }
                 finish()
+                LoginActivity.start(this)
             }.show()
             false
         }
@@ -193,7 +201,6 @@ class MainActivity : AppCompatActivity() {
                 parent.closeDrawer(navigationView)
             }
             if (!handled) {
-                LogUtils.d(TAG, item.toString())
                 NavigationUI.onNavDestinationSelected(item, navController)
                 if (navController.currentDestination?.id != R.id.nav_home) navController.popBackStack()
                 try {

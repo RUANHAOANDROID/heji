@@ -10,7 +10,7 @@
 
 1.客户端采用object id 保证数据的唯一性
 
-2.客户端
+2.客户端数据变更后在后台服务中同步数据
 
 ```mermaid
 sequenceDiagram

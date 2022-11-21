@@ -54,6 +54,11 @@ class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :
             binding.imgSetting.setOnClickListener {
                 settingClickListener(item)
             }
+            if (item.firstBook == 0) {//0号账本
+                binding.imgFirstBook.visibility = View.VISIBLE
+            } else {
+                binding.imgFirstBook.visibility = View.GONE
+            }
         }
     }
 }

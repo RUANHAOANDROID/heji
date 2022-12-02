@@ -8,3 +8,4 @@ server/src/main/resources/application.properties
 server/.idea
 server/logs
 server/target
+server-go/.idea/workspace.xml

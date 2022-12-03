@@ -9,3 +9,6 @@ server/.idea
 server/logs
 server/target
 server-go/.idea/workspace.xml
+server-go/.idea/vcs.xml
+server-go/.idea/modules.xml
+server-go/.idea/server-go.iml

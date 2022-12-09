@@ -109,7 +109,7 @@ Android client 采用单Activity 多Fragment的MVI模式
 *   MPAndroidChart 强大的图表用做统计
 *   immersionbar 多机型强大Toobar的封装适配
 
-## 服务端(打算迁移到golang)
+## 服务端(打算迁移到golang and proto3)
 服务端使用Java Springboot框架，数据库采用MongoDB
 ### 数据集设计
 > 数据库使用MongoDB。一开始服务端数据库使用MySQL，随着业务变更MySQL调整起来非常不便，MongoDB能够快速适应业务的调整，存储票据图片（客户端有压缩）迁移和管理也非常方便。

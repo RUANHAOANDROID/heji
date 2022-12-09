@@ -107,7 +107,7 @@ Android client 采用单Activity 多Fragment的MVI模式
 *   calendarview 日历账单视图与记账
 *   datastore  少量数据的本地存储
 *   MPAndroidChart 强大的图表用做统计
-*   immersionbar 多机型强大Toobar的封装适配
+*   immersionbar 多机型Toobar的封装适配
 
 ## 服务端
 > 打算迁移到golang and proto3，为方便更多的低功耗设备或家庭服务器使用

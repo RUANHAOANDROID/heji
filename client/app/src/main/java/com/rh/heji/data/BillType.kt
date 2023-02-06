@@ -32,4 +32,8 @@ enum class BillType(private val type: Int, private val text: String) {
             return ALL
         }
     }
+
+    override fun toString(): String {
+        return "BillType(name=$name,type=$type,text=$text,ordinal=$ordinal)"
+    }
 }

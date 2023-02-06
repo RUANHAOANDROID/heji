@@ -42,7 +42,7 @@ internal class SelectCategoryFragment : BaseFragment() {
         arguments?.let {
             type = SelectCategoryFragmentArgs.fromBundle(it).type
             if (type == BillType.INCOME)//预加载一次
-                createBillFragment.viewModel.doAction(CreateBillAction.GetCategories(type.valueInt()))
+                createBillFragment.viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
         }
 
     }
@@ -53,11 +53,11 @@ internal class SelectCategoryFragment : BaseFragment() {
         with(createBillFragment) {
             selectedCategoryFragment = this@SelectCategoryFragment
             type = this@SelectCategoryFragment.type
-            viewModel.doAction(CreateBillAction.GetCategories(type.valueInt()))
+            viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
         }
         selectCategory?.let {
             LogUtils.d(it)
-            createBillFragment.selectedCategory(type.valueInt(), it)
+            createBillFragment.selectedCategory(type.valueInt, it)
         }
     }
 
@@ -80,7 +80,7 @@ internal class SelectCategoryFragment : BaseFragment() {
                     it.isSelected = it.name == selectCategory!!.name
                 }
                 labelAdapter.notifyDataSetChanged()
-                createBillFragment.selectedCategory(type.valueInt(), selectCategory!!)
+                createBillFragment.selectedCategory(type.valueInt, selectCategory!!)
             }
         }
         binding.categoryRecycler.apply {
@@ -115,7 +115,7 @@ internal class SelectCategoryFragment : BaseFragment() {
                 data.count { category: Category -> category.isSelected }
             if (count <= 0) {
                 selectCategory = data.stream().findFirst().get()
-                createBillFragment.selectedCategory(type.valueInt(), selectCategory!!)
+                createBillFragment.selectedCategory(type.valueInt, selectCategory!!)
                 selectCategory!!.isSelected = true
                 labelAdapter.notifyDataSetChanged()
             }

@@ -33,9 +33,9 @@ class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
      */
     private var isAnnual: Boolean = false
 
-    private var lineDataType: Int = BillType.EXPENDITURE.valueInt()
+    private var lineDataType: Int = BillType.EXPENDITURE.valueInt
 
-    private var pieDataType: Int = BillType.EXPENDITURE.valueInt()
+    private var pieDataType: Int = BillType.EXPENDITURE.valueInt
 
     override fun doAction(action: ReportAction) {
         super.doAction(action)
@@ -140,13 +140,13 @@ class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
 
     private fun getLinChartData(type: Int = lineDataType) {
         launchIO({
-            if (type == BillType.ALL.valueInt()) {
+            if (type == BillType.ALL.valueInt) {
                 val uiStateData = with(ReportUiState.LinChart(type)) {
                     all = arrayListOf(
                         App.dataBase.billDao().sumByMonth(
-                            yearMonth.yearMonthString(), BillType.EXPENDITURE.valueInt()
+                            yearMonth.yearMonthString(), BillType.EXPENDITURE.valueInt
                         ), App.dataBase.billDao().sumByMonth(
-                            yearMonth.yearMonthString(), BillType.INCOME.valueInt()
+                            yearMonth.yearMonthString(), BillType.INCOME.valueInt
                         )
                     )
                     this

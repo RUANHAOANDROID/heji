@@ -139,11 +139,7 @@ internal class SelectCategoryFragment : BaseFragment() {
          */
         @JvmStatic
         fun newInstance(type: BillType): SelectCategoryFragment {
-            LogUtils.d(
-                "TimeTest",
-                type,
-                TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
-            )
+            LogUtils.d(type)
             val categoryFragment = SelectCategoryFragment()
             categoryFragment.arguments =
                 SelectCategoryFragmentArgs.Builder().setType(type).build().toBundle()

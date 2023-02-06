@@ -46,7 +46,7 @@ data class Bill(
     /**
      * 收支类型 s|z
      */
-    var type: Int = BillType.EXPENDITURE.valueInt(),
+    var type: Int = BillType.EXPENDITURE.valueInt,
 
     /**
      * 类别

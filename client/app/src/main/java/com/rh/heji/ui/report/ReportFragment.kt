@@ -72,17 +72,17 @@ class ReportFragment : BaseFragment() {
     }
 
     private fun setLinChart(type: Int, state: ReportUiState.LinChart) {
-        if (type == BillType.EXPENDITURE.valueInt()) {
+        if (type == BillType.EXPENDITURE.valueInt) {
             setExpenditureLineChartNodes(
                 viewModel.yearMonth, state.data
             )
         }
-        if (type == BillType.INCOME.valueInt()) {
+        if (type == BillType.INCOME.valueInt) {
             setIncomeLineChartNodes(
                 viewModel.yearMonth, state.data
             )
         }
-        if (type == BillType.ALL.valueInt()) {
+        if (type == BillType.ALL.valueInt) {
             val arrays = state.all
             setIELineChartNodes(
                 viewModel.yearMonth, expenditures = arrays[0], incomes = arrays[1]
@@ -129,19 +129,19 @@ class ReportFragment : BaseFragment() {
         val yearMonth = viewModel.yearMonth
         binding.tvTypeExpenditure.setOnClickListener {
             viewModel.doAction(
-                ReportAction.GetLinChartData(BillType.EXPENDITURE.valueInt())
+                ReportAction.GetLinChartData(BillType.EXPENDITURE.valueInt)
             )
             lineChartSelectType(BillType.EXPENDITURE)
         }
         binding.tvTypeIncome.setOnClickListener {
             viewModel.doAction(
-                ReportAction.GetLinChartData(BillType.INCOME.valueInt())
+                ReportAction.GetLinChartData(BillType.INCOME.valueInt)
             )
             lineChartSelectType(BillType.INCOME)
         }
         binding.tvTypeAll.setOnClickListener {
             viewModel.doAction(
-                ReportAction.GetLinChartData(BillType.ALL.valueInt())
+                ReportAction.GetLinChartData(BillType.ALL.valueInt)
             )
             lineChartSelectType(BillType.ALL)
         }
@@ -151,7 +151,7 @@ class ReportFragment : BaseFragment() {
         binding.tvTypeExpenditurePie.setOnClickListener {
             viewModel.doAction(
                 ReportAction.GetProportionChart(
-                    BillType.EXPENDITURE.valueInt()
+                    BillType.EXPENDITURE.valueInt
                 )
             )
             pieChartSelectType(BillType.EXPENDITURE)
@@ -159,7 +159,7 @@ class ReportFragment : BaseFragment() {
         binding.tvTypeIncomePie.setOnClickListener {
             viewModel.doAction(
                 ReportAction.GetProportionChart(
-                    BillType.INCOME.valueInt()
+                    BillType.INCOME.valueInt
                 )
             )
             pieChartSelectType(BillType.INCOME)

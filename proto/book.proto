@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-message CreateBook {
-  string bid = 1;
-  string name = 2;
-  string crt_user = 3;
-  string type = 4;
-}

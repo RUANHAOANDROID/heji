@@ -12,24 +12,15 @@ enum class BillType(private val type: Int, private val text: String) {
     fun valueString(): String = text
 
     companion object {
-        fun transform(type: Int): BillType {
-            if (type == INCOME.valueInt()) {
-                return INCOME
-            }
-            return if (type == EXPENDITURE.valueInt()) {
-                EXPENDITURE
-            } else {
-                ALL
-            }
+        fun transform(type: Int) = when (type) {
+            INCOME.type -> INCOME
+            EXPENDITURE.type -> EXPENDITURE
+            else -> ALL
         }
-
-        fun transform(text: String): BillType {
-            if (text == INCOME.valueString()) {
-                return INCOME
-            } else if (text == EXPENDITURE.valueString()) {
-                return EXPENDITURE
-            }
-            return ALL
+        fun transform(text: String) = when (text) {
+            INCOME.text -> INCOME
+            EXPENDITURE.text -> EXPENDITURE
+            else -> ALL
         }
     }
 

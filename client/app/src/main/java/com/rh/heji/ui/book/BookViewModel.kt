@@ -82,7 +82,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
             val netBooks = response.data
             if (netBooks.isNotEmpty()) {
                 for (book in netBooks) {
-                    book.synced = STATUS.SYNCED
+                    book.syncStatus = STATUS.SYNCED
                     if (bookDao.exist(book.id) > 0) {
                         bookDao.update(book)
                     } else {

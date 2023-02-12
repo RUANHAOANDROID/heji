@@ -15,7 +15,7 @@ class JsonKtTest {
     fun jsonTest() {
         Assert.assertEquals(4, (2 + 2).toLong())
         val jsonString =
-            "{\"id\":\"611e854692891153fb00ae14\",\"bookId\":\"mybook\",\"money\":0.00,\"type\":-1,\"category\":null,\"time\":\"2021-22-20 00:22:30\",\"updateTime\":0,\"dealer\":null,\"createUser\":\"App.getInstance().currentUser.username\",\"remark\":null,\"imgCount\":0,\"synced\":0,\"images\":[]}"
+            "{\"id\":\"611e854692891153fb00ae14\",\"bookId\":\"mybook\",\"money\":0.00,\"type\":-1,\"category\":null,\"time\":\"2021-22-20 00:22:30\",\"updateTime\":0,\"dealer\":null,\"createUser\":\"App.getInstance().currentUser.username\",\"remark\":null,\"imgCount\":0,\"syncStatus\":0,\"images\":[]}"
 
         val moshi = Moshi.Builder()
             .addLast(KotlinJsonAdapterFactory())

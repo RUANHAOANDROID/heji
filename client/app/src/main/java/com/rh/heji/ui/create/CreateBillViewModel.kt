@@ -80,7 +80,7 @@ internal class CreateBillViewModel(private val mBillSync: IBillSync) :
             val selectImages = bill.images.map { s: String? ->
                 val image = Image(ObjectId().toString(), bill.id)
                 image.localPath = s
-                image.synced = STATUS.NOT_SYNCED
+                image.syncStatus = STATUS.NOT_SYNCED
                 image
             }.toMutableList()
             images.addAll(selectImages)

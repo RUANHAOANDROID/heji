@@ -72,7 +72,7 @@ class DataSyncWork {
                 updateBills.forEach { bill ->
                     val response = network.billUpdate(bill)
                     if (response.code == 0) {
-                        bill.synced = STATUS.SYNCED
+                        bill.syncStatus = STATUS.SYNCED
                         App.dataBase.imageDao().deleteBillImage(bill.id)
                         billDao.delete(bill)
                     }
@@ -96,7 +96,7 @@ class DataSyncWork {
             data?.let { serverBills ->
                 if (serverBills.isNotEmpty()) {
                     serverBills.forEach { serverBill ->
-                        serverBill.synced =STATUS.SYNCED //拉取的账本为已同步账单
+                        serverBill.syncStatus =STATUS.SYNCED //拉取的账本为已同步账单
                         val existCount = billDao.countById(serverBill.id)//本地的
 
                         if (existCount == 0) {//不存在直接存入
@@ -112,7 +112,7 @@ class DataSyncWork {
                                 image.onlinePath = entity._id.toString()
                                 image.ext = entity.ext
                                 image.billID = serverBill.id
-                                image.synced = STATUS.SYNCED
+                                image.syncStatus = STATUS.SYNCED
                                 App.dataBase.imageDao().install(image)
                                 LogUtils.d("账单图片信息已保存 $image")
                             }
@@ -144,7 +144,7 @@ class DataSyncWork {
             updateCategory.forEach { category ->
                 val response = network.categoryPush(CategoryEntity(category))
                 if (response.code == 0) {
-                    category.synced = STATUS.SYNCED
+                    category.syncStatus = STATUS.SYNCED
                     categoryDao.update(category)
                 }
             }
@@ -157,7 +157,7 @@ class DataSyncWork {
             pushCategory.forEach { category ->
                 val response = network.categoryPush(CategoryEntity(category))
                 if (response.code == 0) {
-                    category.synced = STATUS.SYNCED
+                    category.syncStatus = STATUS.SYNCED
                     categoryDao.update(category)
                 }
             }
@@ -194,7 +194,7 @@ class DataSyncWork {
             if (it.code == 0) {
                 it.data.forEach { netBook ->
                     val localBoos = bookDao.findBook(netBook.id)
-                    netBook.synced = STATUS.SYNCED
+                    netBook.syncStatus = STATUS.SYNCED
                     if (localBoos.isEmpty()) {
                         bookDao.insert(netBook)
                     } else {
@@ -205,7 +205,7 @@ class DataSyncWork {
         }
         val notAsyncBooks = bookDao.books(STATUS.NOT_SYNCED)//未上传同步的账本
         for (book in notAsyncBooks) {
-            book.synced = STATUS.SYNCED
+            book.syncStatus = STATUS.SYNCED
             book.createUser = JWTParse.getUser(DataStoreManager.getToken().first() ?: "").name
             val response = network.bookCreate(book)
             if (response.code == 0) {

@@ -59,7 +59,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
                         bookDao.insert(firstBook)
                         val response = HttpManager.getInstance().bookCreate(firstBook)
                         if (response.success()) {
-                            firstBook.synced =STATUS.SYNCED
+                            firstBook.syncStatus =STATUS.SYNCED
                             bookDao.upsert(firstBook)
                         }
                     }

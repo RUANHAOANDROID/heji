@@ -34,7 +34,7 @@ class BillRepository : DataRepository() {
     suspend fun updateBill(bill: Bill) {
         var response = network.billUpdate(bill)
         response.data.let {
-            bill.synced = STATUS.SYNCED
+            bill.syncStatus = STATUS.SYNCED
             billDao.update(bill) //已上传
         }
     }
@@ -81,11 +81,11 @@ class BillRepository : DataRepository() {
                     image.onlinePath = response.data._id
                     image.md5 = response.data.md5
                     image.id = response.data._id
-                    image.synced = STATUS.SYNCED
+                    image.syncStatus = STATUS.SYNCED
                     LogUtils.d("账单图片上传成功：$image")
                     image.onlinePath?.let {
                         var count = App.dataBase.imageDao()
-                            .updateOnlinePath(image.id, it, image.synced)
+                            .updateOnlinePath(image.id, it, image.syncStatus)
                         if (count > 0)
                             LogUtils.d("图片更新成功：$image")
                     }
@@ -103,7 +103,7 @@ class BillRepository : DataRepository() {
     suspend fun addBill(bill: Bill) {
         network.billPush(bill).let {
             if (it.code == OK) {
-                bill.synced = STATUS.SYNCED
+                bill.syncStatus = STATUS.SYNCED
                 billDao.updateSyncStatus(it.data.toString(),STATUS.SYNCED)
             }
         }

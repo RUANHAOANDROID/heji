@@ -23,7 +23,7 @@ class BookTest : TestCase() {
 //        AppDatabase.getInstance(appContext).bookUserDao().insert(createUser, bookUser)
 //        book.name = "ABC"
 //        AppDatabase.getInstance(appContext).bookDao().update(book)
-//        book.synced = STATUS.SYNCED
+//        book.syncStatus = STATUS.SYNCED
 //        AppDatabase.getInstance(appContext).bookDao().upsert(book)
 
         //var bookWhitUsers = BookWhitUsers(book = book, users = users)

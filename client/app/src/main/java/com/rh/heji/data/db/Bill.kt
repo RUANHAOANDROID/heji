@@ -44,7 +44,7 @@ data class Bill(
     var money: BigDecimal = MoneyConverters.ZERO_00(),
 
     /**
-     * 收支类型 s|z
+     * 收|支类型 s|z
      */
     var type: Int = BillType.EXPENDITURE.valueInt,
 
@@ -85,7 +85,7 @@ data class Bill(
     var images: List<String> = mutableListOf(),
 
     @ColumnInfo(name = "sync_status")
-    var synced: Int = STATUS.NOT_SYNCED,
+    var syncStatus: Int = STATUS.NOT_SYNCED,
 
     @ColumnInfo(name = "anchor")
     var anchor: Long = 0L,//锚点用作记录服务最后修改时间
@@ -116,7 +116,7 @@ data class Bill(
                 ", updateTime=" + updateTime +
                 ", dealer='" + dealer + '\'' +
                 ", remark='" + remark + '\'' +
-                ", synced=" + synced +
+                ", syncStatus=" + syncStatus +
                 '}'
     }
 

@@ -17,7 +17,7 @@ class CategoryRepository : DataRepository() {
         val response = network.categoryPush(category)
         response.let {
             val dbCategory = category.toDbCategory()
-            dbCategory.synced = STATUS.SYNCED
+            dbCategory.syncStatus = STATUS.SYNCED
             categoryDao.update(dbCategory)
         }
     }
@@ -38,7 +38,7 @@ class CategoryRepository : DataRepository() {
                 val _id = App.dataBase.categoryDao().findByID(entity.id)
                 if (TextUtils.isEmpty(_id)) {
                     val dbCategory = entity.toDbCategory()
-                    dbCategory.synced = STATUS.SYNCED
+                    dbCategory.syncStatus = STATUS.SYNCED
                     App.dataBase.categoryDao().insert(dbCategory)
                 }
             }
@@ -46,11 +46,11 @@ class CategoryRepository : DataRepository() {
     }
 
     suspend fun updateCategory(category: Category) {
-        category.synced = STATUS.UPDATED
+        category.syncStatus = STATUS.UPDATED
         categoryDao.update(category)
         val response = network.categoryUpdate()
         if (response.code == OK) {
-            category.synced = STATUS.SYNCED
+            category.syncStatus = STATUS.SYNCED
             categoryDao.update(category)
         }
     }

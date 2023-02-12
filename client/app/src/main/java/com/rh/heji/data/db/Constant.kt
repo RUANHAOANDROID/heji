@@ -16,7 +16,6 @@ const val YEAR = "%Y"
 const val MONTH = "%Y-%m"
 const val YEARMONTHDAY = "%Y-%m-%d"
 const val NOT_REDELETE = "sync_status!=${STATUS.DELETED}"//本地預刪除的
-const val YEARMONTH = "strftime('%Y-%m',\${})"
 
 fun dateFormat(year: String) = "$year"
 fun dateFormat(year: String, month: String) = "${year}-$month"

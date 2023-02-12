@@ -10,7 +10,7 @@ object JWTParse {
     data class User(val name: String, val auth: List<String>, val token: String)
 
     fun getUser(jwt: String): User {
-        if (jwt == "" || jwt == "LocalUser") return Config.localUser
+        if (jwt == "" || jwt ==Config.localUserName) return Config.localUser
         val token = resolveToken(jwt)
         //val index = token.lastIndexOf(".")
         //var withoutSignature = token.substring(0, index)

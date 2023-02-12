@@ -47,8 +47,10 @@ object Config {
         this.token = token
     }
 
+    const val localUserName = "离线用户"
+
     //离线用户，有且仅有一个
-    var localUser = JWTParse.User("LocalUser", mutableListOf("Admin"), "")
+    var localUser = JWTParse.User(localUserName, mutableListOf("Admin"), "")
         private set
 
     //默认账本离线账本-离线用户可以创建多个账本

@@ -19,12 +19,13 @@ const val COMPRESSION_SIZE = 1204 * 2
 const val FILE_LENGTH_1M = 1204 * 1024 * 1
 
 
-val currentYearMonth: YearMonth = YearMonth(
+val currentYearMonth: YearMonth = today()
+
+fun today(): YearMonth = YearMonth(
     year = Calendar.getInstance().get(Calendar.YEAR),
     month = Calendar.getInstance().get(Calendar.MONTH) + 1,
     day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
 )
-
 val moshi: Moshi = Moshi.Builder()
     .addLast(KotlinJsonAdapterFactory())
     .add(DateConverters)

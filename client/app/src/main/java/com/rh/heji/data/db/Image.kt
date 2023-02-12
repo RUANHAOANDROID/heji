@@ -39,7 +39,7 @@ data class Image(
     var onlinePath: String? = null
 
     @ColumnInfo(name = COLUMN_STATUS, defaultValue = "0")
-    var synced = 0
+    var syncStatus = 0
 
     override fun hashCode(): Int {
         return Objects.hash(id, billID, localPath, onlinePath)
@@ -64,6 +64,6 @@ data class Image(
     }
 
     override fun toString(): String {
-        return "Image(id='$id', billID='$billID', md5=$md5, ext=$ext, localPath=$localPath, onlinePath=$onlinePath, synced=$synced)"
+        return "Image(id='$id', billID='$billID', md5=$md5, ext=$ext, localPath=$localPath, onlinePath=$onlinePath, syncStatus=$syncStatus)"
     }
 }

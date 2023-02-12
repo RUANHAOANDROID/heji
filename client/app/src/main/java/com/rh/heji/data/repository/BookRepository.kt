@@ -11,7 +11,7 @@ class BookRepository : DataRepository() {
         bookDao.insert(book)
 //        network.bookUpdate(book.id, book.name, book.type!!).apply {
 //            if (code == OK) {
-//                book.synced = STATUS.SYNCED
+//                book.syncStatus = STATUS.SYNCED
 //                bookDao.update(book)
 //            }
 //        }
@@ -27,11 +27,11 @@ class BookRepository : DataRepository() {
     }
 
     suspend fun updateBook(book: Book) {
-        book.synced = STATUS.UPDATED
+        book.syncStatus = STATUS.UPDATED
         bookDao.update(book)
 //        network.bookUpdate(book.id, book.name, book.type!!).apply {
 //            if (code == OK) {
-//                book.synced = STATUS.SYNCED
+//                book.syncStatus = STATUS.SYNCED
 //                bookDao.update(book)
 //            }
 //        }

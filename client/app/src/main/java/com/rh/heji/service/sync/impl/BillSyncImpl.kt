@@ -51,7 +51,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
             val response = HttpManager.getInstance().billPush(bill)
             if (response.success()) {
                 App.dataBase.billDao().update(bill.apply {
-                    synced = STATUS.SYNCED
+                    syncStatus = STATUS.SYNCED
                 })
                 uploadImage(bill.id)
             }
@@ -64,7 +64,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
                 .billUpdate(bill)
             if (response.success()) {
                 App.dataBase.billDao().update(bill.apply {
-                    synced = STATUS.SYNCED
+                    syncStatus = STATUS.SYNCED
                 })
                 uploadImage(bill.id)
             }
@@ -118,11 +118,11 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
                     image.onlinePath = response.data._id
                     image.md5 = response.data.md5
                     image.id = response.data._id
-                    image.synced = STATUS.SYNCED
+                    image.syncStatus = STATUS.SYNCED
                     LogUtils.d("账单图片上传成功：$image")
                     image.onlinePath?.let {
                         var count = App.dataBase.imageDao()
-                            .updateOnlinePath(image.id, it, image.synced)
+                            .updateOnlinePath(image.id, it, image.syncStatus)
                         if (count > 0)
                             LogUtils.d("图片更新成功：$image")
                     }

@@ -47,7 +47,7 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
             if (response.success()) {
                 val newBook = Book(name = book.name).apply {
                     id = book.id
-                    synced = STATUS.SYNCED
+                    syncStatus = STATUS.SYNCED
                     createUser = book.createUser
                 }
                 App.dataBase.bookDao().upsert(book = newBook)

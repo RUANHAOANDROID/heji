@@ -5,7 +5,6 @@ import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
 import com.rh.heji.Config
-import com.rh.heji.ETC
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
@@ -62,7 +61,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
                     level = 0
                     type = BillType.EXPENDITURE.valueInt
                 }
-                category.synced = STATUS.NOT_SYNCED
+                category.syncStatus = STATUS.NOT_SYNCED
                 App.dataBase.categoryDao().insert(category)
             } else {
                 category = categories[0]

@@ -49,7 +49,7 @@ data class Book(
 ) : Parcelable {
 
     @ColumnInfo(name = COLUMN_SYNC_STATUS)
-    var synced: Int = STATUS.NOT_SYNCED
+    var syncStatus: Int = STATUS.NOT_SYNCED
 
     @Json(name = "users")
     @ColumnInfo(name = COLUMN_USERS)

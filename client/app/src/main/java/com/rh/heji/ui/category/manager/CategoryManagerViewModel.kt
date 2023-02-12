@@ -52,7 +52,7 @@ internal class CategoryManagerViewModel : BaseViewModel<CategoryManagerAction, C
                 this.type = type
                 level = 0
             }
-            category.synced = STATUS.NOT_SYNCED
+            category.syncStatus = STATUS.NOT_SYNCED
             val categories = categoryDao.findByNameAndType(name, type)
             if (categories.size > 0) {
                 category.id = categories[0].id
@@ -70,7 +70,7 @@ internal class CategoryManagerViewModel : BaseViewModel<CategoryManagerAction, C
      */
     private fun deleteCategory(category: Category) {
         launchIO({
-            category.synced = STATUS.DELETED
+            category.syncStatus = STATUS.DELETED
             categoryDao.update(category)
             //deleteLiveData.postValue(true)
         }, {

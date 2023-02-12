@@ -61,7 +61,7 @@ data class Category(
      * 同步状态
      */
     @ColumnInfo(name = "sync_status", defaultValue = "0")
-    var synced: Int = STATUS.NOT_SYNCED
+    var syncStatus: Int = STATUS.NOT_SYNCED
 
     /**
      * 是否在记账页面显示

@@ -2,9 +2,9 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
-import com.rh.heji.App
 import com.rh.heji.Config
 import com.rh.heji.data.converters.BookUsersConverters
+import com.rh.heji.data.converters.LogicConverters
 import com.rh.heji.data.db.mongo.ObjectId
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
@@ -44,7 +44,8 @@ data class Book(
 
     @Json(name="first_book")
     @ColumnInfo(name = COLUMN_FIRST)
-    var firstBook: Int = 1// 0 true |1 false
+    @TypeConverters(LogicConverters::class)
+    var firstBook: Boolean = false
 
 ) : Parcelable {
 

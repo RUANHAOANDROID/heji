@@ -26,6 +26,7 @@ fun today(): YearMonth = YearMonth(
     month = Calendar.getInstance().get(Calendar.MONTH) + 1,
     day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
 )
+
 val moshi: Moshi = Moshi.Builder()
     .addLast(KotlinJsonAdapterFactory())
     .add(DateConverters)

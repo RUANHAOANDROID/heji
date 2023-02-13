@@ -47,7 +47,7 @@ object Config {
         this.token = token
     }
 
-    const val localUserName = "离线用户"
+    const val localUserName = "LocalUser"
 
     //离线用户，有且仅有一个
     var localUser = JWTParse.User(localUserName, mutableListOf("Admin"), "")
@@ -57,7 +57,7 @@ object Config {
     var defaultBook = Book(
         name = "个人账本",
         createUser = this.localUser.name,
-        firstBook = 0,
+        firstBook = true,
         type = "离线账本",
     )
         private set

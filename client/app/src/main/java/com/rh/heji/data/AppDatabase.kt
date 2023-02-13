@@ -46,7 +46,7 @@ abstract class AppDatabase : RoomDatabase() {
         //默认数据库名称
         fun getInstance(userName: String, context: Context = App.context): AppDatabase =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: buildDatabase(context, "${userName}_data.db").also { INSTANCE = it }
+                INSTANCE ?: buildDatabase(context, "${userName}.db").also { INSTANCE = it }
             }
 
         private fun buildDatabase(

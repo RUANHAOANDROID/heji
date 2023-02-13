@@ -26,7 +26,7 @@ object LogicConverters {
     @FromJson
     @JvmStatic
     @TypeConverter
-    fun int2bool(int: Int): Boolean {
+    fun int2Bool(int: Int): Boolean {
         return int == YES
     }
 }

@@ -62,27 +62,29 @@ android {
     flavorDimensions "network"
 
     productFlavors {
-        //service
-        localhost {
-
+        local {
             dimension "network"
             applicationId "com.ruanhao.heji_test"
             buildConfigField 'String', 'HTTP_URL', LOCALHOST
             resValue "string", "app_name", "合記开发版"
         }
-
-        hjserver {
+        cloud {
             dimension "network"
             applicationId "com.ruanhao.heji"
             buildConfigField 'String', 'HTTP_URL', HJSERVER
             resValue "string", "app_name", "合記"
         }
-
-        temporary {
-            dimension "network"
-            applicationId "com.ruanhao.heji_test"
-            buildConfigField 'String', 'HTTP_URL', TEMPORARY_NETWORK
-            resValue "string", "app_name", "合記测试版"
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def time = new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+08:00"))
+            def productFlavors = variant.productFlavors[0].name
+            def buildTypes = variant.buildType.name
+            def versionName = variant.versionName
+            def gitVersion = 'git rev-parse --short HEAD'.execute().text.trim()
+            outputFileName = "${productFlavors}-${buildTypes}-${versionName}-${gitVersion}-${time}.apk"
+            //产品维度-产品类型-构建类型-版本号-git commit id-打包时间-后缀名
+            print(outputFileName)
         }
     }
 }

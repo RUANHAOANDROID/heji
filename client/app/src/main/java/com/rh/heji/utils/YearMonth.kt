@@ -1,6 +1,5 @@
-package com.rh.heji.utlis
+package com.rh.heji.utils
 
-import androidx.annotation.Nullable
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.converters.DateConverters
 import java.io.Serializable

@@ -8,7 +8,7 @@ import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.category.manager.CategoryManagerAction.GetCategories
-import com.rh.heji.utlis.launchIO
+import com.rh.heji.utils.launchIO
 import kotlinx.coroutines.flow.collect
 
 /**

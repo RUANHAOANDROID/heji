@@ -15,9 +15,9 @@ import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.data.repository.BookRepository
 import com.rh.heji.network.HttpManager
 import com.rh.heji.service.sync.IBookSync
-import com.rh.heji.utlis.launch
-import com.rh.heji.utlis.launchIO
-import com.rh.heji.utlis.runMainThread
+import com.rh.heji.utils.launch
+import com.rh.heji.utils.launchIO
+import com.rh.heji.utils.runMainThread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext

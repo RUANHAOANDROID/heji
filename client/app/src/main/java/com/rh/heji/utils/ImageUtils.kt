@@ -1,4 +1,4 @@
-package com.rh.heji.utlis
+package com.rh.heji.utils
 
 import android.text.TextUtils
 import com.rh.heji.data.db.Image

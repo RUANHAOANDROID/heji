@@ -2,19 +2,12 @@ package com.rh.heji.data.repository
 
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.App
-import com.rh.heji.AppViewModel
 import com.rh.heji.FILE_LENGTH_1M
 import com.rh.heji.data.DataRepository
 import com.rh.heji.data.db.Bill
-import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.network.BaseResponse
 import com.rh.heji.network.response.ImageEntity
-import com.rh.heji.utlis.launch
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody

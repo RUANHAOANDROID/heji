@@ -1,4 +1,4 @@
-package com.rh.heji.utlis
+package com.rh.heji.utils
 
 import com.blankj.utilcode.util.CrashUtils
 import com.blankj.utilcode.util.DeviceUtils

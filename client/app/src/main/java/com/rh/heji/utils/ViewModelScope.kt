@@ -1,4 +1,4 @@
-package com.rh.heji.utlis
+package com.rh.heji.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

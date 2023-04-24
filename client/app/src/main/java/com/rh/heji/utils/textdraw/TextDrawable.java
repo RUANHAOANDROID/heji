@@ -1,4 +1,4 @@
-package com.rh.heji.utlis.textdraw;
+package com.rh.heji.utils.textdraw;
 
 import android.graphics.*;
 import android.graphics.drawable.ShapeDrawable;

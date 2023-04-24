@@ -1,4 +1,4 @@
-package com.rh.heji.utlis
+package com.rh.heji.utils
 
 import android.graphics.Color
 import com.github.mikephil.charting.utils.ColorTemplate

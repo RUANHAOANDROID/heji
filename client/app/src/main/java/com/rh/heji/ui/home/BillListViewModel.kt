@@ -10,12 +10,11 @@ import com.rh.heji.ui.adapter.DayBillsNode
 import com.rh.heji.ui.adapter.DayIncome
 import com.rh.heji.ui.adapter.DayIncomeNode
 import com.rh.heji.ui.base.BaseViewModel
-import com.rh.heji.utlis.MyTimeUtils
-import com.rh.heji.utlis.YearMonth
-import com.rh.heji.utlis.launchIO
+import com.rh.heji.utils.MyTimeUtils
+import com.rh.heji.utils.YearMonth
+import com.rh.heji.utils.launchIO
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 
 internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
 

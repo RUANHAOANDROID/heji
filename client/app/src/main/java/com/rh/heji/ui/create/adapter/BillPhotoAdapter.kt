@@ -13,7 +13,7 @@ import com.rh.heji.GlideApp
 import com.rh.heji.R
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.ItemPopSelectTicketImageBinding
-import com.rh.heji.utlis.ImageUtils
+import com.rh.heji.utils.ImageUtils
 
 /**
  * 账单票据图片适配器

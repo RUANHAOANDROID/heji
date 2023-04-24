@@ -2,7 +2,7 @@ package com.rh.heji
 
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
-import com.rh.heji.utlis.YearMonth
+import com.rh.heji.utils.YearMonth
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.util.*

@@ -19,8 +19,8 @@ import com.rh.heji.R
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.dto.BillTotal
-import com.rh.heji.utlis.MyTimeUtils
-import com.rh.heji.utlis.YearMonth
+import com.rh.heji.utils.MyTimeUtils
+import com.rh.heji.utils.YearMonth
 import java.util.*
 
 /**

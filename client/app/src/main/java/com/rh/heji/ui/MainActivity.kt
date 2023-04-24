@@ -32,7 +32,6 @@ import com.blankj.utilcode.util.ToastUtils
 import com.google.android.material.navigation.NavigationView
 import com.lxj.xpopup.XPopup
 import com.rh.heji.App
-import com.rh.heji.AppViewModel
 import com.rh.heji.Config
 import com.rh.heji.R
 import com.rh.heji.databinding.HeaderMainNavBinding
@@ -41,8 +40,7 @@ import com.rh.heji.store.DataStoreManager
 import com.rh.heji.ui.home.DrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.login.LoginActivity
-import com.rh.heji.utlis.permitDiskReads
-import kotlinx.coroutines.Dispatchers
+import com.rh.heji.utils.permitDiskReads
 import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
 

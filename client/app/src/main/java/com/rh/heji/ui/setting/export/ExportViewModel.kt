@@ -6,8 +6,8 @@ import com.rh.heji.App
 import com.rh.heji.network.HttpManager
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.setting.export.ExportAction.ExportExcel
-import com.rh.heji.utlis.MyUtils
-import com.rh.heji.utlis.launchIO
+import com.rh.heji.utils.MyUtils
+import com.rh.heji.utils.launchIO
 import okio.buffer
 import okio.sink
 import java.io.File

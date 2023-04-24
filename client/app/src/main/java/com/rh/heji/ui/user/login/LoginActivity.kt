@@ -12,9 +12,9 @@ import com.rh.heji.App
 import com.rh.heji.Config
 import com.rh.heji.ui.MainActivity
 import com.rh.heji.R
-import com.rh.heji.utlis.CrashInfo
-import com.rh.heji.utlis.MyUtils
-import com.rh.heji.utlis.checkPermissions
+import com.rh.heji.utils.CrashInfo
+import com.rh.heji.utils.MyUtils
+import com.rh.heji.utils.checkPermissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.LogUtils
-import com.rh.heji.utlis.runMainThread
+import com.rh.heji.utils.runMainThread
 import kotlinx.coroutines.launch
 
 /**

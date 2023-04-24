@@ -1,4 +1,4 @@
-package com.rh.heji.utlis.matisse
+package com.rh.heji.utils.matisse
 
 import android.app.Activity
 import android.content.Intent

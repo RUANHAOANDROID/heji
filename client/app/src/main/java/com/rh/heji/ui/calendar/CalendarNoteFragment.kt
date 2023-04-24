@@ -2,7 +2,6 @@ package com.rh.heji.ui.calendar
 
 import android.content.Context
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +12,6 @@ import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
-import com.rh.heji.doAction
 import com.rh.heji.render
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.adapter.DayBillsNode
@@ -21,7 +19,7 @@ import com.rh.heji.ui.adapter.NodeBillsAdapter
 import com.rh.heji.ui.create.ArgAddBill
 import com.rh.heji.ui.create.CreateBillFragmentArgs
 import com.rh.heji.ui.popup.PopupBillInfo
-import com.rh.heji.utlis.YearMonth
+import com.rh.heji.utils.YearMonth
 import com.rh.heji.widget.CardDecoration
 
 class CalendarNoteFragment : BaseFragment() {

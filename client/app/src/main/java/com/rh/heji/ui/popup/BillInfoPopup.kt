@@ -22,7 +22,7 @@ import com.rh.heji.databinding.PopLayoutBilliInfoBinding
 import com.rh.heji.ui.MainActivity
 import com.rh.heji.ui.create.ArgAddBill
 import com.rh.heji.ui.create.CreateBillFragmentArgs
-import com.rh.heji.utlis.ImageUtils
+import com.rh.heji.utils.ImageUtils
 
 /**
  * @date: 2020/9/20

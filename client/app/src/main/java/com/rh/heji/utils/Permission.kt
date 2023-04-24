@@ -1,4 +1,4 @@
-package com.rh.heji.utlis
+package com.rh.heji.utils
 
 import android.Manifest
 import android.os.StrictMode

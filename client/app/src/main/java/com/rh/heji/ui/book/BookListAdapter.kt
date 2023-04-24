@@ -6,12 +6,11 @@ import com.blankj.utilcode.util.ImageUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.util.XPopupUtils
-import com.rh.heji.App
 import com.rh.heji.Config
 import com.rh.heji.R
 import com.rh.heji.data.db.Book
 import com.rh.heji.databinding.FragmentBookItemBinding
-import com.rh.heji.utlis.ColorUtils
+import com.rh.heji.utils.ColorUtils
 
 
 /**

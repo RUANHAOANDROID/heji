@@ -8,7 +8,7 @@ import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.HttpManager
 import com.rh.heji.ui.base.BaseViewModel
-import com.rh.heji.utlis.launch
+import com.rh.heji.utils.launch
 
 internal class RegisterViewModel : BaseViewModel<RegisterAction, RegisterUiState>() {
 

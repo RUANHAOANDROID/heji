@@ -6,8 +6,8 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.rh.heji.R
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.ItemCategoryBinding
-import com.rh.heji.utlis.textdraw.ColorGenerator
-import com.rh.heji.utlis.textdraw.TextDrawable
+import com.rh.heji.utils.textdraw.ColorGenerator
+import com.rh.heji.utils.textdraw.TextDrawable
 
 /**
  * @date: 2020/9/16

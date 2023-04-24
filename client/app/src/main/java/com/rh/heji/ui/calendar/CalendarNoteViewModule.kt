@@ -13,7 +13,7 @@ import com.rh.heji.ui.adapter.DayBillsNode
 import com.rh.heji.ui.adapter.DayIncome
 import com.rh.heji.ui.adapter.DayIncomeNode
 import com.rh.heji.ui.base.BaseViewModel
-import com.rh.heji.utlis.launchIO
+import com.rh.heji.utils.launchIO
 
 
 internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUiState>() {

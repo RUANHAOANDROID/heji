@@ -19,19 +19,19 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
-    init {
-        launchIO({
-            val dir =
-                App.context.getExternalFilesDir("alipay_record_20230424_1524_1.csv")
-            var fileName = dir?.absolutePath
-            fileName?.let { name->
-                ReaderFactory.getReader(name)?.readAliPay(name, result = {
-                    ToastUtils.showLong("it${it}")
-                })
-            }
-
-        })
-    }
+//    init {
+//        launchIO({
+//            val dir =
+//                App.context.getExternalFilesDir("alipay_record_20230424_1524_1.csv")
+//            var fileName = dir?.absolutePath
+//            fileName?.let { name->
+//                ReaderFactory.getReader(name)?.readAliPay(name, result = {
+//                    ToastUtils.showLong("it${it}")
+//                })
+//            }
+//
+//        })
+//    }
 
     private var selectYearMonth = currentYearMonth
 

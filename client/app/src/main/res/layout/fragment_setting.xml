@@ -33,19 +33,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/exportQianJi"
-            style="@style/TextSelectedBackground"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="40dp"
-            android:paddingLeft="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:text="导出到钱迹"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="@+id/inputETC"
-            app:layout_constraintTop_toBottomOf="@+id/inputETC" />
 
         <TextView
             android:id="@+id/inputETC"
@@ -61,6 +48,32 @@
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="@+id/tvTitleData"
             app:layout_constraintTop_toBottomOf="@+id/tvTitleData" />
+
+        <TextView
+            android:id="@+id/inputAliPlay"
+            style="@style/TextSelectedBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:paddingLeft="16dp"
+            android:text="导入支付宝账单"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/inputETC"
+            app:layout_constraintTop_toBottomOf="@+id/inputETC" />
+        <TextView
+            android:id="@+id/exportQianJi"
+            style="@style/TextSelectedBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="导出到钱迹"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/inputAliPlay"
+            app:layout_constraintTop_toBottomOf="@+id/inputAliPlay" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

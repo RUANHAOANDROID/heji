@@ -26,7 +26,7 @@ class ExportFragment : BaseFragment() {
     //定义静态变量
     companion object {
         const val CREATE_FILE_EXCEL = 1
-        const val CREATE_FILE_CVS = 2
+        const val CREATE_FILE_CSV = 2
     }
 
     private val viewModel by lazy { ViewModelProvider(this).get(ExportViewModel::class.java) }

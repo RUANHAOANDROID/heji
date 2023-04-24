@@ -20,7 +20,6 @@ class MainViewModel : ViewModel() {
             "Config isInitUser=${Config.isInitUser()}"
         )
     }
-
     /**
      * 全局选择的年月（home to subpage）
      */

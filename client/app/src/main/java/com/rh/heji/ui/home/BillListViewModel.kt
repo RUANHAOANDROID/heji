@@ -2,6 +2,7 @@ package com.rh.heji.ui.home
 
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.rh.heji.App
 import com.rh.heji.currentYearMonth
@@ -12,11 +13,25 @@ import com.rh.heji.ui.adapter.DayIncomeNode
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.utils.MyTimeUtils
 import com.rh.heji.utils.YearMonth
+import com.rh.heji.utils.excel.ReaderFactory
 import com.rh.heji.utils.launchIO
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
+    init {
+        launchIO({
+            val dir =
+                App.context.getExternalFilesDir("alipay_record_20230424_1524_1.csv")
+            var fileName = dir?.absolutePath
+            fileName?.let { name->
+                ReaderFactory.getReader(name)?.readAliPay(name, result = {
+                    ToastUtils.showLong("it${it}")
+                })
+            }
+
+        })
+    }
 
     private var selectYearMonth = currentYearMonth
 

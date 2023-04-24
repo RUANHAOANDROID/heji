@@ -21,7 +21,7 @@ import com.rh.heji.render
 
 class ExportFragment : BaseFragment() {
     private val binding: FragmentExportBinding by lazy {FragmentExportBinding.inflate(layoutInflater)  }
-    val list = listOf("EXCEL", "CVS")
+    val list = listOf("EXCEL", "CSV")
 
     //定义静态变量
     companion object {

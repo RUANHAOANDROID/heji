@@ -7,7 +7,6 @@ import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.getObjectTime
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
@@ -92,6 +91,9 @@ data class Bill(
 
 ) : Parcelable {
 
+    @ColumnInfo(name = "hash")
+    var hashValue: Int = "${bookId}${time}${category}${money.toPlainString()}".hashCode()
+
     @Ignore
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
@@ -104,7 +106,7 @@ data class Bill(
     override fun hashCode(): Int {
         return Objects.hash(id)
     }
-
+    
     @Ignore
     override fun toString(): String {
         return "Bill{" +

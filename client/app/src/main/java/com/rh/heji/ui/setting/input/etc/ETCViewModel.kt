@@ -107,14 +107,14 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
                 /**
                  * 如果不存在才插入
                  */
-                val bills = App.dataBase.billDao().findIds(bill.time, bill.money, bill.remark!!)
-                if (bills.size <= 0) {
+                val exist = App.dataBase.billDao().exist(bill.hashValue)>0
+                if (exist) {
                     val count = App.dataBase.billDao().install(bill)
                     LogUtils.d("导入ETC账单：", bill)
                     if (count > 0)
                         mBillSync.add(bill)
                 } else {
-                    LogUtils.d("ETC账单已存在", bills)
+                    LogUtils.d("ETC账单已存在",bill )
                 }
             })
             send(ETCUiState.InputSuccess)
@@ -264,17 +264,14 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
         /**
          * 如果不存在才插入(插入时必须保持格式一致)
          */
-        val bills = App.dataBase.billDao().findIds(
-            bill.time, bill.money,
-            bill.remark!!
-        )
-        if (bills.size <= 0) {
+        val exist = App.dataBase.billDao().exist(bill.hashValue)>0
+        if (!exist) {
             val count = App.dataBase.billDao().install(bill)
             LogUtils.d("导入ETC账单：", bill)
             if (count > 0)
                 mBillSync.add(bill)
         } else {
-            LogUtils.d("ETC账单已存在", bills)
+            LogUtils.d("ETC账单已存在", bill)
         }
     }
 }

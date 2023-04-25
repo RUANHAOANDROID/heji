@@ -19,6 +19,9 @@ interface CategoryDao {
     @Query("select count(0) from category")
     fun count(): Int
 
+    @Query("select count(0) from category where hashValue=:hasCode")
+    fun exist(hasCode: Int): Int
+
     @Query("select _id from category where _id=:id")
     fun findByID(id: String): String
 

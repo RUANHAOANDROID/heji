@@ -52,12 +52,6 @@ data class Book(
     @ColumnInfo(name = COLUMN_SYNC_STATUS)
     var syncStatus: Int = STATUS.NOT_SYNCED
 
-    @Json(name = "users")
-    @ColumnInfo(name = COLUMN_USERS)
-    @TypeConverters(BookUsersConverters::class)
-    //@Ignore
-    var users: List<BookUser>? = null
-
     companion object {
         const val TAB_NAME = "book"
         const val COLUMN_ID = "book_id"
@@ -68,16 +62,5 @@ data class Book(
         const val COLUMN_ANCHOR = "anchor"
         const val COLUMN_FIRST = "first"
         const val COLUMN_SYNC_STATUS = "sync_status"
-        const val COLUMN_USERS = "users"
-    }
-}
-
-@Parcelize
-class BookUser(val name: String, val authority: String) : Parcelable {
-    @Ignore
-    fun fromAuthority(): String {
-        if (authority == "CREATE") return "创建者"
-        if (authority == "USER") return "用户"
-        return authority
     }
 }

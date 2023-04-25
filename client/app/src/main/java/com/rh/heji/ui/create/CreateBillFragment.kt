@@ -82,6 +82,9 @@ class CreateBillFragment : BaseFragment() {
      */
     private var isModify = false
 
+    /**
+     * 使用 bill控制页面（TODO 优化为vm托管bill，页面回复后根据vm bill重建）
+     */
     private lateinit var mBill: Bill
 
     override fun layout() = binding.root
@@ -121,6 +124,10 @@ class CreateBillFragment : BaseFragment() {
         } else if (type == BillType.INCOME.valueInt) {
             fragments[1].setCategories(categories)
         }
+        val billType = BillType.transform(type)
+        binding.keyboard.setType(billType)
+        val color = if (billType == BillType.EXPENDITURE) R.color.expenditure else R.color.income
+        binding.tvMoney.setTextColor(resources.getColor(color, null))
     }
 
     override fun onAttach(context: Context) {
@@ -193,6 +200,10 @@ class CreateBillFragment : BaseFragment() {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     LogUtils.d("onTabSelected", tab.position)
+                    val type =
+                        if (tab.position == 0) BillType.EXPENDITURE.valueInt else BillType.INCOME.valueInt
+                    viewModel.doAction(CreateBillAction.GetCategories(type))
+                    mBill.type = type
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -212,7 +223,8 @@ class CreateBillFragment : BaseFragment() {
         binding.imgAddCategory.setOnClickListener {
             findNavController().navigate(
                 R.id.nav_category_manager,
-                CategoryManagerFragmentArgs.Builder().setIeType(mBill.type).build().toBundle()
+                CategoryManagerFragmentArgs.Builder().setIeType(mBill.type).build()
+                    .toBundle()
             )
         }
 
@@ -380,14 +392,11 @@ class CreateBillFragment : BaseFragment() {
     fun selectedCategory(type: Int, category: Category?) {
         LogUtils.d("selectedCategory : type=$type category= $category")
         val billType = BillType.transform(type)
-        category?.let {
-            //viewModel.setCategory(category)
-            mBill.type = category.type
+        if (null != category) {
             mBill.category = category.name
+        } else {
+            mBill.category = null
         }
-        binding.keyboard.setType(billType)
-        val color = if (billType == BillType.EXPENDITURE) R.color.expenditure else R.color.income
-        binding.tvMoney.setTextColor(resources.getColor(color, null))
     }
 
     private fun setMoney(money: BigDecimal) {

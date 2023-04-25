@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.KeyboardUtils
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.XPopup
+import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Category
 import com.rh.heji.databinding.FragmentCategoryManagerBinding
 import com.rh.heji.doAction
@@ -69,7 +70,7 @@ class CategoryManagerFragment : BaseFragment() {
     override fun setUpToolBar() {
         super.setUpToolBar()
         toolBar.let {
-            it.title = "分类管理"
+            it.title = "分类管理(${BillType.transform(args.ieType).valueString})"
             it.navigationIcon = blackDrawable()
             it.setNavigationOnClickListener { v: View? ->
                 findNavController().navigateUp()

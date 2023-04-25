@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.collect
  * @author: 锅得铁
  * # 分类
  */
-internal class CategoryManagerViewModel : BaseViewModel<CategoryManagerAction, CategoryManagerUiState>() {
+internal class CategoryManagerViewModel :
+    BaseViewModel<CategoryManagerAction, CategoryManagerUiState>() {
     private val categoryDao = App.dataBase.categoryDao()
 
     override fun doAction(action: CategoryManagerAction) {
@@ -53,14 +54,16 @@ internal class CategoryManagerViewModel : BaseViewModel<CategoryManagerAction, C
                 level = 0
             }
             category.syncStatus = STATUS.NOT_SYNCED
-            val categories = categoryDao.findByNameAndType(name, type)
-            if (categories.size > 0) {
-                category.id = categories[0].id
-                categoryDao.update(category)
+            val exist = categoryDao.exist(category.hashCode())
+            if (exist > 0) {
+                ToastUtils.showShort("标签已经存在")
+            } else {
+                categoryDao.insert(category)
+                ToastUtils.showShort("保存成功")
             }
-            categoryDao.insert(category)
-            ToastUtils.showShort("保存成功")
-        }, {})
+        }, {
+            ToastUtils.showLong(it.message)
+        })
     }
 
     /**

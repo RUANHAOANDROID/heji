@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.rh.heji.data.BillType
 import com.rh.heji.data.db.mongo.ObjectId
 import java.util.*
 
@@ -29,8 +30,8 @@ data class Category(
     /**
      * 收入、支出
      */
-    @ColumnInfo(name = "type", defaultValue = "-1")
-    var type: Int = 0
+    @ColumnInfo(name = "type")
+    var type: Int = BillType.EXPENDITURE.valueInt
 ) {
 
 
@@ -73,8 +74,9 @@ data class Category(
     @Ignore
     var isSelected: Boolean = false
 
+    var hashValue = hashCode()
 
     override fun hashCode(): Int {
-        return Objects.hash(name, type)
+        return Objects.hash(bookId, name, type)
     }
 }

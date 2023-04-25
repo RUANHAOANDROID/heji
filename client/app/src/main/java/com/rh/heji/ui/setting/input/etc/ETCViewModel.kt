@@ -40,7 +40,8 @@ import java.util.function.Consumer
  * @author: 锅得铁
  * #
  */
-internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ETCAction, ETCUiState>() {
+internal class ETCViewModel(private val mBillSync: IBillSync) :
+    BaseViewModel<ETCAction, ETCUiState>() {
 
 
     var etcID = ETC.ID
@@ -95,26 +96,27 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
         if (etcListInfo?.data != null && etcListInfo.data.size > 0) {
             val data = etcListInfo.data
             data.forEach(Consumer { info: ETCListInfoEntity.Info ->
-                val time = TimeUtils.string2Date(info.exchargetime, "yyyy-MM-dd HH:mm:ss")
-                val bill = Bill()
-                bill.id = ObjectId(time).toString()
-                bill.money = BigDecimal(info.etcPrice).divide(BigDecimal(100))
-                bill.remark = info.exEnStationName
-                bill.time = time
-                bill.category = categoryName
-                bill.dealer = "ETC"
-                bill.type = BillType.EXPENDITURE.valueInt
+                val bill = Bill().apply {
+                    id = ObjectId(DateConverters.str2Date(info.exchargetime)).toHexString()
+                    money = BigDecimal(info.etcPrice).divide(BigDecimal(100))
+                    remark = info.exEnStationName
+                    time = DateConverters.str2Date(info.exchargetime)
+                    category = categoryName
+                    dealer = "ETC"
+                    type = BillType.EXPENDITURE.valueInt
+                }
+
                 /**
                  * 如果不存在才插入
                  */
-                val bills = App.dataBase.billDao().findIds(bill.time, bill.money, bill.remark!!)
-                if (bills.size <= 0) {
+                val exist = App.dataBase.billDao().exist(bill.hashCode()) > 0
+                if (!exist) {
                     val count = App.dataBase.billDao().install(bill)
                     LogUtils.d("导入ETC账单：", bill)
                     if (count > 0)
                         mBillSync.add(bill)
                 } else {
-                    LogUtils.d("ETC账单已存在", bills)
+                    LogUtils.d("ETC账单已存在", bill)
                 }
             })
             send(ETCUiState.InputSuccess)
@@ -250,31 +252,24 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
     }
 
     private fun saveToBillDB(info: OrderArrBean) {
-        val money = info.totalFee
-        val remark = info.enStationName + "|" + info.exStationName
-        val time = DateConverters.str2Date(info.exTime)
-        val bill = Bill()
-        bill.id = ObjectId(time).toString()
-        bill.money = BigDecimal(money).divide(BigDecimal(100))
-        bill.remark = remark
-        bill.time = time
-        bill.category = categoryName
-        bill.dealer = "ETC"
-        bill.type = BillType.EXPENDITURE.valueInt
-        /**
-         * 如果不存在才插入(插入时必须保持格式一致)
-         */
-        val bills = App.dataBase.billDao().findIds(
-            bill.time, bill.money,
-            bill.remark!!
-        )
-        if (bills.size <= 0) {
+        val bill = Bill().apply {
+            id = ObjectId(DateConverters.str2Date(info.exTime)).toHexString()
+            money = BigDecimal(info.totalFee).divide(BigDecimal(100))
+            remark = info.enStationName + "|" + info.exStationName
+            time = DateConverters.str2Date(info.exTime)
+            category = categoryName
+            dealer = "ETC"
+            type = BillType.EXPENDITURE.valueInt
+        }
+        val hashCode = bill.hashCode()
+        val exist = App.dataBase.billDao().exist(hashCode) > 0
+        if (!exist) {
             val count = App.dataBase.billDao().install(bill)
             LogUtils.d("导入ETC账单：", bill)
             if (count > 0)
                 mBillSync.add(bill)
         } else {
-            LogUtils.d("ETC账单已存在", bills)
+            LogUtils.d("ETC账单已存在", bill)
         }
     }
 }

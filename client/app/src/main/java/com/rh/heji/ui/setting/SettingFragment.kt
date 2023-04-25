@@ -4,68 +4,106 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.ParcelFileDescriptor
-import android.provider.DocumentsContract
 import android.view.View
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.UriUtils
+import com.lxj.xpopup.XPopup
 import com.rh.heji.App
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentSettingBinding
-import com.rh.heji.launchIO
+import com.rh.heji.render
 import com.rh.heji.ui.base.BaseFragment
-import com.rh.heji.utils.excel.ReaderFactory
-import com.rh.heji.utils.excel.SUFFIX
 import java.io.FileDescriptor
 
 class SettingFragment : BaseFragment() {
-    private val REQ_CODE_ALIPLAY = 9001
+    private val REQ_CODE_ALIPAY = 90001
+    private val REQ_CODE_WEIXINPAY = 90002
     private val binding: FragmentSettingBinding by lazy {
         FragmentSettingBinding.inflate(
             layoutInflater
         )
     }
+    private val viewModel by lazy { ViewModelProvider(this)[SettingViewModel::class.java] }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        //settingViewModel = ViewModelProvider(this)[SettingViewModel::class.java]
+
     }
 
     override fun initView(rootView: View) {
         binding.inputETC.setOnClickListener { findNavController().navigate(R.id.nav_input_etc) }
         binding.exportQianJi.setOnClickListener { findNavController().navigate(R.id.nav_export) }
-        binding.inputAliPlay.setOnClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                setType("*/*")
-                addCategory(Intent.CATEGORY_OPENABLE)
-                //putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
+        binding.inputAliPay.setOnClickListener {
+            selectInputFile(REQ_CODE_ALIPAY)
+        }
+        binding.inputWeiXinPay.setOnClickListener {
+            selectInputFile(REQ_CODE_WEIXINPAY)
+        }
+        render()
+    }
+
+    private fun selectInputFile(requestCode: Int) {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            setType("*/*")
+            addCategory(Intent.CATEGORY_OPENABLE)
+            //putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
+        }
+        startActivityForResult(intent, requestCode)
+    }
+
+    private val loadingDialog by lazy {
+        XPopup.Builder(this.context).asLoading()
+    }
+
+    private fun render() {
+        render(viewModel) {
+            when (it) {
+                is SettingUiState.InputEnd -> {
+                    loadingDialog.setTitle(it.title)
+                    loadingDialog.show()
+                    rootView.postDelayed({ loadingDialog.dismiss() }, 1000)
+                }
+                is SettingUiState.InputError -> {
+                    loadingDialog.setTitle(it.title)
+                    loadingDialog.show()
+                    rootView.postDelayed({ loadingDialog.dismiss() }, 1000)
+                }
+                is SettingUiState.InputReading -> {
+                    loadingDialog.setTitle(it.title)
+                    loadingDialog.show()
+                }
             }
-            startActivityForResult(intent, REQ_CODE_ALIPLAY)
+
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQ_CODE_ALIPLAY
-            && resultCode == Activity.RESULT_OK
-        ) {
-            // The result data contains a URI for the document or directory that
-            // the user selected.
-            data?.data.also { uri ->
-                // Perform operations on the document using its URI.
-                val parcelFileDescriptor: ParcelFileDescriptor =
-                    App.context.contentResolver.openFileDescriptor(uri!!, "r")!!
-                val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
-                val csv = UriUtils.uri2File(uri).absolutePath
-                lifecycleScope.launchIO({
-                    ReaderFactory.getReader(SUFFIX.CSV)?.readAliPay(csv, result = {
-
-                    })
-                })
-                LogUtils.d(csv)
-            }
+        if (requestCode == REQ_CODE_ALIPAY && resultCode == Activity.RESULT_OK) {
+            val fileName = getInputFile(data)
+            viewModel.doAction(SettingAction.InputAliPayData(fileName))
         }
+        if (requestCode == REQ_CODE_WEIXINPAY && resultCode == Activity.RESULT_OK) {
+            val fileName = getInputFile(data)
+            viewModel.doAction(SettingAction.InputWeiXInData(fileName))
+        }
+    }
+
+    private fun getInputFile(data: Intent?): String {
+        var fileName = ""
+        data?.data.also { uri ->
+            // Perform operations on the document using its URI.
+            val parcelFileDescriptor: ParcelFileDescriptor =
+                App.context.contentResolver.openFileDescriptor(uri!!, "r")!!
+            val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
+            val csv = UriUtils.uri2File(uri).absolutePath
+            LogUtils.d("cache file", csv)
+            fileName = csv
+        }
+        LogUtils.d(fileName)
+        return fileName
     }
 
     override fun layout() = binding.root

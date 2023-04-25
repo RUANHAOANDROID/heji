@@ -2,12 +2,12 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
+import com.blankj.utilcode.util.GsonUtils
 import com.rh.heji.Config
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.mongo.ObjectId
-import com.rh.heji.getObjectTime
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
@@ -79,7 +79,8 @@ data class Bill(
      * 备注
      */
     var remark: String? = null,
-
+    //是否已经删除 1 yes 0 no
+    var deleted: Int = 0,
     @Ignore
     @ColumnInfo(name = "images")
     var images: List<String> = mutableListOf(),
@@ -92,6 +93,9 @@ data class Bill(
 
 ) : Parcelable {
 
+    @ColumnInfo(name = "hash")
+    var hashValue: Int = hashCode()
+
     @Ignore
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
@@ -102,22 +106,12 @@ data class Bill(
 
     @Ignore
     override fun hashCode(): Int {
-        return Objects.hash(id)
+        return "${bookId}${time}${money}".hashCode()
     }
 
     @Ignore
     override fun toString(): String {
-        return "Bill{" +
-                "id='" + id + '\'' +
-                ", money=" + money +
-                ", type=" + type +
-                ", category='" + category + '\'' +
-                ", time=" + time +
-                ", updateTime=" + updateTime +
-                ", dealer='" + dealer + '\'' +
-                ", remark='" + remark + '\'' +
-                ", syncStatus=" + syncStatus +
-                '}'
+        return GsonUtils.toJson(this)
     }
 
     companion object {

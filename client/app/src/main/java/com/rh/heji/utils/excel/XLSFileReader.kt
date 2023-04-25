@@ -1,23 +1,16 @@
 package com.rh.heji.utils.excel
 
 import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.ToastUtils
+import com.rh.heji.utils.excel.entity.AliPayEntity
 import jxl.Cell
 import jxl.Workbook
-import jxl.WorkbookSettings
-import jxl.write.Label
-import jxl.write.WritableCellFormat
-import jxl.write.WritableFont
-import jxl.write.WritableWorkbook
 import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
 
 
 internal class XLSFileReader : IReader {
     private val Tag = "XLSFileReader"
 
-    override fun readAliPay(fileName: String, result: (Boolean) -> Unit) {
+    override fun readAliPay(fileName: String, result: (Boolean, msg: String) -> Unit) {
         val book = Workbook.getWorkbook(File(fileName))
         val sheet = book.getSheet(0)
         val rows = sheet.rows
@@ -49,15 +42,15 @@ internal class XLSFileReader : IReader {
                 sheet.getCell(16, row).contents,
             )
         }
-        result(true)
+        result(true,"导入完成")
         book.close()
     }
 
-    override fun readWeiXinPay(fileName: String, result: (Boolean) -> Unit) {
+    override fun readWeiXinPay(fileName: String, result: (Boolean, msg: String) -> Unit) {
 
     }
 
-    override fun readQianJi(fileName: String, result: (Boolean) -> Unit) {
+    override fun readQianJi(fileName: String, result: (Boolean, msg: String) -> Unit) {
 
     }
 }

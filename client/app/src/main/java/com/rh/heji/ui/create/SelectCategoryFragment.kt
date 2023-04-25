@@ -39,25 +39,26 @@ internal class SelectCategoryFragment : BaseFragment() {
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        arguments?.let {
-            type = SelectCategoryFragmentArgs.fromBundle(it).type
-            if (type == BillType.INCOME)//预加载一次
-                createBillFragment.viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
+        layout().post {
+            arguments?.let {
+                type = SelectCategoryFragmentArgs.fromBundle(it).type
+                if (type == BillType.INCOME)//预加载一次
+                    createBillFragment.viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
+            }
         }
-
     }
 
     override fun onResume() {
         super.onResume()
-        LogUtils.d(type)
-        with(createBillFragment) {
-            selectedCategoryFragment = this@SelectCategoryFragment
-            type = this@SelectCategoryFragment.type
-            viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
-        }
-        selectCategory?.let {
-            LogUtils.d(it)
-            createBillFragment.selectedCategory(type.valueInt, it)
+        layout().post {
+            with(createBillFragment) {
+                selectedCategoryFragment = this@SelectCategoryFragment
+                type = this@SelectCategoryFragment.type
+                viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
+            }
+            createBillFragment.selectedCategory(type.valueInt, selectCategory)
+            LogUtils.d(selectCategory)
+            LogUtils.d(type)
         }
     }
 

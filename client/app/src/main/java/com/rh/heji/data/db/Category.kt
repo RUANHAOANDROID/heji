@@ -55,8 +55,8 @@ data class Category(
      * 用户ID
      */
     @JvmField
-    @ColumnInfo(name = "user_id")
-    var userId: String? = null
+    @ColumnInfo(name = "create_user")
+    var createUser: String? = null
 
     /**
      * 同步状态

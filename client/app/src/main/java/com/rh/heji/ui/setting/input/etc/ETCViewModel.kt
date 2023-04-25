@@ -95,15 +95,14 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
         if (etcListInfo?.data != null && etcListInfo.data.size > 0) {
             val data = etcListInfo.data
             data.forEach(Consumer { info: ETCListInfoEntity.Info ->
-                val time = TimeUtils.string2Date(info.exchargetime, "yyyy-MM-dd HH:mm:ss")
-                val bill = Bill()
-                bill.id = ObjectId(time).toString()
-                bill.money = BigDecimal(info.etcPrice).divide(BigDecimal(100))
-                bill.remark = info.exEnStationName
-                bill.time = time
-                bill.category = categoryName
-                bill.dealer = "ETC"
-                bill.type = BillType.EXPENDITURE.valueInt
+                val bill = Bill().apply {
+                    money = BigDecimal(info.etcPrice).divide(BigDecimal(100))
+                    remark = info.exEnStationName
+                    time = DateConverters.str2Date(info.exchargetime)
+                    category = categoryName
+                    dealer = "ETC"
+                    type = BillType.EXPENDITURE.valueInt
+                }
                 /**
                  * 如果不存在才插入
                  */
@@ -250,20 +249,14 @@ internal class ETCViewModel(private val mBillSync: IBillSync) : BaseViewModel<ET
     }
 
     private fun saveToBillDB(info: OrderArrBean) {
-        val money = info.totalFee
-        val remark = info.enStationName + "|" + info.exStationName
-        val time = DateConverters.str2Date(info.exTime)
-        val bill = Bill()
-        bill.id = ObjectId(time).toString()
-        bill.money = BigDecimal(money).divide(BigDecimal(100))
-        bill.remark = remark
-        bill.time = time
-        bill.category = categoryName
-        bill.dealer = "ETC"
-        bill.type = BillType.EXPENDITURE.valueInt
-        /**
-         * 如果不存在才插入(插入时必须保持格式一致)
-         */
+        val bill = Bill().apply {
+            money = BigDecimal(info.totalFee).divide(BigDecimal(100))
+            remark = info.enStationName + "|" + info.exStationName
+            time = DateConverters.str2Date(info.exTime)
+            category = categoryName
+            dealer = "ETC"
+            type = BillType.EXPENDITURE.valueInt
+        }
         val exist = App.dataBase.billDao().exist(bill.hashValue)>0
         if (!exist) {
             val count = App.dataBase.billDao().install(bill)

@@ -104,7 +104,7 @@
 
     <fragment
         android:id="@+id/_category"
-        android:name="com.rh.heji.ui.create.SelectCategoryFragment"
+        android:name="com.rh.heji.ui.create.CategoryFragment"
         android:label="CategoryFragment"
         tools:layout="@layout/fragment_category_content">
         <argument
@@ -131,7 +131,7 @@
         tools:layout="@layout/fragment_banner" />
     <fragment
         android:id="@+id/_category_tab"
-        android:name="com.rh.heji.ui.create.SelectCategoryFragment"
+        android:name="com.rh.heji.ui.create.CategoryFragment"
         android:label="CategoryTabFragment"
         tools:layout="@layout/fragment_category_tab">
         <action

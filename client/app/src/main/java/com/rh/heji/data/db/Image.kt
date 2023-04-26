@@ -1,6 +1,7 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
+import com.blankj.utilcode.util.GsonUtils
 import com.rh.heji.data.db.mongo.ObjectId
 import java.util.*
 
@@ -23,7 +24,7 @@ import java.util.*
 )
 data class Image(
     @ColumnInfo(name = COLUMN_ID)
-    var id: String= ObjectId().toHexString(),
+    var id: String = ObjectId().toHexString(),
     @ColumnInfo(name = Bill.COLUMN_ID, index = true)
     var billID: String
 ) {
@@ -64,6 +65,6 @@ data class Image(
     }
 
     override fun toString(): String {
-        return "Image(id='$id', billID='$billID', md5=$md5, ext=$ext, localPath=$localPath, onlinePath=$onlinePath, syncStatus=$syncStatus)"
+        return GsonUtils.toJson(this)
     }
 }

@@ -104,6 +104,8 @@ internal class ETCViewModel(private val mBillSync: IBillSync) :
                     category = categoryName
                     dealer = "ETC"
                     type = BillType.EXPENDITURE.valueInt
+                }.also {
+                    it.hashValue =it.hashCode()
                 }
 
                 /**
@@ -260,9 +262,11 @@ internal class ETCViewModel(private val mBillSync: IBillSync) :
             category = categoryName
             dealer = "ETC"
             type = BillType.EXPENDITURE.valueInt
+        }.also {
+            it.hashValue=it.hashCode()
         }
-        val hashCode = bill.hashCode()
-        val exist = App.dataBase.billDao().exist(hashCode) > 0
+
+        val exist = App.dataBase.billDao().exist(bill.hashCode()) > 0
         if (!exist) {
             val count = App.dataBase.billDao().install(bill)
             LogUtils.d("导入ETC账单：", bill)

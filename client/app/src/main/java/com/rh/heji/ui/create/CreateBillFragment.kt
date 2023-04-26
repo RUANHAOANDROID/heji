@@ -58,25 +58,34 @@ class CreateBillFragment : BaseFragment() {
             CreateBillViewModelFactory(mainActivity.mService.getBillSyncManager())
         )[CreateBillViewModel::class.java]
     }
+
     private lateinit var pagerAdapter: FragmentViewPagerAdapter
+
+    //支出|收入
     private val tabTitles = listOf(
         BillType.EXPENDITURE.valueString, BillType.INCOME.valueString
     )
 
-    internal lateinit var selectedCategoryFragment: SelectCategoryFragment
-    private val fragments = listOf(
-        SelectCategoryFragment.newInstance(BillType.EXPENDITURE),
-        SelectCategoryFragment.newInstance(BillType.INCOME)
+    //SelectCategoryFragment
+    internal lateinit var categoryFragment: CategoryFragment
+
+    private val categoryFragments = listOf(
+        CategoryFragment.newInstance(BillType.EXPENDITURE),
+        CategoryFragment.newInstance(BillType.INCOME)
     )
 
     val binding: FragmentCreatebillBinding by lazy {
         FragmentCreatebillBinding.inflate(layoutInflater)
     }
-    lateinit var popupSelectImage: SelectImagePopup//图片弹窗
+
+    //图片弹窗
+    lateinit var popupSelectImage: SelectImagePopup
+
+    //照片选择
     lateinit var imageSelectLauncher: ActivityResultLauncher<Intent>
 
     /**
-     * 是否修改
+     * 是否是修改账单
      * 当isModify为true时为要修改的账单
      * 默认新增
      */
@@ -100,17 +109,17 @@ class CreateBillFragment : BaseFragment() {
         binding.vpContent.post {
             if (type == BillType.EXPENDITURE.valueInt) {
                 binding.tab.getTabAt(0)?.select()
-                fragments[0].setSelectCategory(category)
+                categoryFragments[0].setSelectCategory(category)
             } else if (type == BillType.INCOME.valueInt) {
                 binding.tab.getTabAt(1)?.select()
-                fragments[1].setSelectCategory(category)
+                categoryFragments[1].setSelectCategory(category)
             }
         }
     }
 
     /**
      *
-     * @see SelectCategoryFragment.setCategories
+     * @see CategoryFragment.setCategories
      * @param type
      * @param categories
      */
@@ -120,9 +129,9 @@ class CreateBillFragment : BaseFragment() {
             TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
         )
         if (type == BillType.EXPENDITURE.valueInt) {
-            fragments[0].setCategories(categories)
+            categoryFragments[0].setCategories(categories)
         } else if (type == BillType.INCOME.valueInt) {
-            fragments[1].setCategories(categories)
+            categoryFragments[1].setCategories(categories)
         }
         val billType = BillType.transform(type)
         binding.keyboard.setType(billType)
@@ -133,7 +142,7 @@ class CreateBillFragment : BaseFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         pagerAdapter = FragmentViewPagerAdapter(
-            childFragmentManager, fragments, tabTitles
+            childFragmentManager, categoryFragments, tabTitles
         )
         /**
          * 选择照片
@@ -182,7 +191,7 @@ class CreateBillFragment : BaseFragment() {
     private fun showPager() {
         val pagerAdapter = FragmentViewPagerAdapter(
             childFragmentManager,
-            fragments,
+            categoryFragments,
             tabTitles
         )
 

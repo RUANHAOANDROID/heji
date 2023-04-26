@@ -56,10 +56,13 @@
             android:layout_height="wrap_content"
             android:minHeight="40dp"
             android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:text="导入支付宝账单"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="@+id/inputETC"
             app:layout_constraintTop_toBottomOf="@+id/inputETC" />
+
         <TextView
             android:id="@+id/inputWeiXinPay"
             style="@style/TextSelectedBackground"
@@ -67,14 +70,18 @@
             android:layout_height="wrap_content"
             android:minHeight="40dp"
             android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:text="导入微信账单"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="@+id/inputAliPay"
             app:layout_constraintTop_toBottomOf="@+id/inputAliPay" />
+
         <TextView
             android:id="@+id/exportQianJi"
             style="@style/TextSelectedBackground"
             android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
             android:layout_height="wrap_content"
             android:minHeight="40dp"
             android:paddingLeft="16dp"

@@ -19,7 +19,7 @@ import com.rh.heji.ui.create.adapter.SelectCategoryAdapter
  * @author: 锅得铁
  * # 收入/支出标签 复用该Fragment
  */
-internal class SelectCategoryFragment : BaseFragment() {
+internal class CategoryFragment : BaseFragment() {
     val binding: FragmentCategoryContentBinding by lazy {
         FragmentCategoryContentBinding.inflate(layoutInflater)
     }
@@ -28,7 +28,7 @@ internal class SelectCategoryFragment : BaseFragment() {
     private val createBillFragment by lazy {
         (parentFragment) as CreateBillFragment
     }
-
+    //选中的标签、默认选择第一个、没有时为空
     private var selectCategory: Category? = null
 
     //类型 支出 或 收入
@@ -41,7 +41,7 @@ internal class SelectCategoryFragment : BaseFragment() {
         super.onAttach(context)
         layout().post {
             arguments?.let {
-                type = SelectCategoryFragmentArgs.fromBundle(it).type
+                type = CategoryFragmentArgs.fromBundle(it).type
                 if (type == BillType.INCOME)//预加载一次
                     createBillFragment.viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
             }
@@ -52,8 +52,8 @@ internal class SelectCategoryFragment : BaseFragment() {
         super.onResume()
         layout().post {
             with(createBillFragment) {
-                selectedCategoryFragment = this@SelectCategoryFragment
-                type = this@SelectCategoryFragment.type
+                categoryFragment = this@CategoryFragment
+                type = this@CategoryFragment.type
                 viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
             }
             createBillFragment.selectedCategory(type.valueInt, selectCategory)
@@ -139,11 +139,11 @@ internal class SelectCategoryFragment : BaseFragment() {
          * @return
          */
         @JvmStatic
-        fun newInstance(type: BillType): SelectCategoryFragment {
+        fun newInstance(type: BillType): CategoryFragment {
             LogUtils.d(type)
-            val categoryFragment = SelectCategoryFragment()
+            val categoryFragment = CategoryFragment()
             categoryFragment.arguments =
-                SelectCategoryFragmentArgs.Builder().setType(type).build().toBundle()
+                CategoryFragmentArgs.Builder().setType(type).build().toBundle()
             return categoryFragment
         }
     }

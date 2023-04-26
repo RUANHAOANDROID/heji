@@ -54,11 +54,18 @@ internal class CreateBillViewModel(private val mBillSync: IBillSync) :
                     mBillSync.deleteImage(image)
                 }
                 is CreateBillAction.GetCategories -> {
-                    LogUtils.d("TimeTest",TimeUtils.millis2String(System.currentTimeMillis(),"yyyy/MM/dd HH:mm:ss"))
+                    LogUtils.d(
+                        "TimeTest",
+                        TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
+                    )
                     val categories = App.dataBase.categoryDao()
                         .findIncomeOrExpenditure(Config.book.id, action.type)
                     send(CreateBillUIState.Categories(action.type, categories))
-                    LogUtils.d("TimeTest",categories,TimeUtils.millis2String(System.currentTimeMillis(),"yyyy/MM/dd HH:mm:ss"))
+                    LogUtils.d(
+                        "TimeTest",
+                        categories,
+                        TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
+                    )
                 }
             }
         }, {

@@ -30,6 +30,20 @@ internal class CSVFileReader : IReader {
             val reader = CSVReader(inputStreamReader)
             // 读取CSV文件中的所有行并打印它们
             var nextLine: Array<String>?
+            //不计收入个数
+            var notIECount = 0
+            //收入数
+            var incomeCount = 0
+            //支出数
+            var expenditureCount = 0
+            //金额为0的账单
+            var zeroCount = 0
+            //数据库存在重复的
+            var existCount = 0
+            //导入条数
+            var inputCount = 0
+            //开始导入时间
+            val startTime =System.currentTimeMillis()
             while (reader.readNext().also { nextLine = it } != null) {
                 val columns = nextLine!!
                 //正常账单会大于5列，标题除外
@@ -55,46 +69,61 @@ internal class CSVFileReader : IReader {
                     columns[14].trim(),
                     columns[15].trim(),
                 )
-                //仅仅计入收入和支出
-                var aliPayType: Int = if (aliPay.receiptOrExpenditure == "支出") {
-                    BillType.EXPENDITURE.valueInt
-                } else if (aliPay.receiptOrExpenditure == "收入") {
-                    BillType.INCOME.valueInt
-                } else {
-                    continue
+                Log.d(TAG, aliPay.toString())
+                var aliPayType: Int = when (aliPay.receiptOrExpenditure) {
+                    "支出" -> {
+                        expenditureCount++
+                        BillType.EXPENDITURE.valueInt
+                    }
+                    "收入" -> {
+                        incomeCount++
+                        BillType.INCOME.valueInt
+                    }
+                    else -> {
+                        notIECount++
+                        continue
+                    }
                 }
-
                 try {
+                    var billTime = aliPay.paymentTime.ifEmpty { aliPay.transactionCreationTime }
+
                     //转换
                     val bill = Bill().apply {
-                        id =
-                            ObjectId(DateConverters.str2Date(aliPay.lastModifiedTime)).toHexString()
+                        id = ObjectId(DateConverters.str2Date(billTime)).toHexString()
                         money = aliPay.money.toBigDecimal()
                         type = aliPayType
-                        time = TimeUtils.string2Date(aliPay.lastModifiedTime, "yyyy-MM-dd HH:mm:ss")
+                        time = TimeUtils.string2Date(billTime, "yyyy-MM-dd HH:mm:ss")
                         category = "支付宝" //aliPay.counterparty
                         remark = "${aliPay.counterparty}${aliPay.remark}"
+                    }.also {
+                        it.hashValue = it.hashCode()
                     }
                     if (bill.money.compareTo(BigDecimal.ZERO) == 0) {
                         // 等于0则不计入
+                        zeroCount++
                         continue
                     }
                     App.dataBase.billDao().let {
-                        Log.d(TAG, "install : $bill")
                         //判断是否已经存在
                         val exist = it.exist(bill.hashCode()) > 0
-                        Log.d(TAG, "install exist : $exist hash = ${bill.hashCode()}")
                         if (!exist) {
                             it.install(bill)//记账
-                            Log.d(TAG, "install : OK")
+                            inputCount++
+                        } else {
+                            existCount++
                         }
                     }
-                    //记账
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-                Log.d(TAG, aliPay.toString())
             }
+            Log.d(TAG, "不计入收支:${notIECount} ")
+            Log.d(TAG, "收入:${incomeCount} ")
+            Log.d(TAG, "支出:${expenditureCount} ")
+            Log.d(TAG, "金额为0的:${zeroCount} ")
+            Log.d(TAG, "重复导入:${existCount} ")
+            Log.d(TAG, "完成导入:${inputCount} ")
+            Log.d(TAG, "耗时:${System.currentTimeMillis()-startTime}毫秒")
             result(true, "导入完成")
             inputStream.close()
             inputStreamReader.close()

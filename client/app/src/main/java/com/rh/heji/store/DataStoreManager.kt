@@ -73,15 +73,9 @@ object DataStoreManager {
         }
     }
 
-    suspend fun getBook(context: Context = App.context): Flow<Book?> {
-        return context.dataStore.data.map {
-            var currentBook: Book? = null
-            val bookJsonStr = it[CURRENT_BOOK]
-            if (!bookJsonStr.isNullOrEmpty()) {
-                currentBook = moshi.adapter(Book::class.java).fromJson(bookJsonStr)
-            }
-            currentBook
-        }
+    suspend fun getBook(context: Context = App.context): Flow<Book?> = context.dataStore.data.map { preferences ->
+        val bookJsonStr = preferences[CURRENT_BOOK]
+        moshi.adapter(Book::class.java).fromJson(bookJsonStr)
     }
 
     suspend fun removeBook(context: Context = App.context) {

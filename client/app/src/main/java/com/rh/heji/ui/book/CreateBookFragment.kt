@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.interfaces.OnSelectListener
-import com.rh.heji.R
 import com.rh.heji.databinding.FragmentBookAddBinding
-import com.rh.heji.databinding.FragmentCreatebillBinding
 import com.rh.heji.ui.base.BaseFragment
 
 class CreateBookFragment : BaseFragment() {
@@ -31,32 +28,33 @@ class CreateBookFragment : BaseFragment() {
     }
 
     override fun initView(rootView: View) {
-        binding.banner.setOnClickListener { }
-        binding.layoutType.setOnClickListener {
-            XPopup.Builder(requireContext()).asBottomList(
-                "选择账单类型", arrayOf("日常生活", "经营账本", "人情账本", "汽车账本")
-            ) { position, text ->
-                binding.tvBookType.text = text
-            }.show()
-        }
-        binding.btnCreate.setOnClickListener {
-            val name = bookName()
-            val type = bookType()
-            if (name.isEmpty()) {
-                ToastUtils.showShort("请选择填写账本名称")
-                return@setOnClickListener
+        with(binding){
+            banner.setOnClickListener { }
+            layoutType.setOnClickListener {
+                XPopup.Builder(requireContext()).asBottomList(
+                    "选择账单类型", arrayOf("日常生活", "经营账本", "人情账本", "汽车账本")
+                ) { _, text ->
+                    tvBookType.text = text
+                }.show()
             }
-            if (type.isEmpty() || type == "未设置") {
-                ToastUtils.showShort("请选择账本类型")
-                return@setOnClickListener
+            btnCreate.setOnClickListener {
+                val name = textInputEdit.text.toString()
+                val type = tvBookType.text.toString()
+                if (name.isEmpty()) {
+                    ToastUtils.showShort("请选择填写账本名称")
+                    return@setOnClickListener
+                }
+                if (type.isEmpty() || type == "未设置") {
+                    ToastUtils.showShort("请选择账本类型")
+                    return@setOnClickListener
+                }
+                viewModel.createNewBook(name, type)
             }
-            viewModel.createNewBook(name, type)
         }
+
         viewModel.bookCreate().observe(this) {
             findNavController().popBackStack()
         }
     }
 
-    fun bookName() = binding.textInputEdit.text.toString()
-    fun bookType() = binding.tvBookType.text.toString()
 }

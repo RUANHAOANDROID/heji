@@ -33,12 +33,8 @@ internal class CategoryManagerViewModel :
                     }
                 })
             }
-            is CategoryManagerAction.DeleteCategory -> {
-                deleteCategory(action.category)
-            }
-            is CategoryManagerAction.SaveCategory -> {
-                saveCategory(action.name, action.type)
-            }
+            is CategoryManagerAction.DeleteCategory -> deleteCategory(action.category)
+            is CategoryManagerAction.SaveCategory -> saveCategory(action.name, action.type)
         }
     }
 

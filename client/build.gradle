@@ -21,7 +21,7 @@ task clean(type: Delete) {
 }
 ext {
     nav_version = "2.3.5"
-    lifecycle_version = '2.4.1'
+    lifecycle_version = '2.5.1'
     retrofit ="2.9.0"
     work_version = '2.7.0'
     compileSdkVersion = 31 //编译SDK版本

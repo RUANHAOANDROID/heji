@@ -40,22 +40,25 @@ class DayBillsNodeProvider : BaseNodeProvider() {
         get() = R.layout.item_bill_daylist
 
     override fun convert(helper: BaseViewHolder, item: BaseNode) {
-        var entity: DayBillsNode = item as DayBillsNode
-        var bill = entity.bill
-        var incomeColor = if (bill.type == -1) context.getColor(R.color.expenditure) else context.getColor(R.color.income)
-
-        helper.getView<CircleView>(R.id.circleView).setColor(incomeColor)
-        helper.setText(R.id.tvCategory, bill.category)
-        helper.setText(R.id.tvMoney, "${if (bill.type == -1) "- " else "+ "}${bill.money}")
-        helper.setTextColor(R.id.tvMoney, incomeColor)
-        helper.setText(R.id.tvInfo, bill.remark)
-        if (bill.images.isNotEmpty()) {
-            helper.getView<TextView>(R.id.tvInfo).setCompoundDrawablesWithIntrinsicBounds(context.getDrawable(R.drawable.ic_baseline_image_18), null, null, null)
-        } else {
-            helper.getView<TextView>(R.id.tvInfo).setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+        val entity = item as DayBillsNode
+        val bill = entity.bill
+        val incomeColor = context.getColor(if (bill.type == -1) R.color.expenditure else R.color.income)
+        with(helper) {
+            getView<CircleView>(R.id.circleView).setColor(incomeColor)
+            setText(R.id.tvCategory, bill.category)
+            val moneySign = if (bill.type == -1) "- " else "+ "
+            setText(R.id.tvMoney, "$moneySign${bill.money}")
+            setTextColor(R.id.tvMoney, incomeColor)
+            setText(R.id.tvInfo, bill.remark)
+            val tvInfoView = getView<TextView>(R.id.tvInfo)
+            tvInfoView.setCompoundDrawablesWithIntrinsicBounds(
+                if (bill.images.isNotEmpty()) context.getDrawable(R.drawable.ic_baseline_image_18) else null,
+                null,
+                null,
+                null
+            )
+            setGone(R.id.tvInfo, TextUtils.isEmpty(bill.remark) && bill.images.isEmpty())
         }
-        helper.setGone(R.id.tvInfo, TextUtils.isEmpty(bill.remark) && bill.images.isEmpty())
-
     }
 }
 

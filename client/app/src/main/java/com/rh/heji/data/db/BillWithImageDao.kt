@@ -17,9 +17,7 @@ abstract class BillWithImageDao {
     @Transaction
     open suspend fun findBillAndImage(bill_id: String): Bill {
         val bill = App.dataBase.billDao().findById(bill_id)
-        if (bill != null) {
-            App.dataBase.imageDao().findByBillId(bill_id)
-        }
+        App.dataBase.imageDao().findByBillId(bill_id)
         return bill
     }
 }

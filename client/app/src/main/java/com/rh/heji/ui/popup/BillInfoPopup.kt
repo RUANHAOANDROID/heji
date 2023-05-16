@@ -145,7 +145,7 @@ class PopupBillInfo(
         override fun convert(holder: BaseViewHolder, image: Image) {
             binding = ItemImgBinding.bind(holder.itemView)
             val path = ImageUtils.getImagePath(image)
-            GlideApp.with(binding!!.itemImage)
+            GlideApp.with(binding.itemImage)
                 .asBitmap()
                 .load(path)
                 .error(R.drawable.ic_baseline_image_load_error_24)

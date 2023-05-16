@@ -113,7 +113,7 @@ class CalendarNoteFragment : BaseFragment() {
         adapter = NodeBillsAdapter()
         binding.recycler.adapter = adapter
         binding.recycler.addItemDecoration(CardDecoration(8))
-        adapter?.setOnItemClickListener { adapter, _, position ->
+        adapter.setOnItemClickListener { adapter, _, position ->
             if (adapter.getItem(position) is DayBillsNode) {
                 var billNode = adapter.getItem(position) as DayBillsNode
                 popupView.show(billNode.bill)

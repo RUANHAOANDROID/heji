@@ -26,38 +26,34 @@ class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :
 
     private val colors = ColorUtils.groupColors()
     override fun convert(holder: BaseViewHolder, item: Book) {
-        FragmentBookItemBinding.bind(holder.itemView).let { binding ->
-            binding.tvTitle.text = item.name
-            binding.tvContext.text = item.type
+        val binding = FragmentBookItemBinding.bind(holder.itemView)
+        with(binding) {
+            tvTitle.text = item.name
+            tvContext.text = item.type
+
             val bannerBitmap = ImageUtils.drawable2Bitmap(
                 ContextCompat.getDrawable(
                     context,
                     R.drawable.banner_tree
                 )
             )
-            if (holder.layoutPosition == 0) {
-                binding.root.background =
-                    ImageUtils.bitmap2Drawable(ImageUtils.toRoundCorner(bannerBitmap, 10f))
+
+            val isFirstChild = holder.layoutPosition == 0
+            val backgroundDrawable = if (isFirstChild) {
+                ImageUtils.bitmap2Drawable(ImageUtils.toRoundCorner(bannerBitmap, 10f))
             } else {
                 val colorDrawable = colors[holder.layoutPosition % 24]
-                binding.root.background =
-                    XPopupUtils.createDrawable(colorDrawable, 10f, 10f, 10f, 10f)
+                XPopupUtils.createDrawable(colorDrawable, 10f, 10f, 10f, 10f)
             }
+            root.background = backgroundDrawable
 
+            imgSelected.visibility = if (item.id == Config.book.id) View.VISIBLE else View.INVISIBLE
 
-            if (item.id == Config.book.id) {
-                binding.imgSelected.visibility = View.VISIBLE
-            } else {
-                binding.imgSelected.visibility = View.INVISIBLE
-            }
-            binding.imgSetting.setOnClickListener {
+            imgSetting.setOnClickListener {
                 settingClickListener(item)
             }
-            if (item.firstBook) {//0号账本
-                binding.imgFirstBook.visibility = View.VISIBLE
-            } else {
-                binding.imgFirstBook.visibility = View.GONE
-            }
+
+            imgFirstBook.visibility = if (item.firstBook) View.VISIBLE else View.GONE
         }
     }
 }

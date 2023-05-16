@@ -1,55 +1,51 @@
-package com.rh.heji.widget;
+package com.rh.heji.widget
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.view.View;
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import android.view.View
+import kotlin.math.min
 
 /**
  * @date: 2021/3/2
  * @author: 锅得铁
  * # 圆 点
  */
-public class CircleView extends View {
-    private int b = Color.RED;
-
-    private Paint paint = null;
-
-    public CircleView(Context paramContext) {
-        super(paramContext);
-    }
-
-    public CircleView(Context paramContext, AttributeSet paramAttributeSet) {
-        super(paramContext, paramAttributeSet);
-    }
-
-    public CircleView(Context paramContext, AttributeSet paramAttributeSet, int paramInt) {
-        super(paramContext, paramAttributeSet, paramInt);
-    }
-
-    public CircleView(Context paramContext, AttributeSet paramAttributeSet, int paramInt1, int paramInt2) {
-        super(paramContext, paramAttributeSet, paramInt1, paramInt2);
-    }
-
-    protected void onDraw(Canvas paramCanvas) {
-        super.onDraw(paramCanvas);
-        if (this.paint == null) {
-            this.paint = new Paint(1);
-            this.paint.setStyle(Paint.Style.FILL);
+class CircleView : View {
+    private var mColor = Color.RED
+    private var paint: Paint? = null
+    constructor(paramContext: Context?) : super(paramContext)
+    constructor(paramContext: Context?, paramAttributeSet: AttributeSet?) : super(
+        paramContext,
+        paramAttributeSet
+    )
+    constructor(paramContext: Context?, paramAttributeSet: AttributeSet?, paramInt: Int) : super(
+        paramContext,
+        paramAttributeSet,
+        paramInt
+    )
+    override fun onDraw(paramCanvas: Canvas) {
+        super.onDraw(paramCanvas)
+        paint ?: Paint(1).apply {
+            style = Paint.Style.FILL
+            paint = this
         }
-        this.paint.setColor(this.b);
-        paramCanvas.drawCircle((getWidth() / 2), (getHeight() / 2), (Math.min(getWidth(), getHeight()) / 2), this.paint);
+        paint!!.color=mColor
+        val cx = (width / 2).toFloat()
+        val cy = (height / 2).toFloat()
+        val radius = (min(width, height) / 2).toFloat()
+        paramCanvas.drawCircle(cx, cy, radius, paint!!)
     }
 
-    public void setBackground(Drawable paramDrawable) {
-        super.setBackground(null);
+    override fun setBackground(paramDrawable: Drawable) {
+        super.setBackground(null)
     }
 
-    public void setColor(int color) {
-        this.b = color;
-        invalidate();
+    fun setColor(color: Int) {
+        this.mColor = color
+        invalidate()
     }
 }

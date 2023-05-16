@@ -69,14 +69,13 @@ class CategoryManagerFragment : BaseFragment() {
 
     override fun setUpToolBar() {
         super.setUpToolBar()
-        toolBar.let {
-            it.title = "分类管理(${BillType.transform(args.ieType).valueString})"
-            it.navigationIcon = blackDrawable()
-            it.setNavigationOnClickListener { v: View? ->
+        toolBar.apply {
+            title = "分类管理(${BillType.transform(args.ieType).valueString})"
+            navigationIcon = blackDrawable()
+            setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
         }
-
     }
 
     private fun alertDeleteTip(label: Category) {

@@ -31,9 +31,9 @@ object Config {
         this.enableOfflineMode = enableOffline
     }
 
-    fun isInitBook() = this::book.isInitialized
+    fun isInitBook() = ::book.isInitialized
 
-    fun isInitUser() = this::user.isInitialized
+    fun isInitUser() = ::user.isInitialized
 
     fun setBook(book: Book) {
         this.book = book

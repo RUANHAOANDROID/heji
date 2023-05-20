@@ -62,14 +62,14 @@ fun CoroutineScope.launchIO(
     }
 }
 
-internal fun <I : IAction, O : IUiState> Fragment.render(
+internal inline fun <reified I : IAction,reified  O : IUiState> Fragment.render(
     vm: BaseViewModel<I, O>,
-    function: (o: O) -> Unit
+    noinline function: (o: O) -> Unit
 ) {
     vm.uiState.observe(viewLifecycleOwner, function)
 }
 
-fun <I : IAction, O : IUiState> doAction(
+inline fun <reified I : IAction, reified  O : IUiState> doAction(
     vm: BaseViewModel<I, O>,
     action: I
 ) {

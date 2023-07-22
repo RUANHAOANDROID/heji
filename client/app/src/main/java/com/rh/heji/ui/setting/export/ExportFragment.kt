@@ -29,7 +29,7 @@ class ExportFragment : BaseFragment() {
         const val CREATE_FILE_CSV = 2
     }
 
-    private val viewModel by lazy { ViewModelProvider(this).get(ExportViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(this)[ExportViewModel::class.java] }
     private val popup by lazy { XPopup.Builder(requireContext()).asLoading().setTitle("正在导出") }
     override fun initView(rootView: View) {
         binding.tvExportFormat.setOnClickListener {

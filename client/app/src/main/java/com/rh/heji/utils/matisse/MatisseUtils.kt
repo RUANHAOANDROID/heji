@@ -18,7 +18,7 @@ import com.zhihu.matisse.engine.impl.GlideEngine
  */
 object MatisseUtils {
 
-    val REQUEST_CODE_CHOOSE = 1008611
+    const val REQUEST_CODE_CHOOSE = 1008611
 
     @Deprecated("使用ActivityResultLauncher方式")
     fun selectMultipleImage(

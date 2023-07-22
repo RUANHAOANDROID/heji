@@ -70,7 +70,7 @@ internal class CSVFileReader : IReader {
                     columns[15].trim(),
                 )
                 Log.d(TAG, aliPay.toString())
-                var aliPayType: Int = when (aliPay.receiptOrExpenditure) {
+                val aliPayType: Int = when (aliPay.receiptOrExpenditure) {
                     "支出" -> {
                         expenditureCount++
                         BillType.EXPENDITURE.valueInt

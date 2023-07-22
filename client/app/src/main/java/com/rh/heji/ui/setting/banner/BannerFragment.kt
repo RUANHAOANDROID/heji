@@ -9,7 +9,7 @@ class BannerFragment : BaseFragment() {
 
 
     private val viewModel: BannerViewModel by lazy {
-        ViewModelProvider(this).get(BannerViewModel::class.java)
+        ViewModelProvider(this)[BannerViewModel::class.java]
     }
 
 

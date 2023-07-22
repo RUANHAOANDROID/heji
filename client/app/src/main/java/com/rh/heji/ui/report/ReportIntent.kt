@@ -40,7 +40,7 @@ sealed interface ReportAction : IAction {
     /**
      * 获取统计报表
      */
-    class GetReportList() : ReportAction
+    object GetReportList : ReportAction
 
     /**
      * 获取账单图片

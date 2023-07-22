@@ -22,7 +22,7 @@ open class CategoryManagerAdapter :
         itemBinding = ItemCategoryManagerBinding.bind(holder.itemView)
         val bgColor = context.getColor(if (category.isSelected) R.color.category_ico_selected else R.color.category_ico)
 
-        if (category.name.isNullOrEmpty()) {
+        if (category.name.isEmpty()) {
             return
         }
         val drawable = TextDrawable.builder().buildRound(category.name[0].toString(), bgColor)

@@ -19,7 +19,7 @@ data class DayIncome(var expected: String,
  * 日收益Node,子节点为账单List
  */
 data class DayIncomeNode(private val dayListNodes: MutableList<BaseNode>, val dayIncome: DayIncome) : BaseNode() {
-    override val childNode: MutableList<BaseNode>?
+    override val childNode: MutableList<BaseNode>
         get() = dayListNodes
 }
 

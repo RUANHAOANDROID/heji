@@ -154,7 +154,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) :
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
                     if (response.body != null) {
-                        val strBody = response.body!!.string()
+                        val strBody = response.body.string()
                         try {
                             val jsonObject = JSONObject(strBody)
                             val status = jsonObject.getString("status")
@@ -226,7 +226,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) :
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
                     if (response.body != null) {
-                        val strBody = response.body!!.string()
+                        val strBody = response.body.string()
                         try {
                             val jsonObject = JSONObject(strBody)
                             val status = jsonObject.getString("status")

@@ -85,7 +85,7 @@ class BillListFragment : BaseFragment() {
         render(homeViewModel) {
             when (it) {
                 is BillListUiState.Bills -> {
-                    if (it.nodeList.isNullOrEmpty() || it.nodeList.size <= 0) {
+                    if (it.nodeList.isEmpty() || it.nodeList.size <= 0) {
                         adapter.setDiffNewData(mutableListOf())//设置DiffCallback使用setDiffNewData避免setList
                         binding.homeRecycler.minimumHeight = getRootViewHeight()//占满一屏
                         stubTotalView.visibility = View.GONE
@@ -97,13 +97,16 @@ class BillListFragment : BaseFragment() {
                     //adapter.loadMoreModule.loadMoreEnd()//单月不分页，直接显示没有跟多
                     hideRefreshing(binding.refreshLayout)
                 }
+
                 is BillListUiState.Summary -> {//tip: 当统计数额发生变更刷新列表
                     totalIncomeExpense(it.income)
                     homeViewModel.doAction(BillListAction.MonthBill(homeViewModel.yearMonth()))
                 }
+
                 is BillListUiState.Error -> {
                     ToastUtils.showLong(it.t.message)
                 }
+
                 is BillListUiState.Images -> {
                     popupView.setImages(it.data)
                 }
@@ -113,38 +116,36 @@ class BillListFragment : BaseFragment() {
 
     override fun setUpToolBar() {
         super.setUpToolBar()
-        with(toolBar) {
-            toolBar.title = ""
-            showYearMonthTitle(
-                year = homeViewModel.yearMonth().year, //默认为当前时间,
-                month = homeViewModel.yearMonth().month,//默认为当前月份
-                onTabSelected = { year, month ->
-                    notifyData(year, month)
-                    mainActivity.viewModel.globalYearMonth = YearMonth(year, month)
-                }
-            )
-            toolBar.navigationIcon = ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.ic_baseline_dehaze_24,
-                mainActivity.theme
-            )
-            toolBar.setNavigationOnClickListener {
-                //展开侧滑菜单
-                mainActivity.openDrawer()
+        toolBar.title = ""
+        showYearMonthTitle(
+            year = homeViewModel.yearMonth().year, //默认为当前时间,
+            month = homeViewModel.yearMonth().month,//默认为当前月份
+            onTabSelected = { year, month ->
+                notifyData(year, month)
+                mainActivity.viewModel.globalYearMonth = YearMonth(year, month)
             }
-            binding.imgCalendar.setOnClickListener {
-                findNavController().navigate(R.id.nav_calendar_note)
-            }
-            binding.imgTotal.setOnClickListener {
-                findNavController().navigate(R.id.nav_report)
-            }
-            swipeRefreshLayout(binding.refreshLayout) {
-                notifyData()
-            }
-            binding.materialupAppBar.addOnOffsetChangedListener { _, verticalOffset ->
-                val isFullyShow = verticalOffset >= 0
-                binding.refreshLayout.isEnabled = isFullyShow
-            }
+        )
+        toolBar.navigationIcon = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.ic_baseline_dehaze_24,
+            mainActivity.theme
+        )
+        toolBar.setNavigationOnClickListener {
+            //展开侧滑菜单
+            mainActivity.openDrawer()
+        }
+        binding.imgCalendar.setOnClickListener {
+            findNavController().navigate(R.id.nav_calendar_note)
+        }
+        binding.imgTotal.setOnClickListener {
+            findNavController().navigate(R.id.nav_report)
+        }
+        swipeRefreshLayout(binding.refreshLayout) {
+            notifyData()
+        }
+        binding.materialupAppBar.addOnOffsetChangedListener { _, verticalOffset ->
+            val isFullyShow = verticalOffset >= 0
+            binding.refreshLayout.isEnabled = isFullyShow
         }
 
 
@@ -159,8 +160,8 @@ class BillListFragment : BaseFragment() {
      * @param month 月
      */
     private fun totalIncomeExpense(incomeExpense: Income) {
-        var income = incomeExpense.income.toString()
-        var expenses = incomeExpense.expenditure.toString()
+        val income = incomeExpense.income.toString()
+        val expenses = incomeExpense.expenditure.toString()
         val none = (income == "0" && expenses == "0") || (income == "0.00" && expenses == "0.00")
         if (none) {
             stubTotalView.visibility = View.GONE

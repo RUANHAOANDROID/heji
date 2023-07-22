@@ -23,7 +23,6 @@ data class Book(
 
     @Json(name = "_id")
     @PrimaryKey()
-    @NotNull
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
 

@@ -26,11 +26,9 @@ interface BillDao {
     /**
      * 当有子表时慎用
      */
-    @NotNull
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(billTab: Bill): Long
 
-    @NotNull
     @Update(entity = Bill::class, onConflict = OnConflictStrategy.REPLACE)
     fun update(bill: Bill): Int
 

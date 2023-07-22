@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull
 @Entity(tableName = "error_log")
 data class ErrorLog(
     @PrimaryKey
-    @NotNull var id: String
+    var id: String
 ) {
 
 

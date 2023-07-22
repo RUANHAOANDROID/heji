@@ -35,7 +35,7 @@ class SyncService : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
+    override fun onBind(intent: Intent?): IBinder {
         return binder
     }
 

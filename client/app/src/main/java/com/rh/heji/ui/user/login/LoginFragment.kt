@@ -66,7 +66,7 @@ class LoginFragment : Fragment() {
                 "1.不支持合伙记账等功能   \n" +
                         "2.删除应用会丢失所有数据"
             ) {
-                viewModel.doAction(LoginAction.EnableOfflineMode())
+                viewModel.doAction(LoginAction.EnableOfflineMode)
             }.show()
         }
     }

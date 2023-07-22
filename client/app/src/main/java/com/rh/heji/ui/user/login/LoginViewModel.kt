@@ -105,7 +105,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
             }
             DataStoreManager.saveUseMode(true)
             DataStoreManager.saveBook(Config.defaultBook)
-            send(LoginUiState.OfflineRun())
+            send(LoginUiState.OfflineRun)
         })
 
     }

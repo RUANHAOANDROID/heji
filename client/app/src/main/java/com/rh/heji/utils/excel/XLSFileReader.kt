@@ -17,12 +17,9 @@ internal class XLSFileReader : IReader {
         val columns = sheet.columns
         var call: Cell
         var startLine = 4
-        for (row in 4 until rows) {
+        for (row in startLine until rows) {
             call = sheet.getCell(0, row)
             LogUtils.d(call.contents)
-            if (row < startLine) {
-                continue
-            }
             val alipay = AliPayEntity(
                 sheet.getCell(1, row).contents,
                 sheet.getCell(2, row).contents,

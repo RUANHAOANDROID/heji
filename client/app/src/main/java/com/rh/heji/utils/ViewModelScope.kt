@@ -47,7 +47,7 @@ suspend fun runIOThread(
 
 suspend fun <T> (() -> T).runMainThread() = withContext(Dispatchers.Main) { invoke() }
 
-@kotlinx.coroutines.ObsoleteCoroutinesApi
+@ObsoleteCoroutinesApi
 fun ViewModel.launchNewThread(block: suspend () -> Unit, error: suspend (Throwable) -> Unit = {}) =
     viewModelScope.launch(
         newSingleThreadContext("rh_newThread")

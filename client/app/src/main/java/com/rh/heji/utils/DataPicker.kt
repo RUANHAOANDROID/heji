@@ -18,16 +18,15 @@ class DataPicker(val activity: Activity) {
     fun selectDay(calendar: Calendar) {
         val onDateSetListener =
             DatePickerDialog.OnDateSetListener { datePicker: DatePicker?, year: Int, month: Int, dayOfMonth: Int ->
-                val selectCalendar = calendar
-                selectCalendar[year, month] = dayOfMonth
-                selectCalendar.time.string()
+                calendar[year, month] = dayOfMonth
+                calendar.time.string()
 
                 selectHourAndMinute(
                     year = year,
                     month = month + 1,//实际保存时，选择的时间需要+1（month：0-11 ）
                     dayOfMonth = dayOfMonth,
-                    hourOfDay = selectCalendar[Calendar.HOUR_OF_DAY],
-                    minute = selectCalendar[Calendar.MINUTE]
+                    hourOfDay = calendar[Calendar.HOUR_OF_DAY],
+                    minute = calendar[Calendar.MINUTE]
                 )
             }
         val yearMonth = YearMonth.format(calendar.time)

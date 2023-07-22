@@ -44,19 +44,20 @@ internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUi
     private fun updateYearMonth(year: Int, month: Int) {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
-                billDao.findEveryDayIncomeByMonth(Config.book.id, selectYearMonth.yearMonthString()).filter {
+            billDao.findEveryDayIncomeByMonth(Config.book.id, selectYearMonth.yearMonthString())
+                .filter {
                     it.expenditure.toString() != "0" || it.income.toString() != "0"
                 }.forEach { dayIncome ->
                 var yymmdd = dayIncome.time!!.split("-")
-                    val calender: Calendar = getSchemeCalendar(
-                        year = yymmdd[0].toInt(),
-                        month = yymmdd[1].toInt(),
-                        day = yymmdd[2].toInt(),
-                        expenditure = dayIncome.expenditure.toString(),
-                        income = dayIncome.income.toString()
-                    )
-                    //map["${dayIncome.time}-${dayIncome.income }${dayIncome.expenditure}"] = calender
-                    map[calender.toString()] = calender// Key需是calendar string
+                val calender: Calendar = getSchemeCalendar(
+                    year = yymmdd[0].toInt(),
+                    month = yymmdd[1].toInt(),
+                    day = yymmdd[2].toInt(),
+                    expenditure = dayIncome.expenditure.toString(),
+                    income = dayIncome.income.toString()
+                )
+                //map["${dayIncome.time}-${dayIncome.income }${dayIncome.expenditure}"] = calender
+                map[calender.toString()] = calender// Key需是calendar string
             }
             send(CalenderUiState.Calender(map))
             LogUtils.d(year, month, "$map")

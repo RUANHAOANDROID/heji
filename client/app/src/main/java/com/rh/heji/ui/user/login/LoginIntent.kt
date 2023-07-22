@@ -11,11 +11,11 @@ import com.rh.heji.ui.base.IUiState
  */
 internal sealed interface LoginAction : IAction {
     class Login(val userName: String, val password: String) : LoginAction
-    class EnableOfflineMode() : LoginAction
+    object EnableOfflineMode : LoginAction
 }
 
 internal sealed interface LoginUiState : IUiState {
     class LoginSuccess(val token: String) : LoginUiState
     class LoginError(val t: Throwable) : LoginUiState
-    class OfflineRun() : LoginUiState
+    object OfflineRun : LoginUiState
 }

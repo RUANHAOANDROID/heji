@@ -7,7 +7,4 @@ class AppViewModel(application: App) : AndroidViewModel(application) {
 
     val loginEvent = MediatorLiveData<Event<Any>>()
 
-    init {
-
-    }
 }

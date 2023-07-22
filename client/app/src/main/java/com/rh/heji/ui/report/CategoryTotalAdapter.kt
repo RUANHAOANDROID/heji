@@ -33,7 +33,7 @@ internal class CategoryTotalAdapter(
         itemBinding.imgCategory.setImageDrawable(textIconDrawable)
         itemBinding.tvCategory.text = item.label
         itemBinding.tvCategoryIncome.text = item.data.toString()
-        itemBinding.tvCategoryPercentage.text = "${percentFormatter.getFormattedValue(item.value)}"
+        itemBinding.tvCategoryPercentage.text = percentFormatter.getFormattedValue(item.value)
         val progress = item.value.toInt()
         itemBinding.progressBarCategory.progress = progress
     }

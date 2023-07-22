@@ -26,7 +26,7 @@ class MonthYearBillAdapter(data: MutableList<IncomeTimeSurplus>?) :
         itemBinding.tvIncome.text = zeroPadding(item.income.toString())
         itemBinding.tvExpenditure.text = zeroPadding(item.expenditure.toString())
         itemBinding.tvSurplus.text = zeroPadding(item.surplus.toString())
-        if (item.surplus?.compareTo(BigDecimal.ZERO) == -1) {//surplus<zero
+        if (item.surplus.compareTo(BigDecimal.ZERO) == -1) {//surplus<zero
             itemBinding.tvSurplus.setTextColor(ContextCompat.getColor(context, R.color.expenditure))
         } else {
             itemBinding.tvSurplus.setTextColor(ContextCompat.getColor(context, R.color.income))

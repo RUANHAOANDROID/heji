@@ -382,7 +382,7 @@ class CreateBillFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         val stack: Stack<String>? = viewModel.keyBoardStack
-        if (null != stack && !stack.isEmpty()) {
+        if (!stack.isNullOrEmpty()) {
             binding.keyboard.post {
                 binding.keyboard.stack = stack
             }

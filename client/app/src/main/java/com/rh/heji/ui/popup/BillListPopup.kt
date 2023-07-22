@@ -99,8 +99,8 @@ class BillListPopup(
     private class ReportBillsAdapter(layoutResId: Int, data: MutableList<Bill>) :
         BaseQuickAdapter<Bill, BaseViewHolder>(layoutResId, data) {
         override fun convert(holder: BaseViewHolder, item: Bill) {
-            var bill = item
-            var incomeColor =
+            val bill = item
+            val incomeColor =
                 if (bill.type == -1) context.getColor(R.color.expenditure) else context.getColor(R.color.income)
 
             holder.getView<CircleView>(R.id.circleView).setColor(incomeColor)

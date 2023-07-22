@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull
 data class Book(
 
     @Json(name = "_id")
-    @PrimaryKey()
+    @PrimaryKey
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
 

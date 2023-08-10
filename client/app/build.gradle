@@ -4,6 +4,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'kotlin-parcelize'
 android {
+    namespace 'com.rh.heji'
     signingConfigs {
         single {
             storeFile file('..//heji.keystore')
@@ -75,7 +76,7 @@ android {
             resValue "string", "app_name", "合記"
         }
     }
-    namespace 'com.rh.heji'
+
     applicationVariants.all { variant ->
         variant.outputs.all {
             def time = new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+08:00"))

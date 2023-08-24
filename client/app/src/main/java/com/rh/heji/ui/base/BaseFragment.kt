@@ -130,10 +130,11 @@ abstract class BaseFragment : Fragment() {
         return height //占满一屏
     }
 
-    fun blackDrawable(): Drawable {
-        val ico = androidx.appcompat.R.drawable.abc_ic_ab_back_material
-        return resources.getDrawable(ico, mainActivity.theme)
-    }
+    fun blackDrawable(): Drawable = resources.getDrawable(
+        androidx.appcompat.R.drawable.abc_ic_ab_back_material,
+        mainActivity.theme
+    )
+
 
     /**
      *   拦截回退直接退出  object : Class 内部类指定owner 仅在该Fragment生命周期下有效

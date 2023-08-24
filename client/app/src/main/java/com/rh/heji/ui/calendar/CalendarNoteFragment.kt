@@ -13,6 +13,7 @@ import com.rh.heji.R
 import com.rh.heji.data.db.Bill
 import com.rh.heji.databinding.FragmentCalendarNoteBinding
 import com.rh.heji.render
+import com.rh.heji.today
 import com.rh.heji.ui.base.BaseFragment
 import com.rh.heji.ui.adapter.DayBillsNode
 import com.rh.heji.ui.adapter.NodeBillsAdapter
@@ -46,17 +47,27 @@ class CalendarNoteFragment : BaseFragment() {
 
     override fun setUpToolBar() {
         super.setUpToolBar()
-        //toolBar.title = "日历记账"
+        super.setUpToolBar()
         showBlack()
-        viewModel.selectYearMonth.apply {
+
+        val today = today()
+        val selectYearMonth = viewModel.selectYearMonth
+
+        with(selectYearMonth) {
             showYearMonthTitle(
-                year = this.year, month = this.month,
+                year = year, month = month,
                 onTabSelected = { year, month ->
                     binding.calendarView.scrollToCalendar(year, month, 1)
                     this.year = year
                     this.month = month
                 },
             )
+
+            if (year != today.year || month != today.month) {
+                binding.calendarView.scrollToCalendar(year, month, today.day)
+            } else {
+                notifyCalendar()
+            }
         }
     }
 
@@ -64,13 +75,13 @@ class CalendarNoteFragment : BaseFragment() {
         initFab(rootView)
         initCalendarView()
         initAdapter()
-        notifyCalendar()
         render(viewModel) {
             when (it) {
                 is CalenderUiState.DayBills -> {
                     adapter.setNewInstance(it.data as MutableList<BaseNode>)
                     adapter.notifyDataSetChanged()
                 }
+
                 is CalenderUiState.Calender -> {
                     if (it.data.isEmpty()) {
                         binding.calendarView.clearSchemeDate()
@@ -79,6 +90,7 @@ class CalendarNoteFragment : BaseFragment() {
                     }
                     notifyBillsList()
                 }
+
                 is CalenderUiState.Images -> popupView.setImages(it.data)
             }
         }
@@ -129,12 +141,11 @@ class CalendarNoteFragment : BaseFragment() {
             binding.calendarView.scrollToCalendar(year, month, day)
         }
         binding.calendarView.apply {
-            setOnMonthChangeListener { year, month -> //月份滑动事件
+            setOnMonthChangeListener { year, month -> //月份更改侦听
                 viewModel.selectYearMonth = YearMonth(year, month)
                 centerTitle.text = "$year.$month"
                 notifyCalendar()
                 fabShow()
-                notifyBillsList()
             }
             setOnCalendarSelectListener(object : OnCalendarSelectListener {
                 override fun onCalendarOutOfRange(calendar: Calendar) {
@@ -158,12 +169,14 @@ class CalendarNoteFragment : BaseFragment() {
             binding.todayFab.show()
     }
 
+    //更新日历天账单列表
     private fun notifyBillsList() {
         binding.calendarView.post {
             viewModel.doAction(CalenderAction.GetDayBills((binding.calendarView.selectedCalendar)))
         }
     }
 
+    //更新日历
     private fun notifyCalendar() {
         viewModel.doAction(
             CalenderAction.Update(

@@ -59,16 +59,6 @@
             android:theme="@style/AppStartup"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
         <service android:name=".service.sync.SyncService"></service>
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            android:exported="false"
-            tools:node="merge">
-            <meta-data
-                android:name="com.rh.heji.AppInitializer"
-                android:value="androidx.startup" />
-        </provider>
-
         <!-- 适配华为（huawei）刘海屏 -->
         <meta-data
             android:name="android.notch_support"

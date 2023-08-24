@@ -4,8 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.service.sync.SyncService
+import com.rh.heji.store.DataStoreManager
+import com.rh.heji.ui.user.JWTParse
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 /**
  * @date: 2020/8/28
@@ -18,17 +23,38 @@ import com.rh.heji.service.sync.SyncService
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        viewModel = AppViewModel(this)
         context = this
-        init()
-    }
+        runBlocking {
+            DataStoreManager.getUseMode(context).first()?.let {
+                Config.setUseMode(it)
+            }
+            if (Config.enableOfflineMode) {
+                Config.setUser(Config.localUser)
+                Config.setBook(Config.defaultBook)
+            } else {
+                DataStoreManager.getToken(context).first()?.let {
+                    Config.setUser(JWTParse.getUser(it))
+                }
+            }
+            DataStoreManager.getBook(context).first()?.let {
+                Config.setBook(it)
+                LogUtils.d(it)
+            }
 
-    private fun init() {
-        Intent(this, SyncService::class.java).also {
-            startService(it)
+            LogUtils.d(
+                "App",
+                "Config enableOfflineMode=${Config.enableOfflineMode}",
+                "Config isInitBook=${Config.isInitBook()}",
+                "Config isInitUser=${Config.isInitUser()}"
+            )
         }
         if (Config.isInitUser())
             switchDataBase(Config.user.name)
+        viewModel = AppViewModel(this)
+
+        Intent(this, SyncService::class.java).also {
+            startService(it)
+        }
     }
 
     companion object {

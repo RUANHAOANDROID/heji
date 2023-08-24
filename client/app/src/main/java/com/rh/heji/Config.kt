@@ -50,16 +50,13 @@ object Config {
     const val localUserName = "LocalUser"
 
     //离线用户，有且仅有一个
-    var localUser = JWTParse.User(localUserName, mutableListOf("Admin"), "")
-        private set
+    val localUser = JWTParse.User(localUserName, mutableListOf("Admin"), "")
 
     //默认账本离线账本-离线用户可以创建多个账本
-    var defaultBook = Book(
+    val defaultBook = Book(
         name = "个人账本",
         createUser = this.localUser.name,
         firstBook = true,
         type = "离线账本",
     )
-        private set
-
 }

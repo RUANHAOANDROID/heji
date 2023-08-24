@@ -40,7 +40,7 @@ object DataStoreManager {
         }
     }
 
-    suspend fun getUseMode(context: Context = App.context): Flow<Boolean?> {
+    fun getUseMode(context: Context = App.context): Flow<Boolean?> {
         return context.dataStore.data.map { it[USE_MODE] }
     }
 
@@ -75,7 +75,9 @@ object DataStoreManager {
 
     suspend fun getBook(context: Context = App.context): Flow<Book?> = context.dataStore.data.map { preferences ->
         val bookJsonStr = preferences[CURRENT_BOOK]
-        moshi.adapter(Book::class.java).fromJson(bookJsonStr)
+        bookJsonStr?.let {
+            moshi.adapter(Book::class.java).fromJson(bookJsonStr)
+        }
     }
 
     suspend fun removeBook(context: Context = App.context) {

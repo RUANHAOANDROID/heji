@@ -62,9 +62,9 @@ class LoginFragment : Fragment() {
         }
         binding.tvOnlyLocalUse.setOnClickListener {
             XPopup.Builder(requireActivity()).asConfirm(
-                "离线提示",
-                "1.不支持合伙记账等功能   \n" +
-                        "2.删除应用会丢失所有数据"
+                "仅离线使用说明",
+                "1.不支持合伙记账   \n" +
+                        "2.数据仅存储在本地"
             ) {
                 viewModel.doAction(LoginAction.EnableOfflineMode)
             }.show()

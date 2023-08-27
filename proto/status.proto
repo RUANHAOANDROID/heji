@@ -1,0 +1,5 @@
+// 枚举错误码
+enum StatusCode {
+    OK = 0;
+    INTERNAL_ERROR = 1;
+}

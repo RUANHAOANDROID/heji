@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.heji.authentication;
+
+import "response.proto";
+
+message AddBook {
+    string book_id = 1;
+    string book_name = 2;
+    string book_type = 3;
+}

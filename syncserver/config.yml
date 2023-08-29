@@ -8,5 +8,5 @@ server:
   host: 127.0.0.1
   port: "8888"
 database:
-  name: sentry.db
-  type: sqlite3
+  name: heji
+  type: mongodb

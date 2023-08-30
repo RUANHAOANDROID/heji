@@ -33,7 +33,7 @@ func SendMsg(msg any) {
 	}
 	mutex.Unlock()
 }
-func handlerHoldWS(r *gin.RouterGroup) {
+func Upgrade(r *gin.RouterGroup) {
 	r.GET("/flow", func(c *gin.Context) {
 		wsConn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 		if err != nil {

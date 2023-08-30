@@ -1,8 +1,6 @@
 app:
-  appname: Sentry
-  describe: Iot Data flow server
-  enablegroup: false
-  theme: 0
+  appname: sync-server
+  describe: sync server
   version: 1.3.8
 server:
   host: 127.0.0.1

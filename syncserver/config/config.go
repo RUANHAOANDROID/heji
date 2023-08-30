@@ -12,7 +12,6 @@ type Config struct {
 	App struct {
 		AppName  string `yaml:"appName,omitempty"`
 		Version  string `yaml:"version"`
-		Theme    uint   `yaml:"theme"`
 		Describe string `yaml:"describe"`
 	}
 	Database struct {
@@ -40,7 +39,7 @@ func Load(path string) (*Config, error) {
 		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
 	}
 
-	pkg.Log.Println("config %v", c)
+	pkg.Log.Println(c)
 	return c, nil
 }
 func (c *Config) Save() {

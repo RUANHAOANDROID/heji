@@ -34,7 +34,7 @@ func SendMsg(msg any) {
 	mutex.Unlock()
 }
 func Upgrade(r *gin.RouterGroup) {
-	r.GET("/flow", func(c *gin.Context) {
+	r.GET("/ws", func(c *gin.Context) {
 		wsConn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 		if err != nil {
 			fmt.Print("upgrade:", err)

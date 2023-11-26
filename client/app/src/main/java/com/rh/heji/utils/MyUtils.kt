@@ -23,7 +23,7 @@ object MyUtils {
         context.sendBroadcast(mediaScanIntent)
     }
 
-    fun storage(context: Context, path: String?): String {
+    private fun storage(context: Context, path: String?): String {
         val headDir = context.getExternalFilesDir(path)
         if (!headDir!!.exists()) headDir.mkdir()
         return headDir.path

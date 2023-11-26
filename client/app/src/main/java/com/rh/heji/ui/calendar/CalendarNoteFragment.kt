@@ -96,7 +96,7 @@ class CalendarNoteFragment : BaseFragment() {
         }
     }
 
-    private fun initFab(view: View) {
+    private fun initFab(view: View) {   
         binding.addFab.setOnClickListener {
             val year = binding.calendarView.selectedCalendar.year
             val month = binding.calendarView.selectedCalendar.month

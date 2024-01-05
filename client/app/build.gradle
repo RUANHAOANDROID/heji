@@ -178,4 +178,6 @@ dependencies {
     //excel
     implementation 'net.sourceforge.jexcelapi:jxl:2.6.12'
     implementation 'com.opencsv:opencsv:5.7.1'
+    implementation 'com.google.protobuf:protobuf-java:3.24.4'
+    implementation 'com.google.protobuf:protoc:3.24.4'
 }

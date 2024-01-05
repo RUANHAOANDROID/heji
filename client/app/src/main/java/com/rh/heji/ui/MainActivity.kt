@@ -341,7 +341,7 @@ class MainActivity : AppCompatActivity() {
         bookItem.title = spannableString
     }
 
-    fun toLogin() {
+    private fun toLogin() {
         ToastUtils.showLong("用户凭证已失效，请重新登录")
         LoginActivity.start(this)
         finish()

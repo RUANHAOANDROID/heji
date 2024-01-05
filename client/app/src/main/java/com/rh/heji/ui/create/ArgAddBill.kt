@@ -2,7 +2,7 @@ package com.rh.heji.ui.create
 
 import android.os.Parcelable
 import com.rh.heji.data.db.Bill
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * 账单操作参数类型

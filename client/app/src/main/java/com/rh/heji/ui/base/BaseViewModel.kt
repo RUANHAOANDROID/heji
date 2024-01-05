@@ -42,8 +42,4 @@ abstract class BaseViewModel<I : IAction, O : IUiState> : ViewModel() {
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
-
 }

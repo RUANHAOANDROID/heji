@@ -55,10 +55,10 @@ public final class Message {
      * @return The enum associated with the given numeric wire value.
      */
     public static Types forNumber(int value) {
-      switch (value) {
-        case 0: return ADD_BILL;
-        default: return null;
+      if (value == 0) {
+        return ADD_BILL;
       }
+      return null;
     }
 
     public static com.google.protobuf.Internal.EnumLiteMap<Types>
@@ -106,7 +106,7 @@ public final class Message {
 
     private final int value;
 
-    private Types(int value) {
+    Types(int value) {
       this.value = value;
     }
 
@@ -196,7 +196,7 @@ public final class Message {
       return new WsMsg();
     }
 
-    public static final com.google.protobuf.Descriptors.Descriptor
+    public static com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return Message.internal_static_com_heji_proto_WsMsg_descriptor;
     }
@@ -357,7 +357,7 @@ public final class Message {
 
     private byte memoizedIsInitialized = -1;
     @Override
-    public final boolean isInitialized() {
+    public boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
@@ -434,8 +434,7 @@ public final class Message {
           .equals(other.getFromId())) return false;
       if (!getToId()
           .equals(other.getToId())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
+      return getUnknownFields().equals(other.getUnknownFields());
     }
 
     @Override
@@ -558,7 +557,7 @@ public final class Message {
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:com.heji.proto.WsMsg)
         WsMsgOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
+      public static com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return Message.internal_static_com_heji_proto_WsMsg_descriptor;
       }
@@ -679,7 +678,7 @@ public final class Message {
       }
 
       @Override
-      public final boolean isInitialized() {
+      public boolean isInitialized() {
         return true;
       }
 
@@ -1042,13 +1041,13 @@ public final class Message {
         return this;
       }
       @Override
-      public final Builder setUnknownFields(
+      public Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @Override
-      public final Builder mergeUnknownFields(
+      public Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
@@ -1173,7 +1172,7 @@ public final class Message {
       return new UpdateBook();
     }
 
-    public static final com.google.protobuf.Descriptors.Descriptor
+    public static com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return Message.internal_static_com_heji_proto_UpdateBook_descriptor;
     }
@@ -1268,7 +1267,7 @@ public final class Message {
 
     private byte memoizedIsInitialized = -1;
     @Override
-    public final boolean isInitialized() {
+    public boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
@@ -1321,8 +1320,7 @@ public final class Message {
           .equals(other.getWsMsgList())) return false;
       if (!getContent()
           .equals(other.getContent())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
+      return getUnknownFields().equals(other.getUnknownFields());
     }
 
     @Override
@@ -1444,7 +1442,7 @@ public final class Message {
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:com.heji.proto.UpdateBook)
         UpdateBookOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
+      public static com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return Message.internal_static_com_heji_proto_UpdateBook_descriptor;
       }
@@ -1579,7 +1577,7 @@ public final class Message {
       }
 
       @Override
-      public final boolean isInitialized() {
+      public boolean isInitialized() {
         return true;
       }
 
@@ -1637,7 +1635,7 @@ public final class Message {
       private java.util.List<WsMsg> wsMsg_ =
         java.util.Collections.emptyList();
       private void ensureWsMsgIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
+        if ((bitField0_ & 0x00000001) == 0) {
           wsMsg_ = new java.util.ArrayList<WsMsg>(wsMsg_);
           bitField0_ |= 0x00000001;
          }
@@ -1946,13 +1944,13 @@ public final class Message {
         return this;
       }
       @Override
-      public final Builder setUnknownFields(
+      public Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @Override
-      public final Builder mergeUnknownFields(
+      public Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
@@ -2077,7 +2075,7 @@ public final class Message {
       return new AddBill();
     }
 
-    public static final com.google.protobuf.Descriptors.Descriptor
+    public static com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return Message.internal_static_com_heji_proto_AddBill_descriptor;
     }
@@ -2172,7 +2170,7 @@ public final class Message {
 
     private byte memoizedIsInitialized = -1;
     @Override
-    public final boolean isInitialized() {
+    public boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
@@ -2225,8 +2223,7 @@ public final class Message {
           .equals(other.getWsMsgList())) return false;
       if (!getContent()
           .equals(other.getContent())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
+      return getUnknownFields().equals(other.getUnknownFields());
     }
 
     @Override
@@ -2348,7 +2345,7 @@ public final class Message {
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:com.heji.proto.AddBill)
         AddBillOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
+      public static com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return Message.internal_static_com_heji_proto_AddBill_descriptor;
       }
@@ -2483,7 +2480,7 @@ public final class Message {
       }
 
       @Override
-      public final boolean isInitialized() {
+      public boolean isInitialized() {
         return true;
       }
 
@@ -2541,7 +2538,7 @@ public final class Message {
       private java.util.List<WsMsg> wsMsg_ =
         java.util.Collections.emptyList();
       private void ensureWsMsgIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
+        if ((bitField0_ & 0x00000001) == 0) {
           wsMsg_ = new java.util.ArrayList<WsMsg>(wsMsg_);
           bitField0_ |= 0x00000001;
          }
@@ -2850,13 +2847,13 @@ public final class Message {
         return this;
       }
       @Override
-      public final Builder setUnknownFields(
+      public Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @Override
-      public final Builder mergeUnknownFields(
+      public Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
@@ -2964,7 +2961,7 @@ public final class Message {
       return new DeleteBill();
     }
 
-    public static final com.google.protobuf.Descriptors.Descriptor
+    public static com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return Message.internal_static_com_heji_proto_DeleteBill_descriptor;
     }
@@ -3016,7 +3013,7 @@ public final class Message {
         return new Content();
       }
 
-      public static final com.google.protobuf.Descriptors.Descriptor
+      public static com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return Message.internal_static_com_heji_proto_DeleteBill_Content_descriptor;
       }
@@ -3070,7 +3067,7 @@ public final class Message {
 
       private byte memoizedIsInitialized = -1;
       @Override
-      public final boolean isInitialized() {
+      public boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized == 1) return true;
         if (isInitialized == 0) return false;
@@ -3114,8 +3111,7 @@ public final class Message {
 
         if (!getBillId()
             .equals(other.getBillId())) return false;
-        if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-        return true;
+        return getUnknownFields().equals(other.getUnknownFields());
       }
 
       @Override
@@ -3229,7 +3225,7 @@ public final class Message {
           com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
           // @@protoc_insertion_point(builder_implements:com.heji.proto.DeleteBill.Content)
           ContentOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
+        public static com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return Message.internal_static_com_heji_proto_DeleteBill_Content_descriptor;
         }
@@ -3318,7 +3314,7 @@ public final class Message {
         }
 
         @Override
-        public final boolean isInitialized() {
+        public boolean isInitialized() {
           return true;
         }
 
@@ -3432,13 +3428,13 @@ public final class Message {
           return this;
         }
         @Override
-        public final Builder setUnknownFields(
+        public Builder setUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.setUnknownFields(unknownFields);
         }
 
         @Override
-        public final Builder mergeUnknownFields(
+        public Builder mergeUnknownFields(
             final com.google.protobuf.UnknownFieldSet unknownFields) {
           return super.mergeUnknownFields(unknownFields);
         }
@@ -3538,7 +3534,7 @@ public final class Message {
 
     private byte memoizedIsInitialized = -1;
     @Override
-    public final boolean isInitialized() {
+    public boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
@@ -3583,8 +3579,7 @@ public final class Message {
 
       if (!getWsMsgList()
           .equals(other.getWsMsgList())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
+      return getUnknownFields().equals(other.getUnknownFields());
     }
 
     @Override
@@ -3700,7 +3695,7 @@ public final class Message {
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:com.heji.proto.DeleteBill)
         DeleteBillOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
+      public static com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return Message.internal_static_com_heji_proto_DeleteBill_descriptor;
       }
@@ -3826,7 +3821,7 @@ public final class Message {
       }
 
       @Override
-      public final boolean isInitialized() {
+      public boolean isInitialized() {
         return true;
       }
 
@@ -3879,7 +3874,7 @@ public final class Message {
       private java.util.List<WsMsg> wsMsg_ =
         java.util.Collections.emptyList();
       private void ensureWsMsgIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
+        if ((bitField0_ & 0x00000001) == 0) {
           wsMsg_ = new java.util.ArrayList<WsMsg>(wsMsg_);
           bitField0_ |= 0x00000001;
          }
@@ -4116,13 +4111,13 @@ public final class Message {
         return wsMsgBuilder_;
       }
       @Override
-      public final Builder setUnknownFields(
+      public Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @Override
-      public final Builder mergeUnknownFields(
+      public Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
@@ -4243,7 +4238,7 @@ public final class Message {
       return new UpdateBill();
     }
 
-    public static final com.google.protobuf.Descriptors.Descriptor
+    public static com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return Message.internal_static_com_heji_proto_UpdateBill_descriptor;
     }
@@ -4338,7 +4333,7 @@ public final class Message {
 
     private byte memoizedIsInitialized = -1;
     @Override
-    public final boolean isInitialized() {
+    public boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
@@ -4391,8 +4386,7 @@ public final class Message {
           .equals(other.getWsMsgList())) return false;
       if (!getContent()
           .equals(other.getContent())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
+      return getUnknownFields().equals(other.getUnknownFields());
     }
 
     @Override
@@ -4510,7 +4504,7 @@ public final class Message {
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:com.heji.proto.UpdateBill)
         UpdateBillOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
+      public static com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return Message.internal_static_com_heji_proto_UpdateBill_descriptor;
       }
@@ -4645,7 +4639,7 @@ public final class Message {
       }
 
       @Override
-      public final boolean isInitialized() {
+      public boolean isInitialized() {
         return true;
       }
 
@@ -4703,7 +4697,7 @@ public final class Message {
       private java.util.List<WsMsg> wsMsg_ =
         java.util.Collections.emptyList();
       private void ensureWsMsgIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
+        if ((bitField0_ & 0x00000001) == 0) {
           wsMsg_ = new java.util.ArrayList<WsMsg>(wsMsg_);
           bitField0_ |= 0x00000001;
          }
@@ -5012,13 +5006,13 @@ public final class Message {
         return this;
       }
       @Override
-      public final Builder setUnknownFields(
+      public Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @Override
-      public final Builder mergeUnknownFields(
+      public Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
@@ -5110,7 +5104,7 @@ public final class Message {
       getDescriptor() {
     return descriptor;
   }
-  private static  com.google.protobuf.Descriptors.FileDescriptor
+  private static final com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     String[] descriptorData = {

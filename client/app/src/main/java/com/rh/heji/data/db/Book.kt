@@ -7,7 +7,7 @@ import com.rh.heji.data.converters.BookUsersConverters
 import com.rh.heji.data.converters.LogicConverters
 import com.rh.heji.data.db.mongo.ObjectId
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import org.jetbrains.annotations.NotNull
 
 /**

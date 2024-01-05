@@ -27,11 +27,6 @@ class SettingFragment : BaseFragment() {
     }
     private val viewModel by lazy { ViewModelProvider(this)[SettingViewModel::class.java] }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-    }
-
     override fun initView(rootView: View) {
         binding.inputETC.setOnClickListener { findNavController().navigate(R.id.nav_input_etc) }
         binding.exportQianJi.setOnClickListener { findNavController().navigate(R.id.nav_export) }
@@ -46,7 +41,7 @@ class SettingFragment : BaseFragment() {
 
     private fun selectInputFile(requestCode: Int) {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            setType("*/*")
+            type = "*/*"
             addCategory(Intent.CATEGORY_OPENABLE)
             //putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
         }

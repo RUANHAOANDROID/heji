@@ -53,7 +53,6 @@ internal class CategoryFragment : BaseFragment() {
         layout().post {
             with(createBillFragment) {
                 categoryFragment = this@CategoryFragment
-                type = this@CategoryFragment.type
                 viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
             }
             createBillFragment.selectedCategory(type.valueInt, selectCategory)

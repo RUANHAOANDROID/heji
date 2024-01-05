@@ -86,7 +86,7 @@ public final class ObjectId implements Comparable<ObjectId>, Serializable {
     }
 
     public ObjectId(byte[] bytes) {
-        this(ByteBuffer.wrap((byte[])Assertions.isTrueArgument("bytes has length of 12", bytes, ((byte[])Assertions.notNull("bytes", bytes)).length == 12)));
+        this(ByteBuffer.wrap(Assertions.isTrueArgument("bytes has length of 12", bytes, Assertions.notNull("bytes", bytes).length == 12)));
     }
 
     public ObjectId(ByteBuffer buffer) {

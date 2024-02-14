@@ -257,7 +257,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setDrawerLayout(user: JWTParse.User) {
         navHeaderMainBinding.tvTitle.text = user.name
-        navHeaderMainBinding.tvNice.text = user.auth.toString()
+        navHeaderMainBinding.tvNice.text = user.id
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

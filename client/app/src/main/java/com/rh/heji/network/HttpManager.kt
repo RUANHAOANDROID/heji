@@ -23,7 +23,7 @@ class HttpManager {
 
     suspend fun register(registerUser: RegisterUser) = hejiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) =
-        hejiServer.login(username, password).await()
+        hejiServer.login(mapOf("tel" to username,"password" to password)).await()
 
     suspend fun auth(token: String) = hejiServer.auth(token).await()
 

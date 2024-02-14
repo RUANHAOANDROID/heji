@@ -7,21 +7,22 @@ import org.json.JSONObject
 
 
 object JWTParse {
-    data class User(val name: String, val auth: List<String>, val token: String)
+    //JWT User
+    data class User(val name: String, val id: String, val token: String)
 
+    //解析JWT用户信息
     fun getUser(jwt: String): User {
-        if (jwt == "" || jwt ==Config.localUserName) return Config.localUser
+        if (jwt == "" || jwt == Config.localUserName) return Config.localUser
         val token = resolveToken(jwt)
-        //val index = token.lastIndexOf(".")
-        //var withoutSignature = token.substring(0, index)
-        val header = token.split(".")[0]
-        val payload = token.split(".")[1]
+        val splits = token.split(".")
+//        val header = splits[0]
+        val payload = splits[1]
         var untrusted = String(EncodeUtils.base64Decode(payload))
         var jsonObject = JSONObject(untrusted)
-        val username = jsonObject.opt("sub") as String
-        val auth: String = jsonObject.opt("auth") as String
-        val roles = auth.split(",")
-        return User(username, roles, jwt)
+        val name = jsonObject.opt("name") as String
+        val id: String = jsonObject.opt("id") as String
+//        val exp: String = jsonObject.opt("exp") as String
+        return User(name, id, jwt)
     }
 
     private fun resolveToken(token: String): String {

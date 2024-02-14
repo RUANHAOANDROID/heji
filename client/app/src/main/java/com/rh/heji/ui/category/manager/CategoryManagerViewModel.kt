@@ -3,13 +3,12 @@ package com.rh.heji.ui.category.manager
 import android.text.TextUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.data.db.Category
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.category.manager.CategoryManagerAction.GetCategories
 import com.rh.heji.utils.launchIO
-import kotlinx.coroutines.flow.collect
 
 /**
  * @date: 2020/10/11

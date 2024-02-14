@@ -2,13 +2,11 @@ package com.rh.heji.data.db
 
 import android.os.Parcelable
 import androidx.room.*
-import com.rh.heji.Config
-import com.rh.heji.data.converters.BookUsersConverters
+import com.rh.heji.config.Config
 import com.rh.heji.data.converters.LogicConverters
 import com.rh.heji.data.db.mongo.ObjectId
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
-import org.jetbrains.annotations.NotNull
 
 /**
  * 账本

@@ -1,6 +1,7 @@
 package com.rh.heji
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.rh.heji.config.Config
 import com.rh.heji.ui.user.JWTParse
 import junit.framework.TestCase
 import org.junit.Test
@@ -21,6 +22,6 @@ class ConfigTest: TestCase(){
         assert(book == Config.book)
         val user =JWTParse.User("localUser", listOf(),"")
         Config.setUser(user)
-        assert(user==Config.user)
+        assert(user== Config.user)
     }
 }

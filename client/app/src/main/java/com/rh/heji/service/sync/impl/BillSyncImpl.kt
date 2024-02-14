@@ -3,7 +3,7 @@ package com.rh.heji.service.sync.impl
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.FILE_LENGTH_1M
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image

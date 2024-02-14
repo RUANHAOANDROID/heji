@@ -1,15 +1,13 @@
 package com.rh.heji.network
 
 import com.rh.heji.BuildConfig
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Book
-import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterUser
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -60,7 +58,6 @@ class HttpManager {
     suspend fun categoryDelete(_id: String) = hejiServer.deleteCategoryById(_id).await()
     suspend fun categoryPull(_id: String = "0") = hejiServer.getCategories(_id).await()
     suspend fun categoryUpdate(_id: String = "0") = hejiServer.getCategories(_id).await()
-    suspend fun logUpload(errorLog: ErrorLog) = hejiServer.logUpload(errorLog).await()
 
 
     private suspend fun <T> Call<T>.await(): T {

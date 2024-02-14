@@ -3,6 +3,7 @@ package com.rh.heji
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.gyf.immersionbar.ktx.immersionBar
+import com.rh.heji.config.Config
 import com.rh.heji.ui.MainActivity
 import com.rh.heji.ui.user.login.LoginActivity
 

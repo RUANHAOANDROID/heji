@@ -1,7 +1,7 @@
 package com.rh.heji.service.sync.impl
 
 import com.rh.heji.App
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.launchIO

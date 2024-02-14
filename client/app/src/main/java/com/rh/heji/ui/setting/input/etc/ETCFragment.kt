@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.lxj.xpopup.XPopup
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.R
 import com.rh.heji.databinding.FragmentEtcBinding
 import com.rh.heji.render

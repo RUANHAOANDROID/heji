@@ -1,4 +1,4 @@
-package com.rh.heji
+package com.rh.heji.config
 
 import com.rh.heji.data.db.Book
 import com.rh.heji.ui.user.JWTParse
@@ -28,23 +28,23 @@ object Config {
         private set
 
     fun setUseMode(enableOffline: Boolean) {
-        this.enableOfflineMode = enableOffline
+        enableOfflineMode = enableOffline
     }
 
-    fun isInitBook() = ::book.isInitialized
+    fun isInitBook() = Config::book.isInitialized
 
-    fun isInitUser() = ::user.isInitialized
+    fun isInitUser() = Config::user.isInitialized
 
     fun setBook(book: Book) {
-        this.book = book
+        Config.book = book
     }
 
     fun setUser(user: JWTParse.User) {
-        this.user = user
+        Config.user = user
     }
 
     fun setToken(token: String) {
-        this.token = token
+        Config.token = token
     }
 
     const val localUserName = "LocalUser"
@@ -55,7 +55,7 @@ object Config {
     //默认账本离线账本-离线用户可以创建多个账本
     val defaultBook = Book(
         name = "个人账本",
-        createUser = this.localUser.name,
+        createUser = localUser.name,
         firstBook = true,
         type = "离线账本",
     )

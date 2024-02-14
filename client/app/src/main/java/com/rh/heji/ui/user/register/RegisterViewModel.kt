@@ -3,7 +3,7 @@ package com.rh.heji.ui.user.register
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.mongo.ObjectId
 import com.rh.heji.network.HttpManager

@@ -15,6 +15,7 @@ import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener
 import com.lxj.xpopup.util.SmartGlideImageLoader
 import com.lxj.xpopup.util.XPopupUtils
 import com.rh.heji.*
+import com.rh.heji.config.Config
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Image
 import com.rh.heji.databinding.ItemImgBinding

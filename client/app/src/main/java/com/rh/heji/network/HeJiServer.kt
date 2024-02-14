@@ -3,11 +3,9 @@ package com.rh.heji.network
 import com.rh.heji.data.db.Bill
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.BookUser
-import com.rh.heji.data.db.ErrorLog
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.network.response.ImageEntity
 import com.rh.heji.network.response.OperateLog
-import com.rh.heji.ui.user.register.RegisterUser
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -137,8 +135,4 @@ interface HeJiServer {
     @Streaming
     @POST("image/delete")
     fun imageDelete(@Query("billId") billId: String,@Query("imageId") imageId :String): Call<BaseResponse<String>>
-
-    //----------------------LOG FILE---------------------------//
-    @POST("log/upload")
-    fun logUpload(@Body errorLog: ErrorLog):Call<BaseResponse<String>>
 }

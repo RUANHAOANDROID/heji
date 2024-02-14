@@ -20,14 +20,11 @@ import retrofit2.http.*
  */
 interface HeJiServer {
     //----------------------USER---------------------------//
-    @POST("user/register")
-    fun register(@Body user: Any?): Call<BaseResponse<RegisterUser>>
-
     @POST("/api/v1/Register")
-    fun registerV2(@Body user: Any?): Call<BaseResponse<RegisterUser>>
+    fun register(@Body user: Any?): Call<BaseResponse<String>>
 
-    @POST("user/login")
-    fun login(@Query("username") username: String, @Query("password") password: String): Call<BaseResponse<String>>
+    @POST("/api/v1/Login")
+    fun login(@Body map: Map<String,String>): Call<BaseResponse<String>>
 
     @POST("user/auth")
     fun auth(@Header("token") token: String): Call<BaseResponse<String>>

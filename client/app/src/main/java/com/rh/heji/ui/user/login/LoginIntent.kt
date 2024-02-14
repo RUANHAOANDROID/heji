@@ -10,7 +10,7 @@ import com.rh.heji.ui.base.IUiState
  * @since v1.0
  */
 internal sealed interface LoginAction : IAction {
-    class Login(val userName: String, val password: String) : LoginAction
+    class Login(val tel: String, val password: String) : LoginAction
     object EnableOfflineMode : LoginAction
 }
 

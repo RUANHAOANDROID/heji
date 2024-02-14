@@ -20,7 +20,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
         super.doAction(action)
         when (action) {
             is LoginAction.Login -> {
-                login(action.userName, action.password)
+                login(action.tel, action.password)
             }
             is LoginAction.EnableOfflineMode -> {
                 enableOfflineMode()
@@ -28,10 +28,10 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
         }
     }
 
-    private fun login(username: String, password: String) {
+    private fun login(tel: String, password: String) {
         launchIO({
             var requestBody = HttpManager.getInstance().login(
-                username,
+                tel,
                 encodePassword(password)
             )
             ToastUtils.showLong(requestBody.data)

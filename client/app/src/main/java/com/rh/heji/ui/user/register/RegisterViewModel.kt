@@ -33,13 +33,12 @@ internal class RegisterViewModel : BaseViewModel<RegisterAction, RegisterUiState
             password = encodePassword(password),
             code = code
         )
-
         launch({
             var response = HttpManager.getInstance().register(user)
-            val body = response.data.apply {
-                this.password = password//本地输入的未加密的密码
+            if (response.success()){
+                user.password=password
+                send(RegisterUiState.Success(user))
             }
-            send(RegisterUiState.Success(body))
         }, {
             ToastUtils.showLong(it.message)
         })

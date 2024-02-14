@@ -6,7 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.data.Result
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.BookUser

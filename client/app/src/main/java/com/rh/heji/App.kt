@@ -5,9 +5,10 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import com.blankj.utilcode.util.LogUtils
+import com.rh.heji.config.Config
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.service.sync.SyncService
-import com.rh.heji.store.DataStoreManager
+import com.rh.heji.config.store.DataStoreManager
 import com.rh.heji.ui.user.JWTParse
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

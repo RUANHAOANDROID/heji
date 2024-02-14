@@ -23,7 +23,7 @@ import com.rh.heji.data.db.*
         Bill::class,
         Dealer::class,
         Image::class,
-        ErrorLog::class],
+    ],
     version = 1
 )
 @TypeConverters(DateConverters::class, MoneyConverters::class, BookUsersConverters::class)
@@ -34,7 +34,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun imageDao(): ImageDao
     abstract fun categoryDao(): CategoryDao
     abstract fun dealerDao(): DealerDao
-    abstract fun errorLogDao(): ErrorLogDao
     abstract fun billImageDao(): BillWithImageDao
 
     override fun clearAllTables() {}

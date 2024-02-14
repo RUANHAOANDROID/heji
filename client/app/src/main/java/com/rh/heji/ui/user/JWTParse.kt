@@ -2,7 +2,7 @@ package com.rh.heji.ui.user
 
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.StringUtils
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import org.json.JSONObject
 
 

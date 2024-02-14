@@ -9,12 +9,12 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.lifecycleScope
 import com.gyf.immersionbar.ktx.immersionBar
 import com.rh.heji.App
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.ui.MainActivity
 import com.rh.heji.R
-import com.rh.heji.utils.CrashInfo
 import com.rh.heji.utils.MyUtils
 import com.rh.heji.utils.checkPermissions
+import com.tencent.bugly.crashreport.CrashReport
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -41,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
         checkPermissions(this) { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
             //初始化一些需要权限的功能
             lifecycleScope.launch(Dispatchers.Default) {
-                MyUtils.initCrashTool(this@LoginActivity, CrashInfo())
+                CrashReport.initCrashReport(applicationContext, "532951ea78", false)
             }
             //Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
         }

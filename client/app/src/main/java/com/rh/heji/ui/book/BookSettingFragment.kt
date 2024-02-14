@@ -10,9 +10,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.XPopup
 import com.rh.heji.*
-import com.rh.heji.App
+import com.rh.heji.config.Config
 import com.rh.heji.data.Result
-import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.BookUser
 import com.rh.heji.databinding.FragmentBookSettingBinding

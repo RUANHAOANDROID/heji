@@ -14,9 +14,10 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.interfaces.OnConfirmListener
 import com.rh.heji.*
 import com.rh.heji.databinding.FragmentLoginBinding
-import com.rh.heji.store.DataStoreManager
+import com.rh.heji.config.store.DataStoreManager
 import com.rh.heji.ui.MainActivity
 import com.rh.heji.ui.user.register.RegisterUser
+import com.tencent.bugly.crashreport.CrashReport
 import kotlinx.coroutines.runBlocking
 
 class LoginFragment : Fragment() {

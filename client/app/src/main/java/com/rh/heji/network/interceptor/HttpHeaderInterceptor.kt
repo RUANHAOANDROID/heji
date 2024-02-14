@@ -3,12 +3,8 @@ package com.rh.heji.network.interceptor
 import android.text.TextUtils
 import android.util.Log
 import com.rh.heji.App
-import com.rh.heji.AppViewModel
-import com.rh.heji.Config
-import com.rh.heji.store.DataStoreManager
+import com.rh.heji.config.Config
 import com.rh.heji.Event
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response

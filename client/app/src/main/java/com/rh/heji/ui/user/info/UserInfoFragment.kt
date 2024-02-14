@@ -2,7 +2,7 @@ package com.rh.heji.ui.user.info
 
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.databinding.FragmentUserInfoBinding
 import com.rh.heji.ui.base.BaseFragment
 

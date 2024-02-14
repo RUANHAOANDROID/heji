@@ -3,7 +3,7 @@ package com.rh.heji.ui.report
 import com.blankj.utilcode.util.LogUtils
 import com.github.mikephil.charting.data.PieEntry
 import com.rh.heji.App
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.BillType
 import com.rh.heji.data.db.Bill

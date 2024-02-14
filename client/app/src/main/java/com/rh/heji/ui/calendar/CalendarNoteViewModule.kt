@@ -5,7 +5,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.haibin.calendarview.Calendar
 import com.rh.heji.App
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.R
 import com.rh.heji.currentYearMonth
 import com.rh.heji.data.db.BillDao

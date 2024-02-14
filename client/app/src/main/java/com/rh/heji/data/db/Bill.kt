@@ -3,7 +3,7 @@ package com.rh.heji.data.db
 import android.os.Parcelable
 import androidx.room.*
 import com.blankj.utilcode.util.GsonUtils
-import com.rh.heji.Config
+import com.rh.heji.config.Config
 import com.rh.heji.data.BillType
 import com.rh.heji.data.converters.DateConverters
 import com.rh.heji.data.converters.MoneyConverters

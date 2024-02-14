@@ -1,13 +1,10 @@
 package com.rh.heji.data.db
 
 import androidx.room.*
-import com.rh.heji.Config
-import com.rh.heji.data.converters.DateConverters
+import com.rh.heji.config.Config
 import com.rh.heji.data.converters.MoneyConverters
 import com.rh.heji.data.db.dto.*
 import kotlinx.coroutines.flow.Flow
-import org.jetbrains.annotations.NotNull
-import java.math.BigDecimal
 import java.util.*
 
 /**

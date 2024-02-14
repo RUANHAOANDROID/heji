@@ -1,4 +1,4 @@
-package com.rh.heji.store
+package com.rh.heji.config.store
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -17,14 +17,14 @@ import kotlinx.coroutines.flow.map
  * @author 锅得铁
  * @since v1.0
  */
-object DataStoreManager {
+internal object DataStoreManager {
     /**
      * 当前登录用户凭证
      */
     private val JWT_TOKEN = stringPreferencesKey("jwt_token")
 
     /**
-     * 当前登录用户凭证
+     * 当前用户模式
      */
     private val USE_MODE = booleanPreferencesKey("use_mode")
 

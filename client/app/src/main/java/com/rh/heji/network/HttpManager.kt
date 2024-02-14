@@ -93,13 +93,7 @@ class HttpManager {
                             continuation.resumeWithException(RuntimeException("密码错误"))
                         }
                         500 -> {
-                            val errorMsg: String =
-                                JSONObject(errorBody.string()).optString("msg").toString()
-                            if (errorMsg.isNotEmpty()) {
-                                continuation.resumeWithException(RuntimeException(errorMsg))
-                            } else {
-                                continuation.resumeWithException(RuntimeException(errorBody.string()))
-                            }
+                            continuation.resumeWithException(RuntimeException("${errorBody.string()}"))
                         }
                     }
 

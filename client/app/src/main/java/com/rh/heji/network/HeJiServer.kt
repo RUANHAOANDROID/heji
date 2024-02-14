@@ -23,6 +23,9 @@ interface HeJiServer {
     @POST("user/register")
     fun register(@Body user: Any?): Call<BaseResponse<RegisterUser>>
 
+    @POST("/api/v1/Register")
+    fun registerV2(@Body user: Any?): Call<BaseResponse<RegisterUser>>
+
     @POST("user/login")
     fun login(@Query("username") username: String, @Query("password") password: String): Call<BaseResponse<String>>
 

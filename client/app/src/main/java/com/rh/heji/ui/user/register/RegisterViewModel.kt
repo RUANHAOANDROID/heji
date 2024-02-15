@@ -49,7 +49,7 @@ internal class RegisterViewModel : BaseViewModel<RegisterAction, RegisterUiState
             id = ObjectId().toHexString(),
             name = "个人账本",
             createUser = Config.user.name,
-            firstBook = true,
+            isInitial = true,
             type = "个人账本",
         )
         val response = HttpManager.getInstance().bookCreate(firstBook)

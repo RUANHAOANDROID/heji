@@ -8,37 +8,50 @@ import com.rh.heji.ui.user.JWTParse
  *Author: 锅得铁
  *#
  */
+internal val LocalUser = JWTParse.User("LocalUser", "user0", "")
+internal val InitBook = Book(
+    name = "个人账本",
+    createUser = LocalUser.name,
+    isInitial = true,
+    type = "离线账本",
+)
+
 object Config {
     /**
      * last switch book
      */
     lateinit var book: Book
         private set
-
-     var token = ""
+    var token = ""
         private set
 
     /**
-     * last login user
+     * 当前用户
      */
     lateinit var user: JWTParse.User
         private set
 
+    //开启离线使用
     var enableOfflineMode = false
         private set
 
+    //设定使用模式
     fun setUseMode(enableOffline: Boolean) {
         enableOfflineMode = enableOffline
     }
 
+    //已初始化账本
     fun isInitBook() = Config::book.isInitialized
 
+    //已初始化用户
     fun isInitUser() = Config::user.isInitialized
 
+    //设定当前账本
     fun setBook(book: Book) {
         Config.book = book
     }
 
+    //设定当前用户
     fun setUser(user: JWTParse.User) {
         Config.user = user
     }
@@ -47,6 +60,7 @@ object Config {
         Config.token = token
     }
 
+    //本地用户
     const val localUserName = "LocalUser"
 
     //离线用户，有且仅有一个
@@ -56,7 +70,7 @@ object Config {
     val defaultBook = Book(
         name = "个人账本",
         createUser = localUser.name,
-        firstBook = true,
+        isInitial = true,
         type = "离线账本",
     )
 }

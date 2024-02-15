@@ -39,10 +39,10 @@ data class Book(
     @ColumnInfo(name = COLUMN_ANCHOR)
     var anchor: Long = 0L,//锚点用作记录服务最后修改时间
 
-    @Json(name="first_book")
+    @Json(name="isInitial")
     @ColumnInfo(name = COLUMN_FIRST)
     @TypeConverters(LogicConverters::class)
-    var firstBook: Boolean = false
+    var isInitial: Boolean = false//初始账本
 
 ) : Parcelable {
 
@@ -57,7 +57,7 @@ data class Book(
         const val COLUMN_TYPE = "type"
         const val COLUMN_BANNER_URL = "banner_url"
         const val COLUMN_ANCHOR = "anchor"
-        const val COLUMN_FIRST = "first"
+        const val COLUMN_FIRST = "isInitial"
         const val COLUMN_SYNC_STATUS = "sync_status"
     }
 }

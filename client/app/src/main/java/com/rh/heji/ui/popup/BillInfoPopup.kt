@@ -143,9 +143,9 @@ class PopupBillInfo(
      */
     private class ImageAdapter : BaseQuickAdapter<Image, BaseViewHolder>(R.layout.item_img) {
         lateinit var binding: ItemImgBinding
-        override fun convert(holder: BaseViewHolder, image: Image) {
+        override fun convert(holder: BaseViewHolder, item: Image) {
             binding = ItemImgBinding.bind(holder.itemView)
-            val path = ImageUtils.getImagePath(image)
+            val path = ImageUtils.getImagePath(item)
             GlideApp.with(binding.itemImage)
                 .asBitmap()
                 .load(path)
@@ -154,8 +154,8 @@ class PopupBillInfo(
                 .into(binding.itemImage)
             binding.itemImage.setOnClickListener { v: View? -> showGallery(holder.layoutPosition) }
             LogUtils.d(
-                "local path:${image.localPath}",
-                "online path:${image.onlinePath}",
+                "local path:${item.localPath}",
+                "online path:${item.onlinePath}",
                 "use path:${path}"
             )
         }

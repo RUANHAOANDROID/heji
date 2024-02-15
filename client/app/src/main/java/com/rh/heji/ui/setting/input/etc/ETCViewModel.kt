@@ -152,33 +152,31 @@ internal class ETCViewModel(private val mBillSync: IBillSync) :
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
-                    if (response.body != null) {
-                        val strBody = response.body.string()
-                        try {
-                            val jsonObject = JSONObject(strBody)
-                            val status = jsonObject.getString("status")
-                            if (status == "error") {
-                                val error = jsonObject.getString("msg")
-                                ToastUtils.showLong(error)
-                            } else if (status == "OK") {
-                                val jsonAdapter: JsonAdapter<HBETCEntity> = moshi.adapter(
-                                    HBETCEntity::class.java
-                                )
-                                val hbetcEntity = jsonAdapter.fromJson(strBody)
-                                if (hbetcEntity?.data != null && hbetcEntity.data.orderArr.size > 0) {
-                                    val data = hbetcEntity.data.orderArr
-                                    data.forEach(Consumer { info: OrderArrBean -> saveToBillDB(info) })
-                                    send(ETCUiState.InputSuccess)
-                                } else {
-                                    ToastUtils.showShort("导入失败")
-                                    send(ETCUiState.InputError(RuntimeException("导入失败")))
-                                }
+                    val strBody = response.body.string()
+                    try {
+                        val jsonObject = JSONObject(strBody)
+                        val status = jsonObject.getString("status")
+                        if (status == "error") {
+                            val error = jsonObject.getString("msg")
+                            ToastUtils.showLong(error)
+                        } else if (status == "OK") {
+                            val jsonAdapter: JsonAdapter<HBETCEntity> = moshi.adapter(
+                                HBETCEntity::class.java
+                            )
+                            val hbetcEntity = jsonAdapter.fromJson(strBody)
+                            if (hbetcEntity?.data != null && hbetcEntity.data.orderArr.size > 0) {
+                                val data = hbetcEntity.data.orderArr
+                                data.forEach(Consumer { info: OrderArrBean -> saveToBillDB(info) })
+                                send(ETCUiState.InputSuccess)
+                            } else {
+                                ToastUtils.showShort("导入失败")
+                                send(ETCUiState.InputError(RuntimeException("导入失败")))
                             }
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
-                            ToastUtils.showShort("解析失败")
-                            send(ETCUiState.InputError(RuntimeException("解析错误")))
                         }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                        ToastUtils.showShort("解析失败")
+                        send(ETCUiState.InputError(RuntimeException("解析错误")))
                     }
                 } else if (response.code == 404) {
                     requestETCList2(etcID, month, carID)
@@ -224,22 +222,20 @@ internal class ETCViewModel(private val mBillSync: IBillSync) :
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
-                    if (response.body != null) {
-                        val strBody = response.body.string()
-                        try {
-                            val jsonObject = JSONObject(strBody)
-                            val status = jsonObject.getString("status")
-                            if (status == "error") {
-                                val error = jsonObject.getString("msg")
-                                ToastUtils.showLong(error)
-                            } else {
-                                saveToDB(strBody)
-                            }
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
-                            ToastUtils.showShort("解析失败")
-                            send(ETCUiState.InputError(RuntimeException("解析错误")))
+                    val strBody = response.body.string()
+                    try {
+                        val jsonObject = JSONObject(strBody)
+                        val status = jsonObject.getString("status")
+                        if (status == "error") {
+                            val error = jsonObject.getString("msg")
+                            ToastUtils.showLong(error)
+                        } else {
+                            saveToDB(strBody)
                         }
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                        ToastUtils.showShort("解析失败")
+                        send(ETCUiState.InputError(RuntimeException("解析错误")))
                     }
                 }
             }

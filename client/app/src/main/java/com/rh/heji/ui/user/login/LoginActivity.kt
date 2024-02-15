@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkPermissions(this) { allGranted: Boolean, grantedList: List<String?>?, deniedList: List<String?>? ->
+        checkPermissions(this) { _: Boolean, _: List<String?>?, _: List<String?>? ->
             //初始化一些需要权限的功能
             lifecycleScope.launch(Dispatchers.Default) {
                 CrashReport.initCrashReport(applicationContext, "532951ea78", false)

@@ -44,7 +44,7 @@
                 app:endIconDrawable="@drawable/ic_baseline_phone_24"
                 app:endIconMode="custom"
                 app:endIconTint="@color/selector_icon_color"
-                app:hintEnabled="false">
+                android:hint="@string/tel">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editUser"
@@ -52,7 +52,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:ems="10"
-                    android:hint="@string/tel"
                     android:inputType="textPersonName"
                     android:minWidth="280dp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -65,7 +64,7 @@
                 app:endIconDrawable="@drawable/ic_baseline_lock_24"
                 app:endIconMode="password_toggle"
                 app:endIconTint="@color/selector_icon_color"
-                app:hintEnabled="false">
+                android:hint="@string/password">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editPassword"
@@ -73,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:ems="10"
-                    android:hint="@string/password"
+
                     android:inputType="textPassword"
                     android:minWidth="280dp" />
             </com.google.android.material.textfield.TextInputLayout>

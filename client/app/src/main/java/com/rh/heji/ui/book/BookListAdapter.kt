@@ -53,7 +53,7 @@ class BookListAdapter constructor(val settingClickListener: (Book) -> Unit) :
                 settingClickListener(item)
             }
 
-            imgFirstBook.visibility = if (item.firstBook) View.VISIBLE else View.GONE
+            imgFirstBook.visibility = if (item.isInitial) View.VISIBLE else View.GONE
         }
     }
 }

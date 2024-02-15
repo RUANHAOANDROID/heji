@@ -77,7 +77,7 @@ class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
 
     private fun getReportBillInfoList(ymd: String) {
         launchIO({
-            var data: MutableList<Bill> = mutableListOf()
+            var data: MutableList<Bill>
             if (yearMonth.day == 0) {//按月查
                 //TODO 目前暂未实现按年统计
                 data = App.dataBase.billDao().findByMonth(ymd, type = null, Config.book.id)

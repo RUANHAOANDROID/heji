@@ -5,6 +5,7 @@ import androidx.room.TypeConverter
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 /**
  * @date: 2020/9/20
@@ -20,7 +21,7 @@ object MoneyConverters {
         return if (value == null) ZERO_00() else BigDecimal(value).divide(
             BigDecimal(100),
             2,
-            BigDecimal.ROUND_DOWN
+            RoundingMode.DOWN
         )
     }
 
@@ -33,7 +34,7 @@ object MoneyConverters {
     @JvmStatic
     @Ignore
     fun ZERO_00(): BigDecimal {
-        return BigDecimal.ZERO.divide(BigDecimal.ONE, 2, BigDecimal.ROUND_DOWN)
+        return BigDecimal.ZERO.divide(BigDecimal.ONE, 2,  RoundingMode.DOWN)
     }
     @ToJson
     @JvmStatic

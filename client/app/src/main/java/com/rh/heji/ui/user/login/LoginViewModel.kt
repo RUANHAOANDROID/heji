@@ -47,14 +47,14 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
                 if (remoteBooks.isNotEmpty()) {
                     remoteBooks.forEach {
                         bookDao.upsert(it)
-                        if (it.firstBook) {
+                        if (it.isInitial) {
                             Config.setBook(it)
                         }
                     }
                 } else {
                     val books = bookDao.findBookIdsByUser(user.name)
                     if (books.size <= 0) {
-                        val firstBook = Book(name = "个人账本", createUser = user.name, firstBook = true)
+                        val firstBook = Book(name = "个人账本", createUser = user.name, isInitial = true)
                         bookDao.insert(firstBook)
                         val response = HttpManager.getInstance().bookCreate(firstBook)
                         if (response.success()) {

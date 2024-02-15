@@ -24,6 +24,7 @@ import com.rh.heji.utils.MyTimeUtils
 import com.rh.heji.utils.YearMonth
 import com.rh.heji.widget.DividerItemDecorator
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 
 /**
@@ -194,7 +195,7 @@ class ReportFragment : BaseFragment() {
             tvExpenditureValue.text = money.expenditure.toString()
             tvJieYuValue.text = balance.toPlainString()
             tvDayAVGValue.text =
-                balance.divide(BigDecimal(dayCount), 2, BigDecimal.ROUND_DOWN).toPlainString()
+                balance.divide(BigDecimal(dayCount), 2, RoundingMode.DOWN).toPlainString()
         }
         showEmptyView()
 
@@ -203,7 +204,7 @@ class ReportFragment : BaseFragment() {
             var month12 = BigDecimal(12)
             "月均支出：${
                 money.expenditure.divide(
-                    month12, 2, BigDecimal.ROUND_DOWN
+                    month12, 2, RoundingMode.DOWN
                 )
             }  收入：${money.expenditure.div(month12)}"
         } else {
@@ -214,7 +215,7 @@ class ReportFragment : BaseFragment() {
             )
             "日均支出：${
                 money.expenditure.divide(
-                    monthDayCount, 2, BigDecimal.ROUND_DOWN
+                    monthDayCount, 2, RoundingMode.DOWN
                 )
             }  收入：${
                 money.income.div(

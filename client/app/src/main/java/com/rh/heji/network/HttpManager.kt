@@ -90,7 +90,6 @@ class HttpManager {
                                 continuation.resumeWithException(RuntimeException(errStr))
                             }
                         }
-
                         else -> {
                             continuation.resumeWithException(RuntimeException("response body is null"))
                         }

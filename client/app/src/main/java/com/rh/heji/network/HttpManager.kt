@@ -80,7 +80,7 @@ class HttpManager {
                         body != null && response.code() == 200 -> {
                             continuation.resume(body)//正常恢复
                         }
-                        errorBody != null -> {//error body 仅仅适用于服务器统一返回的错误格式，在服务端错误信息同样返回{code,message,data}格式
+                        errorBody != null -> {//error body 仅仅适用于服务器统一返回的错误格式，在服务端错误信息同样返回{code,msg,data}格式
                             val errStr = errorBody.string()
                             runCatching<String> {
                                 JSONObject(errStr).optString("msg")

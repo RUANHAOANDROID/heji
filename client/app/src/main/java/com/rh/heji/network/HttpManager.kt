@@ -8,6 +8,7 @@ import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.ui.user.register.RegisterUser
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,7 +22,7 @@ class HttpManager {
 
     suspend fun register(registerUser: RegisterUser) = hejiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) =
-        hejiServer.login(mapOf("tel" to username,"password" to password)).await()
+        hejiServer.login(mapOf("tel" to username, "password" to password)).await()
 
     suspend fun auth(token: String) = hejiServer.auth(token).await()
 
@@ -36,7 +37,9 @@ class HttpManager {
         hejiServer.bookUpdate(book_id, bookName, bookType).await()
 
     suspend fun bookJoin(sharedCode: String) = hejiServer.bookJoin(sharedCode).await()
-    suspend fun billPush(bill: Bill) = hejiServer.saveBill(bill.apply { images= mutableListOf() }).await()
+    suspend fun billPush(bill: Bill) =
+        hejiServer.saveBill(bill.apply { images = mutableListOf() }).await()
+
     suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
     suspend fun billUpdate(bill: Bill) = hejiServer.updateBill(bill).await()
     suspend fun billPull(startTime: String, endTime: String, book_id: String = Config.book.id) =
@@ -50,7 +53,9 @@ class HttpManager {
     ) = hejiServer.uploadImg(part, _id, _bid, time).await()
 
     suspend fun imageDownload(_id: String) = hejiServer.getBillImages(_id).await()
-    suspend fun imageDelete(billId: String,imageId:String) = hejiServer.imageDelete(billId, imageId).await()
+    suspend fun imageDelete(billId: String, imageId: String) =
+        hejiServer.imageDelete(billId, imageId).await()
+
     suspend fun billExport(year: String = "0", month: String = "0"): Response<ResponseBody> =
         hejiServer.exportBills(year, month).execute()
 
@@ -76,29 +81,24 @@ class HttpManager {
                             continuation.resume(body)//正常恢复
                         }
                         errorBody != null -> {//error body 仅仅适用于服务器统一返回的错误格式，在服务端错误信息同样返回{code,message,data}格式
-                            handleError(errorBody, response.code())
+                            val errStr = errorBody.string()
+                            runCatching<String> {
+                                JSONObject(errStr).optString("msg")
+                            }.onSuccess {
+                                continuation.resumeWithException(RuntimeException(it))
+                            }.onFailure {
+                                continuation.resumeWithException(RuntimeException(errStr))
+                            }
                         }
+
                         else -> {
                             continuation.resumeWithException(RuntimeException("response body is null"))
                         }
                     }
                 }
-
-                private fun handleError(errorBody: ResponseBody, code: Int) {
-                    when (code) {
-                        401 -> {
-                            continuation.resumeWithException(RuntimeException("密码错误"))
-                        }
-                        500 -> {
-                            continuation.resumeWithException(RuntimeException("${errorBody.string()}"))
-                        }
-                    }
-
-                }
             })
         }
     }
-
 
 
     companion object {

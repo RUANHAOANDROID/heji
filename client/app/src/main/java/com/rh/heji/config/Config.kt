@@ -1,8 +1,11 @@
 package com.rh.heji.config
 
+import android.content.Context
+import com.rh.heji.App
 import com.rh.heji.config.store.DataStoreManager
 import com.rh.heji.data.db.Book
 import com.rh.heji.ui.user.JWTParse
+import kotlinx.coroutines.flow.firstOrNull
 
 /**
  *Date: 2022/11/13
@@ -35,11 +38,50 @@ object Config {
 
     fun isInitUser() = (user == LocalUser)
 
+    suspend fun saveBook(book: Book) {
+        this.book = book
+        DataStoreManager.saveBook(book)
+    }
+
+    suspend fun saveUser(user: JWTParse.User) {
+        this.user = user
+        DataStoreManager.saveToken(user.token)
+    }
+
+    suspend fun saveOfflineMode(enable: Boolean) {
+        enableOfflineMode = enable
+        DataStoreManager.saveUseMode(enableOfflineMode)
+    }
+
+    suspend fun load(context: Context) {
+        with(DataStoreManager) {
+            getUseMode(context).firstOrNull()?.let { enableOfflineMode = it }
+            if (!enableOfflineMode) {
+                getBook(context).firstOrNull()?.let { book = it }
+                getToken(context).firstOrNull()?.let { user = JWTParse.getUser(jwt = it) }
+            } else {
+                user = LocalUser
+                book = InitBook
+            }
+        }
+    }
+
     suspend fun save() {
         with(DataStoreManager) {
             saveUseMode(false)
             saveBook(book)
             saveToken(user.token)
         }
+    }
+
+    suspend fun remove() {
+        with(DataStoreManager) {
+            removeUseMode()
+            removeToken()
+            removeBook()
+        }
+        enableOfflineMode = false
+        user = LocalUser
+        book = InitBook
     }
 }

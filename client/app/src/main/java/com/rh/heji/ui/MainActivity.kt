@@ -37,7 +37,6 @@ import com.rh.heji.R
 import com.rh.heji.config.LocalUser
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.service.sync.SyncService
-import com.rh.heji.config.store.DataStoreManager
 import com.rh.heji.ui.home.DrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.login.LoginActivity
@@ -164,10 +163,7 @@ class MainActivity : AppCompatActivity() {
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener {
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
                 runBlocking {
-                    DataStoreManager.removeToken()
-                    DataStoreManager.removeUseMode()
-                    Config.enableOfflineMode=false
-                    DataStoreManager.removeBook()
+                    Config.remove()
                 }
                 finish()
                 LoginActivity.start(this)
@@ -241,9 +237,11 @@ class MainActivity : AppCompatActivity() {
                         home -> {
                             title = "记账"
                         }
+
                         report -> {
 
                         }
+
                         setting -> {
 
                         }

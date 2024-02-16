@@ -28,23 +28,7 @@ class App : Application() {
         super.onCreate()
         context = this
         runBlocking {
-            with(DataStoreManager) {
-                getUseMode(context).first()?.let {
-                    Config.enableOfflineMode = it
-                }
-                if (Config.enableOfflineMode) {
-                    Config.user = LocalUser
-                    Config.book = InitBook
-                } else {
-                    getToken(context).first()?.let {
-                        Config.user = JWTParse.getUser(it)
-                    }
-                }
-                getBook(context).first()?.let {
-                    Config.book = it
-                    LogUtils.d(it)
-                }
-            }
+            Config.load(context)
             LogUtils.d("enableOfflineMode=${Config.enableOfflineMode}", Config.book, Config.user)
         }
         switchDataBase(Config.user.id)

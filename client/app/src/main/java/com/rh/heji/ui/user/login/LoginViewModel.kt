@@ -8,7 +8,6 @@ import com.rh.heji.config.LocalUser
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.network.HttpManager
-import com.rh.heji.config.store.DataStoreManager
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utils.launch

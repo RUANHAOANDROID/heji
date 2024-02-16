@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.gyf.immersionbar.ktx.immersionBar
 import com.rh.heji.config.Config
+import com.rh.heji.config.LocalUser
 import com.rh.heji.ui.MainActivity
 import com.rh.heji.ui.user.login.LoginActivity
 
@@ -15,9 +16,12 @@ import com.rh.heji.ui.user.login.LoginActivity
 class StartupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Config.isInitUser()) {
+
+        if (Config.enableOfflineMode) {
             startMainActivity()
-        }else{
+        } else if (!Config.isInitUser()) {
+            startMainActivity()
+        } else {
             startLoginActivity()
         }
     }

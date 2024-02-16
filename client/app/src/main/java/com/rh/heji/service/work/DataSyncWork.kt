@@ -187,35 +187,4 @@ class DataSyncWork {
             }
         }
     }
-
-
-    suspend fun syncBooks() {
-        network.bookPull().let {
-            if (it.code == 0) {
-                it.data.forEach { netBook ->
-                    val localBoos = bookDao.findBook(netBook.id)
-                    netBook.syncStatus = STATUS.SYNCED
-                    if (localBoos.isEmpty()) {
-                        bookDao.insert(netBook)
-                    } else {
-                        bookDao.update(netBook)
-                    }
-                }
-            }
-        }
-        val notAsyncBooks = bookDao.books(STATUS.NOT_SYNCED)//未上传同步的账本
-        for (book in notAsyncBooks) {
-            book.syncStatus = STATUS.SYNCED
-            book.createUser = JWTParse.getUser(DataStoreManager.getToken().first() ?: "").name
-            val response = network.bookCreate(book)
-            if (response.code == 0) {
-                val count = bookDao.update(book)
-                if (count > 0) {
-                    LogUtils.d("本地账本同步成功{$book}")
-                }
-            }
-        }
-
-    }
-
 }

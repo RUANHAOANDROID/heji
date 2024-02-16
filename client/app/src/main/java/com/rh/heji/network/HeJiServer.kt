@@ -31,8 +31,8 @@ interface HeJiServer {
     fun bookOperateLogs(@Query("bookId") bookId: String): Call<BaseResponse<MutableList<OperateLog>>>
 
     //----------------------BOOK---------------------------//
-    @POST("book/create")
-    fun bookCreate(@Body book: Book): Call<BaseResponse<String>>
+    @POST("/api/v1/CreateBook")
+    fun createBook(@Body book: Book): Call<BaseResponse<String>>
 
     @POST("book/findBook")
     fun bookFind(@Query("bookId") bookId: String): Call<BaseResponse<Book>>
@@ -54,8 +54,8 @@ interface HeJiServer {
     @DELETE("book/deleteBook")
     fun bookDelete(@Query("bookId") book: String): Call<BaseResponse<String>>
 
-    @POST("book/getBooks")
-    fun bookGet(): Call<BaseResponse<MutableList<Book>>>
+    @POST("/api/v1/BookList")
+    fun bookList(): Call<BaseResponse<MutableList<Book>>>
 
     @POST("book/getBookUsers")
     fun bookGetBookUsers(@Query("bookId") bookId: String): Call<BaseResponse<MutableList<BookUser>>>

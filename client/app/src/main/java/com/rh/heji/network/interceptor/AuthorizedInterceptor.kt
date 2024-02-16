@@ -1,5 +1,6 @@
 package com.rh.heji.network.interceptor
 
+import android.util.Log
 import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.*
 import com.rh.heji.config.Config
@@ -9,8 +10,13 @@ import okhttp3.Response
 
 class AuthorizedInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-
-        val request: Request = chain.request().newBuilder()
+        val newBuilder = chain.request().newBuilder()
+        val path = chain.request().url
+        if (!path.pathSegments.contains("Login") && !path.pathSegments.contains("Register")) {
+            newBuilder.header("Authorization", "Bearer ${Config.user.token}")
+            Log.d("okhttp", "AuthorizedInterceptor:${Config.user.name},${Config.user.id}")
+        }
+        val request: Request = newBuilder
             .build()
         val response = chain.proceed(request)
         if (response.code == 401) {

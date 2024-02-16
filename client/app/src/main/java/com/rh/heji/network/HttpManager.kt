@@ -28,8 +28,8 @@ class HttpManager {
 
     suspend fun bookOperateLogs(book_id: String) = hejiServer.bookOperateLogs(book_id).await()
     suspend fun book(book_id: String) = hejiServer.bookFind(book_id).await()
-    suspend fun bookCreate(book: Book) = hejiServer.bookCreate(book).await()
-    suspend fun bookPull() = hejiServer.bookGet().await()
+    suspend fun createBook(book: Book) = hejiServer.createBook(book).await()
+    suspend fun bookList() = hejiServer.bookList().await()
     suspend fun bookGetUsers(book_id: String) = hejiServer.bookGetBookUsers(book_id).await()
     suspend fun bookShared(book_id: String) = hejiServer.bookShared(book_id).await()
     suspend fun bookDelete(book_id: String) = hejiServer.bookDelete(book_id).await()

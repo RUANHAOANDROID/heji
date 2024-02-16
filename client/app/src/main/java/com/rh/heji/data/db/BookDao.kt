@@ -2,7 +2,6 @@ package com.rh.heji.data.db
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import org.jetbrains.annotations.NotNull
 
 @Dao
 interface BookDao {
@@ -19,8 +18,8 @@ interface BookDao {
     @Query("delete from book  where book_id=:bookId")
     fun deleteById(bookId: String)
 
-    @Query("update book set sync_status = ${STATUS.DELETED} where book_id=:book_id")
-    fun preDelete(book_id: String): Int
+    @Query("update book set sync_status = ${STATUS.DELETED} where book_id=:bookId")
+    fun preDelete(bookId: String): Int
 
     @Query("select count() from book  where name=:name")
     fun countByName(name: String): Int
@@ -31,8 +30,8 @@ interface BookDao {
     @Query("select * from book where sync_status=:status")
     fun books(status: Int): MutableList<Book>
 
-    @Query("select isInitial from book where book_id=:book_id")
-    fun isFirstBook(book_id: String): Int
+    @Query("select is_initial from book where book_id=:bookId")
+    fun isInitialBook(bookId: String): Int
 
 
     @Query("select count(0) from book")
@@ -44,6 +43,6 @@ interface BookDao {
     @Query("select * from book where book_id =:id")
     fun findBook(id: String): MutableList<Book>
 
-    @Query("SELECT book_id FROM book WHERE create_user=:user")
-    fun findBookIdsByUser(user: String): MutableList<String>
+    @Query("SELECT book_id FROM book WHERE crt_user_id=:crtUserId")
+    fun findBookIdsByUser(crtUserId: String): MutableList<String>
 }

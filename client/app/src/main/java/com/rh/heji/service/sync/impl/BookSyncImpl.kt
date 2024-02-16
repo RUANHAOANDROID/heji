@@ -43,12 +43,12 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
     override fun add(book: Book) {
         if (Config.enableOfflineMode) return
         scope.launchIO({
-            val response = HttpManager.getInstance().bookCreate(book)
+            val response = HttpManager.getInstance().createBook(book)
             if (response.success()) {
                 val newBook = Book(name = book.name).apply {
                     id = book.id
                     syncStatus = STATUS.SYNCED
-                    createUser = book.createUser
+                    crtUserId = book.crtUserId
                 }
                 App.dataBase.bookDao().upsert(book = newBook)
             }

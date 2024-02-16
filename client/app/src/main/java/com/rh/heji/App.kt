@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.config.Config
+import com.rh.heji.config.InitBook
+import com.rh.heji.config.LocalUser
 import com.rh.heji.data.AppDatabase
 import com.rh.heji.service.sync.SyncService
 import com.rh.heji.config.store.DataStoreManager
@@ -26,33 +28,27 @@ class App : Application() {
         super.onCreate()
         context = this
         runBlocking {
-            DataStoreManager.getUseMode(context).first()?.let {
-                Config.setUseMode(it)
-            }
-            if (Config.enableOfflineMode) {
-                Config.setUser(Config.localUser)
-                Config.setBook(Config.defaultBook)
-            } else {
-                DataStoreManager.getToken(context).first()?.let {
-                    Config.setUser(JWTParse.getUser(it))
+            with(DataStoreManager) {
+                getUseMode(context).first()?.let {
+                    Config.enableOfflineMode = it
+                }
+                if (Config.enableOfflineMode) {
+                    Config.user = LocalUser
+                    Config.book = InitBook
+                } else {
+                    getToken(context).first()?.let {
+                        Config.user = JWTParse.getUser(it)
+                    }
+                }
+                getBook(context).first()?.let {
+                    Config.book = it
+                    LogUtils.d(it)
                 }
             }
-            DataStoreManager.getBook(context).first()?.let {
-                Config.setBook(it)
-                LogUtils.d(it)
-            }
-
-            LogUtils.d(
-                "App",
-                "Config enableOfflineMode=${Config.enableOfflineMode}",
-                "Config isInitBook=${Config.isInitBook()}",
-                "Config isInitUser=${Config.isInitUser()}"
-            )
+            LogUtils.d("enableOfflineMode=${Config.enableOfflineMode}", Config.book, Config.user)
         }
-        if (Config.isInitUser())
-            switchDataBase(Config.user.name)
+        switchDataBase(Config.user.id)
         viewModel = AppViewModel(this)
-
         Intent(this, SyncService::class.java).also {
             startService(it)
         }

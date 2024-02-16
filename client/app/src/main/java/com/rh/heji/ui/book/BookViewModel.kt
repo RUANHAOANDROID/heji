@@ -56,7 +56,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
                     id = ObjectId().toHexString(),
                     name = name,
                     type = type,
-                    createUser = Config.user.name
+                    crtUserId = Config.user.id
                 )
                 mBookSync.add(book)
                 _bookLiveData.postValue(book)
@@ -66,7 +66,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
         //network create
     }
 
-    fun isFirstBook(id: String) = App.dataBase.bookDao().isFirstBook(id)
+    fun isFirstBook(id: String) = App.dataBase.bookDao().isInitialBook(id)
 
     fun countBook(book_id: String): Int {
         return App.dataBase.billDao().countByBookId(book_id)
@@ -78,7 +78,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
 
     fun getBookList() {
         launchIO({
-            val response = HttpManager.getInstance().bookPull()
+            val response = HttpManager.getInstance().bookList()
             val netBooks = response.data
             if (netBooks.isNotEmpty()) {
                 for (book in netBooks) {

@@ -33,7 +33,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:hint="@string/name"
                 app:endIconDrawable="@drawable/ic_user_blue_24dp"
                 app:endIconMode="custom"
@@ -55,7 +54,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:hint="@string/tel"
                 app:endIconDrawable="@drawable/ic_baseline_phone_24"
                 app:endIconMode="custom"
@@ -75,7 +73,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:hint="@string/password"
                 app:endIconDrawable="@drawable/ic_baseline_lock_24"
                 app:endIconMode="custom"
@@ -86,7 +83,6 @@
                     android:layout_width="260dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-
                     android:ems="10"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -95,7 +91,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:hint="@string/again_password"
                 app:endIconDrawable="@drawable/ic_baseline_lock_24"
                 app:endIconMode="custom"
@@ -107,7 +102,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:ems="10"
-
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -115,7 +109,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:hint="@string/code"
                 app:endIconDrawable="@drawable/ic_baseline_code_24"
                 app:endIconMode="custom"
@@ -127,7 +120,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:ems="10"
-
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 

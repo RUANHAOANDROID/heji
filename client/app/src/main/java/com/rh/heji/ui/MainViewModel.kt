@@ -16,8 +16,8 @@ class MainViewModel : ViewModel() {
         LogUtils.d(
             "MainViewModel",
             "Config enableOfflineMode=${Config.enableOfflineMode}",
-            "Config isInitBook=${Config.isInitBook()}",
-            "Config isInitUser=${Config.isInitUser()}"
+            "Config isInitBook=${Config.book}",
+            "Config isInitUser=${Config.user}"
         )
     }
     /**

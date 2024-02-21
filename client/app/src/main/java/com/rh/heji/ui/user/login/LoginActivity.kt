@@ -73,6 +73,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initUserBaseData() {
-        App.switchDataBase(Config.user.name)
+        App.switchDataBase(Config.user.id)
     }
 }

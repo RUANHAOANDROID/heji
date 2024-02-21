@@ -1,7 +1,11 @@
 package com.rh.heji.config
 
+import android.content.Context
+import com.rh.heji.App
+import com.rh.heji.config.store.DataStoreManager
 import com.rh.heji.data.db.Book
 import com.rh.heji.ui.user.JWTParse
+import kotlinx.coroutines.flow.firstOrNull
 
 /**
  *Date: 2022/11/13
@@ -11,7 +15,7 @@ import com.rh.heji.ui.user.JWTParse
 internal val LocalUser = JWTParse.User("LocalUser", "user0", "")
 internal val InitBook = Book(
     name = "个人账本",
-    createUser = LocalUser.name,
+    crtUserId = LocalUser.id,
     isInitial = true,
     type = "离线账本",
 )
@@ -20,57 +24,64 @@ object Config {
     /**
      * last switch book
      */
-    lateinit var book: Book
-        private set
-    var token = ""
-        private set
+    var book: Book = InitBook
 
     /**
      * 当前用户
      */
-    lateinit var user: JWTParse.User
-        private set
+    var user = LocalUser
 
-    //开启离线使用
+    /**
+     * 开启离线使用模式
+     */
     var enableOfflineMode = false
-        private set
 
-    //设定使用模式
-    fun setUseMode(enableOffline: Boolean) {
-        enableOfflineMode = enableOffline
+    fun isInitUser() = (user == LocalUser)
+
+    suspend fun saveBook(book: Book) {
+        this.book = book
+        DataStoreManager.saveBook(book)
     }
 
-    //已初始化账本
-    fun isInitBook() = Config::book.isInitialized
-
-    //已初始化用户
-    fun isInitUser() = Config::user.isInitialized
-
-    //设定当前账本
-    fun setBook(book: Book) {
-        Config.book = book
+    suspend fun saveUser(user: JWTParse.User) {
+        this.user = user
+        DataStoreManager.saveToken(user.token)
     }
 
-    //设定当前用户
-    fun setUser(user: JWTParse.User) {
-        Config.user = user
+    suspend fun saveOfflineMode(enable: Boolean) {
+        enableOfflineMode = enable
+        DataStoreManager.saveUseMode(enableOfflineMode)
     }
 
-    fun setToken(token: String) {
-        Config.token = token
+    suspend fun load(context: Context) {
+        with(DataStoreManager) {
+            getUseMode(context).firstOrNull()?.let { enableOfflineMode = it }
+            if (!enableOfflineMode) {
+                getBook(context).firstOrNull()?.let { book = it }
+                getToken(context).firstOrNull()?.let { user = JWTParse.getUser(jwt = it) }
+            } else {
+                user = LocalUser
+                book = InitBook
+            }
+        }
     }
 
-    //本地用户
-    const val localUserName = "LocalUser"
+    suspend fun save() {
+        with(DataStoreManager) {
+            saveUseMode(false)
+            saveBook(book)
+            saveToken(user.token)
+        }
+    }
 
-    //离线用户，有且仅有一个
-    val localUser = JWTParse.User(localUserName, "user0", "")
-
-    //默认账本离线账本-离线用户可以创建多个账本
-    val defaultBook = Book(
-        name = "个人账本",
-        createUser = localUser.name,
-        isInitial = true,
-        type = "离线账本",
-    )
+    suspend fun remove() {
+        with(DataStoreManager) {
+            removeUseMode()
+            removeToken()
+            removeBook()
+        }
+        enableOfflineMode = false
+        user = LocalUser
+        book = InitBook
+    }
 }

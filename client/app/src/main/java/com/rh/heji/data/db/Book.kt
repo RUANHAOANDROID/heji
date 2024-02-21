@@ -27,19 +27,21 @@ data class Book(
     @ColumnInfo(name = COLUMN_NAME)
     var name: String,//账本名称
 
+    @Json(name = "crt_user_id")
     @ColumnInfo(name = COLUMN_CREATE_USER)
-    var createUser: String = Config.user.name,//创建人
+    var crtUserId: String = Config.user.id,//创建人
 
     @ColumnInfo(name = COLUMN_TYPE)
     var type: String? = null,//账本类型
 
+    @Json(name = "banner")
     @ColumnInfo(name = COLUMN_BANNER_URL)
     var bannerUrl: String? = null,//封面图片
 
     @ColumnInfo(name = COLUMN_ANCHOR)
     var anchor: Long = 0L,//锚点用作记录服务最后修改时间
 
-    @Json(name="isInitial")
+    @Json(name = "is_initial")
     @ColumnInfo(name = COLUMN_FIRST)
     @TypeConverters(LogicConverters::class)
     var isInitial: Boolean = false//初始账本
@@ -53,11 +55,11 @@ data class Book(
         const val TAB_NAME = "book"
         const val COLUMN_ID = "book_id"
         const val COLUMN_NAME = "name"
-        const val COLUMN_CREATE_USER = "create_user"
+        const val COLUMN_CREATE_USER = "crt_user_id"
         const val COLUMN_TYPE = "type"
         const val COLUMN_BANNER_URL = "banner_url"
         const val COLUMN_ANCHOR = "anchor"
-        const val COLUMN_FIRST = "isInitial"
+        const val COLUMN_FIRST = "is_initial"
         const val COLUMN_SYNC_STATUS = "sync_status"
     }
 }

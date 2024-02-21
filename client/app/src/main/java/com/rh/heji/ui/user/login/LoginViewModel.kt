@@ -1,17 +1,19 @@
 package com.rh.heji.ui.user.login
 
 import com.blankj.utilcode.util.EncryptUtils
-import com.blankj.utilcode.util.ToastUtils
 import com.rh.heji.App
 import com.rh.heji.config.Config
+import com.rh.heji.config.InitBook
+import com.rh.heji.config.LocalUser
 import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.network.HttpManager
-import com.rh.heji.config.store.DataStoreManager
 import com.rh.heji.ui.base.BaseViewModel
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.utils.launch
 import com.rh.heji.utils.launchIO
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
 
@@ -22,6 +24,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
             is LoginAction.Login -> {
                 login(action.tel, action.password)
             }
+
             is LoginAction.EnableOfflineMode -> {
                 enableOfflineMode()
             }
@@ -29,46 +32,43 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
     }
 
     private fun login(tel: String, password: String) {
-        launchIO({
-            var requestBody = HttpManager.getInstance().login(
+        launch({
+            var resp = HttpManager.getInstance().login(
                 tel,
                 encodePassword(password)
             )
-            ToastUtils.showLong(requestBody.data)
-            var token = requestBody.data
-            Config.setToken(token)
-            val user = JWTParse.getUser(token)
-            Config.setUser(user)
-            Config.setUseMode(enableOffline = false)
-            App.switchDataBase(Config.user.name)
-            val initBooksJob = launch({
+            val newUser = JWTParse.getUser(resp.data)
+            App.switchDataBase(newUser.id)
+            with(Config) {
+                user = newUser
+                enableOfflineMode = false
+            }
+            withContext(Dispatchers.IO) {
                 val remoteBooks = getRemoteBooks()
                 val bookDao = App.dataBase.bookDao()
+                var initialBook = Book(name = "个人账本", crtUserId = newUser.id, isInitial = true)
                 if (remoteBooks.isNotEmpty()) {
                     remoteBooks.forEach {
                         bookDao.upsert(it)
                         if (it.isInitial) {
-                            Config.setBook(it)
+                            initialBook = it//当服务器存在初始账本
                         }
                     }
                 } else {
-                    val books = bookDao.findBookIdsByUser(user.name)
+                    val books = bookDao.findBookIdsByUser(newUser.id)//查询本地是否存在账本
                     if (books.size <= 0) {
-                        val firstBook = Book(name = "个人账本", createUser = user.name, isInitial = true)
-                        bookDao.insert(firstBook)
-                        val response = HttpManager.getInstance().createBook(firstBook)
+                        bookDao.insert(initialBook)
+                        val response = HttpManager.getInstance().createBook(initialBook)
                         if (response.success()) {
-                            firstBook.syncStatus =STATUS.SYNCED
-                            bookDao.upsert(firstBook)
+                            initialBook.syncStatus = STATUS.SYNCED
+                            bookDao.upsert(initialBook)
                         }
                     }
-
                 }
-            })
-            initBooksJob.join()
-            DataStoreManager.saveUseMode(enableOffline = false)
-            DataStoreManager.saveBook(Config.book)
-            send(LoginUiState.LoginSuccess(token))
+                Config.book = initialBook
+                Config.save()
+                send(LoginUiState.LoginSuccess(resp.data))
+            }
         }, {
             send(LoginUiState.LoginError(it))
         })
@@ -81,10 +81,14 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
     }
 
     private suspend fun getRemoteBooks(): MutableList<Book> {
-        val response = HttpManager.getInstance().bookList()
-        if (response.success()) {
-            return response.data
+        runCatching<MutableList<Book>> {
+            HttpManager.getInstance().bookList().data
+        }.onSuccess {
+            return it
+        }.onFailure {
+            return mutableListOf()
         }
+
         return mutableListOf()
     }
 
@@ -94,17 +98,16 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
     private fun enableOfflineMode() {
         launchIO({
             with(Config) {
-                App.switchDataBase(localUser.name)
-                setBook(defaultBook)
-                setUser(localUser)
-                setUseMode(true)
+                App.switchDataBase(LocalUser.id)
+                book = InitBook
+                user = LocalUser
+                enableOfflineMode = true
+                save()
             }
             val bookDao = App.dataBase.bookDao()
             if (bookDao.count() == 0) {
-                bookDao.insert(Config.defaultBook)
+                bookDao.insert(Config.book)
             }
-            DataStoreManager.saveUseMode(true)
-            DataStoreManager.saveBook(Config.defaultBook)
             send(LoginUiState.OfflineRun)
         })
 

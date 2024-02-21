@@ -34,9 +34,9 @@ import com.lxj.xpopup.XPopup
 import com.rh.heji.App
 import com.rh.heji.config.Config
 import com.rh.heji.R
+import com.rh.heji.config.LocalUser
 import com.rh.heji.databinding.HeaderMainNavBinding
 import com.rh.heji.service.sync.SyncService
-import com.rh.heji.config.store.DataStoreManager
 import com.rh.heji.ui.home.DrawerListener
 import com.rh.heji.ui.user.JWTParse
 import com.rh.heji.ui.user.login.LoginActivity
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkLogin() {
         if (!Config.enableOfflineMode) {
-            if (Config.user == Config.localUser) {
+            if (Config.user == LocalUser) {
                 toLogin()
             }
         }
@@ -163,10 +163,7 @@ class MainActivity : AppCompatActivity() {
         navMenu.findItem(R.id.menu_logout).setOnMenuItemClickListener {
             XPopup.Builder(this@MainActivity).asConfirm("退出确认", "确认退出当前用户吗?") {
                 runBlocking {
-                    DataStoreManager.removeToken()
-                    DataStoreManager.removeUseMode()
-                    Config.setUseMode(false)
-                    DataStoreManager.removeBook()
+                    Config.remove()
                 }
                 finish()
                 LoginActivity.start(this)
@@ -186,9 +183,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.nav_user_info)
             drawerLayout.closeDrawers()
         }
-        if (Config.isInitBook()) {
-            setCurrentBook(Config.book.name)
-        }
+        setCurrentBook(Config.book.name)
     }
 
     private fun navigationDrawerController() {
@@ -242,9 +237,11 @@ class MainActivity : AppCompatActivity() {
                         home -> {
                             title = "记账"
                         }
+
                         report -> {
 
                         }
+
                         setting -> {
 
                         }
@@ -342,9 +339,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun toLogin() {
-        ToastUtils.showLong("用户凭证已失效，请重新登录")
         LoginActivity.start(this)
         finish()
+        ToastUtils.showLong("用户凭证已失效，请重新登录")
     }
 
     override fun onDestroy() {

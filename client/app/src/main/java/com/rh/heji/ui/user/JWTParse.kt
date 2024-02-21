@@ -3,6 +3,7 @@ package com.rh.heji.ui.user
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.StringUtils
 import com.rh.heji.config.Config
+import com.rh.heji.config.LocalUser
 import org.json.JSONObject
 
 
@@ -12,7 +13,7 @@ object JWTParse {
 
     //解析JWT用户信息
     fun getUser(jwt: String): User {
-        if (jwt == "" || jwt == Config.localUserName) return Config.localUser
+        if (jwt == "") return LocalUser
         val token = resolveToken(jwt)
         val splits = token.split(".")
 //        val header = splits[0]

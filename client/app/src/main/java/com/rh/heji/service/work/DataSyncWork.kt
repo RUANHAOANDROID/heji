@@ -4,7 +4,6 @@ import com.blankj.utilcode.util.LogUtils
 import com.rh.heji.currentYearMonth
 import com.rh.heji.App
 import com.rh.heji.config.Config
-import com.rh.heji.config.store.DataStoreManager
 import com.rh.heji.data.db.Image
 import com.rh.heji.data.db.STATUS
 import com.rh.heji.data.repository.BillRepository
@@ -24,6 +23,34 @@ class DataSyncWork {
     private val billDao = App.dataBase.billDao()
     private val categoryDao = App.dataBase.categoryDao()
     private val billRepository = BillRepository()
+    suspend fun syncByOperateLog() {
+        /**
+         * 根据服务器账本删除日志，同步删除本地数据
+         */
+        val response = HttpManager.getInstance().bookOperateLogs( Config.book.id)
+        if (response.code == 0 && response.data.isNotEmpty()) {
+            val operates = response.data
+            for (operate in operates) {
+                when (operate.opeClass) {
+                    OperateLog.BOOK -> {
+                        if (operate.opeType == OperateLog.DELETE) {
+                            bookDao.deleteById(operate.bookId)
+                        }
+                    }
+                    OperateLog.BILL -> {
+                        if (operate.opeType == OperateLog.DELETE) {
+                            billDao.deleteById(operate.opeID)
+                        }
+                    }
+                    OperateLog.CATEGORY -> {
+                        if (operate.opeType == OperateLog.DELETE) {
+                            categoryDao.deleteById(operate.opeID)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     suspend fun syncBills() {
         suspend fun delete() {
@@ -159,35 +186,4 @@ class DataSyncWork {
             }
         }
     }
-
-
-    suspend fun syncBooks() {
-        network.bookList().let {
-            if (it.code == 0) {
-                it.data.forEach { netBook ->
-                    val localBoos = bookDao.findBook(netBook.id)
-                    netBook.syncStatus = STATUS.SYNCED
-                    if (localBoos.isEmpty()) {
-                        bookDao.insert(netBook)
-                    } else {
-                        bookDao.update(netBook)
-                    }
-                }
-            }
-        }
-        val notAsyncBooks = bookDao.books(STATUS.NOT_SYNCED)//未上传同步的账本
-        for (book in notAsyncBooks) {
-            book.syncStatus = STATUS.SYNCED
-            book.createUser = JWTParse.getUser(DataStoreManager.getToken().first() ?: "").name
-            val response = network.createBook(book)
-            if (response.code == 0) {
-                val count = bookDao.update(book)
-                if (count > 0) {
-                    LogUtils.d("本地账本同步成功{$book}")
-                }
-            }
-        }
-
-    }
-
 }

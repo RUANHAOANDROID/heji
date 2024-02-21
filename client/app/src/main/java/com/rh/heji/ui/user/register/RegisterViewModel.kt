@@ -44,20 +44,6 @@ internal class RegisterViewModel : BaseViewModel<RegisterAction, RegisterUiState
         })
 
     }
-    private suspend fun remoteCreateFirstBook(): Book {
-        val firstBook = Book(
-            id = ObjectId().toHexString(),
-            name = "个人账本",
-            createUser = Config.user.name,
-            isInitial = true,
-            type = "个人账本",
-        )
-        val response = HttpManager.getInstance().createBook(firstBook)
-        if (response.success()) {
-            App.dataBase.bookDao().insert(firstBook)
-        }
-        return firstBook
-    }
     private fun encodePassword(password: String): String {
         return EncryptUtils.encryptSHA512ToString(String(EncryptUtils.encryptSHA512(password.toByteArray())))
     }

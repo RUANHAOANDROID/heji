@@ -3,7 +3,6 @@ package com.rh.heji.network
 import com.rh.heji.BuildConfig
 import com.rh.heji.moshi
 import com.rh.heji.network.interceptor.AuthorizedInterceptor
-import com.rh.heji.network.interceptor.HttpHeaderInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -36,17 +35,14 @@ object HttpRetrofit {
             logging.redactHeader("Authorization")
         }
 
-        val headerInterceptor = HttpHeaderInterceptor()
-
         val authorizedInterceptor = AuthorizedInterceptor()
 
         return OkHttpClient.Builder()
-            .addInterceptor(headerInterceptor)
-            .addInterceptor(logging)
             .connectTimeout(connectTimeout, TimeUnit.SECONDS)
             .writeTimeout(writeTimeout, TimeUnit.SECONDS)
             .readTimeout(readTimeout, TimeUnit.SECONDS)
             .addInterceptor(authorizedInterceptor)
+            .addInterceptor(logging)
             .build()
     }
 

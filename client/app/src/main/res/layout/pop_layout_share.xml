@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Context"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tvTip"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginBottom="32dp"
-        android:text="点击复制，将此邀请码告诉对方，对方可以通过邀请码加入该账本【1分钟内有效】"
+        android:text="点击复制，将此邀请码告诉对方，对方可以通过邀请码加入该账本【5分钟内有效】"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

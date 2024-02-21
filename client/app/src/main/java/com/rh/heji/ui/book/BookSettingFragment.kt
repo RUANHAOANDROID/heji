@@ -46,9 +46,6 @@ class BookSettingFragment : BaseFragment() {
             binding.tvBookType.text = book.type
             binding.tvCreateTime.text = book.id.getObjectTime().string()
             val adapter = UsersAdapter(mutableListOf())
-            viewModel.getBookUsers(book.id) { bookUsers ->
-                adapter.addData(bookUsers)
-            }
             binding.recycler.adapter = adapter
             binding.recycler.layoutManager = LinearLayoutManager(requireContext())
             //binding.tvCreateUser.text = book.createUser

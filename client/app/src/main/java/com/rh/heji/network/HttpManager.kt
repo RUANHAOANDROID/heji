@@ -27,13 +27,12 @@ class HttpManager {
     suspend fun book(book_id: String) = hejiServer.findBook(book_id).await()
     suspend fun createBook(book: Book) = hejiServer.createBook(book).await()
     suspend fun bookList() = hejiServer.bookList().await()
-    suspend fun bookGetUsers(book_id: String) = hejiServer.bookGetBookUsers(book_id).await()
     suspend fun bookShared(book_id: String) = hejiServer.sharedBook(book_id).await()
     suspend fun bookDelete(book_id: String) = hejiServer.deleteBook(book_id).await()
     suspend fun bookUpdate(book_id: String, bookName: String, bookType: String) =
         hejiServer.updateBook(book_id, bookName, bookType).await()
 
-    suspend fun bookJoin(sharedCode: String) = hejiServer.joinBook(sharedCode).await()
+    suspend fun joinBook(sharedCode: String) = hejiServer.joinBook(sharedCode).await()
     suspend fun billPush(bill: Bill) =
         hejiServer.saveBill(bill.apply { images = mutableListOf() }).await()
 

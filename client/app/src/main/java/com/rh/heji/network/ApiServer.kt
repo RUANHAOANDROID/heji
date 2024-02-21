@@ -30,8 +30,8 @@ interface ApiServer {
     @POST("book/findBook")
     fun findBook(@Query("bookId") bookId: String): Call<BaseResponse<Book>>
 
-    @POST("/api/v1/JoinBook/{book_id}")
-    fun sharedBook(@Query("book_id") bookId: String): Call<BaseResponse<String>>
+    @POST("/api/v1/SharedBook/{book_id}")
+    fun sharedBook(@Path("book_id") bookId: String): Call<BaseResponse<String>>
 
     @POST("/api/v1/JoinBook/{code}")
     fun joinBook(@Path("code") code: String): Call<BaseResponse<String>>
@@ -46,9 +46,6 @@ interface ApiServer {
 
     @POST("/api/v1/BookList")
     fun bookList(): Call<BaseResponse<MutableList<Book>>>
-
-    @POST("book/getBookUsers")
-    fun bookGetBookUsers(@Query("bookId") bookId: String): Call<BaseResponse<MutableList<BookUser>>>
 
     //----------------------BILL---------------------------//
     @POST("bill/add")

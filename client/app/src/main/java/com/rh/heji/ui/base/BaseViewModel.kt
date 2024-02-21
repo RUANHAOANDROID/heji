@@ -34,7 +34,7 @@ abstract class BaseViewModel<I : IAction, O : IUiState> : ViewModel() {
      */
 
     fun send(o: O) {
-        LogUtils.d("send : ${o.id()}")
+        //LogUtils.d("send : ${o.id()}")
         viewModelScope.launch {
             runMainThread {
                 _uiState.value = o

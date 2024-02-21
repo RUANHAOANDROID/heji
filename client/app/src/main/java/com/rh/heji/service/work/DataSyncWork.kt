@@ -23,35 +23,6 @@ class DataSyncWork {
     private val billDao = App.dataBase.billDao()
     private val categoryDao = App.dataBase.categoryDao()
     private val billRepository = BillRepository()
-    suspend fun syncByOperateLog() {
-        /**
-         * 根据服务器账本删除日志，同步删除本地数据
-         */
-        val response = HttpManager.getInstance().bookOperateLogs( Config.book.id)
-        if (response.code == 0 && response.data.isNotEmpty()) {
-            val operates = response.data
-            for (operate in operates) {
-                when (operate.opeClass) {
-                    OperateLog.BOOK -> {
-                        if (operate.opeType == OperateLog.DELETE) {
-                            bookDao.deleteById(operate.bookId)
-                        }
-                    }
-                    OperateLog.BILL -> {
-                        if (operate.opeType == OperateLog.DELETE) {
-                            billDao.deleteById(operate.opeID)
-                        }
-                    }
-                    OperateLog.CATEGORY -> {
-                        if (operate.opeType == OperateLog.DELETE) {
-                            categoryDao.deleteById(operate.opeID)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     suspend fun syncBills() {
         suspend fun delete() {
             val deleteBills = billDao.findByStatus(STATUS.DELETED)

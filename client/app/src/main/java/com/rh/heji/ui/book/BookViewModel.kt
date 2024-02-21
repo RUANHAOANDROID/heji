@@ -95,18 +95,6 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
         })
     }
 
-    fun getBookUsers(bookId: String, @MainThread call: (MutableList<BookUser>) -> Unit) {
-        launchIO({
-            val response = HttpManager.getInstance().bookGetUsers(bookId)
-            if (response.data.isNotEmpty()) {
-                withContext(Dispatchers.Main) {
-                    call(response.data)
-                }
-            }
-        })
-
-    }
-
     fun clearBook(id: String, call: (Result<String>) -> Unit) {
         launchIO({
             App.dataBase.billDao().deleteByBookId(id)
@@ -150,7 +138,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
     fun joinBook(code: String, call: (Result<String>) -> Unit) {
         launch({
             call(Result.Loading)
-            val response = HttpManager.getInstance().bookJoin(code)
+            val response = HttpManager.getInstance().joinBook(code)
             call(Result.Success(response.data))
         }, { call(Result.Error(it)) })
 

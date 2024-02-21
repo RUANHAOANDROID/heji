@@ -77,8 +77,8 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
     }
 
     fun getBookList() {
-        launchIO({
-            val response = HttpManager.getInstance().bookPull()
+        launch({
+            val response = HttpManager.getInstance().bookList()
             val netBooks = response.data
             if (netBooks.isNotEmpty()) {
                 for (book in netBooks) {

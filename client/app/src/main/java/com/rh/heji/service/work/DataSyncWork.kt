@@ -24,34 +24,6 @@ class DataSyncWork {
     private val billDao = App.dataBase.billDao()
     private val categoryDao = App.dataBase.categoryDao()
     private val billRepository = BillRepository()
-    suspend fun syncByOperateLog() {
-        /**
-         * 根据服务器账本删除日志，同步删除本地数据
-         */
-        val response = HttpManager.getInstance().bookOperateLogs( Config.book.id)
-        if (response.code == 0 && response.data.isNotEmpty()) {
-            val operates = response.data
-            for (operate in operates) {
-                when (operate.opeClass) {
-                    OperateLog.BOOK -> {
-                        if (operate.opeType == OperateLog.DELETE) {
-                            bookDao.deleteById(operate.bookId)
-                        }
-                    }
-                    OperateLog.BILL -> {
-                        if (operate.opeType == OperateLog.DELETE) {
-                            billDao.deleteById(operate.opeID)
-                        }
-                    }
-                    OperateLog.CATEGORY -> {
-                        if (operate.opeType == OperateLog.DELETE) {
-                            categoryDao.deleteById(operate.opeID)
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     suspend fun syncBills() {
         suspend fun delete() {
@@ -190,7 +162,7 @@ class DataSyncWork {
 
 
     suspend fun syncBooks() {
-        network.bookPull().let {
+        network.bookList().let {
             if (it.code == 0) {
                 it.data.forEach { netBook ->
                     val localBoos = bookDao.findBook(netBook.id)
@@ -207,7 +179,7 @@ class DataSyncWork {
         for (book in notAsyncBooks) {
             book.syncStatus = STATUS.SYNCED
             book.createUser = JWTParse.getUser(DataStoreManager.getToken().first() ?: "").name
-            val response = network.bookCreate(book)
+            val response = network.createBook(book)
             if (response.code == 0) {
                 val count = bookDao.update(book)
                 if (count > 0) {

@@ -18,25 +18,22 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class HttpManager {
-    private val hejiServer = HttpRetrofit.create(BuildConfig.HTTP_URL, HeJiServer::class.java)
+    private val hejiServer = HttpRetrofit.create(BuildConfig.HTTP_URL, ApiServer::class.java)
 
     suspend fun register(registerUser: RegisterUser) = hejiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) =
         hejiServer.login(mapOf("tel" to username, "password" to password)).await()
 
-    suspend fun auth(token: String) = hejiServer.auth(token).await()
-
-    suspend fun bookOperateLogs(book_id: String) = hejiServer.bookOperateLogs(book_id).await()
-    suspend fun book(book_id: String) = hejiServer.bookFind(book_id).await()
-    suspend fun bookCreate(book: Book) = hejiServer.bookCreate(book).await()
-    suspend fun bookPull() = hejiServer.bookGet().await()
+    suspend fun book(book_id: String) = hejiServer.findBook(book_id).await()
+    suspend fun createBook(book: Book) = hejiServer.createBook(book).await()
+    suspend fun bookList() = hejiServer.bookList().await()
     suspend fun bookGetUsers(book_id: String) = hejiServer.bookGetBookUsers(book_id).await()
-    suspend fun bookShared(book_id: String) = hejiServer.bookShared(book_id).await()
-    suspend fun bookDelete(book_id: String) = hejiServer.bookDelete(book_id).await()
+    suspend fun bookShared(book_id: String) = hejiServer.sharedBook(book_id).await()
+    suspend fun bookDelete(book_id: String) = hejiServer.deleteBook(book_id).await()
     suspend fun bookUpdate(book_id: String, bookName: String, bookType: String) =
-        hejiServer.bookUpdate(book_id, bookName, bookType).await()
+        hejiServer.updateBook(book_id, bookName, bookType).await()
 
-    suspend fun bookJoin(sharedCode: String) = hejiServer.bookJoin(sharedCode).await()
+    suspend fun bookJoin(sharedCode: String) = hejiServer.joinBook(sharedCode).await()
     suspend fun billPush(bill: Bill) =
         hejiServer.saveBill(bill.apply { images = mutableListOf() }).await()
 
@@ -81,14 +78,7 @@ class HttpManager {
                             continuation.resume(body)//正常恢复
                         }
                         errorBody != null -> {//error body 仅仅适用于服务器统一返回的错误格式，在服务端错误信息同样返回{code,msg,data}格式
-                            val errStr = errorBody.string()
-                            runCatching<String> {
-                                JSONObject(errStr).optString("msg")
-                            }.onSuccess {
-                                continuation.resumeWithException(RuntimeException(it))
-                            }.onFailure {
-                                continuation.resumeWithException(RuntimeException(errStr))
-                            }
+                            continuation.resumeWithException(RuntimeException(errorBody.string()))
                         }
                         else -> {
                             continuation.resumeWithException(RuntimeException("response body is null"))

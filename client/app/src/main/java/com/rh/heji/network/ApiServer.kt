@@ -5,7 +5,6 @@ import com.rh.heji.data.db.Book
 import com.rh.heji.data.db.BookUser
 import com.rh.heji.network.request.CategoryEntity
 import com.rh.heji.network.response.ImageEntity
-import com.rh.heji.network.response.OperateLog
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -16,7 +15,7 @@ import retrofit2.http.*
  * @author: 锅得铁
  * #
  */
-interface HeJiServer {
+interface ApiServer {
     //----------------------USER---------------------------//
     @POST("/api/v1/Register")
     fun register(@Body user: Any?): Call<BaseResponse<String>>
@@ -24,38 +23,29 @@ interface HeJiServer {
     @POST("/api/v1/Login")
     fun login(@Body map: Map<String,String>): Call<BaseResponse<String>>
 
-    @POST("user/auth")
-    fun auth(@Header("token") token: String): Call<BaseResponse<String>>
-
-    @GET("operateLog/bookLogs")
-    fun bookOperateLogs(@Query("bookId") bookId: String): Call<BaseResponse<MutableList<OperateLog>>>
-
     //----------------------BOOK---------------------------//
-    @POST("book/create")
-    fun bookCreate(@Body book: Book): Call<BaseResponse<String>>
+    @POST("/api/v1/CreateBook")
+    fun createBook(@Body book: Book): Call<BaseResponse<String>>
 
     @POST("book/findBook")
-    fun bookFind(@Query("bookId") bookId: String): Call<BaseResponse<Book>>
+    fun findBook(@Query("bookId") bookId: String): Call<BaseResponse<Book>>
 
-    @POST("book/shared")
-    fun bookShared(@Query("bookId") bookId: String): Call<BaseResponse<String>>
+    @POST("/api/v1/JoinBook/{book_id}")
+    fun sharedBook(@Query("book_id") bookId: String): Call<BaseResponse<String>>
 
-    @POST("book/join")
-    fun bookJoin(@Query("sharedCode") sharedCode: String): Call<BaseResponse<String>>
+    @POST("/api/v1/JoinBook/{code}")
+    fun joinBook(@Path("code") code: String): Call<BaseResponse<String>>
 
-    @POST("book/removeBookUser")
-    fun bookRemoveUser(@Body book: Book): Call<BaseResponse<String>>
-
-    @POST("book/updateBook")
-    fun bookUpdate(@Query("bookId")  bookId:String,
+    @POST("/api/v1/UpdateBook")
+    fun updateBook(@Query("bookId")  bookId:String,
                    @Query("bookName") bookName:String,
                    @Query("bookType")  bookType:String):Call<BaseResponse<String>>
 
-    @DELETE("book/deleteBook")
-    fun bookDelete(@Query("bookId") book: String): Call<BaseResponse<String>>
+    @POST("/api/v1/DeleteBook/{book_id}}")
+    fun deleteBook(@Path("book_id") book: String): Call<BaseResponse<String>>
 
-    @POST("book/getBooks")
-    fun bookGet(): Call<BaseResponse<MutableList<Book>>>
+    @POST("/api/v1/BookList")
+    fun bookList(): Call<BaseResponse<MutableList<Book>>>
 
     @POST("book/getBookUsers")
     fun bookGetBookUsers(@Query("bookId") bookId: String): Call<BaseResponse<MutableList<BookUser>>>

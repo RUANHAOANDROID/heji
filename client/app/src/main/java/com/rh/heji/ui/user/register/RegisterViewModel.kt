@@ -52,7 +52,7 @@ internal class RegisterViewModel : BaseViewModel<RegisterAction, RegisterUiState
             isInitial = true,
             type = "个人账本",
         )
-        val response = HttpManager.getInstance().bookCreate(firstBook)
+        val response = HttpManager.getInstance().createBook(firstBook)
         if (response.success()) {
             App.dataBase.bookDao().insert(firstBook)
         }

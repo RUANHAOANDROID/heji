@@ -68,9 +68,11 @@ class LoginFragment : Fragment() {
                 }
 
                 is LoginUiState.ShowServerSetting -> {
-                    serverUrlInputConfirm.show()
-                    serverUrlInputConfirm.post {
-                        serverUrlInputConfirm.editText.setText(state.url)
+                    with(serverUrlInputConfirm) {
+                        show()
+                        post {
+                            editText.setText(state.url)
+                        }
                     }
                 }
             }
@@ -78,19 +80,21 @@ class LoginFragment : Fragment() {
     }
 
     fun initView() {
-        binding.tvRegister.setOnClickListener {
-            findNavController().navigate(R.id.nav_register)
-        }
-        binding.btnLogin.setOnClickListener {
-            val username = binding.editUser.text.toString()
-            val password = binding.editPassword.text.toString()
-            viewModel.doAction(LoginAction.Login(username, password))
-        }
-        binding.tvNetSetting.setOnClickListener {
-            viewModel.doAction(LoginAction.GetServerUrl)
-        }
-        binding.tvOnlyLocalUse.setOnClickListener {
-            asConfirm.show()
+        with(binding) {
+            tvRegister.setOnClickListener {
+                findNavController().navigate(R.id.nav_register)
+            }
+            btnLogin.setOnClickListener {
+                val username = binding.editUser.text.toString()
+                val password = binding.editPassword.text.toString()
+                viewModel.doAction(LoginAction.Login(username, password))
+            }
+            tvNetSetting.setOnClickListener {
+                viewModel.doAction(LoginAction.GetServerUrl)
+            }
+            tvOnlyLocalUse.setOnClickListener {
+                asConfirm.show()
+            }
         }
     }
 
@@ -112,7 +116,6 @@ class LoginFragment : Fragment() {
     private fun setTitle() {
         with(activity as LoginActivity) {
             findViewById<Toolbar>(R.id.toolbar).title = getString(R.string.login)
-            this
         }
     }
 

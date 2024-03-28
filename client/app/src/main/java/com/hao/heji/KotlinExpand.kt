@@ -3,14 +3,7 @@ package com.hao.heji
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.hao.heji.data.converters.DateConverters
-import com.hao.heji.ui.base.BaseViewModel
-import com.hao.heji.ui.base.IAction
-import com.hao.heji.ui.base.IUiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -63,11 +56,4 @@ fun CoroutineScope.launchIO(
             e.printStackTrace()
         }
     }
-}
-
-inline fun <reified I : IAction, reified  O : IUiState> doAction(
-    vm: BaseViewModel<I, O>,
-    action: I
-) {
-    vm.doAction(action)
 }

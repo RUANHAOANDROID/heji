@@ -18,7 +18,7 @@ import com.hao.heji.data.db.Bill
 import com.hao.heji.data.db.dto.Income
 import com.hao.heji.databinding.FragmentBillsHomeBinding
 import com.hao.heji.databinding.LayoutBillsTopBinding
-import com.hao.heji.doAction
+import com.hao.heji.ui.base.doAction
 import com.hao.heji.ui.base.render
 import com.hao.heji.ui.base.BaseFragment
 import com.hao.heji.ui.base.hideRefreshing

@@ -8,7 +8,7 @@
     android:minHeight="50dp">
 
 
-    <com.rh.heji.widget.CircleView
+    <com.hao.heji.widget.CircleView
         android:id="@+id/circleView"
         android:layout_width="5dp"
         android:layout_height="5dp"

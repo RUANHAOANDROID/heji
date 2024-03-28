@@ -4,7 +4,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'kotlin-parcelize'
 android {
-    namespace 'com.rh.heji'
+    namespace 'com.hao.heji'
     signingConfigs {
         single {
             storeFile file('..//heji.keystore')
@@ -16,7 +16,7 @@ android {
     compileSdkVersion project.compileSdkVersion
     //buildToolsVersion project.buildToolsVersion
     defaultConfig {
-        applicationId "com.rh.heji"
+        applicationId "com.hao.heji"
         minSdkVersion project.minSdkVersion
         targetSdkVersion 33
         versionCode 1

@@ -2,6 +2,7 @@ package com.hao.heji.network
 
 import com.hao.heji.BuildConfig
 import com.hao.heji.config.Config
+import com.hao.heji.config.store.DataStoreManager
 import com.hao.heji.data.db.Bill
 import com.hao.heji.data.db.Book
 import com.hao.heji.network.request.CategoryEntity
@@ -17,47 +18,46 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class HttpManager {
-    private val hejiServer = HttpRetrofit.create(BuildConfig.HTTP_URL, ApiServer::class.java)
-
-    suspend fun register(registerUser: RegisterUser) = hejiServer.register(registerUser).await()
+    private var apiServer = HttpRetrofit.create(BuildConfig.HTTP_URL, ApiServer::class.java)
+    suspend fun register(registerUser: RegisterUser) = apiServer.register(registerUser).await()
     suspend fun login(username: String, password: String) =
-        hejiServer.login(mapOf("tel" to username, "password" to password)).await()
+        apiServer.login(mapOf("tel" to username, "password" to password)).await()
 
-    suspend fun findBook(book_id: String) = hejiServer.findBook(book_id).await()
-    suspend fun createBook(book: Book) = hejiServer.createBook(book).await()
-    suspend fun bookList() = hejiServer.bookList().await()
-    suspend fun sharedBook(book_id: String) = hejiServer.sharedBook(book_id).await()
-    suspend fun deleteBook(book_id: String) = hejiServer.deleteBook(book_id).await()
+    suspend fun findBook(book_id: String) = apiServer.findBook(book_id).await()
+    suspend fun createBook(book: Book) = apiServer.createBook(book).await()
+    suspend fun bookList() = apiServer.bookList().await()
+    suspend fun sharedBook(book_id: String) = apiServer.sharedBook(book_id).await()
+    suspend fun deleteBook(book_id: String) = apiServer.deleteBook(book_id).await()
     suspend fun updateBook(book_id: String, bookName: String, bookType: String) =
-        hejiServer.updateBook(book_id, bookName, bookType).await()
+        apiServer.updateBook(book_id, bookName, bookType).await()
 
-    suspend fun joinBook(sharedCode: String) = hejiServer.joinBook(sharedCode).await()
+    suspend fun joinBook(sharedCode: String) = apiServer.joinBook(sharedCode).await()
     suspend fun pushBill(bill: Bill) =
-        hejiServer.saveBill(bill.apply { images = mutableListOf() }).await()
+        apiServer.saveBill(bill.apply { images = mutableListOf() }).await()
 
-    suspend fun deleteBill(_id: String) = hejiServer.deleteBill(_id).await()
-    suspend fun updateBill(bill: Bill) = hejiServer.updateBill(bill).await()
+    suspend fun deleteBill(_id: String) = apiServer.deleteBill(_id).await()
+    suspend fun updateBill(bill: Bill) = apiServer.updateBill(bill).await()
     suspend fun pullBill(startTime: String, endTime: String, book_id: String = Config.book.id) =
-        hejiServer.getBills(book_id, startTime, endTime).await()
+        apiServer.getBills(book_id, startTime, endTime).await()
 
     suspend fun imageUpload(
         @Part part: MultipartBody.Part,
         _id: String,
         _bid: String,
         time: Long,
-    ) = hejiServer.uploadImg(part, _id, _bid, time).await()
+    ) = apiServer.uploadImg(part, _id, _bid, time).await()
 
-    suspend fun imageDownload(_id: String) = hejiServer.getBillImages(_id).await()
+    suspend fun imageDownload(_id: String) = apiServer.getBillImages(_id).await()
     suspend fun imageDelete(billId: String, imageId: String) =
-        hejiServer.imageDelete(billId, imageId).await()
+        apiServer.imageDelete(billId, imageId).await()
 
     suspend fun billExport(year: String = "0", month: String = "0"): Response<ResponseBody> =
-        hejiServer.exportBills(year, month).execute()
+        apiServer.exportBills(year, month).execute()
 
-    suspend fun categoryPush(category: CategoryEntity) = hejiServer.addCategory(category).await()
-    suspend fun categoryDelete(_id: String) = hejiServer.deleteCategoryById(_id).await()
-    suspend fun categoryPull(_id: String = "0") = hejiServer.getCategories(_id).await()
-    suspend fun categoryUpdate(_id: String = "0") = hejiServer.getCategories(_id).await()
+    suspend fun categoryPush(category: CategoryEntity) = apiServer.addCategory(category).await()
+    suspend fun categoryDelete(_id: String) = apiServer.deleteCategoryById(_id).await()
+    suspend fun categoryPull(_id: String = "0") = apiServer.getCategories(_id).await()
+    suspend fun categoryUpdate(_id: String = "0") = apiServer.getCategories(_id).await()
 
 
     private suspend fun <T> Call<T>.await(): T {
@@ -75,9 +75,11 @@ class HttpManager {
                         body != null && response.code() == 200 -> {
                             continuation.resume(body)//正常恢复
                         }
+
                         errorBody != null -> {//error body 仅仅适用于服务器统一返回的错误格式，在服务端错误信息同样返回{code,msg,data}格式
                             continuation.resumeWithException(RuntimeException(errorBody.string()))
                         }
+
                         else -> {
                             continuation.resumeWithException(RuntimeException("response body is null"))
                         }
@@ -87,11 +89,15 @@ class HttpManager {
         }
     }
 
+    suspend fun redirectServer() {
+        DataStoreManager.getServerUrl().collect {
+            apiServer =
+                HttpRetrofit.create(it, ApiServer::class.java)
+        }
+    }
 
     companion object {
-
         private var network: HttpManager? = null
-
         fun getInstance(): HttpManager {
             if (network == null) {
                 synchronized(HttpManager::class.java) {
@@ -102,7 +108,5 @@ class HttpManager {
             }
             return network!!
         }
-
     }
-
 }

@@ -39,7 +39,6 @@ internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState
     private val billDao: BillDao by lazy { App.dataBase.billDao() }
 
     override fun doAction(action: BillListAction) {
-        super.doAction(action)
         when (action) {
             is BillListAction.Refresh -> {
                 val yearMonth = yearMonth().yearMonthString()

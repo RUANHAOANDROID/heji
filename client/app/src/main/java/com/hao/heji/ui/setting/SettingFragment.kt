@@ -12,7 +12,7 @@ import com.lxj.xpopup.XPopup
 import com.hao.heji.App
 import com.hao.heji.R
 import com.hao.heji.databinding.FragmentSettingBinding
-import com.hao.heji.render
+import com.hao.heji.ui.base.render
 import com.hao.heji.ui.base.BaseFragment
 import java.io.FileDescriptor
 

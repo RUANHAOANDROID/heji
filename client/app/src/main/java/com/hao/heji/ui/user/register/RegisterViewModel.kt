@@ -9,7 +9,7 @@ import com.hao.heji.utils.launch
 internal class RegisterViewModel : BaseViewModel<RegisterAction, RegisterUiState>() {
 
     override fun doAction(action: RegisterAction) {
-        super.doAction(action)
+
         when (action) {
             is RegisterAction.Register -> {
                 register(action.username, action.tel, action.code, action.password)

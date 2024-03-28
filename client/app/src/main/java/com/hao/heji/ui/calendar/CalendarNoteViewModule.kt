@@ -21,7 +21,7 @@ internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUi
     var selectYearMonth = currentYearMonth
 
     override fun doAction(action: CalenderAction) {
-        super.doAction(action)
+
         when (action) {
             is CalenderAction.GetDayBills -> getDayBills(action.calendar)
             is CalenderAction.Update -> updateYearMonth(action.year, action.month)

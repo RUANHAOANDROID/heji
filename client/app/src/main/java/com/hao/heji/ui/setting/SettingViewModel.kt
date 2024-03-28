@@ -13,7 +13,7 @@ import com.hao.heji.utils.launchIO
  */
 class SettingViewModel : BaseViewModel<SettingAction, SettingUiState>() {
     override fun doAction(action: SettingAction) {
-        super.doAction(action)
+
         when (action) {
             is SettingAction.InputWeiXInData -> {
                 reading()

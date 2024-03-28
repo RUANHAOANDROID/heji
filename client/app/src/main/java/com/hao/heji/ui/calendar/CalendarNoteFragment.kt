@@ -12,11 +12,11 @@ import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import com.hao.heji.R
 import com.hao.heji.data.db.Bill
 import com.hao.heji.databinding.FragmentCalendarNoteBinding
-import com.hao.heji.render
 import com.hao.heji.today
 import com.hao.heji.ui.base.BaseFragment
 import com.hao.heji.ui.adapter.DayBillsNode
 import com.hao.heji.ui.adapter.NodeBillsAdapter
+import com.hao.heji.ui.base.render
 import com.hao.heji.ui.create.ArgAddBill
 import com.hao.heji.ui.create.CreateBillFragmentArgs
 import com.hao.heji.ui.popup.PopupBillInfo

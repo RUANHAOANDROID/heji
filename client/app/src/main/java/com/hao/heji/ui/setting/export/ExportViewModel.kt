@@ -15,7 +15,7 @@ import java.io.File
 internal class ExportViewModel : BaseViewModel<ExportAction, ExportUiState>() {
 
     override fun doAction(action: ExportAction) {
-        super.doAction(action)
+
         when (action) {
             is ExportExcel -> {
                 exportExcel(action.fileName)

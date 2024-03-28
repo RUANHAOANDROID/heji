@@ -12,7 +12,7 @@ import com.hao.heji.data.BillType
 import com.hao.heji.data.db.Category
 import com.hao.heji.databinding.FragmentCategoryManagerBinding
 import com.hao.heji.doAction
-import com.hao.heji.render
+import com.hao.heji.ui.base.render
 import com.hao.heji.ui.base.BaseFragment
 import com.hao.heji.ui.category.adapter.CategoryManagerAdapter
 

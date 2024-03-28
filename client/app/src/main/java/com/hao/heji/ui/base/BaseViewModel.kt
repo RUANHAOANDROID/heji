@@ -1,11 +1,9 @@
 package com.hao.heji.ui.base
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.blankj.utilcode.util.LogUtils
-import com.hao.heji.utils.runMainThread
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -18,27 +16,23 @@ import kotlinx.coroutines.launch
  */
 abstract class BaseViewModel<I : IAction, O : IUiState> : ViewModel() {
 
-    private var _uiState = MutableLiveData<O>()
-
-    val uiState: LiveData<O> = _uiState
-
-    open fun doAction(action: I) {
-        LogUtils.d("action : ${action.id()}")
-    }
-
+    /**
+     * Ui state launcher
+     */
+    private var _uiState = MutableSharedFlow<O>()
 
     /**
-     * 通过setValue 发送liveData中所有的值，大部分场景中使用send
      *
-     * @param o
+     * Provide to view
+     * @return LiveData<O>
      */
+    fun uiState(): SharedFlow<O> = _uiState
+
+    abstract fun doAction(action: I)
 
     fun send(o: O) {
-        //LogUtils.d("send : ${o.id()}")
         viewModelScope.launch {
-            runMainThread {
-                _uiState.value = o
-            }
+            _uiState.emit(o)
         }
     }
 

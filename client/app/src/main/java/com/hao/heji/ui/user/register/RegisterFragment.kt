@@ -12,7 +12,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.hao.heji.ui.user.login.LoginActivity
 import com.hao.heji.R
 import com.hao.heji.databinding.FragmentRegisterBinding
-import com.hao.heji.render
+import com.hao.heji.ui.base.render
 
 
 class RegisterFragment : Fragment() {
@@ -36,17 +36,19 @@ class RegisterFragment : Fragment() {
     }
 
     private fun initView() {
-        binding.btnRegister.setOnClickListener {
-            val password1 = binding.editPassword.text.toString()
-            val password2 = binding.editPassword2.text.toString()
-            if (password1 != password2) {
-                ToastUtils.showLong("两次输入的密码不一致")
-                return@setOnClickListener
+        with(binding) {
+            btnRegister.setOnClickListener {
+                val password1 = editPassword.text.toString()
+                val password2 = editPassword2.text.toString()
+                if (password1 != password2) {
+                    ToastUtils.showLong("两次输入的密码不一致")
+                    return@setOnClickListener
+                }
+                val code = editInviteCode.text.toString()
+                val tel = editTEL.text.toString()
+                val username = editUserName.text.toString()
+                viewModel.doAction(RegisterAction.Register(username, tel, code, password1))
             }
-            val code = binding.editInviteCode.text.toString()
-            val tel = binding.editTEL.text.toString()
-            val username = binding.editUserName.text.toString()
-            viewModel.doAction(RegisterAction.Register(username, tel, code, password1))
         }
     }
 
@@ -56,6 +58,7 @@ class RegisterFragment : Fragment() {
                 is RegisterUiState.Success -> {
                     toLogin(it.user)
                 }
+
                 is RegisterUiState.Error -> {
                     ToastUtils.showLong(it.throwable.message)
                 }

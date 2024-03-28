@@ -16,7 +16,7 @@ import com.hao.heji.data.db.dto.Income
 import com.hao.heji.data.db.dto.IncomeTimeSurplus
 import com.hao.heji.databinding.FragmentReportBinding
 import com.hao.heji.databinding.LayoutEmptyBinding
-import com.hao.heji.render
+import com.hao.heji.ui.base.render
 import com.hao.heji.ui.base.BaseFragment
 import com.hao.heji.ui.popup.BillListPopup
 import com.hao.heji.utils.ColorUtils

@@ -23,7 +23,7 @@ internal class CreateBillViewModel(private val mBillSync: IBillSync) :
     var keyBoardStack: Stack<String>? = null//用于保存栈
 
     override fun doAction(action: CreateBillAction) {
-        super.doAction(action)
+
         launchIO({
             LogUtils.d(TimeUtils.millis2String(System.currentTimeMillis(),"yyyy/MM/dd HH:mm:ss"))
             when (action) {

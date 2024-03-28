@@ -20,7 +20,7 @@ internal class CategoryManagerViewModel :
     private val categoryDao = App.dataBase.categoryDao()
 
     override fun doAction(action: CategoryManagerAction) {
-        super.doAction(action)
+
         when (action) {
             is GetCategories -> {
                 launchIO({

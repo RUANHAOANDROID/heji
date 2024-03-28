@@ -10,7 +10,7 @@ import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.interfaces.OnSelectListener
 import com.hao.heji.ui.base.BaseFragment
 import com.hao.heji.databinding.FragmentExportBinding
-import com.hao.heji.render
+import com.hao.heji.ui.base.render
 
 
 class ExportFragment : BaseFragment() {

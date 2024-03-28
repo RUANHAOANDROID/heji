@@ -14,6 +14,7 @@ import com.lxj.xpopup.XPopup
 import com.hao.heji.*
 import com.hao.heji.databinding.FragmentLoginBinding
 import com.hao.heji.ui.MainActivity
+import com.hao.heji.ui.base.render
 import com.hao.heji.ui.user.register.RegisterUser
 import com.lxj.xpopup.impl.InputConfirmPopupView
 

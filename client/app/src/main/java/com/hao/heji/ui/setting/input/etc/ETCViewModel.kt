@@ -70,7 +70,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) :
         }
 
     override fun doAction(action: ETCAction) {
-        super.doAction(action)
+
         if (action is ETCAction.RequestETCBill) {
             requestHBGSETCList(action.etcID, action.month, action.carID)
         }

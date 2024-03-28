@@ -14,7 +14,7 @@ import com.lxj.xpopup.XPopup
 import com.hao.heji.config.Config
 import com.hao.heji.R
 import com.hao.heji.databinding.FragmentEtcBinding
-import com.hao.heji.render
+import com.hao.heji.ui.base.render
 import com.hao.heji.ui.base.BaseFragment
 
 import java.util.*

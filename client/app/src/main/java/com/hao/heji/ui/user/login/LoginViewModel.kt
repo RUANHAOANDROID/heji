@@ -20,7 +20,6 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
 
 
     override fun doAction(action: LoginAction) {
-        super.doAction(action)
         when (action) {
             is LoginAction.Login -> {
                 login(action.tel, action.password)
@@ -34,6 +33,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
                 launchIO({
                     DataStoreManager.saveServerUrl(action.address)
                     Config.serverUrl = action.address
+                    HttpManager.getInstance().redirectServer()
                 })
             }
 

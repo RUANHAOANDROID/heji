@@ -32,6 +32,7 @@ import com.hao.heji.data.db.mongo.ObjectId
 import com.hao.heji.databinding.FragmentCreatebillBinding
 import com.hao.heji.ui.base.BaseFragment
 import com.hao.heji.ui.base.FragmentViewPagerAdapter
+import com.hao.heji.ui.base.render
 import com.hao.heji.ui.category.manager.CategoryManagerFragmentArgs
 import com.hao.heji.ui.create.*
 import com.hao.heji.ui.popup.SelectImagePopup

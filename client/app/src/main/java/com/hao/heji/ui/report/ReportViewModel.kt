@@ -37,7 +37,7 @@ class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
     private var pieDataType: Int = BillType.EXPENDITURE.valueInt
 
     override fun doAction(action: ReportAction) {
-        super.doAction(action)
+
         when (action) {
             is ReportAction.SelectTime -> {
                 yearMonth = action.yearMonth

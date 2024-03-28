@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.hao.heji.App
+import com.hao.heji.BuildConfig
 import com.hao.heji.data.db.Book
 import com.hao.heji.dataStore
 import com.hao.heji.moshi
@@ -45,7 +46,7 @@ internal object DataStoreManager {
     }
 
     suspend fun getServerUrl(): Flow<String> {
-        return App.context.dataStore.data.mapNotNull { it[ServerUrl] ?: "" }
+        return App.context.dataStore.data.mapNotNull { it[ServerUrl] ?: BuildConfig.HTTP_URL }
     }
 
     suspend fun saveUseMode(enableOffline: Boolean, context: Context = App.context) {

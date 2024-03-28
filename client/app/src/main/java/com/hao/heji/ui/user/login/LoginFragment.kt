@@ -38,6 +38,7 @@ class LoginFragment : Fragment() {
             viewModel.doAction(LoginAction.EnableOfflineMode)
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,6 +57,7 @@ class LoginFragment : Fragment() {
                     (activity as LoginActivity).startMainActivity()
                     LogUtils.d(state.token)
                 }
+
                 is LoginUiState.LoginError -> {
                     ToastUtils.showLong("登陆错误:${state.t.message}")
                 }
@@ -64,8 +66,12 @@ class LoginFragment : Fragment() {
                     MainActivity.start(requireActivity())
                     activity?.finish()
                 }
+
                 is LoginUiState.ShowServerSetting -> {
                     serverUrlInputConfirm.show()
+                    serverUrlInputConfirm.post {
+                        serverUrlInputConfirm.editText.setText(state.url)
+                    }
                 }
             }
         }

@@ -124,7 +124,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.rh.heji.widget.KeyBoardView
+    <com.hao.heji.widget.KeyBoardView
         android:id="@+id/keyboard"
         android:layout_width="match_parent"
         android:layout_height="250dp"

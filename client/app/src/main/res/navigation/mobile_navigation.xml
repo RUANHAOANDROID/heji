@@ -7,13 +7,13 @@
     <!-- 下划线_开头的代表不经过navigation管理的Fragment-->
     <fragment
         android:id="@+id/nav_report"
-        android:name="com.rh.heji.ui.report.ReportFragment"
+        android:name="com.hao.heji.ui.report.ReportFragment"
         android:label="@string/menu_report"
         tools:layout="@layout/fragment_report"></fragment>
 
     <fragment
         android:id="@+id/nav_setting"
-        android:name="com.rh.heji.ui.setting.SettingFragment"
+        android:name="com.hao.heji.ui.setting.SettingFragment"
         android:label="@string/menu_setting"
         tools:layout="@layout/fragment_setting">
         <action
@@ -22,12 +22,12 @@
     </fragment>
     <fragment
         android:id="@+id/nav_bill_add"
-        android:name="com.rh.heji.ui.create.CreateBillFragment"
+        android:name="com.hao.heji.ui.create.CreateBillFragment"
         android:label="@string/income"
         tools:layout="@layout/fragment_createbill">
         <argument
             android:name="argAddBill"
-            app:argType="com.rh.heji.ui.create.ArgAddBill" />
+            app:argType="com.hao.heji.ui.create.ArgAddBill" />
         <action
             android:id="@+id/action_nav_income_to_nav_category_tab"
             app:destination="@id/_category_tab" />
@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_category_manager"
-        android:name="com.rh.heji.ui.category.manager.CategoryManagerFragment"
+        android:name="com.hao.heji.ui.category.manager.CategoryManagerFragment"
         android:label="@string/category_manager"
         tools:layout="@layout/fragment_category_manager">
         <argument
@@ -47,17 +47,17 @@
     </fragment>
     <fragment
         android:id="@+id/nav_input_etc"
-        android:name="com.rh.heji.ui.setting.input.etc.ETCFragment"
+        android:name="com.hao.heji.ui.setting.input.etc.ETCFragment"
         android:label="@string/etc_list_query"
         tools:layout="@layout/fragment_etc" />
     <fragment
         android:id="@+id/nav_export"
-        android:name="com.rh.heji.ui.setting.export.ExportFragment"
+        android:name="com.hao.heji.ui.setting.export.ExportFragment"
         android:label="@string/export"
         tools:layout="@layout/fragment_export"></fragment>
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.rh.heji.ui.home.BillListFragment"
+        android:name="com.hao.heji.ui.home.BillListFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_bills_home">
         <action
@@ -84,7 +84,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_calendar_note"
-        android:name="com.rh.heji.ui.calendar.CalendarNoteFragment"
+        android:name="com.hao.heji.ui.calendar.CalendarNoteFragment"
         android:label="日历记账"
         tools:layout="@layout/fragment_calendar_note">
         <action
@@ -93,7 +93,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_user_info"
-        android:name="com.rh.heji.ui.user.info.UserInfoFragment"
+        android:name="com.hao.heji.ui.user.info.UserInfoFragment"
         android:label="@string/userinfo"
         tools:layout="@layout/fragment_user_info">
         <action
@@ -104,17 +104,17 @@
 
     <fragment
         android:id="@+id/_category"
-        android:name="com.rh.heji.ui.create.CategoryFragment"
+        android:name="com.hao.heji.ui.create.CategoryFragment"
         android:label="CategoryFragment"
         tools:layout="@layout/fragment_category_content">
         <argument
             android:name="type"
             android:defaultValue="EXPENDITURE"
-            app:argType="com.rh.heji.data.BillType" />
+            app:argType="com.hao.heji.data.BillType" />
     </fragment>
     <fragment
         android:id="@+id/nav_book_list"
-        android:name="com.rh.heji.ui.book.BookListFragment"
+        android:name="com.hao.heji.ui.book.BookListFragment"
         android:label="fragment_book_list_list"
         tools:layout="@layout/fragment_book_list">
         <action
@@ -126,12 +126,12 @@
     </fragment>
     <fragment
         android:id="@+id/nav_banner"
-        android:name="com.rh.heji.ui.setting.banner.BannerFragment"
+        android:name="com.hao.heji.ui.setting.banner.BannerFragment"
         android:label="banner_fragment"
         tools:layout="@layout/fragment_banner" />
     <fragment
         android:id="@+id/_category_tab"
-        android:name="com.rh.heji.ui.create.CategoryFragment"
+        android:name="com.hao.heji.ui.create.CategoryFragment"
         android:label="CategoryTabFragment"
         tools:layout="@layout/fragment_category_tab">
         <action
@@ -141,7 +141,7 @@
 
     <fragment
         android:id="@+id/nav_book_add"
-        android:name="com.rh.heji.ui.book.CreateBookFragment"
+        android:name="com.hao.heji.ui.book.CreateBookFragment"
         android:label="add_book_fragment"
         tools:layout="@layout/fragment_book_add">
         <action
@@ -150,12 +150,12 @@
     </fragment>
     <fragment
         android:id="@+id/nav_book_setting"
-        android:name="com.rh.heji.ui.book.BookSettingFragment"
+        android:name="com.hao.heji.ui.book.BookSettingFragment"
         android:label="BookSettingFragment"
         tools:layout="@layout/fragment_book_setting">
         <argument
             android:name="book"
-            app:argType="com.rh.heji.data.db.Book" />
+            app:argType="com.hao.heji.data.db.Book" />
     </fragment>
 
 

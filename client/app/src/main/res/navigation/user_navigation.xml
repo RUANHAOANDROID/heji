@@ -6,7 +6,7 @@
     app:startDestination="@+id/nav_login">
     <fragment
         android:id="@+id/nav_login"
-        android:name="com.rh.heji.ui.user.login.LoginFragment"
+        android:name="com.hao.heji.ui.user.login.LoginFragment"
         android:label="@string/login"
         tools:layout="@layout/fragment_login">
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_register"
-        android:name="com.rh.heji.ui.user.register.RegisterFragment"
+        android:name="com.hao.heji.ui.user.register.RegisterFragment"
         android:label="@string/register"
         tools:layout="@layout/fragment_register">
 

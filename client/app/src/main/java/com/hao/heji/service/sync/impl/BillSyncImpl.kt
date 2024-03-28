@@ -38,7 +38,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
     override fun delete(billID: String) {
         LogUtils.d("sync bill delete", billID)
         scope.launchIO({
-            val response = HttpManager.getInstance().billDelete(billID)
+            val response = HttpManager.getInstance().deleteBill(billID)
             if (response.success()) {
                 App.dataBase.billDao().deleteById(response.data)
             }
@@ -48,7 +48,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
     override fun add(bill: Bill) {
         if (Config.enableOfflineMode) return
         scope.launchIO({
-            val response = HttpManager.getInstance().billPush(bill)
+            val response = HttpManager.getInstance().pushBill(bill)
             if (response.success()) {
                 App.dataBase.billDao().update(bill.apply {
                     syncStatus = STATUS.SYNCED
@@ -61,7 +61,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
     override fun update(bill: Bill) {
         scope.launchIO({
             val response = HttpManager.getInstance()
-                .billUpdate(bill)
+                .updateBill(bill)
             if (response.success()) {
                 App.dataBase.billDao().update(bill.apply {
                     syncStatus = STATUS.SYNCED

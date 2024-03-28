@@ -15,10 +15,29 @@ import com.hao.heji.*
 import com.hao.heji.databinding.FragmentLoginBinding
 import com.hao.heji.ui.MainActivity
 import com.hao.heji.ui.user.register.RegisterUser
+import com.lxj.xpopup.impl.InputConfirmPopupView
 
 class LoginFragment : Fragment() {
     private val binding: FragmentLoginBinding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
     private val viewModel by lazy { ViewModelProvider(this)[LoginViewModel::class.java] }
+    private val serverUrlInputConfirm: InputConfirmPopupView by lazy {
+        XPopup.Builder(context).asInputConfirm(
+            "服务", "请输入服务地址", "http://192.168.8.68:8080"
+        ) {
+            LogUtils.d(it)
+            viewModel.doAction(LoginAction.SaveServerUrl(it))
+            serverUrlInputConfirm.dismiss()
+        }
+    }
+    private val asConfirm by lazy {
+        XPopup.Builder(requireActivity()).asConfirm(
+            "仅离线使用说明",
+            "1.不支持合伙记账   \n" +
+                    "2.数据仅存储在本地"
+        ) {
+            viewModel.doAction(LoginAction.EnableOfflineMode)
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,19 +49,23 @@ class LoginFragment : Fragment() {
     }
 
     private fun renderView() {
-        render(viewModel) {
-            when (it) {
+        render(viewModel) { state ->
+            when (state) {
                 is LoginUiState.LoginSuccess -> {
                     findNavController().popBackStack()
                     (activity as LoginActivity).startMainActivity()
-                    LogUtils.d(it.token)
+                    LogUtils.d(state.token)
                 }
                 is LoginUiState.LoginError -> {
-                    ToastUtils.showLong("登陆错误:${it.t.message}")
+                    ToastUtils.showLong("登陆错误:${state.t.message}")
                 }
+
                 is LoginUiState.OfflineRun -> {
                     MainActivity.start(requireActivity())
                     activity?.finish()
+                }
+                is LoginUiState.ShowServerSetting -> {
+                    serverUrlInputConfirm.show()
                 }
             }
         }
@@ -57,21 +80,17 @@ class LoginFragment : Fragment() {
             val password = binding.editPassword.text.toString()
             viewModel.doAction(LoginAction.Login(username, password))
         }
+        binding.tvNetSetting.setOnClickListener {
+            viewModel.doAction(LoginAction.GetServerUrl)
+        }
         binding.tvOnlyLocalUse.setOnClickListener {
-            XPopup.Builder(requireActivity()).asConfirm(
-                "仅离线使用说明",
-                "1.不支持合伙记账   \n" +
-                        "2.数据仅存储在本地"
-            ) {
-                viewModel.doAction(LoginAction.EnableOfflineMode)
-            }.show()
+            asConfirm.show()
         }
     }
 
     override fun onResume() {
         super.onResume()
         setTitle()
-        //auto input user info
         autoInputUserInfo()
     }
 

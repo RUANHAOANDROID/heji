@@ -26,8 +26,6 @@ import kotlinx.coroutines.launch
  * @see LoginFragment
  */
 class LoginActivity : AppCompatActivity() {
-    lateinit var loginFragment: LoginFragment
-
     companion object {
         fun start(activity: Activity) {
             val intent = Intent(activity, LoginActivity::class.java)
@@ -52,7 +50,6 @@ class LoginActivity : AppCompatActivity() {
             override fun handleOnBackPressed() {
                 //finish()
             }
-
         })
     }
 

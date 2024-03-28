@@ -26,7 +26,7 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
 
     override fun delete(bookID: String) {
         scope.launchIO({
-            val response = HttpManager.getInstance().bookDelete(bookID)
+            val response = HttpManager.getInstance().deleteBook(bookID)
             if (response.success()) {
                 App.dataBase.bookDao().deleteById(response.data)
             }
@@ -58,7 +58,7 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
     override fun update(book: Book) {
         scope.launchIO({
             val response = HttpManager.getInstance()
-                .bookUpdate(
+                .updateBook(
                     book_id = book.id,
                     bookName = book.name,
                     bookType = book.type.toString()

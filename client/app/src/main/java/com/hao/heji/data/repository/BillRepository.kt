@@ -17,7 +17,7 @@ import java.io.File
 class BillRepository : DataRepository() {
 
     suspend fun deleteBill(_id: String) {
-        var response = network.billDelete(_id)
+        var response = network.deleteBill(_id)
         response.data.let {
             App.dataBase.imageDao().deleteBillImage(_id)
             billDao.delete(Bill(_id))
@@ -25,7 +25,7 @@ class BillRepository : DataRepository() {
     }
 
     suspend fun updateBill(bill: Bill) {
-        var response = network.billUpdate(bill)
+        var response = network.updateBill(bill)
         response.data.let {
             bill.syncStatus = STATUS.SYNCED
             billDao.update(bill) //已上传
@@ -33,7 +33,7 @@ class BillRepository : DataRepository() {
     }
 
     suspend fun pullBill(startTime: String = "0", endTime: String = "0") {
-        var response = network.billPull(startTime, endTime)
+        var response = network.pullBill(startTime, endTime)
         response.data.let {
             if (it.isNotEmpty()) {
                 it.forEach { bill ->
@@ -94,7 +94,7 @@ class BillRepository : DataRepository() {
      * 添加账单，保存到数据库就算成功，同步交给AppViewModule
      */
     suspend fun addBill(bill: Bill) {
-        network.billPush(bill).let {
+        network.pushBill(bill).let {
             if (it.code == OK) {
                 bill.syncStatus = STATUS.SYNCED
                 billDao.updateSyncStatus(it.data.toString(),STATUS.SYNCED)

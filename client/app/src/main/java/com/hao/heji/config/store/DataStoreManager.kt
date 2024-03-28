@@ -1,6 +1,7 @@
 package com.hao.heji.config.store
 
 import android.content.Context
+import android.location.Address
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -10,6 +11,7 @@ import com.hao.heji.dataStore
 import com.hao.heji.moshi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 /**
  * DataStoreManager
@@ -18,6 +20,9 @@ import kotlinx.coroutines.flow.map
  * @since v1.0
  */
 internal object DataStoreManager {
+
+    private val ServerUrl = stringPreferencesKey("server_url")
+
     /**
      * 当前登录用户凭证
      */
@@ -33,6 +38,15 @@ internal object DataStoreManager {
      */
     private val CURRENT_BOOK = stringPreferencesKey("current_book")
 
+    suspend fun saveServerUrl(url: String) {
+        App.context.dataStore.edit {
+            it[ServerUrl] = url
+        }
+    }
+
+    suspend fun getServerUrl(): Flow<String> {
+        return App.context.dataStore.data.mapNotNull { it[ServerUrl] ?: "" }
+    }
 
     suspend fun saveUseMode(enableOffline: Boolean, context: Context = App.context) {
         context.dataStore.edit {
@@ -40,8 +54,8 @@ internal object DataStoreManager {
         }
     }
 
-    fun getUseMode(context: Context = App.context): Flow<Boolean?> {
-        return context.dataStore.data.map { it[USE_MODE] }
+    fun getUseMode(context: Context = App.context): Flow<Boolean> {
+        return context.dataStore.data.mapNotNull { it[USE_MODE]?:false }
     }
 
     suspend fun removeUseMode(context: Context = App.context) {
@@ -56,8 +70,8 @@ internal object DataStoreManager {
         }
     }
 
-    suspend fun getToken(context: Context = App.context): Flow<String?> {
-        return context.dataStore.data.map { it[JWT_TOKEN] }
+    suspend fun getToken(context: Context = App.context): Flow<String> {
+        return context.dataStore.data.mapNotNull { it[JWT_TOKEN] ?:""}
     }
 
     suspend fun removeToken(context: Context = App.context) {
@@ -73,12 +87,13 @@ internal object DataStoreManager {
         }
     }
 
-    suspend fun getBook(context: Context = App.context): Flow<Book?> = context.dataStore.data.map { preferences ->
-        val bookJsonStr = preferences[CURRENT_BOOK]
-        bookJsonStr?.let {
-            moshi.adapter(Book::class.java).fromJson(bookJsonStr)
+    suspend fun getBook(context: Context = App.context): Flow<Book?> =
+        context.dataStore.data.map { preferences ->
+            val bookJsonStr = preferences[CURRENT_BOOK]
+            bookJsonStr?.let {
+                moshi.adapter(Book::class.java).fromJson(bookJsonStr)
+            }
         }
-    }
 
     suspend fun removeBook(context: Context = App.context) {
         context.dataStore.edit {

@@ -23,21 +23,21 @@ class HttpManager {
     suspend fun login(username: String, password: String) =
         hejiServer.login(mapOf("tel" to username, "password" to password)).await()
 
-    suspend fun book(book_id: String) = hejiServer.findBook(book_id).await()
+    suspend fun findBook(book_id: String) = hejiServer.findBook(book_id).await()
     suspend fun createBook(book: Book) = hejiServer.createBook(book).await()
     suspend fun bookList() = hejiServer.bookList().await()
-    suspend fun bookShared(book_id: String) = hejiServer.sharedBook(book_id).await()
-    suspend fun bookDelete(book_id: String) = hejiServer.deleteBook(book_id).await()
-    suspend fun bookUpdate(book_id: String, bookName: String, bookType: String) =
+    suspend fun sharedBook(book_id: String) = hejiServer.sharedBook(book_id).await()
+    suspend fun deleteBook(book_id: String) = hejiServer.deleteBook(book_id).await()
+    suspend fun updateBook(book_id: String, bookName: String, bookType: String) =
         hejiServer.updateBook(book_id, bookName, bookType).await()
 
     suspend fun joinBook(sharedCode: String) = hejiServer.joinBook(sharedCode).await()
-    suspend fun billPush(bill: Bill) =
+    suspend fun pushBill(bill: Bill) =
         hejiServer.saveBill(bill.apply { images = mutableListOf() }).await()
 
-    suspend fun billDelete(_id: String) = hejiServer.deleteBill(_id).await()
-    suspend fun billUpdate(bill: Bill) = hejiServer.updateBill(bill).await()
-    suspend fun billPull(startTime: String, endTime: String, book_id: String = Config.book.id) =
+    suspend fun deleteBill(_id: String) = hejiServer.deleteBill(_id).await()
+    suspend fun updateBill(bill: Bill) = hejiServer.updateBill(bill).await()
+    suspend fun pullBill(startTime: String, endTime: String, book_id: String = Config.book.id) =
         hejiServer.getBills(book_id, startTime, endTime).await()
 
     suspend fun imageUpload(

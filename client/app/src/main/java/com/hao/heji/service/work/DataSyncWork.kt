@@ -24,7 +24,7 @@ class DataSyncWork {
             val deleteBills = billDao.findByStatus(STATUS.DELETED)
             if (deleteBills.isNotEmpty()) {
                 deleteBills.forEach { bill ->
-                    var response = network.billDelete(bill.id)
+                    var response = network.deleteBill(bill.id)
                     if (response.code == 0) {
                         billDao.delete(bill)
                     }
@@ -36,7 +36,7 @@ class DataSyncWork {
             val updateBills = billDao.findByStatus(STATUS.UPDATED)
             if (updateBills.isNotEmpty()) {
                 updateBills.forEach { bill ->
-                    val response = network.billUpdate(bill)
+                    val response = network.updateBill(bill)
                     if (response.code == 0) {
                         bill.syncStatus = STATUS.SYNCED
                         App.dataBase.imageDao().deleteBillImage(bill.id)
@@ -57,7 +57,7 @@ class DataSyncWork {
                 currentYearMonth.month,
                 currentLastDay
             ).yearMonthDayString()
-            val pullBillsResponse = network.billPull(statDate, endDate)
+            val pullBillsResponse = network.pullBill(statDate, endDate)
             var data = pullBillsResponse.data
             data?.let { serverBills ->
                 if (serverBills.isNotEmpty()) {

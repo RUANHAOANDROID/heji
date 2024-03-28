@@ -20,6 +20,9 @@ internal val InitBook = Book(
 )
 
 object Config {
+
+    var serverUrl = "http://192.168.8.68:8080"
+
     /**
      * last switch book
      */

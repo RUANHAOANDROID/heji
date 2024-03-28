@@ -5,6 +5,7 @@ import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.config.InitBook
 import com.hao.heji.config.LocalUser
+import com.hao.heji.config.store.DataStoreManager
 import com.hao.heji.data.db.Book
 import com.hao.heji.data.db.STATUS
 import com.hao.heji.network.HttpManager
@@ -27,6 +28,21 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
 
             is LoginAction.EnableOfflineMode -> {
                 enableOfflineMode()
+            }
+
+            is LoginAction.SaveServerUrl -> {
+                launchIO({
+                    DataStoreManager.saveServerUrl(action.address)
+                    Config.serverUrl = action.address
+                })
+            }
+
+            LoginAction.GetServerUrl -> {
+                launchIO({
+                    DataStoreManager.getServerUrl().collect {
+                        send(LoginUiState.ShowServerSetting(it))
+                    }
+                })
             }
         }
     }

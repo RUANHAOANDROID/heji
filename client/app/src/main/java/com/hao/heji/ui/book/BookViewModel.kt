@@ -105,7 +105,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
             if (billsCount > 0) {
                 ToastUtils.showLong("该账本下存在账单，无法直接删除")
             } else {
-                val response = HttpManager.getInstance().bookDelete(id)
+                val response = HttpManager.getInstance().deleteBook(id)
                 if (response.code == 0) {
                     App.dataBase.bookDao().deleteById(id)
                     runMainThread {
@@ -120,7 +120,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
 
     fun sharedBook(bookId: String, @MainThread call: (Result<String>) -> Unit) {
         launchIO({
-            val response = HttpManager.getInstance().bookShared(book_id = bookId)
+            val response = HttpManager.getInstance().sharedBook(book_id = bookId)
             if (response.data.isNotEmpty()) {
                 val shareCode = response.data as String
                 runMainThread {

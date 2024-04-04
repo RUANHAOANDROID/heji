@@ -15,21 +15,49 @@ public final class Message {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   /**
-   * Protobuf enum {@code com.heji.proto.Types}
+   * <pre>
+   *消息类型
+   * </pre>
+   *
+   * Protobuf enum {@code com.heji.proto.Type}
    */
-  public enum Types
+  public enum Type
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>ADD_BILL = 0;</code>
+     * <code>ACK = 0;</code>
      */
-    ADD_BILL(0),
+    ACK(0),
+    /**
+     * <code>ADD_BILL = 1;</code>
+     */
+    ADD_BILL(1),
+    /**
+     * <code>DELETE_BILL = 2;</code>
+     */
+    DELETE_BILL(2),
+    /**
+     * <code>UPDATE_BILL = 3;</code>
+     */
+    UPDATE_BILL(3),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>ADD_BILL = 0;</code>
+     * <code>ACK = 0;</code>
      */
-    public static final int ADD_BILL_VALUE = 0;
+    public static final int ACK_VALUE = 0;
+    /**
+     * <code>ADD_BILL = 1;</code>
+     */
+    public static final int ADD_BILL_VALUE = 1;
+    /**
+     * <code>DELETE_BILL = 2;</code>
+     */
+    public static final int DELETE_BILL_VALUE = 2;
+    /**
+     * <code>UPDATE_BILL = 3;</code>
+     */
+    public static final int UPDATE_BILL_VALUE = 3;
 
 
     public final int getNumber() {
@@ -46,7 +74,7 @@ public final class Message {
      * @deprecated Use {@link #forNumber(int)} instead.
      */
     @Deprecated
-    public static Types valueOf(int value) {
+    public static Type valueOf(int value) {
       return forNumber(value);
     }
 
@@ -54,22 +82,25 @@ public final class Message {
      * @param value The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
      */
-    public static Types forNumber(int value) {
-      if (value == 0) {
-        return ADD_BILL;
+    public static Type forNumber(int value) {
+      switch (value) {
+        case 0: return ACK;
+        case 1: return ADD_BILL;
+        case 2: return DELETE_BILL;
+        case 3: return UPDATE_BILL;
+        default: return null;
       }
-      return null;
     }
 
-    public static com.google.protobuf.Internal.EnumLiteMap<Types>
+    public static com.google.protobuf.Internal.EnumLiteMap<Type>
         internalGetValueMap() {
       return internalValueMap;
     }
     private static final com.google.protobuf.Internal.EnumLiteMap<
-        Types> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<Types>() {
-            public Types findValueByNumber(int number) {
-              return Types.forNumber(number);
+        Type> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<Type>() {
+            public Type findValueByNumber(int number) {
+              return Type.forNumber(number);
             }
           };
 
@@ -90,9 +121,9 @@ public final class Message {
       return Message.getDescriptor().getEnumTypes().get(0);
     }
 
-    private static final Types[] VALUES = values();
+    private static final Type[] VALUES = values();
 
-    public static Types valueOf(
+    public static Type valueOf(
         com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
         throw new IllegalArgumentException(
@@ -106,15 +137,15 @@ public final class Message {
 
     private final int value;
 
-    Types(int value) {
+    private Type(int value) {
       this.value = value;
     }
 
-    // @@protoc_insertion_point(enum_scope:com.heji.proto.Types)
+    // @@protoc_insertion_point(enum_scope:com.heji.proto.Type)
   }
 
-  public interface WsMsgOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.heji.proto.WsMsg)
+  public interface PacketOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.heji.proto.Packet)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -130,15 +161,15 @@ public final class Message {
         getIdBytes();
 
     /**
-     * <code>.com.heji.proto.Types type = 2;</code>
+     * <code>.com.heji.proto.Type type = 2;</code>
      * @return The enum numeric value on the wire for type.
      */
     int getTypeValue();
     /**
-     * <code>.com.heji.proto.Types type = 2;</code>
+     * <code>.com.heji.proto.Type type = 2;</code>
      * @return The type.
      */
-    Types getType();
+    Type getType();
 
     /**
      * <code>uint64 timestamp = 3;</code>
@@ -159,54 +190,85 @@ public final class Message {
         getFromIdBytes();
 
     /**
-     * <code>string toId = 5;</code>
-     * @return The toId.
+     * <code>repeated string toId = 5;</code>
+     * @return A list containing the toId.
      */
-    String getToId();
+    java.util.List<String>
+        getToIdList();
     /**
-     * <code>string toId = 5;</code>
-     * @return The bytes for toId.
+     * <code>repeated string toId = 5;</code>
+     * @return The count of toId.
+     */
+    int getToIdCount();
+    /**
+     * <code>repeated string toId = 5;</code>
+     * @param index The index of the element to return.
+     * @return The toId at the given index.
+     */
+    String getToId(int index);
+    /**
+     * <code>repeated string toId = 5;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the toId at the given index.
      */
     com.google.protobuf.ByteString
-        getToIdBytes();
+        getToIdBytes(int index);
+
+    /**
+     * <code>string content = 6;</code>
+     * @return The content.
+     */
+    String getContent();
+    /**
+     * <code>string content = 6;</code>
+     * @return The bytes for content.
+     */
+    com.google.protobuf.ByteString
+        getContentBytes();
   }
   /**
-   * Protobuf type {@code com.heji.proto.WsMsg}
+   * <pre>
+   *消息体
+   * </pre>
+   *
+   * Protobuf type {@code com.heji.proto.Packet}
    */
-  public static final class WsMsg extends
+  public static final class Packet extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.heji.proto.WsMsg)
-      WsMsgOrBuilder {
+      // @@protoc_insertion_point(message_implements:com.heji.proto.Packet)
+      PacketOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use WsMsg.newBuilder() to construct.
-    private WsMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use Packet.newBuilder() to construct.
+    private Packet(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private WsMsg() {
+    private Packet() {
       id_ = "";
       type_ = 0;
       fromId_ = "";
-      toId_ = "";
+      toId_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      content_ = "";
     }
 
     @Override
     @SuppressWarnings({"unused"})
     protected Object newInstance(
         UnusedPrivateParameter unused) {
-      return new WsMsg();
+      return new Packet();
     }
 
-    public static com.google.protobuf.Descriptors.Descriptor
+    public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return Message.internal_static_com_heji_proto_WsMsg_descriptor;
+      return Message.internal_static_com_heji_proto_Packet_descriptor;
     }
 
     @Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return Message.internal_static_com_heji_proto_WsMsg_fieldAccessorTable
+      return Message.internal_static_com_heji_proto_Packet_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              WsMsg.class, Builder.class);
+              Packet.class, Builder.class);
     }
 
     public static final int ID_FIELD_NUMBER = 1;
@@ -251,19 +313,19 @@ public final class Message {
     public static final int TYPE_FIELD_NUMBER = 2;
     private int type_ = 0;
     /**
-     * <code>.com.heji.proto.Types type = 2;</code>
+     * <code>.com.heji.proto.Type type = 2;</code>
      * @return The enum numeric value on the wire for type.
      */
     @Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.com.heji.proto.Types type = 2;</code>
+     * <code>.com.heji.proto.Type type = 2;</code>
      * @return The type.
      */
-    @Override public Types getType() {
-      Types result = Types.forNumber(type_);
-      return result == null ? Types.UNRECOGNIZED : result;
+    @Override public Type getType() {
+      Type result = Type.forNumber(type_);
+      return result == null ? Type.UNRECOGNIZED : result;
     }
 
     public static final int TIMESTAMP_FIELD_NUMBER = 3;
@@ -318,37 +380,74 @@ public final class Message {
 
     public static final int TOID_FIELD_NUMBER = 5;
     @SuppressWarnings("serial")
-    private volatile Object toId_ = "";
+    private com.google.protobuf.LazyStringArrayList toId_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
     /**
-     * <code>string toId = 5;</code>
-     * @return The toId.
+     * <code>repeated string toId = 5;</code>
+     * @return A list containing the toId.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getToIdList() {
+      return toId_;
+    }
+    /**
+     * <code>repeated string toId = 5;</code>
+     * @return The count of toId.
+     */
+    public int getToIdCount() {
+      return toId_.size();
+    }
+    /**
+     * <code>repeated string toId = 5;</code>
+     * @param index The index of the element to return.
+     * @return The toId at the given index.
+     */
+    public String getToId(int index) {
+      return toId_.get(index);
+    }
+    /**
+     * <code>repeated string toId = 5;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the toId at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getToIdBytes(int index) {
+      return toId_.getByteString(index);
+    }
+
+    public static final int CONTENT_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile Object content_ = "";
+    /**
+     * <code>string content = 6;</code>
+     * @return The content.
      */
     @Override
-    public String getToId() {
-      Object ref = toId_;
+    public String getContent() {
+      Object ref = content_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         String s = bs.toStringUtf8();
-        toId_ = s;
+        content_ = s;
         return s;
       }
     }
     /**
-     * <code>string toId = 5;</code>
-     * @return The bytes for toId.
+     * <code>string content = 6;</code>
+     * @return The bytes for content.
      */
     @Override
     public com.google.protobuf.ByteString
-        getToIdBytes() {
-      Object ref = toId_;
+        getContentBytes() {
+      Object ref = content_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (String) ref);
-        toId_ = b;
+        content_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -357,7 +456,7 @@ public final class Message {
 
     private byte memoizedIsInitialized = -1;
     @Override
-    public boolean isInitialized() {
+    public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
@@ -372,7 +471,7 @@ public final class Message {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
-      if (type_ != Types.ADD_BILL.getNumber()) {
+      if (type_ != Type.ACK.getNumber()) {
         output.writeEnum(2, type_);
       }
       if (timestamp_ != 0L) {
@@ -381,8 +480,11 @@ public final class Message {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fromId_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 4, fromId_);
       }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(toId_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, toId_);
+      for (int i = 0; i < toId_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, toId_.getRaw(i));
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, content_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -396,7 +498,7 @@ public final class Message {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
-      if (type_ != Types.ADD_BILL.getNumber()) {
+      if (type_ != Type.ACK.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, type_);
       }
@@ -407,8 +509,16 @@ public final class Message {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fromId_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, fromId_);
       }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(toId_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, toId_);
+      {
+        int dataSize = 0;
+        for (int i = 0; i < toId_.size(); i++) {
+          dataSize += computeStringSizeNoTag(toId_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getToIdList().size();
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, content_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -420,10 +530,10 @@ public final class Message {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof WsMsg)) {
+      if (!(obj instanceof Packet)) {
         return super.equals(obj);
       }
-      WsMsg other = (WsMsg) obj;
+      Packet other = (Packet) obj;
 
       if (!getId()
           .equals(other.getId())) return false;
@@ -432,9 +542,12 @@ public final class Message {
           != other.getTimestamp()) return false;
       if (!getFromId()
           .equals(other.getFromId())) return false;
-      if (!getToId()
-          .equals(other.getToId())) return false;
-      return getUnknownFields().equals(other.getUnknownFields());
+      if (!getToIdList()
+          .equals(other.getToIdList())) return false;
+      if (!getContent()
+          .equals(other.getContent())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
     }
 
     @Override
@@ -453,76 +566,80 @@ public final class Message {
           getTimestamp());
       hash = (37 * hash) + FROMID_FIELD_NUMBER;
       hash = (53 * hash) + getFromId().hashCode();
-      hash = (37 * hash) + TOID_FIELD_NUMBER;
-      hash = (53 * hash) + getToId().hashCode();
+      if (getToIdCount() > 0) {
+        hash = (37 * hash) + TOID_FIELD_NUMBER;
+        hash = (53 * hash) + getToIdList().hashCode();
+      }
+      hash = (37 * hash) + CONTENT_FIELD_NUMBER;
+      hash = (53 * hash) + getContent().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static WsMsg parseFrom(
+    public static Packet parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static WsMsg parseFrom(
+    public static Packet parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static WsMsg parseFrom(
+    public static Packet parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static WsMsg parseFrom(
+    public static Packet parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static WsMsg parseFrom(byte[] data)
+    public static Packet parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static WsMsg parseFrom(
+    public static Packet parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static WsMsg parseFrom(java.io.InputStream input)
+    public static Packet parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static WsMsg parseFrom(
+    public static Packet parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static WsMsg parseDelimitedFrom(java.io.InputStream input)
+    public static Packet parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static WsMsg parseDelimitedFrom(
+    public static Packet parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static WsMsg parseFrom(
+    public static Packet parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static WsMsg parseFrom(
+    public static Packet parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -535,7 +652,7 @@ public final class Message {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(WsMsg prototype) {
+    public static Builder newBuilder(Packet prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @Override
@@ -546,37 +663,41 @@ public final class Message {
 
     @Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
-     * Protobuf type {@code com.heji.proto.WsMsg}
+     * <pre>
+     *消息体
+     * </pre>
+     *
+     * Protobuf type {@code com.heji.proto.Packet}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.heji.proto.WsMsg)
-        WsMsgOrBuilder {
-      public static com.google.protobuf.Descriptors.Descriptor
+        // @@protoc_insertion_point(builder_implements:com.heji.proto.Packet)
+        PacketOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return Message.internal_static_com_heji_proto_WsMsg_descriptor;
+        return Message.internal_static_com_heji_proto_Packet_descriptor;
       }
 
       @Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return Message.internal_static_com_heji_proto_WsMsg_fieldAccessorTable
+        return Message.internal_static_com_heji_proto_Packet_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                WsMsg.class, Builder.class);
+                Packet.class, Builder.class);
       }
 
-      // Construct using com.rh.heji.proto.Message.WsMsg.newBuilder()
+      // Construct using com.hao.heji.proto.Message.Packet.newBuilder()
       private Builder() {
 
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          BuilderParent parent) {
         super(parent);
 
       }
@@ -588,24 +709,26 @@ public final class Message {
         type_ = 0;
         timestamp_ = 0L;
         fromId_ = "";
-        toId_ = "";
+        toId_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        content_ = "";
         return this;
       }
 
       @Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return Message.internal_static_com_heji_proto_WsMsg_descriptor;
+        return Message.internal_static_com_heji_proto_Packet_descriptor;
       }
 
       @Override
-      public WsMsg getDefaultInstanceForType() {
-        return WsMsg.getDefaultInstance();
+      public Packet getDefaultInstanceForType() {
+        return Packet.getDefaultInstance();
       }
 
       @Override
-      public WsMsg build() {
-        WsMsg result = buildPartial();
+      public Packet build() {
+        Packet result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -613,14 +736,14 @@ public final class Message {
       }
 
       @Override
-      public WsMsg buildPartial() {
-        WsMsg result = new WsMsg(this);
+      public Packet buildPartial() {
+        Packet result = new Packet(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(WsMsg result) {
+      private void buildPartial0(Packet result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.id_ = id_;
@@ -635,22 +758,26 @@ public final class Message {
           result.fromId_ = fromId_;
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
+          toId_.makeImmutable();
           result.toId_ = toId_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.content_ = content_;
         }
       }
 
       @Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof WsMsg) {
-          return mergeFrom((WsMsg)other);
+        if (other instanceof Packet) {
+          return mergeFrom((Packet)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(WsMsg other) {
-        if (other == WsMsg.getDefaultInstance()) return this;
+      public Builder mergeFrom(Packet other) {
+        if (other == Packet.getDefaultInstance()) return this;
         if (!other.getId().isEmpty()) {
           id_ = other.id_;
           bitField0_ |= 0x00000001;
@@ -667,9 +794,19 @@ public final class Message {
           bitField0_ |= 0x00000008;
           onChanged();
         }
-        if (!other.getToId().isEmpty()) {
-          toId_ = other.toId_;
-          bitField0_ |= 0x00000010;
+        if (!other.toId_.isEmpty()) {
+          if (toId_.isEmpty()) {
+            toId_ = other.toId_;
+            bitField0_ |= 0x00000010;
+          } else {
+            ensureToIdIsMutable();
+            toId_.addAll(other.toId_);
+          }
+          onChanged();
+        }
+        if (!other.getContent().isEmpty()) {
+          content_ = other.content_;
+          bitField0_ |= 0x00000020;
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -678,7 +815,7 @@ public final class Message {
       }
 
       @Override
-      public boolean isInitialized() {
+      public final boolean isInitialized() {
         return true;
       }
 
@@ -719,10 +856,16 @@ public final class Message {
                 break;
               } // case 34
               case 42: {
-                toId_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000010;
+                String s = input.readStringRequireUtf8();
+                ensureToIdIsMutable();
+                toId_.add(s);
                 break;
               } // case 42
+              case 50: {
+                content_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -814,14 +957,14 @@ public final class Message {
 
       private int type_ = 0;
       /**
-       * <code>.com.heji.proto.Types type = 2;</code>
+       * <code>.com.heji.proto.Type type = 2;</code>
        * @return The enum numeric value on the wire for type.
        */
       @Override public int getTypeValue() {
         return type_;
       }
       /**
-       * <code>.com.heji.proto.Types type = 2;</code>
+       * <code>.com.heji.proto.Type type = 2;</code>
        * @param value The enum numeric value on the wire for type to set.
        * @return This builder for chaining.
        */
@@ -832,20 +975,20 @@ public final class Message {
         return this;
       }
       /**
-       * <code>.com.heji.proto.Types type = 2;</code>
+       * <code>.com.heji.proto.Type type = 2;</code>
        * @return The type.
        */
       @Override
-      public Types getType() {
-        Types result = Types.forNumber(type_);
-        return result == null ? Types.UNRECOGNIZED : result;
+      public Type getType() {
+        Type result = Type.forNumber(type_);
+        return result == null ? Type.UNRECOGNIZED : result;
       }
       /**
-       * <code>.com.heji.proto.Types type = 2;</code>
+       * <code>.com.heji.proto.Type type = 2;</code>
        * @param value The type to set.
        * @return This builder for chaining.
        */
-      public Builder setType(Types value) {
+      public Builder setType(Type value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -855,7 +998,7 @@ public final class Message {
         return this;
       }
       /**
-       * <code>.com.heji.proto.Types type = 2;</code>
+       * <code>.com.heji.proto.Type type = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearType() {
@@ -969,912 +1112,120 @@ public final class Message {
         return this;
       }
 
-      private Object toId_ = "";
-      /**
-       * <code>string toId = 5;</code>
-       * @return The toId.
-       */
-      public String getToId() {
-        Object ref = toId_;
-        if (!(ref instanceof String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          toId_ = s;
-          return s;
-        } else {
-          return (String) ref;
+      private com.google.protobuf.LazyStringArrayList toId_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureToIdIsMutable() {
+        if (!toId_.isModifiable()) {
+          toId_ = new com.google.protobuf.LazyStringArrayList(toId_);
         }
+        bitField0_ |= 0x00000010;
       }
       /**
-       * <code>string toId = 5;</code>
-       * @return The bytes for toId.
+       * <code>repeated string toId = 5;</code>
+       * @return A list containing the toId.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getToIdList() {
+        toId_.makeImmutable();
+        return toId_;
+      }
+      /**
+       * <code>repeated string toId = 5;</code>
+       * @return The count of toId.
+       */
+      public int getToIdCount() {
+        return toId_.size();
+      }
+      /**
+       * <code>repeated string toId = 5;</code>
+       * @param index The index of the element to return.
+       * @return The toId at the given index.
+       */
+      public String getToId(int index) {
+        return toId_.get(index);
+      }
+      /**
+       * <code>repeated string toId = 5;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the toId at the given index.
        */
       public com.google.protobuf.ByteString
-          getToIdBytes() {
-        Object ref = toId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
-          toId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
+          getToIdBytes(int index) {
+        return toId_.getByteString(index);
       }
       /**
-       * <code>string toId = 5;</code>
+       * <code>repeated string toId = 5;</code>
+       * @param index The index to set the value at.
        * @param value The toId to set.
        * @return This builder for chaining.
        */
       public Builder setToId(
-          String value) {
+          int index, String value) {
         if (value == null) { throw new NullPointerException(); }
-        toId_ = value;
+        ensureToIdIsMutable();
+        toId_.set(index, value);
         bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
       /**
-       * <code>string toId = 5;</code>
+       * <code>repeated string toId = 5;</code>
+       * @param value The toId to add.
+       * @return This builder for chaining.
+       */
+      public Builder addToId(
+          String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureToIdIsMutable();
+        toId_.add(value);
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string toId = 5;</code>
+       * @param values The toId to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllToId(
+          Iterable<String> values) {
+        ensureToIdIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, toId_);
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string toId = 5;</code>
        * @return This builder for chaining.
        */
       public Builder clearToId() {
-        toId_ = getDefaultInstance().getToId();
-        bitField0_ = (bitField0_ & ~0x00000010);
+        toId_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);;
         onChanged();
         return this;
       }
       /**
-       * <code>string toId = 5;</code>
-       * @param value The bytes for toId to set.
+       * <code>repeated string toId = 5;</code>
+       * @param value The bytes of the toId to add.
        * @return This builder for chaining.
        */
-      public Builder setToIdBytes(
+      public Builder addToIdBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
-        toId_ = value;
+        ensureToIdIsMutable();
+        toId_.add(value);
         bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
-      @Override
-      public Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @Override
-      public Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:com.heji.proto.WsMsg)
-    }
-
-    // @@protoc_insertion_point(class_scope:com.heji.proto.WsMsg)
-    private static final WsMsg DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new WsMsg();
-    }
-
-    public static WsMsg getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<WsMsg>
-        PARSER = new com.google.protobuf.AbstractParser<WsMsg>() {
-      @Override
-      public WsMsg parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<WsMsg> parser() {
-      return PARSER;
-    }
-
-    @Override
-    public com.google.protobuf.Parser<WsMsg> getParserForType() {
-      return PARSER;
-    }
-
-    @Override
-    public WsMsg getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface UpdateBookOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.heji.proto.UpdateBook)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    java.util.List<WsMsg>
-        getWsMsgList();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    WsMsg getWsMsg(int index);
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    int getWsMsgCount();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    java.util.List<? extends WsMsgOrBuilder>
-        getWsMsgOrBuilderList();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    WsMsgOrBuilder getWsMsgOrBuilder(
-        int index);
-
-    /**
-     * <code>string content = 2;</code>
-     * @return The content.
-     */
-    String getContent();
-    /**
-     * <code>string content = 2;</code>
-     * @return The bytes for content.
-     */
-    com.google.protobuf.ByteString
-        getContentBytes();
-  }
-  /**
-   * <pre>
-   *BOOK -----------------------
-   * </pre>
-   *
-   * Protobuf type {@code com.heji.proto.UpdateBook}
-   */
-  public static final class UpdateBook extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.heji.proto.UpdateBook)
-      UpdateBookOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use UpdateBook.newBuilder() to construct.
-    private UpdateBook(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private UpdateBook() {
-      wsMsg_ = java.util.Collections.emptyList();
-      content_ = "";
-    }
-
-    @Override
-    @SuppressWarnings({"unused"})
-    protected Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new UpdateBook();
-    }
-
-    public static com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return Message.internal_static_com_heji_proto_UpdateBook_descriptor;
-    }
-
-    @Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return Message.internal_static_com_heji_proto_UpdateBook_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              UpdateBook.class, Builder.class);
-    }
-
-    public static final int WS_MSG_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private java.util.List<WsMsg> wsMsg_;
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public java.util.List<WsMsg> getWsMsgList() {
-      return wsMsg_;
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public java.util.List<? extends WsMsgOrBuilder>
-        getWsMsgOrBuilderList() {
-      return wsMsg_;
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public int getWsMsgCount() {
-      return wsMsg_.size();
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public WsMsg getWsMsg(int index) {
-      return wsMsg_.get(index);
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public WsMsgOrBuilder getWsMsgOrBuilder(
-        int index) {
-      return wsMsg_.get(index);
-    }
-
-    public static final int CONTENT_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile Object content_ = "";
-    /**
-     * <code>string content = 2;</code>
-     * @return The content.
-     */
-    @Override
-    public String getContent() {
-      Object ref = content_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        content_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string content = 2;</code>
-     * @return The bytes for content.
-     */
-    @Override
-    public com.google.protobuf.ByteString
-        getContentBytes() {
-      Object ref = content_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
-        content_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @Override
-    public boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      for (int i = 0; i < wsMsg_.size(); i++) {
-        output.writeMessage(1, wsMsg_.get(i));
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, content_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      for (int i = 0; i < wsMsg_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, wsMsg_.get(i));
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, content_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof UpdateBook)) {
-        return super.equals(obj);
-      }
-      UpdateBook other = (UpdateBook) obj;
-
-      if (!getWsMsgList()
-          .equals(other.getWsMsgList())) return false;
-      if (!getContent()
-          .equals(other.getContent())) return false;
-      return getUnknownFields().equals(other.getUnknownFields());
-    }
-
-    @Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (getWsMsgCount() > 0) {
-        hash = (37 * hash) + WS_MSG_FIELD_NUMBER;
-        hash = (53 * hash) + getWsMsgList().hashCode();
-      }
-      hash = (37 * hash) + CONTENT_FIELD_NUMBER;
-      hash = (53 * hash) + getContent().hashCode();
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static UpdateBook parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static UpdateBook parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static UpdateBook parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static UpdateBook parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static UpdateBook parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static UpdateBook parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static UpdateBook parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static UpdateBook parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static UpdateBook parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static UpdateBook parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static UpdateBook parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static UpdateBook parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(UpdateBook prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     *BOOK -----------------------
-     * </pre>
-     *
-     * Protobuf type {@code com.heji.proto.UpdateBook}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.heji.proto.UpdateBook)
-        UpdateBookOrBuilder {
-      public static com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return Message.internal_static_com_heji_proto_UpdateBook_descriptor;
-      }
-
-      @Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return Message.internal_static_com_heji_proto_UpdateBook_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                UpdateBook.class, Builder.class);
-      }
-
-      // Construct using com.rh.heji.proto.Message.UpdateBook.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        if (wsMsgBuilder_ == null) {
-          wsMsg_ = java.util.Collections.emptyList();
-        } else {
-          wsMsg_ = null;
-          wsMsgBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        content_ = "";
-        return this;
-      }
-
-      @Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return Message.internal_static_com_heji_proto_UpdateBook_descriptor;
-      }
-
-      @Override
-      public UpdateBook getDefaultInstanceForType() {
-        return UpdateBook.getDefaultInstance();
-      }
-
-      @Override
-      public UpdateBook build() {
-        UpdateBook result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @Override
-      public UpdateBook buildPartial() {
-        UpdateBook result = new UpdateBook(this);
-        buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartialRepeatedFields(UpdateBook result) {
-        if (wsMsgBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            wsMsg_ = java.util.Collections.unmodifiableList(wsMsg_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.wsMsg_ = wsMsg_;
-        } else {
-          result.wsMsg_ = wsMsgBuilder_.build();
-        }
-      }
-
-      private void buildPartial0(UpdateBook result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.content_ = content_;
-        }
-      }
-
-      @Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof UpdateBook) {
-          return mergeFrom((UpdateBook)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(UpdateBook other) {
-        if (other == UpdateBook.getDefaultInstance()) return this;
-        if (wsMsgBuilder_ == null) {
-          if (!other.wsMsg_.isEmpty()) {
-            if (wsMsg_.isEmpty()) {
-              wsMsg_ = other.wsMsg_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureWsMsgIsMutable();
-              wsMsg_.addAll(other.wsMsg_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.wsMsg_.isEmpty()) {
-            if (wsMsgBuilder_.isEmpty()) {
-              wsMsgBuilder_.dispose();
-              wsMsgBuilder_ = null;
-              wsMsg_ = other.wsMsg_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              wsMsgBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getWsMsgFieldBuilder() : null;
-            } else {
-              wsMsgBuilder_.addAllMessages(other.wsMsg_);
-            }
-          }
-        }
-        if (!other.getContent().isEmpty()) {
-          content_ = other.content_;
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @Override
-      public boolean isInitialized() {
-        return true;
-      }
-
-      @Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                WsMsg m =
-                    input.readMessage(
-                        WsMsg.parser(),
-                        extensionRegistry);
-                if (wsMsgBuilder_ == null) {
-                  ensureWsMsgIsMutable();
-                  wsMsg_.add(m);
-                } else {
-                  wsMsgBuilder_.addMessage(m);
-                }
-                break;
-              } // case 10
-              case 18: {
-                content_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.util.List<WsMsg> wsMsg_ =
-        java.util.Collections.emptyList();
-      private void ensureWsMsgIsMutable() {
-        if ((bitField0_ & 0x00000001) == 0) {
-          wsMsg_ = new java.util.ArrayList<WsMsg>(wsMsg_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          WsMsg, WsMsg.Builder, WsMsgOrBuilder> wsMsgBuilder_;
-
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<WsMsg> getWsMsgList() {
-        if (wsMsgBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(wsMsg_);
-        } else {
-          return wsMsgBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public int getWsMsgCount() {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.size();
-        } else {
-          return wsMsgBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg getWsMsg(int index) {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.get(index);
-        } else {
-          return wsMsgBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder setWsMsg(
-          int index, WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.set(index, value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder setWsMsg(
-          int index, WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.add(value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          int index, WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.add(index, value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.add(builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          int index, WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addAllWsMsg(
-          Iterable<? extends WsMsg> values) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, wsMsg_);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder clearWsMsg() {
-        if (wsMsgBuilder_ == null) {
-          wsMsg_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          wsMsgBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder removeWsMsg(int index) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.remove(index);
-          onChanged();
-        } else {
-          wsMsgBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder getWsMsgBuilder(
-          int index) {
-        return getWsMsgFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsgOrBuilder getWsMsgOrBuilder(
-          int index) {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.get(index);  } else {
-          return wsMsgBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<? extends WsMsgOrBuilder>
-           getWsMsgOrBuilderList() {
-        if (wsMsgBuilder_ != null) {
-          return wsMsgBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(wsMsg_);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder addWsMsgBuilder() {
-        return getWsMsgFieldBuilder().addBuilder(
-            WsMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder addWsMsgBuilder(
-          int index) {
-        return getWsMsgFieldBuilder().addBuilder(
-            index, WsMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<WsMsg.Builder>
-           getWsMsgBuilderList() {
-        return getWsMsgFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          WsMsg, WsMsg.Builder, WsMsgOrBuilder>
-          getWsMsgFieldBuilder() {
-        if (wsMsgBuilder_ == null) {
-          wsMsgBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              WsMsg, WsMsg.Builder, WsMsgOrBuilder>(
-                  wsMsg_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          wsMsg_ = null;
-        }
-        return wsMsgBuilder_;
-      }
 
       private Object content_ = "";
       /**
-       * <code>string content = 2;</code>
+       * <code>string content = 6;</code>
        * @return The content.
        */
       public String getContent() {
@@ -1890,7 +1241,7 @@ public final class Message {
         }
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>string content = 6;</code>
        * @return The bytes for content.
        */
       public com.google.protobuf.ByteString
@@ -1907,7 +1258,7 @@ public final class Message {
         }
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>string content = 6;</code>
        * @param value The content to set.
        * @return This builder for chaining.
        */
@@ -1915,22 +1266,22 @@ public final class Message {
           String value) {
         if (value == null) { throw new NullPointerException(); }
         content_ = value;
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>string content = 6;</code>
        * @return This builder for chaining.
        */
       public Builder clearContent() {
         content_ = getDefaultInstance().getContent();
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000020);
         onChanged();
         return this;
       }
       /**
-       * <code>string content = 2;</code>
+       * <code>string content = 6;</code>
        * @param value The bytes for content to set.
        * @return This builder for chaining.
        */
@@ -1939,40 +1290,40 @@ public final class Message {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         content_ = value;
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
       @Override
-      public Builder setUnknownFields(
+      public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @Override
-      public Builder mergeUnknownFields(
+      public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.heji.proto.UpdateBook)
+      // @@protoc_insertion_point(builder_scope:com.heji.proto.Packet)
     }
 
-    // @@protoc_insertion_point(class_scope:com.heji.proto.UpdateBook)
-    private static final UpdateBook DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:com.heji.proto.Packet)
+    private static final Packet DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new UpdateBook();
+      DEFAULT_INSTANCE = new Packet();
     }
 
-    public static UpdateBook getDefaultInstance() {
+    public static Packet getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<UpdateBook>
-        PARSER = new com.google.protobuf.AbstractParser<UpdateBook>() {
+    private static final com.google.protobuf.Parser<Packet>
+        PARSER = new com.google.protobuf.AbstractParser<Packet>() {
       @Override
-      public UpdateBook parsePartialFrom(
+      public Packet parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1991,3177 +1342,54 @@ public final class Message {
       }
     };
 
-    public static com.google.protobuf.Parser<UpdateBook> parser() {
+    public static com.google.protobuf.Parser<Packet> parser() {
       return PARSER;
     }
 
     @Override
-    public com.google.protobuf.Parser<UpdateBook> getParserForType() {
+    public com.google.protobuf.Parser<Packet> getParserForType() {
       return PARSER;
     }
 
     @Override
-    public UpdateBook getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface AddBillOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.heji.proto.AddBill)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    java.util.List<WsMsg>
-        getWsMsgList();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    WsMsg getWsMsg(int index);
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    int getWsMsgCount();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    java.util.List<? extends WsMsgOrBuilder>
-        getWsMsgOrBuilderList();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    WsMsgOrBuilder getWsMsgOrBuilder(
-        int index);
-
-    /**
-     * <code>string content = 2;</code>
-     * @return The content.
-     */
-    String getContent();
-    /**
-     * <code>string content = 2;</code>
-     * @return The bytes for content.
-     */
-    com.google.protobuf.ByteString
-        getContentBytes();
-  }
-  /**
-   * <pre>
-   * BILL ----------------------
-   * </pre>
-   *
-   * Protobuf type {@code com.heji.proto.AddBill}
-   */
-  public static final class AddBill extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.heji.proto.AddBill)
-      AddBillOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use AddBill.newBuilder() to construct.
-    private AddBill(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private AddBill() {
-      wsMsg_ = java.util.Collections.emptyList();
-      content_ = "";
-    }
-
-    @Override
-    @SuppressWarnings({"unused"})
-    protected Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new AddBill();
-    }
-
-    public static com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return Message.internal_static_com_heji_proto_AddBill_descriptor;
-    }
-
-    @Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return Message.internal_static_com_heji_proto_AddBill_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              AddBill.class, Builder.class);
-    }
-
-    public static final int WS_MSG_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private java.util.List<WsMsg> wsMsg_;
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public java.util.List<WsMsg> getWsMsgList() {
-      return wsMsg_;
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public java.util.List<? extends WsMsgOrBuilder>
-        getWsMsgOrBuilderList() {
-      return wsMsg_;
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public int getWsMsgCount() {
-      return wsMsg_.size();
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public WsMsg getWsMsg(int index) {
-      return wsMsg_.get(index);
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public WsMsgOrBuilder getWsMsgOrBuilder(
-        int index) {
-      return wsMsg_.get(index);
-    }
-
-    public static final int CONTENT_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile Object content_ = "";
-    /**
-     * <code>string content = 2;</code>
-     * @return The content.
-     */
-    @Override
-    public String getContent() {
-      Object ref = content_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        content_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string content = 2;</code>
-     * @return The bytes for content.
-     */
-    @Override
-    public com.google.protobuf.ByteString
-        getContentBytes() {
-      Object ref = content_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
-        content_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @Override
-    public boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      for (int i = 0; i < wsMsg_.size(); i++) {
-        output.writeMessage(1, wsMsg_.get(i));
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, content_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      for (int i = 0; i < wsMsg_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, wsMsg_.get(i));
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, content_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof AddBill)) {
-        return super.equals(obj);
-      }
-      AddBill other = (AddBill) obj;
-
-      if (!getWsMsgList()
-          .equals(other.getWsMsgList())) return false;
-      if (!getContent()
-          .equals(other.getContent())) return false;
-      return getUnknownFields().equals(other.getUnknownFields());
-    }
-
-    @Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (getWsMsgCount() > 0) {
-        hash = (37 * hash) + WS_MSG_FIELD_NUMBER;
-        hash = (53 * hash) + getWsMsgList().hashCode();
-      }
-      hash = (37 * hash) + CONTENT_FIELD_NUMBER;
-      hash = (53 * hash) + getContent().hashCode();
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static AddBill parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static AddBill parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static AddBill parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static AddBill parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static AddBill parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static AddBill parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static AddBill parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static AddBill parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static AddBill parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static AddBill parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static AddBill parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static AddBill parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(AddBill prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * BILL ----------------------
-     * </pre>
-     *
-     * Protobuf type {@code com.heji.proto.AddBill}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.heji.proto.AddBill)
-        AddBillOrBuilder {
-      public static com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return Message.internal_static_com_heji_proto_AddBill_descriptor;
-      }
-
-      @Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return Message.internal_static_com_heji_proto_AddBill_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                AddBill.class, Builder.class);
-      }
-
-      // Construct using com.rh.heji.proto.Message.AddBill.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        if (wsMsgBuilder_ == null) {
-          wsMsg_ = java.util.Collections.emptyList();
-        } else {
-          wsMsg_ = null;
-          wsMsgBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        content_ = "";
-        return this;
-      }
-
-      @Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return Message.internal_static_com_heji_proto_AddBill_descriptor;
-      }
-
-      @Override
-      public AddBill getDefaultInstanceForType() {
-        return AddBill.getDefaultInstance();
-      }
-
-      @Override
-      public AddBill build() {
-        AddBill result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @Override
-      public AddBill buildPartial() {
-        AddBill result = new AddBill(this);
-        buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartialRepeatedFields(AddBill result) {
-        if (wsMsgBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            wsMsg_ = java.util.Collections.unmodifiableList(wsMsg_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.wsMsg_ = wsMsg_;
-        } else {
-          result.wsMsg_ = wsMsgBuilder_.build();
-        }
-      }
-
-      private void buildPartial0(AddBill result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.content_ = content_;
-        }
-      }
-
-      @Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof AddBill) {
-          return mergeFrom((AddBill)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(AddBill other) {
-        if (other == AddBill.getDefaultInstance()) return this;
-        if (wsMsgBuilder_ == null) {
-          if (!other.wsMsg_.isEmpty()) {
-            if (wsMsg_.isEmpty()) {
-              wsMsg_ = other.wsMsg_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureWsMsgIsMutable();
-              wsMsg_.addAll(other.wsMsg_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.wsMsg_.isEmpty()) {
-            if (wsMsgBuilder_.isEmpty()) {
-              wsMsgBuilder_.dispose();
-              wsMsgBuilder_ = null;
-              wsMsg_ = other.wsMsg_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              wsMsgBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getWsMsgFieldBuilder() : null;
-            } else {
-              wsMsgBuilder_.addAllMessages(other.wsMsg_);
-            }
-          }
-        }
-        if (!other.getContent().isEmpty()) {
-          content_ = other.content_;
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @Override
-      public boolean isInitialized() {
-        return true;
-      }
-
-      @Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                WsMsg m =
-                    input.readMessage(
-                        WsMsg.parser(),
-                        extensionRegistry);
-                if (wsMsgBuilder_ == null) {
-                  ensureWsMsgIsMutable();
-                  wsMsg_.add(m);
-                } else {
-                  wsMsgBuilder_.addMessage(m);
-                }
-                break;
-              } // case 10
-              case 18: {
-                content_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.util.List<WsMsg> wsMsg_ =
-        java.util.Collections.emptyList();
-      private void ensureWsMsgIsMutable() {
-        if ((bitField0_ & 0x00000001) == 0) {
-          wsMsg_ = new java.util.ArrayList<WsMsg>(wsMsg_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          WsMsg, WsMsg.Builder, WsMsgOrBuilder> wsMsgBuilder_;
-
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<WsMsg> getWsMsgList() {
-        if (wsMsgBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(wsMsg_);
-        } else {
-          return wsMsgBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public int getWsMsgCount() {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.size();
-        } else {
-          return wsMsgBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg getWsMsg(int index) {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.get(index);
-        } else {
-          return wsMsgBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder setWsMsg(
-          int index, WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.set(index, value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder setWsMsg(
-          int index, WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.add(value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          int index, WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.add(index, value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.add(builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          int index, WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addAllWsMsg(
-          Iterable<? extends WsMsg> values) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, wsMsg_);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder clearWsMsg() {
-        if (wsMsgBuilder_ == null) {
-          wsMsg_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          wsMsgBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder removeWsMsg(int index) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.remove(index);
-          onChanged();
-        } else {
-          wsMsgBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder getWsMsgBuilder(
-          int index) {
-        return getWsMsgFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsgOrBuilder getWsMsgOrBuilder(
-          int index) {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.get(index);  } else {
-          return wsMsgBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<? extends WsMsgOrBuilder>
-           getWsMsgOrBuilderList() {
-        if (wsMsgBuilder_ != null) {
-          return wsMsgBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(wsMsg_);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder addWsMsgBuilder() {
-        return getWsMsgFieldBuilder().addBuilder(
-            WsMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder addWsMsgBuilder(
-          int index) {
-        return getWsMsgFieldBuilder().addBuilder(
-            index, WsMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<WsMsg.Builder>
-           getWsMsgBuilderList() {
-        return getWsMsgFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          WsMsg, WsMsg.Builder, WsMsgOrBuilder>
-          getWsMsgFieldBuilder() {
-        if (wsMsgBuilder_ == null) {
-          wsMsgBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              WsMsg, WsMsg.Builder, WsMsgOrBuilder>(
-                  wsMsg_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          wsMsg_ = null;
-        }
-        return wsMsgBuilder_;
-      }
-
-      private Object content_ = "";
-      /**
-       * <code>string content = 2;</code>
-       * @return The content.
-       */
-      public String getContent() {
-        Object ref = content_;
-        if (!(ref instanceof String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          content_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      /**
-       * <code>string content = 2;</code>
-       * @return The bytes for content.
-       */
-      public com.google.protobuf.ByteString
-          getContentBytes() {
-        Object ref = content_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
-          content_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string content = 2;</code>
-       * @param value The content to set.
-       * @return This builder for chaining.
-       */
-      public Builder setContent(
-          String value) {
-        if (value == null) { throw new NullPointerException(); }
-        content_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string content = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearContent() {
-        content_ = getDefaultInstance().getContent();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string content = 2;</code>
-       * @param value The bytes for content to set.
-       * @return This builder for chaining.
-       */
-      public Builder setContentBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        content_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      @Override
-      public Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @Override
-      public Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:com.heji.proto.AddBill)
-    }
-
-    // @@protoc_insertion_point(class_scope:com.heji.proto.AddBill)
-    private static final AddBill DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new AddBill();
-    }
-
-    public static AddBill getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<AddBill>
-        PARSER = new com.google.protobuf.AbstractParser<AddBill>() {
-      @Override
-      public AddBill parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<AddBill> parser() {
-      return PARSER;
-    }
-
-    @Override
-    public com.google.protobuf.Parser<AddBill> getParserForType() {
-      return PARSER;
-    }
-
-    @Override
-    public AddBill getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface DeleteBillOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.heji.proto.DeleteBill)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    java.util.List<WsMsg>
-        getWsMsgList();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    WsMsg getWsMsg(int index);
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    int getWsMsgCount();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    java.util.List<? extends WsMsgOrBuilder>
-        getWsMsgOrBuilderList();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    WsMsgOrBuilder getWsMsgOrBuilder(
-        int index);
-  }
-  /**
-   * Protobuf type {@code com.heji.proto.DeleteBill}
-   */
-  public static final class DeleteBill extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.heji.proto.DeleteBill)
-      DeleteBillOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use DeleteBill.newBuilder() to construct.
-    private DeleteBill(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private DeleteBill() {
-      wsMsg_ = java.util.Collections.emptyList();
-    }
-
-    @Override
-    @SuppressWarnings({"unused"})
-    protected Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new DeleteBill();
-    }
-
-    public static com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return Message.internal_static_com_heji_proto_DeleteBill_descriptor;
-    }
-
-    @Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return Message.internal_static_com_heji_proto_DeleteBill_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              DeleteBill.class, Builder.class);
-    }
-
-    public interface ContentOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:com.heji.proto.DeleteBill.Content)
-        com.google.protobuf.MessageOrBuilder {
-
-      /**
-       * <code>string billId = 2;</code>
-       * @return The billId.
-       */
-      String getBillId();
-      /**
-       * <code>string billId = 2;</code>
-       * @return The bytes for billId.
-       */
-      com.google.protobuf.ByteString
-          getBillIdBytes();
-    }
-    /**
-     * Protobuf type {@code com.heji.proto.DeleteBill.Content}
-     */
-    public static final class Content extends
-        com.google.protobuf.GeneratedMessageV3 implements
-        // @@protoc_insertion_point(message_implements:com.heji.proto.DeleteBill.Content)
-        ContentOrBuilder {
-    private static final long serialVersionUID = 0L;
-      // Use Content.newBuilder() to construct.
-      private Content(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-        super(builder);
-      }
-      private Content() {
-        billId_ = "";
-      }
-
-      @Override
-      @SuppressWarnings({"unused"})
-      protected Object newInstance(
-          UnusedPrivateParameter unused) {
-        return new Content();
-      }
-
-      public static com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return Message.internal_static_com_heji_proto_DeleteBill_Content_descriptor;
-      }
-
-      @Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return Message.internal_static_com_heji_proto_DeleteBill_Content_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                Content.class, Builder.class);
-      }
-
-      public static final int BILLID_FIELD_NUMBER = 2;
-      @SuppressWarnings("serial")
-      private volatile Object billId_ = "";
-      /**
-       * <code>string billId = 2;</code>
-       * @return The billId.
-       */
-      @Override
-      public String getBillId() {
-        Object ref = billId_;
-        if (ref instanceof String) {
-          return (String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          billId_ = s;
-          return s;
-        }
-      }
-      /**
-       * <code>string billId = 2;</code>
-       * @return The bytes for billId.
-       */
-      @Override
-      public com.google.protobuf.ByteString
-          getBillIdBytes() {
-        Object ref = billId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
-          billId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-
-      private byte memoizedIsInitialized = -1;
-      @Override
-      public boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      @Override
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(billId_)) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, billId_);
-        }
-        getUnknownFields().writeTo(output);
-      }
-
-      @Override
-      public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(billId_)) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, billId_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSize = size;
-        return size;
-      }
-
-      @Override
-      public boolean equals(final Object obj) {
-        if (obj == this) {
-         return true;
-        }
-        if (!(obj instanceof Content)) {
-          return super.equals(obj);
-        }
-        Content other = (Content) obj;
-
-        if (!getBillId()
-            .equals(other.getBillId())) return false;
-        return getUnknownFields().equals(other.getUnknownFields());
-      }
-
-      @Override
-      public int hashCode() {
-        if (memoizedHashCode != 0) {
-          return memoizedHashCode;
-        }
-        int hash = 41;
-        hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + BILLID_FIELD_NUMBER;
-        hash = (53 * hash) + getBillId().hashCode();
-        hash = (29 * hash) + getUnknownFields().hashCode();
-        memoizedHashCode = hash;
-        return hash;
-      }
-
-      public static Content parseFrom(
-          java.nio.ByteBuffer data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static Content parseFrom(
-          java.nio.ByteBuffer data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static Content parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static Content parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static Content parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static Content parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static Content parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-      }
-      public static Content parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-      }
-      public static Content parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input);
-      }
-      public static Content parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-      }
-      public static Content parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
-      }
-      public static Content parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return com.google.protobuf.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
-      }
-
-      @Override
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-      }
-      public static Builder newBuilder(Content prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-      }
-      @Override
-      public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
-      }
-
-      @Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code com.heji.proto.DeleteBill.Content}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:com.heji.proto.DeleteBill.Content)
-          ContentOrBuilder {
-        public static com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return Message.internal_static_com_heji_proto_DeleteBill_Content_descriptor;
-        }
-
-        @Override
-        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return Message.internal_static_com_heji_proto_DeleteBill_Content_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  Content.class, Builder.class);
-        }
-
-        // Construct using com.rh.heji.proto.Message.DeleteBill.Content.newBuilder()
-        private Builder() {
-
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-          super(parent);
-
-        }
-        @Override
-        public Builder clear() {
-          super.clear();
-          bitField0_ = 0;
-          billId_ = "";
-          return this;
-        }
-
-        @Override
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return Message.internal_static_com_heji_proto_DeleteBill_Content_descriptor;
-        }
-
-        @Override
-        public Content getDefaultInstanceForType() {
-          return Content.getDefaultInstance();
-        }
-
-        @Override
-        public Content build() {
-          Content result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        @Override
-        public Content buildPartial() {
-          Content result = new Content(this);
-          if (bitField0_ != 0) { buildPartial0(result); }
-          onBuilt();
-          return result;
-        }
-
-        private void buildPartial0(Content result) {
-          int from_bitField0_ = bitField0_;
-          if (((from_bitField0_ & 0x00000001) != 0)) {
-            result.billId_ = billId_;
-          }
-        }
-
-        @Override
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof Content) {
-            return mergeFrom((Content)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(Content other) {
-          if (other == Content.getDefaultInstance()) return this;
-          if (!other.getBillId().isEmpty()) {
-            billId_ = other.billId_;
-            bitField0_ |= 0x00000001;
-            onChanged();
-          }
-          this.mergeUnknownFields(other.getUnknownFields());
-          onChanged();
-          return this;
-        }
-
-        @Override
-        public boolean isInitialized() {
-          return true;
-        }
-
-        @Override
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          if (extensionRegistry == null) {
-            throw new NullPointerException();
-          }
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                case 18: {
-                  billId_ = input.readStringRequireUtf8();
-                  bitField0_ |= 0x00000001;
-                  break;
-                } // case 18
-                default: {
-                  if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                    done = true; // was an endgroup tag
-                  }
-                  break;
-                } // default:
-              } // switch (tag)
-            } // while (!done)
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.unwrapIOException();
-          } finally {
-            onChanged();
-          } // finally
-          return this;
-        }
-        private int bitField0_;
-
-        private Object billId_ = "";
-        /**
-         * <code>string billId = 2;</code>
-         * @return The billId.
-         */
-        public String getBillId() {
-          Object ref = billId_;
-          if (!(ref instanceof String)) {
-            com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-            String s = bs.toStringUtf8();
-            billId_ = s;
-            return s;
-          } else {
-            return (String) ref;
-          }
-        }
-        /**
-         * <code>string billId = 2;</code>
-         * @return The bytes for billId.
-         */
-        public com.google.protobuf.ByteString
-            getBillIdBytes() {
-          Object ref = billId_;
-          if (ref instanceof String) {
-            com.google.protobuf.ByteString b = 
-                com.google.protobuf.ByteString.copyFromUtf8(
-                    (String) ref);
-            billId_ = b;
-            return b;
-          } else {
-            return (com.google.protobuf.ByteString) ref;
-          }
-        }
-        /**
-         * <code>string billId = 2;</code>
-         * @param value The billId to set.
-         * @return This builder for chaining.
-         */
-        public Builder setBillId(
-            String value) {
-          if (value == null) { throw new NullPointerException(); }
-          billId_ = value;
-          bitField0_ |= 0x00000001;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>string billId = 2;</code>
-         * @return This builder for chaining.
-         */
-        public Builder clearBillId() {
-          billId_ = getDefaultInstance().getBillId();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>string billId = 2;</code>
-         * @param value The bytes for billId to set.
-         * @return This builder for chaining.
-         */
-        public Builder setBillIdBytes(
-            com.google.protobuf.ByteString value) {
-          if (value == null) { throw new NullPointerException(); }
-          checkByteStringIsUtf8(value);
-          billId_ = value;
-          bitField0_ |= 0x00000001;
-          onChanged();
-          return this;
-        }
-        @Override
-        public Builder setUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
-          return super.setUnknownFields(unknownFields);
-        }
-
-        @Override
-        public Builder mergeUnknownFields(
-            final com.google.protobuf.UnknownFieldSet unknownFields) {
-          return super.mergeUnknownFields(unknownFields);
-        }
-
-
-        // @@protoc_insertion_point(builder_scope:com.heji.proto.DeleteBill.Content)
-      }
-
-      // @@protoc_insertion_point(class_scope:com.heji.proto.DeleteBill.Content)
-      private static final Content DEFAULT_INSTANCE;
-      static {
-        DEFAULT_INSTANCE = new Content();
-      }
-
-      public static Content getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-      }
-
-      private static final com.google.protobuf.Parser<Content>
-          PARSER = new com.google.protobuf.AbstractParser<Content>() {
-        @Override
-        public Content parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          Builder builder = newBuilder();
-          try {
-            builder.mergeFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(builder.buildPartial());
-          } catch (com.google.protobuf.UninitializedMessageException e) {
-            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-          } catch (java.io.IOException e) {
-            throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                .setUnfinishedMessage(builder.buildPartial());
-          }
-          return builder.buildPartial();
-        }
-      };
-
-      public static com.google.protobuf.Parser<Content> parser() {
-        return PARSER;
-      }
-
-      @Override
-      public com.google.protobuf.Parser<Content> getParserForType() {
-        return PARSER;
-      }
-
-      @Override
-      public Content getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-      }
-
-    }
-
-    public static final int WS_MSG_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private java.util.List<WsMsg> wsMsg_;
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public java.util.List<WsMsg> getWsMsgList() {
-      return wsMsg_;
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public java.util.List<? extends WsMsgOrBuilder>
-        getWsMsgOrBuilderList() {
-      return wsMsg_;
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public int getWsMsgCount() {
-      return wsMsg_.size();
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public WsMsg getWsMsg(int index) {
-      return wsMsg_.get(index);
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public WsMsgOrBuilder getWsMsgOrBuilder(
-        int index) {
-      return wsMsg_.get(index);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @Override
-    public boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      for (int i = 0; i < wsMsg_.size(); i++) {
-        output.writeMessage(1, wsMsg_.get(i));
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      for (int i = 0; i < wsMsg_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, wsMsg_.get(i));
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof DeleteBill)) {
-        return super.equals(obj);
-      }
-      DeleteBill other = (DeleteBill) obj;
-
-      if (!getWsMsgList()
-          .equals(other.getWsMsgList())) return false;
-      return getUnknownFields().equals(other.getUnknownFields());
-    }
-
-    @Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (getWsMsgCount() > 0) {
-        hash = (37 * hash) + WS_MSG_FIELD_NUMBER;
-        hash = (53 * hash) + getWsMsgList().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static DeleteBill parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static DeleteBill parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static DeleteBill parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static DeleteBill parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static DeleteBill parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static DeleteBill parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static DeleteBill parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static DeleteBill parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static DeleteBill parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static DeleteBill parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static DeleteBill parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static DeleteBill parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(DeleteBill prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code com.heji.proto.DeleteBill}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.heji.proto.DeleteBill)
-        DeleteBillOrBuilder {
-      public static com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return Message.internal_static_com_heji_proto_DeleteBill_descriptor;
-      }
-
-      @Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return Message.internal_static_com_heji_proto_DeleteBill_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                DeleteBill.class, Builder.class);
-      }
-
-      // Construct using com.rh.heji.proto.Message.DeleteBill.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        if (wsMsgBuilder_ == null) {
-          wsMsg_ = java.util.Collections.emptyList();
-        } else {
-          wsMsg_ = null;
-          wsMsgBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      @Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return Message.internal_static_com_heji_proto_DeleteBill_descriptor;
-      }
-
-      @Override
-      public DeleteBill getDefaultInstanceForType() {
-        return DeleteBill.getDefaultInstance();
-      }
-
-      @Override
-      public DeleteBill build() {
-        DeleteBill result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @Override
-      public DeleteBill buildPartial() {
-        DeleteBill result = new DeleteBill(this);
-        buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartialRepeatedFields(DeleteBill result) {
-        if (wsMsgBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            wsMsg_ = java.util.Collections.unmodifiableList(wsMsg_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.wsMsg_ = wsMsg_;
-        } else {
-          result.wsMsg_ = wsMsgBuilder_.build();
-        }
-      }
-
-      private void buildPartial0(DeleteBill result) {
-        int from_bitField0_ = bitField0_;
-      }
-
-      @Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof DeleteBill) {
-          return mergeFrom((DeleteBill)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(DeleteBill other) {
-        if (other == DeleteBill.getDefaultInstance()) return this;
-        if (wsMsgBuilder_ == null) {
-          if (!other.wsMsg_.isEmpty()) {
-            if (wsMsg_.isEmpty()) {
-              wsMsg_ = other.wsMsg_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureWsMsgIsMutable();
-              wsMsg_.addAll(other.wsMsg_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.wsMsg_.isEmpty()) {
-            if (wsMsgBuilder_.isEmpty()) {
-              wsMsgBuilder_.dispose();
-              wsMsgBuilder_ = null;
-              wsMsg_ = other.wsMsg_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              wsMsgBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getWsMsgFieldBuilder() : null;
-            } else {
-              wsMsgBuilder_.addAllMessages(other.wsMsg_);
-            }
-          }
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @Override
-      public boolean isInitialized() {
-        return true;
-      }
-
-      @Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                WsMsg m =
-                    input.readMessage(
-                        WsMsg.parser(),
-                        extensionRegistry);
-                if (wsMsgBuilder_ == null) {
-                  ensureWsMsgIsMutable();
-                  wsMsg_.add(m);
-                } else {
-                  wsMsgBuilder_.addMessage(m);
-                }
-                break;
-              } // case 10
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.util.List<WsMsg> wsMsg_ =
-        java.util.Collections.emptyList();
-      private void ensureWsMsgIsMutable() {
-        if ((bitField0_ & 0x00000001) == 0) {
-          wsMsg_ = new java.util.ArrayList<WsMsg>(wsMsg_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          WsMsg, WsMsg.Builder, WsMsgOrBuilder> wsMsgBuilder_;
-
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<WsMsg> getWsMsgList() {
-        if (wsMsgBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(wsMsg_);
-        } else {
-          return wsMsgBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public int getWsMsgCount() {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.size();
-        } else {
-          return wsMsgBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg getWsMsg(int index) {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.get(index);
-        } else {
-          return wsMsgBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder setWsMsg(
-          int index, WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.set(index, value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder setWsMsg(
-          int index, WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.add(value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          int index, WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.add(index, value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.add(builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          int index, WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addAllWsMsg(
-          Iterable<? extends WsMsg> values) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, wsMsg_);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder clearWsMsg() {
-        if (wsMsgBuilder_ == null) {
-          wsMsg_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          wsMsgBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder removeWsMsg(int index) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.remove(index);
-          onChanged();
-        } else {
-          wsMsgBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder getWsMsgBuilder(
-          int index) {
-        return getWsMsgFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsgOrBuilder getWsMsgOrBuilder(
-          int index) {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.get(index);  } else {
-          return wsMsgBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<? extends WsMsgOrBuilder>
-           getWsMsgOrBuilderList() {
-        if (wsMsgBuilder_ != null) {
-          return wsMsgBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(wsMsg_);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder addWsMsgBuilder() {
-        return getWsMsgFieldBuilder().addBuilder(
-            WsMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder addWsMsgBuilder(
-          int index) {
-        return getWsMsgFieldBuilder().addBuilder(
-            index, WsMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<WsMsg.Builder>
-           getWsMsgBuilderList() {
-        return getWsMsgFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          WsMsg, WsMsg.Builder, WsMsgOrBuilder>
-          getWsMsgFieldBuilder() {
-        if (wsMsgBuilder_ == null) {
-          wsMsgBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              WsMsg, WsMsg.Builder, WsMsgOrBuilder>(
-                  wsMsg_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          wsMsg_ = null;
-        }
-        return wsMsgBuilder_;
-      }
-      @Override
-      public Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @Override
-      public Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:com.heji.proto.DeleteBill)
-    }
-
-    // @@protoc_insertion_point(class_scope:com.heji.proto.DeleteBill)
-    private static final DeleteBill DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new DeleteBill();
-    }
-
-    public static DeleteBill getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<DeleteBill>
-        PARSER = new com.google.protobuf.AbstractParser<DeleteBill>() {
-      @Override
-      public DeleteBill parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<DeleteBill> parser() {
-      return PARSER;
-    }
-
-    @Override
-    public com.google.protobuf.Parser<DeleteBill> getParserForType() {
-      return PARSER;
-    }
-
-    @Override
-    public DeleteBill getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface UpdateBillOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.heji.proto.UpdateBill)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    java.util.List<WsMsg>
-        getWsMsgList();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    WsMsg getWsMsg(int index);
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    int getWsMsgCount();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    java.util.List<? extends WsMsgOrBuilder>
-        getWsMsgOrBuilderList();
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    WsMsgOrBuilder getWsMsgOrBuilder(
-        int index);
-
-    /**
-     * <code>string content = 2;</code>
-     * @return The content.
-     */
-    String getContent();
-    /**
-     * <code>string content = 2;</code>
-     * @return The bytes for content.
-     */
-    com.google.protobuf.ByteString
-        getContentBytes();
-  }
-  /**
-   * Protobuf type {@code com.heji.proto.UpdateBill}
-   */
-  public static final class UpdateBill extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.heji.proto.UpdateBill)
-      UpdateBillOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use UpdateBill.newBuilder() to construct.
-    private UpdateBill(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private UpdateBill() {
-      wsMsg_ = java.util.Collections.emptyList();
-      content_ = "";
-    }
-
-    @Override
-    @SuppressWarnings({"unused"})
-    protected Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new UpdateBill();
-    }
-
-    public static com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return Message.internal_static_com_heji_proto_UpdateBill_descriptor;
-    }
-
-    @Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return Message.internal_static_com_heji_proto_UpdateBill_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              UpdateBill.class, Builder.class);
-    }
-
-    public static final int WS_MSG_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private java.util.List<WsMsg> wsMsg_;
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public java.util.List<WsMsg> getWsMsgList() {
-      return wsMsg_;
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public java.util.List<? extends WsMsgOrBuilder>
-        getWsMsgOrBuilderList() {
-      return wsMsg_;
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public int getWsMsgCount() {
-      return wsMsg_.size();
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public WsMsg getWsMsg(int index) {
-      return wsMsg_.get(index);
-    }
-    /**
-     * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-     */
-    @Override
-    public WsMsgOrBuilder getWsMsgOrBuilder(
-        int index) {
-      return wsMsg_.get(index);
-    }
-
-    public static final int CONTENT_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile Object content_ = "";
-    /**
-     * <code>string content = 2;</code>
-     * @return The content.
-     */
-    @Override
-    public String getContent() {
-      Object ref = content_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        content_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string content = 2;</code>
-     * @return The bytes for content.
-     */
-    @Override
-    public com.google.protobuf.ByteString
-        getContentBytes() {
-      Object ref = content_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (String) ref);
-        content_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @Override
-    public boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      for (int i = 0; i < wsMsg_.size(); i++) {
-        output.writeMessage(1, wsMsg_.get(i));
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, content_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      for (int i = 0; i < wsMsg_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, wsMsg_.get(i));
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, content_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof UpdateBill)) {
-        return super.equals(obj);
-      }
-      UpdateBill other = (UpdateBill) obj;
-
-      if (!getWsMsgList()
-          .equals(other.getWsMsgList())) return false;
-      if (!getContent()
-          .equals(other.getContent())) return false;
-      return getUnknownFields().equals(other.getUnknownFields());
-    }
-
-    @Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (getWsMsgCount() > 0) {
-        hash = (37 * hash) + WS_MSG_FIELD_NUMBER;
-        hash = (53 * hash) + getWsMsgList().hashCode();
-      }
-      hash = (37 * hash) + CONTENT_FIELD_NUMBER;
-      hash = (53 * hash) + getContent().hashCode();
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static UpdateBill parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static UpdateBill parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static UpdateBill parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static UpdateBill parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static UpdateBill parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static UpdateBill parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static UpdateBill parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static UpdateBill parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static UpdateBill parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static UpdateBill parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static UpdateBill parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static UpdateBill parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(UpdateBill prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code com.heji.proto.UpdateBill}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.heji.proto.UpdateBill)
-        UpdateBillOrBuilder {
-      public static com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return Message.internal_static_com_heji_proto_UpdateBill_descriptor;
-      }
-
-      @Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return Message.internal_static_com_heji_proto_UpdateBill_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                UpdateBill.class, Builder.class);
-      }
-
-      // Construct using com.rh.heji.proto.Message.UpdateBill.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        if (wsMsgBuilder_ == null) {
-          wsMsg_ = java.util.Collections.emptyList();
-        } else {
-          wsMsg_ = null;
-          wsMsgBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        content_ = "";
-        return this;
-      }
-
-      @Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return Message.internal_static_com_heji_proto_UpdateBill_descriptor;
-      }
-
-      @Override
-      public UpdateBill getDefaultInstanceForType() {
-        return UpdateBill.getDefaultInstance();
-      }
-
-      @Override
-      public UpdateBill build() {
-        UpdateBill result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @Override
-      public UpdateBill buildPartial() {
-        UpdateBill result = new UpdateBill(this);
-        buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartialRepeatedFields(UpdateBill result) {
-        if (wsMsgBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            wsMsg_ = java.util.Collections.unmodifiableList(wsMsg_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.wsMsg_ = wsMsg_;
-        } else {
-          result.wsMsg_ = wsMsgBuilder_.build();
-        }
-      }
-
-      private void buildPartial0(UpdateBill result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.content_ = content_;
-        }
-      }
-
-      @Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof UpdateBill) {
-          return mergeFrom((UpdateBill)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(UpdateBill other) {
-        if (other == UpdateBill.getDefaultInstance()) return this;
-        if (wsMsgBuilder_ == null) {
-          if (!other.wsMsg_.isEmpty()) {
-            if (wsMsg_.isEmpty()) {
-              wsMsg_ = other.wsMsg_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureWsMsgIsMutable();
-              wsMsg_.addAll(other.wsMsg_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.wsMsg_.isEmpty()) {
-            if (wsMsgBuilder_.isEmpty()) {
-              wsMsgBuilder_.dispose();
-              wsMsgBuilder_ = null;
-              wsMsg_ = other.wsMsg_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              wsMsgBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getWsMsgFieldBuilder() : null;
-            } else {
-              wsMsgBuilder_.addAllMessages(other.wsMsg_);
-            }
-          }
-        }
-        if (!other.getContent().isEmpty()) {
-          content_ = other.content_;
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @Override
-      public boolean isInitialized() {
-        return true;
-      }
-
-      @Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                WsMsg m =
-                    input.readMessage(
-                        WsMsg.parser(),
-                        extensionRegistry);
-                if (wsMsgBuilder_ == null) {
-                  ensureWsMsgIsMutable();
-                  wsMsg_.add(m);
-                } else {
-                  wsMsgBuilder_.addMessage(m);
-                }
-                break;
-              } // case 10
-              case 18: {
-                content_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.util.List<WsMsg> wsMsg_ =
-        java.util.Collections.emptyList();
-      private void ensureWsMsgIsMutable() {
-        if ((bitField0_ & 0x00000001) == 0) {
-          wsMsg_ = new java.util.ArrayList<WsMsg>(wsMsg_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          WsMsg, WsMsg.Builder, WsMsgOrBuilder> wsMsgBuilder_;
-
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<WsMsg> getWsMsgList() {
-        if (wsMsgBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(wsMsg_);
-        } else {
-          return wsMsgBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public int getWsMsgCount() {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.size();
-        } else {
-          return wsMsgBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg getWsMsg(int index) {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.get(index);
-        } else {
-          return wsMsgBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder setWsMsg(
-          int index, WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.set(index, value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder setWsMsg(
-          int index, WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.add(value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          int index, WsMsg value) {
-        if (wsMsgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureWsMsgIsMutable();
-          wsMsg_.add(index, value);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.add(builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addWsMsg(
-          int index, WsMsg.Builder builderForValue) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          wsMsgBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder addAllWsMsg(
-          Iterable<? extends WsMsg> values) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, wsMsg_);
-          onChanged();
-        } else {
-          wsMsgBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder clearWsMsg() {
-        if (wsMsgBuilder_ == null) {
-          wsMsg_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          wsMsgBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public Builder removeWsMsg(int index) {
-        if (wsMsgBuilder_ == null) {
-          ensureWsMsgIsMutable();
-          wsMsg_.remove(index);
-          onChanged();
-        } else {
-          wsMsgBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder getWsMsgBuilder(
-          int index) {
-        return getWsMsgFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsgOrBuilder getWsMsgOrBuilder(
-          int index) {
-        if (wsMsgBuilder_ == null) {
-          return wsMsg_.get(index);  } else {
-          return wsMsgBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<? extends WsMsgOrBuilder>
-           getWsMsgOrBuilderList() {
-        if (wsMsgBuilder_ != null) {
-          return wsMsgBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(wsMsg_);
-        }
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder addWsMsgBuilder() {
-        return getWsMsgFieldBuilder().addBuilder(
-            WsMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public WsMsg.Builder addWsMsgBuilder(
-          int index) {
-        return getWsMsgFieldBuilder().addBuilder(
-            index, WsMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .com.heji.proto.WsMsg ws_msg = 1;</code>
-       */
-      public java.util.List<WsMsg.Builder>
-           getWsMsgBuilderList() {
-        return getWsMsgFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          WsMsg, WsMsg.Builder, WsMsgOrBuilder>
-          getWsMsgFieldBuilder() {
-        if (wsMsgBuilder_ == null) {
-          wsMsgBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              WsMsg, WsMsg.Builder, WsMsgOrBuilder>(
-                  wsMsg_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          wsMsg_ = null;
-        }
-        return wsMsgBuilder_;
-      }
-
-      private Object content_ = "";
-      /**
-       * <code>string content = 2;</code>
-       * @return The content.
-       */
-      public String getContent() {
-        Object ref = content_;
-        if (!(ref instanceof String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          content_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      /**
-       * <code>string content = 2;</code>
-       * @return The bytes for content.
-       */
-      public com.google.protobuf.ByteString
-          getContentBytes() {
-        Object ref = content_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (String) ref);
-          content_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string content = 2;</code>
-       * @param value The content to set.
-       * @return This builder for chaining.
-       */
-      public Builder setContent(
-          String value) {
-        if (value == null) { throw new NullPointerException(); }
-        content_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string content = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearContent() {
-        content_ = getDefaultInstance().getContent();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string content = 2;</code>
-       * @param value The bytes for content to set.
-       * @return This builder for chaining.
-       */
-      public Builder setContentBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        content_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      @Override
-      public Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @Override
-      public Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:com.heji.proto.UpdateBill)
-    }
-
-    // @@protoc_insertion_point(class_scope:com.heji.proto.UpdateBill)
-    private static final UpdateBill DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new UpdateBill();
-    }
-
-    public static UpdateBill getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<UpdateBill>
-        PARSER = new com.google.protobuf.AbstractParser<UpdateBill>() {
-      @Override
-      public UpdateBill parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<UpdateBill> parser() {
-      return PARSER;
-    }
-
-    @Override
-    public com.google.protobuf.Parser<UpdateBill> getParserForType() {
-      return PARSER;
-    }
-
-    @Override
-    public UpdateBill getDefaultInstanceForType() {
+    public Packet getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_heji_proto_WsMsg_descriptor;
+    internal_static_com_heji_proto_Packet_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_heji_proto_WsMsg_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_heji_proto_UpdateBook_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_heji_proto_UpdateBook_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_heji_proto_AddBill_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_heji_proto_AddBill_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_heji_proto_DeleteBill_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_heji_proto_DeleteBill_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_heji_proto_DeleteBill_Content_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_heji_proto_DeleteBill_Content_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_heji_proto_UpdateBill_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_heji_proto_UpdateBill_fieldAccessorTable;
+      internal_static_com_heji_proto_Packet_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
   }
-  private static final com.google.protobuf.Descriptors.FileDescriptor
+  private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\rmessage.proto\022\016com.heji.proto\"i\n\005WsMsg" +
-      "\022\n\n\002id\030\001 \001(\t\022#\n\004type\030\002 \001(\0162\025.com.heji.pr" +
-      "oto.Types\022\021\n\ttimestamp\030\003 \001(\004\022\016\n\006fromId\030\004" +
-      " \001(\t\022\014\n\004toId\030\005 \001(\t\"D\n\nUpdateBook\022%\n\006ws_m" +
-      "sg\030\001 \003(\0132\025.com.heji.proto.WsMsg\022\017\n\007conte" +
-      "nt\030\002 \001(\t\"A\n\007AddBill\022%\n\006ws_msg\030\001 \003(\0132\025.co" +
-      "m.heji.proto.WsMsg\022\017\n\007content\030\002 \001(\t\"N\n\nD" +
-      "eleteBill\022%\n\006ws_msg\030\001 \003(\0132\025.com.heji.pro" +
-      "to.WsMsg\032\031\n\007Content\022\016\n\006billId\030\002 \001(\t\"D\n\nU" +
-      "pdateBill\022%\n\006ws_msg\030\001 \003(\0132\025.com.heji.pro" +
-      "to.WsMsg\022\017\n\007content\030\002 \001(\t*\025\n\005Types\022\014\n\010AD" +
-      "D_BILL\020\000B\035\n\021com.rh.heji.protoZ\010../protob" +
-      "\006proto3"
+      "\n\rmessage.proto\022\016com.heji.proto\"z\n\006Packe" +
+      "t\022\n\n\002id\030\001 \001(\t\022\"\n\004type\030\002 \001(\0162\024.com.heji.p" +
+      "roto.Type\022\021\n\ttimestamp\030\003 \001(\004\022\016\n\006fromId\030\004" +
+      " \001(\t\022\014\n\004toId\030\005 \003(\t\022\017\n\007content\030\006 \001(\t*?\n\004T" +
+      "ype\022\007\n\003ACK\020\000\022\014\n\010ADD_BILL\020\001\022\017\n\013DELETE_BIL" +
+      "L\020\002\022\017\n\013UPDATE_BILL\020\003B\036\n\022com.hao.heji.pro" +
+      "toZ\010../protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_com_heji_proto_WsMsg_descriptor =
+    internal_static_com_heji_proto_Packet_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_com_heji_proto_WsMsg_fieldAccessorTable = new
+    internal_static_com_heji_proto_Packet_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_heji_proto_WsMsg_descriptor,
-        new String[] { "Id", "Type", "Timestamp", "FromId", "ToId", });
-    internal_static_com_heji_proto_UpdateBook_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_com_heji_proto_UpdateBook_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_heji_proto_UpdateBook_descriptor,
-        new String[] { "WsMsg", "Content", });
-    internal_static_com_heji_proto_AddBill_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_com_heji_proto_AddBill_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_heji_proto_AddBill_descriptor,
-        new String[] { "WsMsg", "Content", });
-    internal_static_com_heji_proto_DeleteBill_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_com_heji_proto_DeleteBill_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_heji_proto_DeleteBill_descriptor,
-        new String[] { "WsMsg", });
-    internal_static_com_heji_proto_DeleteBill_Content_descriptor =
-      internal_static_com_heji_proto_DeleteBill_descriptor.getNestedTypes().get(0);
-    internal_static_com_heji_proto_DeleteBill_Content_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_heji_proto_DeleteBill_Content_descriptor,
-        new String[] { "BillId", });
-    internal_static_com_heji_proto_UpdateBill_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_com_heji_proto_UpdateBill_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_heji_proto_UpdateBill_descriptor,
-        new String[] { "WsMsg", "Content", });
+        internal_static_com_heji_proto_Packet_descriptor,
+        new String[] { "Id", "Type", "Timestamp", "FromId", "ToId", "Content", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

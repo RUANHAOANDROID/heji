@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,7 @@ import com.blankj.utilcode.util.ToastUtils
 import com.hao.heji.ui.user.login.LoginActivity
 import com.hao.heji.R
 import com.hao.heji.databinding.FragmentRegisterBinding
+import com.hao.heji.requireNonEmpty
 import com.hao.heji.ui.base.render
 
 
@@ -47,7 +49,14 @@ class RegisterFragment : Fragment() {
                 val code = editInviteCode.text.toString()
                 val tel = editTEL.text.toString()
                 val username = editUserName.text.toString()
-                viewModel.doAction(RegisterAction.Register(username, tel, code, password1))
+                try {
+                    username.requireNonEmpty("UserName is null!")
+                    tel.requireNonEmpty("TEL is null!")
+                    password1.requireNonEmpty("password is null!")
+                    viewModel.doAction(RegisterAction.Register(username, tel, code, password1))
+                } catch (e: Exception) {
+                    ToastUtils.showLong(e.message)
+                }
             }
         }
     }

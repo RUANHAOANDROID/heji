@@ -31,6 +31,7 @@ class App : Application() {
         Intent(this, SyncService::class.java).also {
             startService(it)
         }
+        viewModel.connectServer()
     }
 
     companion object {

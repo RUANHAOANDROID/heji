@@ -42,7 +42,12 @@ fun String.getObjectTime(): Date {
     val time = "${Integer.parseInt(this.substring(0, 8), 16)}000".toLong()
     return Date(time)
 }
-
+/**
+ * 检查String抛出异常
+ */
+inline fun String.requireNonEmpty(errorMessage: String) {
+    if (isEmpty()) throw RuntimeException(errorMessage)
+}
 
 fun CoroutineScope.launchIO(
     block: suspend () -> Unit,

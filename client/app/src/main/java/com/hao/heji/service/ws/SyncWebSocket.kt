@@ -27,7 +27,6 @@ class SyncWebSocket() {
         var URL = "ws://${Config.serverUrl.split("://")[1]}"
 
         //val URL ="ws://192.168.8.68:8194/uchi-emcs"
-        var CONNECT_ID = "device0"
         val client: OkHttpClient = OkHttpClient.Builder()
             .readTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
@@ -72,31 +71,30 @@ class SyncWebSocket() {
     }
 
     fun close() {
-        webSocket?.close(1000, CONNECT_ID)
+        webSocket?.close(1000,"主动关闭")
         client.dispatcher.cancelAll()
         status = Status.CLOSE
     }
 
-    private fun reconnect() {
+    private fun reconnect(token: String) {
         close()
-        connect(URL, CONNECT_ID, scope)
+        connect(URL, token, scope)
     }
 
     fun connect(
         wsUrl: String = URL,
-        connectId: String = CONNECT_ID, scope: CoroutineScope
+        token: String, scope: CoroutineScope
     ) {
         if (status == Status.OPEN) {
-            webSocket?.close(1000, CONNECT_ID)
+            webSocket?.close(1000, "关闭旧的连接")
         }
-        CONNECT_ID = connectId
         URL = wsUrl
         this.scope = scope
         val request = Request.Builder()
-            .addHeader("id", CONNECT_ID)
+            .addHeader("Authorization", " Bearer $token")
             .url(wsUrl)
             .build()
-        LogUtils.d("run: connect url=${wsUrl} id=${connectId}")
+        LogUtils.d("run: connect url=${wsUrl}")
         val webSocketListener = object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)

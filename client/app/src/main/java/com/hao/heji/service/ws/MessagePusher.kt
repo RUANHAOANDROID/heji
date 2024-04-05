@@ -41,7 +41,7 @@ class MessagePusher {
             .addToId("hao88")
             .setFromId("ahao")
             .setType(Message.Type.ADD_BILL)
-            .setContent(6,anyBill)
+            .addContent(anyBill)
             .build()
         connect.send(pack.toBytes())
     }

@@ -57,7 +57,7 @@ class CreateBillFragment : BaseFragment() {
     internal val viewModel by lazy {
         ViewModelProvider(
             this,
-            CreateBillViewModelFactory(mainActivity.mService.getBillSyncManager())
+            CreateBillViewModelFactory(mainActivity.mService.getSyncPusher())
         )[CreateBillViewModel::class.java]
     }
 

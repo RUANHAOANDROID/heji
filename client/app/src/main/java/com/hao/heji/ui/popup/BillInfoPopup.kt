@@ -109,7 +109,7 @@ class PopupBillInfo(
         ) {
             context as MainActivity
             mBill.also {
-                if (it.createUser == Config.user.name) {
+                if (it.crtUser == Config.user.name) {
                     //状态删除
                     App.dataBase.billDao().preDelete(it.id)
                     //异步删除->删除成功->本地删除

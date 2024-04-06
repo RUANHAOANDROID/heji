@@ -8,7 +8,7 @@ import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.data.db.*
 import com.hao.heji.data.db.mongo.ObjectId
-import com.hao.heji.service.sync.IBillSync
+import com.hao.heji.service.ws.SyncPusher
 import com.hao.heji.ui.base.BaseViewModel
 import com.hao.heji.utils.launchIO
 import java.util.*
@@ -17,7 +17,7 @@ import java.util.*
  * 账单添加页ViewModel 不要在其他页面应用该ViewModel
  */
 @PublishedApi
-internal class CreateBillViewModel(private val mBillSync: IBillSync) :
+internal class CreateBillViewModel(private val syncPusher: SyncPusher?) :
     BaseViewModel<CreateBillAction, CreateBillUIState>() {
 
     var keyBoardStack: Stack<String>? = null//用于保存栈
@@ -51,7 +51,7 @@ internal class CreateBillViewModel(private val mBillSync: IBillSync) :
                 is CreateBillAction.DeleteImage -> {
                     val image = action.image
                     App.dataBase.imageDao().preDelete(image.id)
-                    mBillSync.deleteImage(image)
+//                    mBillSync.deleteImage(image)
                 }
                 is CreateBillAction.GetCategories -> {
                     LogUtils.d(
@@ -91,9 +91,11 @@ internal class CreateBillViewModel(private val mBillSync: IBillSync) :
                 image
             }.toMutableList()
             images.addAll(selectImages)
+            var count: Long =
+                App.dataBase.billImageDao().installBillAndImage(bill, images)
+        }else{
+            App.dataBase.billDao().install(bill)
         }
-        var count: Long =
-            App.dataBase.billImageDao().installBillAndImage(bill, images)
-        mBillSync.add(bill)
+        syncPusher?.addBill(bill)
     }
 }

@@ -7,7 +7,6 @@ import com.hao.heji.data.converters.LogicConverters
 import com.hao.heji.data.db.mongo.ObjectId
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
-import java.util.jar.Attributes.Name
 
 /**
  * 账本
@@ -34,9 +33,14 @@ data class Book(
 
     @Json(name = "type")
     @ColumnInfo(name = COLUMN_TYPE)
+
     var type: String? = null,//账本类型
     @Json(name = "crt_time")
+
     var crtTime: Long = System.currentTimeMillis(),
+    @Json(name = "upd_time")
+    var updTime: Long? = 0,
+
     @Json(name = "banner")
     @ColumnInfo(name = COLUMN_BANNER_URL)
     var bannerUrl: String? = null,//封面图片

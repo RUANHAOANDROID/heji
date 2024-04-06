@@ -24,48 +24,56 @@ public final class Message {
   public enum Type
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
-     * <code>ACK_OK = 0;</code>
+     * <code>ADD_BILL = 0;</code>
      */
-    ACK_OK(0),
+    ADD_BILL(0),
     /**
-     * <code>ACK_ERR = 1;</code>
+     * <code>ADD_BILL_ACK = 1;</code>
      */
-    ACK_ERR(1),
+    ADD_BILL_ACK(1),
     /**
-     * <code>ADD_BILL = 2;</code>
+     * <code>DELETE_BILL = 2;</code>
      */
-    ADD_BILL(2),
+    DELETE_BILL(2),
     /**
-     * <code>DELETE_BILL = 3;</code>
+     * <code>DELETE_BILL_ACK = 3;</code>
      */
-    DELETE_BILL(3),
+    DELETE_BILL_ACK(3),
     /**
      * <code>UPDATE_BILL = 4;</code>
      */
     UPDATE_BILL(4),
+    /**
+     * <code>UPDATE_BILL_ACK = 5;</code>
+     */
+    UPDATE_BILL_ACK(5),
     UNRECOGNIZED(-1),
     ;
 
     /**
-     * <code>ACK_OK = 0;</code>
+     * <code>ADD_BILL = 0;</code>
      */
-    public static final int ACK_OK_VALUE = 0;
+    public static final int ADD_BILL_VALUE = 0;
     /**
-     * <code>ACK_ERR = 1;</code>
+     * <code>ADD_BILL_ACK = 1;</code>
      */
-    public static final int ACK_ERR_VALUE = 1;
+    public static final int ADD_BILL_ACK_VALUE = 1;
     /**
-     * <code>ADD_BILL = 2;</code>
+     * <code>DELETE_BILL = 2;</code>
      */
-    public static final int ADD_BILL_VALUE = 2;
+    public static final int DELETE_BILL_VALUE = 2;
     /**
-     * <code>DELETE_BILL = 3;</code>
+     * <code>DELETE_BILL_ACK = 3;</code>
      */
-    public static final int DELETE_BILL_VALUE = 3;
+    public static final int DELETE_BILL_ACK_VALUE = 3;
     /**
      * <code>UPDATE_BILL = 4;</code>
      */
     public static final int UPDATE_BILL_VALUE = 4;
+    /**
+     * <code>UPDATE_BILL_ACK = 5;</code>
+     */
+    public static final int UPDATE_BILL_ACK_VALUE = 5;
 
 
     public final int getNumber() {
@@ -92,11 +100,12 @@ public final class Message {
      */
     public static Type forNumber(int value) {
       switch (value) {
-        case 0: return ACK_OK;
-        case 1: return ACK_ERR;
-        case 2: return ADD_BILL;
-        case 3: return DELETE_BILL;
+        case 0: return ADD_BILL;
+        case 1: return ADD_BILL_ACK;
+        case 2: return DELETE_BILL;
+        case 3: return DELETE_BILL_ACK;
         case 4: return UPDATE_BILL;
+        case 5: return UPDATE_BILL_ACK;
         default: return null;
       }
     }
@@ -480,7 +489,7 @@ public final class Message {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
-      if (type_ != Type.ACK_OK.getNumber()) {
+      if (type_ != Type.ADD_BILL.getNumber()) {
         output.writeEnum(2, type_);
       }
       if (timestamp_ != 0L) {
@@ -507,7 +516,7 @@ public final class Message {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
-      if (type_ != Type.ACK_OK.getNumber()) {
+      if (type_ != Type.ADD_BILL.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, type_);
       }
@@ -1384,10 +1393,11 @@ public final class Message {
       "\n\rmessage.proto\022\016com.heji.proto\"z\n\006Packe" +
       "t\022\n\n\002id\030\001 \001(\t\022\"\n\004type\030\002 \001(\0162\024.com.heji.p" +
       "roto.Type\022\021\n\ttimestamp\030\003 \001(\003\022\016\n\006fromId\030\004" +
-      " \001(\t\022\014\n\004toId\030\005 \003(\t\022\017\n\007content\030\006 \001(\t*O\n\004T" +
-      "ype\022\n\n\006ACK_OK\020\000\022\013\n\007ACK_ERR\020\001\022\014\n\010ADD_BILL" +
-      "\020\002\022\017\n\013DELETE_BILL\020\003\022\017\n\013UPDATE_BILL\020\004B\036\n\022" +
-      "com.hao.heji.protoZ\010../wsmsgb\006proto3"
+      " \001(\t\022\014\n\004toId\030\005 \003(\t\022\017\n\007content\030\006 \001(\t*r\n\004T" +
+      "ype\022\014\n\010ADD_BILL\020\000\022\020\n\014ADD_BILL_ACK\020\001\022\017\n\013D" +
+      "ELETE_BILL\020\002\022\023\n\017DELETE_BILL_ACK\020\003\022\017\n\013UPD" +
+      "ATE_BILL\020\004\022\023\n\017UPDATE_BILL_ACK\020\005B\036\n\022com.h" +
+      "ao.heji.protoZ\010../wsmsgb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

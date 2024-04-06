@@ -21,6 +21,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavController.OnDestinationChangedListener
 import androidx.navigation.NavDestination
@@ -41,6 +42,8 @@ import com.hao.heji.ui.home.DrawerListener
 import com.hao.heji.ui.user.JWTParse
 import com.hao.heji.ui.user.login.LoginActivity
 import com.hao.heji.utils.permitDiskReads
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.lang.ref.WeakReference
 
@@ -86,16 +89,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun doBindService() {
-        Intent(this, SyncService::class.java).also {
-            startService(it)
-            mIsBound = bindService(it, connection, BIND_AUTO_CREATE)
+        if (Config.user!= LocalUser){
+            Intent(this, SyncService::class.java).also {
+                startService(it)
+                mIsBound = bindService(it, connection, BIND_AUTO_CREATE)
+            }
         }
+
     }
 
     private fun doUnbindService() {
-        if (mIsBound) {
-            Intent(this, SyncService::class.java).also {
-                unbindService(connection)
+        if (Config.user!= LocalUser){
+            if (mIsBound) {
+                Intent(this, SyncService::class.java).also {
+                    unbindService(connection)
+                }
             }
         }
     }
@@ -115,15 +123,18 @@ class MainActivity : AppCompatActivity() {
                 toLogin()
             }
         }
-        //观察拦截器发出的登录消息
-        App.viewModel.loginEvent.observe(this) {
-            navController.currentBackStackEntry?.let {
-                if (it.destination.label != resources.getString(R.string.login)) {
-                    if (!Config.isInitUser())
-                        toLogin()
+        lifecycleScope.launch {
+            //观察拦截器发出的登录消息
+            App.viewModel.loginEvent.filterNotNull().collect{
+                navController.currentBackStackEntry?.let {
+                    if (it.destination.label != resources.getString(R.string.login)) {
+                        if (!Config.isInitUser())
+                            toLogin()
+                    }
                 }
             }
         }
+
     }
 
     override fun onResume() {

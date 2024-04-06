@@ -1,6 +1,7 @@
 package com.hao.heji.config
 
 import android.content.Context
+import com.hao.heji.BuildConfig
 import com.hao.heji.config.store.DataStoreManager
 import com.hao.heji.data.db.Book
 import com.hao.heji.ui.user.JWTParse
@@ -21,7 +22,7 @@ internal val InitBook = Book(
 
 object Config {
 
-    var serverUrl = "http://192.168.8.68:8080"
+    var serverUrl = BuildConfig.HTTP_URL
 
     /**
      * last switch book

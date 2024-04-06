@@ -4,11 +4,16 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import com.blankj.utilcode.util.LogUtils
+import com.hao.heji.config.Config
 import com.hao.heji.service.sync.impl.BillSyncImpl
 import com.hao.heji.service.sync.impl.BookSyncImpl
+import com.hao.heji.service.ws.SyncPusher
+import com.hao.heji.service.ws.SyncWebSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 
 /**
  * 同步服务
@@ -24,14 +29,22 @@ class SyncService : Service() {
     //后台具体操作任务使用server scope
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
-
+    private var syncPusher: SyncPusher? = null
     override fun onCreate() {
         super.onCreate()
+        LogUtils.d("onCreate")
         mBookSync = BookSyncImpl(scope)
         mBillSync = BillSyncImpl(scope)
+        val address = Config.serverUrl.split("://")[1]
+        val token = Config.user.token
+        val instance = SyncWebSocket.getInstance()
+        instance
+            .connect(wsUrl = "ws://${address}/api/v1/ws", token, scope)
+        syncPusher= SyncPusher(instance)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        LogUtils.d("onStartCommand")
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -41,7 +54,10 @@ class SyncService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        LogUtils.d("onDestroy")
         job.cancel()
+        scope.cancel()
+        SyncWebSocket.getInstance().close()
     }
 
     inner class SyncBinder : Binder() {
@@ -51,4 +67,5 @@ class SyncService : Service() {
     fun getBookSyncManager(): IBookSync = mBookSync
 
     fun getBillSyncManager(): IBillSync = mBillSync
+    fun getSyncPusher(): SyncPusher? = syncPusher
 }

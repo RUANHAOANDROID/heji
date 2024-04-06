@@ -4,6 +4,7 @@ import android.util.Log
 import com.blankj.utilcode.util.ToastUtils
 import com.hao.heji.*
 import com.hao.heji.config.Config
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -29,7 +30,11 @@ class AuthorizedInterceptor : Interceptor {
         if (BuildConfig.DEBUG) {
             ToastUtils.showLong("请登录")
         }
-        if (!Config.enableOfflineMode)
-            App.viewModel.loginEvent.postValue(Event(401))
+        if (!Config.enableOfflineMode){
+            runBlocking {
+                App.viewModel.loginEvent.emit(Event(401))
+            }
+        }
+
     }
 }

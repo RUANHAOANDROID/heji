@@ -91,6 +91,7 @@ data class Bill(
     var remark: String? = null,
     //是否已经删除 1 yes 0 no
     var deleted: Int = 0,
+
     @Ignore
     @ColumnInfo(name = "images")
     var images: List<String> = mutableListOf(),

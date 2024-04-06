@@ -67,22 +67,22 @@ data class Bill(
     /**
      * 更新时间
      */
-    @Json(name = "update_time")
-    @ColumnInfo(name = "update_time")
-    var updateTime: Long? = 0,
+    @Json(name = "upd_time")
+    @ColumnInfo(name = "upd_time")
+    var updTime: Long? = 0,
 
     /**
      * 用户标签，费用产生人
      */
     var dealer: String? = null,
 
-    @Json(name = "create_user")
-    @ColumnInfo(name = "create_user")
-    var createUser: String = Config.user.name,
+    @Json(name = "crt_user")
+    @ColumnInfo(name = "crt_user")
+    var crtUser: String = Config.user.name,
 
-    @Json(name = "create_time")
-    @ColumnInfo(name = "create_time")
-    var createTime: Long = System.currentTimeMillis(),
+    @Json(name = "crt_time")
+    @ColumnInfo(name = "crt_time")
+    var crtTime: Long = System.currentTimeMillis(),
 
     /**
      * 备注

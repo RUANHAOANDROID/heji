@@ -24,7 +24,7 @@ class AppViewModel(application: App) : AndroidViewModel(application) {
             money = BigDecimal.ONE
             type = 1
             category = "test"
-            createUser = "hao88"
+            crtUser = "hao88"
             remark = "测试推送账单"
         }
         pusher.addBill(bill)

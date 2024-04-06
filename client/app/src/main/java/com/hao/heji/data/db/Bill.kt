@@ -35,35 +35,39 @@ data class Bill(
     @ColumnInfo(name = COLUMN_ID)
     var id: String = ObjectId().toHexString(),
 
+    @Json(name = "book_id")
     @ColumnInfo(name = COLUMN_BOOK_ID, index = true)
     var bookId: String = Config.book.id,
     /**
      * 钱
      */
+    @Json(name = "money")
     @TypeConverters(MoneyConverters::class)
     var money: BigDecimal = MoneyConverters.ZERO_00(),
 
     /**
      * 收|支类型 s|z
      */
+    @Json(name = "type")
     var type: Int = BillType.EXPENDITURE.valueInt,
 
     /**
      * 类别
      */
-
+    @Json(name = "category")
     var category: String? = null,
 
     /**
      * 账单时间-产生费用的日期-以这个为主
      */
-
+    @Json(name = "time")
     @ColumnInfo(name = "time")
     var time: Date = Date(),
 
     /**
      * 更新时间
      */
+    @Json(name = "update_time")
     @ColumnInfo(name = "update_time")
     var updateTime: Long? = 0,
 
@@ -72,12 +76,18 @@ data class Bill(
      */
     var dealer: String? = null,
 
+    @Json(name = "create_user")
     @ColumnInfo(name = "create_user")
     var createUser: String = Config.user.name,
+
+    @Json(name = "create_time")
+    @ColumnInfo(name = "create_time")
+    var createTime: Long = System.currentTimeMillis(),
 
     /**
      * 备注
      */
+    @Json(name = "remark")
     var remark: String? = null,
     //是否已经删除 1 yes 0 no
     var deleted: Int = 0,

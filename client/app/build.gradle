@@ -171,7 +171,7 @@ dependencies {
     // kotlin扩展（可选）
     implementation 'com.gyf.immersionbar:immersionbar-ktx:3.0.0'
 
-    implementation('com.squareup.moshi:moshi-kotlin:1.15.0')
+    implementation('com.squareup.moshi:moshi-kotlin:1.15.1')
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
     //database debug test
     debugImplementation 'com.guolindev.glance:glance:1.1.0'

@@ -12,7 +12,6 @@ import com.hao.heji.data.db.Book
 import com.hao.heji.data.db.STATUS
 import com.hao.heji.data.db.mongo.ObjectId
 import com.hao.heji.data.repository.BookRepository
-import com.hao.heji.network.HttpManager
 import com.hao.heji.service.sync.IBookSync
 import com.hao.heji.utils.launch
 import com.hao.heji.utils.launchIO
@@ -75,7 +74,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
 
     fun getBookList() {
         launch({
-            val response = HttpManager.getInstance().bookList()
+            val response =bookRepository.bookList()
             val netBooks = response.data
             if (netBooks.isNotEmpty()) {
                 for (book in netBooks) {
@@ -105,7 +104,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
             if (billsCount > 0) {
                 ToastUtils.showLong("该账本下存在账单，无法直接删除")
             } else {
-                val response = HttpManager.getInstance().deleteBook(id)
+                val response = bookRepository.deleteBook(id)
                 if (response.code == 0) {
                     App.dataBase.bookDao().deleteById(id)
                     runMainThread {
@@ -120,7 +119,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
 
     fun sharedBook(bookId: String, @MainThread call: (Result<String>) -> Unit) {
         launchIO({
-            val response = HttpManager.getInstance().sharedBook(book_id = bookId)
+            val response = bookRepository.sharedBook(book_id = bookId)
             if (response.data.isNotEmpty()) {
                 val shareCode = response.data as String
                 runMainThread {
@@ -135,7 +134,7 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
     fun joinBook(code: String, call: (Result<String>) -> Unit) {
         launch({
             call(Result.Loading)
-            val response = HttpManager.getInstance().joinBook(code)
+            val response = bookRepository.joinBook(code)
             call(Result.Success(response.data))
         }, { call(Result.Error(it)) })
 

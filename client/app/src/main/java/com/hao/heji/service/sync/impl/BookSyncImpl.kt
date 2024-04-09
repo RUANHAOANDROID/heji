@@ -5,8 +5,8 @@ import com.hao.heji.config.Config
 import com.hao.heji.data.db.Book
 import com.hao.heji.data.db.STATUS
 import com.hao.heji.launchIO
-import com.hao.heji.network.HttpManager
 import com.hao.heji.service.sync.IBookSync
+import com.hao.heji.data.repository.BookRepository
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
  * @since v1.0
  */
 class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
+    val bookRepository = BookRepository()
     override fun compare() {
 
     }
@@ -26,7 +27,7 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
 
     override fun delete(bookID: String) {
         scope.launchIO({
-            val response = HttpManager.getInstance().deleteBook(bookID)
+            val response = bookRepository.deleteBook(bookID)
             if (response.success()) {
                 App.dataBase.bookDao().deleteById(response.data)
             }
@@ -43,7 +44,7 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
     override fun add(book: Book) {
         if (Config.enableOfflineMode) return
         scope.launchIO({
-            val response = HttpManager.getInstance().createBook(book)
+            val response = bookRepository.createBook(book)
             if (response.success()) {
                 val newBook = Book(name = book.name).apply {
                     id = book.id
@@ -57,12 +58,11 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
 
     override fun update(book: Book) {
         scope.launchIO({
-            val response = HttpManager.getInstance()
-                .updateBook(
-                    book_id = book.id,
-                    bookName = book.name,
-                    bookType = book.type.toString()
-                )
+            val response = bookRepository.updateBook(
+                book_id = book.id,
+                bookName = book.name,
+                bookType = book.type.toString()
+            )
             if (response.success()) {
                 App.dataBase.bookDao().update(book = book.apply {
 

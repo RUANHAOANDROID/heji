@@ -8,17 +8,19 @@ import com.hao.heji.config.LocalUser
 import com.hao.heji.config.store.DataStoreManager
 import com.hao.heji.data.db.Book
 import com.hao.heji.data.db.STATUS
+import com.hao.heji.data.repository.BookRepository
 import com.hao.heji.network.HttpManager
 import com.hao.heji.ui.base.BaseViewModel
 import com.hao.heji.ui.user.JWTParse
+import com.hao.heji.data.repository.UserRepository
 import com.hao.heji.utils.launch
 import com.hao.heji.utils.launchIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
-
-
+    private val userRepository = UserRepository()
+    private val bookRepository = BookRepository()
     override fun doAction(action: LoginAction) {
         when (action) {
             is LoginAction.Login -> {
@@ -49,7 +51,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
 
     private fun login(tel: String, password: String) {
         launch({
-            var resp = HttpManager.getInstance().login(
+            var resp = userRepository.login(
                 tel,
                 encodePassword(password)
             )
@@ -74,7 +76,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
                     val books = bookDao.findBookIdsByUser(newUser.id)//查询本地是否存在账本
                     if (books.size <= 0) {
                         bookDao.insert(initialBook)
-                        val response = HttpManager.getInstance().createBook(initialBook)
+                        val response = bookRepository.createBook(initialBook)
                         if (response.success()) {
                             initialBook.syncStatus = STATUS.SYNCED
                             bookDao.upsert(initialBook)
@@ -98,7 +100,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
 
     private suspend fun getRemoteBooks(): MutableList<Book> {
         runCatching<MutableList<Book>> {
-            HttpManager.getInstance().bookList().data
+            bookRepository.bookList().data
         }.onSuccess {
             return it
         }.onFailure {

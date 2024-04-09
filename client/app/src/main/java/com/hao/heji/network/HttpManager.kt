@@ -19,19 +19,12 @@ import kotlin.coroutines.suspendCoroutine
 
 class HttpManager {
     private var apiServer = HttpRetrofit.create(BuildConfig.HTTP_URL, ApiServer::class.java)
-    suspend fun register(registerUser: RegisterUser) = apiServer.register(registerUser).await()
-    suspend fun login(username: String, password: String) =
-        apiServer.login(mapOf("tel" to username, "password" to password)).await()
 
-    suspend fun findBook(book_id: String) = apiServer.findBook(book_id).await()
-    suspend fun createBook(book: Book) = apiServer.createBook(book).await()
-    suspend fun bookList() = apiServer.bookList().await()
-    suspend fun sharedBook(book_id: String) = apiServer.sharedBook(book_id).await()
-    suspend fun deleteBook(book_id: String) = apiServer.deleteBook(book_id).await()
-    suspend fun updateBook(book_id: String, bookName: String, bookType: String) =
-        apiServer.updateBook(book_id, bookName, bookType).await()
+    fun server(): ApiServer {
+        return apiServer
+    }
 
-    suspend fun joinBook(sharedCode: String) = apiServer.joinBook(sharedCode).await()
+
     suspend fun pushBill(bill: Bill) =
         apiServer.saveBill(bill.apply { images = mutableListOf() }).await()
 

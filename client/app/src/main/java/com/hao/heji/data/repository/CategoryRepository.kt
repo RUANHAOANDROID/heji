@@ -2,16 +2,18 @@ package com.hao.heji.data.repository
 
 import android.text.TextUtils
 import com.hao.heji.App
-import com.hao.heji.data.DataRepository
 import com.hao.heji.data.Result
 import com.hao.heji.data.db.Category
 import com.hao.heji.data.db.STATUS
 import com.hao.heji.network.BaseResponse
+import com.hao.heji.network.HttpManager
 import com.hao.heji.network.request.CategoryEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class CategoryRepository : DataRepository() {
+class CategoryRepository () {
+    private val network=HttpManager.getInstance()
+    private val categoryDao =App.dataBase.categoryDao()
     suspend fun addCategory(category: CategoryEntity, bookId: String) {
         val response = network.categoryPush(category)
         response.let {
@@ -48,7 +50,7 @@ class CategoryRepository : DataRepository() {
         category.syncStatus = STATUS.UPDATED
         categoryDao.update(category)
         val response = network.categoryUpdate()
-        if (response.code == OK) {
+        if (response.code == 0) {
             category.syncStatus = STATUS.SYNCED
             categoryDao.update(category)
         }

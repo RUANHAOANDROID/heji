@@ -12,13 +12,12 @@ import com.hao.heji.data.db.Book
 import com.hao.heji.data.db.STATUS
 import com.hao.heji.data.db.mongo.ObjectId
 import com.hao.heji.data.repository.BookRepository
-import com.hao.heji.service.sync.IBookSync
 import com.hao.heji.utils.launch
 import com.hao.heji.utils.launchIO
 import com.hao.heji.utils.runMainThread
 import kotlinx.coroutines.flow.*
 
-class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
+class BookViewModel : ViewModel() {
     private val _bookLiveData = MediatorLiveData<Book>()
     private val _bookListLiveData = MediatorLiveData<MutableList<Book>>()
     private val bookDao = App.dataBase.bookDao()
@@ -54,7 +53,6 @@ class BookViewModel(private val mBookSync: IBookSync) : ViewModel() {
                     type = type,
                     crtUserId = Config.user.id
                 )
-                mBookSync.add(book)
                 _bookLiveData.postValue(book)
             }
         })

@@ -10,10 +10,7 @@ import com.hao.heji.ui.base.BaseFragment
 
 class CreateBookFragment : BaseFragment() {
     private val viewModel: BookViewModel by lazy {
-        ViewModelProvider(
-            this,
-            BookViewModelFactory(mainActivity.mService.getBookSyncManager())
-        )[BookViewModel::class.java]
+        ViewModelProvider(this)[BookViewModel::class.java]
     }
     private val binding: FragmentBookAddBinding by lazy {
         FragmentBookAddBinding.inflate(layoutInflater)

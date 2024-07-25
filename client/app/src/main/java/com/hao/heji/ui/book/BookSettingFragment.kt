@@ -22,10 +22,7 @@ import com.hao.heji.ui.popup.BookSharePopup
 class BookSettingFragment : BaseFragment() {
 
     private val viewModel: BookViewModel by lazy {
-        ViewModelProvider(
-            this,
-            BookViewModelFactory(mainActivity.mService.getBookSyncManager())
-        )[BookViewModel::class.java]
+        ViewModelProvider(this)[BookViewModel::class.java]
     }
     private val  binding: FragmentBookSettingBinding by lazy {  FragmentBookSettingBinding.inflate(layoutInflater) }
     private lateinit var book: Book

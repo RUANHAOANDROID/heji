@@ -32,10 +32,7 @@ class BookListFragment : BaseFragment() {
         FragmentBookListBinding.inflate(layoutInflater)
     }
     private val bookViewModel: BookViewModel by lazy {
-        ViewModelProvider(
-            this,
-            BookViewModelFactory(mainActivity.mService.getBookSyncManager())
-        )[BookViewModel::class.java]
+        ViewModelProvider(this)[BookViewModel::class.java]
     }
 
     override fun layout()=binding.root

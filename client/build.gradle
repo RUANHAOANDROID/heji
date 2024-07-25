@@ -8,7 +8,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.android.tools.build:gradle:8.3.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.9.4'
@@ -23,7 +23,7 @@ ext {
     lifecycle_version = '2.5.1'
     retrofit ="2.9.0"
     work_version = '2.7.0'
-    compileSdkVersion = 33 //编译SDK版本
+    compileSdkVersion = 34 //编译SDK版本
     buildToolsVersion = '30' //构建工具版本
     minSdkVersion = 26 //最小兼容
     targetSDKVersion = 28

@@ -55,10 +55,7 @@ import java.util.function.Consumer
 class CreateBillFragment : BaseFragment() {
 
     internal val viewModel by lazy {
-        ViewModelProvider(
-            this,
-            CreateBillViewModelFactory(mainActivity.mService.getSyncPusher())
-        )[CreateBillViewModel::class.java]
+        ViewModelProvider(this)[CreateBillViewModel::class.java]
     }
 
     private lateinit var pagerAdapter: FragmentViewPagerAdapter

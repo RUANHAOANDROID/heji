@@ -77,8 +77,7 @@ class PopupBillInfo(
         binding.tvUpdate.setOnClickListener {
             update(mBill)
             val bundle =
-                CreateBillFragmentArgs.Builder(ArgAddBill(isModify = true, mBill)).build()
-                    .toBundle()
+                CreateBillFragmentArgs(ArgAddBill(isModify = true, mBill)).toBundle()
             activity.navController.navigate(R.id.nav_bill_add, bundle)
             dismiss()
         }

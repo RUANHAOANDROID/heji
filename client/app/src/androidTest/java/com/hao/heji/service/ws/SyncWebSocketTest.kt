@@ -18,13 +18,5 @@ class SyncWebSocketTest {
         val instance = SyncWebSocket.getInstance()
         instance.connect(wsUrl = "ws://192.168.8.68:8888/api/v1/ws", token, App.viewModel.viewModelScope)
         Thread.sleep(3000)
-        val pusher = MessagePusher()
-        pusher.addBill(Bill().apply {
-            bookId="6605416bb83e8964d46add39"
-            money= BigDecimal.ONE
-            type=1
-            category="test"
-            createUser="hao88"
-        })
     }
 }

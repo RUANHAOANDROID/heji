@@ -47,7 +47,7 @@ class BookListFragment : BaseFragment() {
         adapter = BookListAdapter {
             findNavController().navigate(
                 R.id.nav_book_setting,
-                BookSettingFragmentArgs.Builder(it).build().toBundle()
+                BookSettingFragmentArgs(it).toBundle()
             )
         }
         val diffItemCallBack = object : ItemCallback<Book>() {

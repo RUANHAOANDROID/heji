@@ -54,9 +54,9 @@ class BillListFragment : BaseFragment() {
     private fun FragmentBillsHomeBinding.viewClick() {
         fab.setOnClickListener {
             val bill = Bill(time = Date())
-            val bundle = CreateBillFragmentArgs.Builder(
+            val bundle = CreateBillFragmentArgs(
                 ArgAddBill(false, bill)
-            ).build().toBundle()
+            ).toBundle()
             findNavController().navigate(
                 R.id.nav_bill_add, bundle
             )
@@ -213,13 +213,12 @@ class BillListFragment : BaseFragment() {
                     calendar[dayIncome.year, dayIncome.month - 1] = dayIncome.monthDay
 
                     val args =
-                        CreateBillFragmentArgs.Builder(
+                        CreateBillFragmentArgs(
                             ArgAddBill(
                                 false,
                                 Bill(time = calendar.time)
                             )
-                        )
-                            .build() //选择的日期
+                        )//选择的日期
                     findNavController()
                         .navigate(R.id.nav_bill_add, args.toBundle())
                 } else { //日详细列表ITEM

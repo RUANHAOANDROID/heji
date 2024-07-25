@@ -104,13 +104,12 @@ class CalendarNoteFragment : BaseFragment() {
             val calendar = java.util.Calendar.getInstance()
             calendar.set(year, month - 1, day)
             val args =
-                CreateBillFragmentArgs.Builder(
+                CreateBillFragmentArgs(
                     ArgAddBill(
                         isModify = false,
                         bill = Bill(time = calendar.time)
                     )
-                )
-                    .build()//选择的日期
+                )//选择的日期
             Navigation.findNavController(view).navigate(R.id.nav_bill_add, args.toBundle())
         }
         binding.todayFab.setOnClickListener {

@@ -142,7 +142,7 @@ internal class CategoryFragment : BaseFragment() {
             LogUtils.d(type)
             val categoryFragment = CategoryFragment()
             categoryFragment.arguments =
-                CategoryFragmentArgs.Builder().setType(type).build().toBundle()
+                CategoryFragmentArgs(type).toBundle()
             return categoryFragment
         }
     }

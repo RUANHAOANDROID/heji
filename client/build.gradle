@@ -19,7 +19,7 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 ext {
-    nav_version = "2.3.5"
+    nav_version = "2.7.7"
     lifecycle_version = '2.5.1'
     retrofit ="2.9.0"
     work_version = '2.7.0'

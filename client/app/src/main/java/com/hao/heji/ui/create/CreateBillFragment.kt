@@ -231,8 +231,7 @@ class CreateBillFragment : BaseFragment() {
         binding.imgAddCategory.setOnClickListener {
             findNavController().navigate(
                 R.id.nav_category_manager,
-                CategoryManagerFragmentArgs.Builder().setIeType(mBill.type).build()
-                    .toBundle()
+                CategoryManagerFragmentArgs(mBill.type).toBundle()
             )
         }
 

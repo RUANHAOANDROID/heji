@@ -13,4 +13,4 @@ import kotlinx.parcelize.Parcelize
  * @param bill 当没有Bill时传入一个新的Bill,在选择某日时代入日期
  */
 @Parcelize
-internal data class ArgAddBill(val isModify: Boolean = false, val bill: Bill?) : Parcelable
+data class ArgAddBill(val isModify: Boolean = false, val bill: Bill?) : Parcelable

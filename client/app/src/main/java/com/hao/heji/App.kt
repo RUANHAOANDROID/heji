@@ -7,7 +7,7 @@ import android.content.Intent
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.config.Config
 import com.hao.heji.data.AppDatabase
-import com.hao.heji.service.sync.SyncService
+import com.hao.heji.sync.SyncService
 import kotlinx.coroutines.runBlocking
 
 /**

@@ -1,11 +1,11 @@
-package com.hao.heji.service.sync.impl
+package com.hao.heji.sync.impl
 
 import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.data.db.Book
 import com.hao.heji.data.db.STATUS
 import com.hao.heji.launchIO
-import com.hao.heji.service.sync.IBookSync
+import com.hao.heji.sync.IBookSync
 import com.hao.heji.data.repository.BookRepository
 import kotlinx.coroutines.CoroutineScope
 

@@ -1,4 +1,4 @@
-package com.hao.heji.service.sync.impl
+package com.hao.heji.sync.impl
 
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
@@ -12,7 +12,7 @@ import com.hao.heji.launchIO
 import com.hao.heji.network.BaseResponse
 import com.hao.heji.network.HttpManager
 import com.hao.heji.network.response.ImageEntity
-import com.hao.heji.service.sync.IBillSync
+import com.hao.heji.sync.IBillSync
 import kotlinx.coroutines.CoroutineScope
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody

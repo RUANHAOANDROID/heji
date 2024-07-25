@@ -1,4 +1,4 @@
-package com.hao.heji.service.sync
+package com.hao.heji.sync
 
 import android.app.Service
 import android.content.Intent
@@ -6,8 +6,8 @@ import android.os.Binder
 import android.os.IBinder
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.config.Config
-import com.hao.heji.service.sync.impl.BillSyncImpl
-import com.hao.heji.service.sync.impl.BookSyncImpl
+import com.hao.heji.sync.impl.BillSyncImpl
+import com.hao.heji.sync.impl.BookSyncImpl
 import com.hao.heji.service.ws.SyncPusher
 import com.hao.heji.service.ws.SyncWebSocket
 import kotlinx.coroutines.CoroutineScope

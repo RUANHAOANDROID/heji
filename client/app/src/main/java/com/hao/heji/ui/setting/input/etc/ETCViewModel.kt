@@ -12,7 +12,7 @@ import com.hao.heji.data.db.Category
 import com.hao.heji.data.db.STATUS
 import com.hao.heji.data.db.mongo.ObjectId
 import com.hao.heji.moshi
-import com.hao.heji.service.sync.IBillSync
+import com.hao.heji.sync.IBillSync
 import com.hao.heji.ui.base.BaseViewModel
 import com.hao.heji.ui.setting.input.etc.dto.ETCListInfoEntity
 import com.hao.heji.ui.setting.input.etc.dto.HBETCEntity

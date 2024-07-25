@@ -2,7 +2,7 @@ package com.hao.heji.ui.setting.input.etc
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.hao.heji.service.sync.IBillSync
+import com.hao.heji.sync.IBillSync
 
 /**
  *@date: 2022/6/20

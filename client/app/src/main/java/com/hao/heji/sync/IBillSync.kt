@@ -1,4 +1,4 @@
-package com.hao.heji.service.sync
+package com.hao.heji.sync
 
 import com.hao.heji.data.db.Bill
 import com.hao.heji.data.db.Image

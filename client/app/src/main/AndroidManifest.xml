@@ -58,7 +58,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppStartup"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
-        <service android:name=".service.sync.SyncService"></service>
+        <service android:name=".sync.SyncService"></service>
         <!-- 适配华为（huawei）刘海屏 -->
         <meta-data
             android:name="android.notch_support"

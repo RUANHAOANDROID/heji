@@ -34,7 +34,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
             is LoginAction.SaveServerUrl -> {
                 launchIO({
                     DataStoreManager.saveServerUrl(action.address)
-                    Config.serverUrl = action.address
+                    Config.setServerUrl(action.address)
                     HttpManager.getInstance().redirectServer()
                 })
             }
@@ -57,9 +57,10 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
             )
             val newUser = JWTParse.getUser(resp.data)
             App.switchDataBase(newUser.id)
+
             with(Config) {
-                user = newUser
-                enableOfflineMode = false
+                setUser(newUser)
+                enableOfflineMode(false)
             }
             withContext(Dispatchers.IO) {
                 val remoteBooks = getRemoteBooks()
@@ -83,8 +84,8 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
                         }
                     }
                 }
-                Config.book = initialBook
-                Config.save()
+                Config.setBook(initialBook)
+                Config.save(newUser, initialBook, offLine = false)
                 send(LoginUiState.LoginSuccess(resp.data))
             }
         }, {
@@ -115,16 +116,15 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
      */
     private fun enableOfflineMode() {
         launchIO({
-            with(Config) {
-                App.switchDataBase(LocalUser.id)
-                book = InitBook
-                user = LocalUser
-                enableOfflineMode = true
-                save()
-            }
+            Config.save(LocalUser, InitBook, true)
             val bookDao = App.dataBase.bookDao()
             if (bookDao.count() == 0) {
                 bookDao.insert(Config.book)
+            } else {
+                val books = bookDao.findInitBook(Config.user.id)
+                books.firstOrNull()?.let {
+                    Config.setBook(it)
+                }
             }
             send(LoginUiState.OfflineRun)
         })

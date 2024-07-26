@@ -102,8 +102,7 @@ class BookListFragment : BaseFragment() {
             val book: Book = adapter.getItem(position) as Book
             mainActivity.setCurrentBook(book.name)
             runBlocking {
-                Config.book=book
-                DataStoreManager.saveBook(book)
+                Config.setBook(book)
             }
             findNavController().popBackStack()
         }

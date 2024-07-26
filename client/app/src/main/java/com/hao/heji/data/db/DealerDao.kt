@@ -13,7 +13,7 @@ import androidx.room.Query
 @Dao
 interface DealerDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(user: Dealer?)
+    fun insert(user: Dealer)
 
     @Query("select * from dealer")
     fun findAll(): List<Dealer>

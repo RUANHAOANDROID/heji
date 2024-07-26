@@ -183,7 +183,7 @@ class CreateBillFragment : BaseFragment() {
 
         val mArgs = CreateBillFragmentArgs.fromBundle(requireArguments()).argAddBill
         isModify = mArgs.isModify
-        mBill = mArgs.bill ?: Bill(time = Date())
+        mBill = mArgs.bill ?: Bill(time = Date(), bookId = Config.book.id)
         LogUtils.d(mBill.toString())
     }
 
@@ -289,14 +289,17 @@ class CreateBillFragment : BaseFragment() {
                     val bill = uiState.bill
                     LogUtils.d(bill)
                 }
+
                 is CreateBillUIState.Images -> {
                     val images = uiState.images
                     LogUtils.d(uiState.images)
                     popupSelectImage.setImage(images)
                 }
+
                 is CreateBillUIState.Error -> {
                     ToastUtils.showLong(uiState.throws.message)
                 }
+
                 is CreateBillUIState.Dealers -> {
                     //经手人名单
                     if (uiState.dealers.size > 0) {
@@ -315,9 +318,11 @@ class CreateBillFragment : BaseFragment() {
                             .show()
                     }
                 }
+
                 is CreateBillUIState.Save -> {
                     if (uiState.again) reset() else findNavController().popBackStack()
                 }
+
                 is CreateBillUIState.Categories -> {
                     setCategories(uiState.type, uiState.categories)
                 }
@@ -486,10 +491,7 @@ class CreateBillFragment : BaseFragment() {
     }
 
     private fun reset() {
-        mBill.apply {
-            id = ObjectId().toHexString()
-            money = BigDecimal.ZERO
-        }
+        mBill = Bill()
         binding.keyboard.clear()
         binding.eidtRemark.setText("")
         binding.tvMoney.text = "0"

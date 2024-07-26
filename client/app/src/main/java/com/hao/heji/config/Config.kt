@@ -22,59 +22,64 @@ internal val InitBook = Book(
 
 object Config {
 
-    var serverUrl = BuildConfig.HTTP_URL
+    private var _serverUrl = BuildConfig.HTTP_URL
+
+    val serverUrl: String get() = _serverUrl
 
     /**
      * last switch book
      */
-    var book: Book = InitBook
+    private var _book: Book = InitBook
+
+    val book: Book get() = _book
+
+    private var _user = LocalUser
 
     /**
      * 当前用户
      */
-    var user = LocalUser
+    val user = _user
 
     /**
      * 开启离线使用模式
      */
-    var enableOfflineMode = false
+    private var _enableOfflineMode = false
+
+    val enableOfflineMode: Boolean get() = _enableOfflineMode
 
     fun isInitUser() = (user == LocalUser)
 
-    suspend fun saveBook(book: Book) {
-        this.book = book
+    suspend fun setBook(book: Book) {
+        this._book = book
         DataStoreManager.saveBook(book)
     }
 
-    suspend fun saveUser(user: JWTParse.User) {
-        this.user = user
+    suspend fun setUser(user: JWTParse.User) {
+        this._user = user
         DataStoreManager.saveToken(user.token)
     }
 
-    suspend fun saveOfflineMode(enable: Boolean) {
-        enableOfflineMode = enable
+    fun setServerUrl(url: String) {
+        this._serverUrl = url
+    }
+
+    suspend fun enableOfflineMode(enable: Boolean) {
+        _enableOfflineMode = enable
         DataStoreManager.saveUseMode(enableOfflineMode)
     }
 
     suspend fun load(context: Context) {
         with(DataStoreManager) {
-            getUseMode(context).firstOrNull()?.let { enableOfflineMode = it }
-            if (!enableOfflineMode) {
-                getBook(context).firstOrNull()?.let { book = it }
-                getToken(context).firstOrNull()?.let { user = JWTParse.getUser(jwt = it) }
-            } else {
-                user = LocalUser
-                book = InitBook
-            }
+            getUseMode(context).firstOrNull()?.let { _enableOfflineMode = it }
+            getBook(context).firstOrNull()?.let { _book = it }
+            getToken(context).firstOrNull()?.let { _user = JWTParse.getUser(jwt = it) }
         }
     }
 
-    suspend fun save() {
-        with(DataStoreManager) {
-            saveUseMode(false)
-            saveBook(book)
-            saveToken(user.token)
-        }
+    suspend fun save(user: JWTParse.User, book: Book, offLine: Boolean) {
+        setUser(user)
+        setBook(book)
+        enableOfflineMode(offLine)
     }
 
     suspend fun remove() {
@@ -83,8 +88,8 @@ object Config {
             removeToken()
             removeBook()
         }
-        enableOfflineMode = false
-        user = LocalUser
-        book = InitBook
+        _enableOfflineMode = false
+        _user = LocalUser
+        _book = InitBook
     }
 }

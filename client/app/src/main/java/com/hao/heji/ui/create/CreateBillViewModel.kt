@@ -27,6 +27,7 @@ internal class CreateBillViewModel :
             LogUtils.d(TimeUtils.millis2String(System.currentTimeMillis(),"yyyy/MM/dd HH:mm:ss"))
             when (action) {
                 is CreateBillAction.Save -> {
+                    LogUtils.d(action.bill)
                     save(action.bill)
                     send(CreateBillUIState.Save(action.again))
                 }

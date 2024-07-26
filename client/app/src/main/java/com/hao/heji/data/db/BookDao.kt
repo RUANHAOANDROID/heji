@@ -30,6 +30,9 @@ interface BookDao {
     @Query("select * from book where sync_status=:status")
     fun books(status: Int): MutableList<Book>
 
+    @Query("select * from book where crt_user_id=:userID and is_initial == 1")
+    fun findInitBook(userID: String): MutableList<Book>
+
     @Query("select is_initial from book where book_id=:bookId")
     fun isInitialBook(bookId: String): Int
 

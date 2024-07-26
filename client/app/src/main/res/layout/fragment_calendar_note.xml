@@ -43,7 +43,7 @@
                     app:current_month_lunar_text_color="#bababa"
                     app:current_month_text_color="#333333"
                     app:min_year="2000"
-                    app:month_view="com.rh.heji.widget.MyMonthView"
+                    app:month_view="com.hao.heji.widget.MyMonthView"
                     app:month_view_show_mode="mode_only_current"
                     app:other_month_text_color="#e1e1e1"
                     app:scheme_text="假"

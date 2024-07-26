@@ -33,7 +33,6 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
 
             is LoginAction.SaveServerUrl -> {
                 launchIO({
-                    DataStoreManager.saveServerUrl(action.address)
                     Config.setServerUrl(action.address)
                     HttpManager.getInstance().redirectServer()
                 })

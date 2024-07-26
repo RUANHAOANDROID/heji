@@ -23,28 +23,13 @@ internal val InitBook = Book(
 object Config {
 
     private var _serverUrl = BuildConfig.HTTP_URL
-
-    val serverUrl: String get() = _serverUrl
-
-    /**
-     * last switch book
-     */
-    private var _book: Book = InitBook
-
-    val book: Book get() = _book
-
     private var _user = LocalUser
-
-    /**
-     * 当前用户
-     */
-    val user = _user
-
-    /**
-     * 开启离线使用模式
-     */
+    private var _book: Book = InitBook
     private var _enableOfflineMode = false
 
+    val serverUrl: String get() = _serverUrl
+    val book: Book get() = _book
+    val user = _user
     val enableOfflineMode: Boolean get() = _enableOfflineMode
 
     fun isInitUser() = (user == LocalUser)
@@ -59,8 +44,9 @@ object Config {
         DataStoreManager.saveToken(user.token)
     }
 
-    fun setServerUrl(url: String) {
+    suspend fun setServerUrl(url: String) {
         this._serverUrl = url
+        DataStoreManager.saveServerUrl(url)
     }
 
     suspend fun enableOfflineMode(enable: Boolean) {
@@ -73,6 +59,7 @@ object Config {
             getUseMode(context).firstOrNull()?.let { _enableOfflineMode = it }
             getBook(context).firstOrNull()?.let { _book = it }
             getToken(context).firstOrNull()?.let { _user = JWTParse.getUser(jwt = it) }
+            getServerUrl().firstOrNull()?.let { _serverUrl = it }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.hao.heji.ui.user.login
 
+import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.EncryptUtils
 import com.hao.heji.App
 import com.hao.heji.config.Config
@@ -16,6 +17,7 @@ import com.hao.heji.data.repository.UserRepository
 import com.hao.heji.utils.launch
 import com.hao.heji.utils.launchIO
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
@@ -32,10 +34,11 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
             }
 
             is LoginAction.SaveServerUrl -> {
-                launchIO({
+                viewModelScope.launch {
                     Config.setServerUrl(action.address)
                     HttpManager.getInstance().redirectServer()
-                })
+                }
+
             }
 
             LoginAction.GetServerUrl -> {
@@ -55,38 +58,34 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
                 encodePassword(password)
             )
             val newUser = JWTParse.getUser(resp.data)
+            Config.setUser(newUser)
+            Config.enableOfflineMode(false)
             App.switchDataBase(newUser.id)
-
-            with(Config) {
-                setUser(newUser)
-                enableOfflineMode(false)
-            }
-            withContext(Dispatchers.IO) {
-                val remoteBooks = getRemoteBooks()
-                val bookDao = App.dataBase.bookDao()
-                var initialBook = Book(name = "个人账本", crtUserId = newUser.id, isInitial = true)
-                if (remoteBooks.isNotEmpty()) {
-                    remoteBooks.forEach {
-                        bookDao.upsert(it)
-                        if (it.isInitial) {
-                            initialBook = it//当服务器存在初始账本
-                        }
-                    }
-                } else {
-                    val books = bookDao.findBookIdsByUser(newUser.id)//查询本地是否存在账本
-                    if (books.size <= 0) {
-                        bookDao.insert(initialBook)
-                        val response = bookRepository.createBook(initialBook)
-                        if (response.success()) {
-                            initialBook.syncStatus = STATUS.SYNCED
-                            bookDao.upsert(initialBook)
-                        }
+            val remoteBooks = getRemoteBooks()
+            val bookDao = App.dataBase.bookDao()
+            var initialBook = Book(name = "个人账本", crtUserId = newUser.id, isInitial = true)
+            if (remoteBooks.isNotEmpty()) {
+                remoteBooks.forEach {
+                    bookDao.upsert(it)
+                    if (it.isInitial) {
+                        initialBook = it//当服务器存在初始账本
                     }
                 }
-                Config.setBook(initialBook)
-                Config.save(newUser, initialBook, offLine = false)
-                send(LoginUiState.LoginSuccess(resp.data))
+            } else {
+                val books = bookDao.findBookIdsByUser(newUser.id)//查询本地是否存在账本
+                if (books.size <= 0) {
+                    bookDao.insert(initialBook)
+                    val response = bookRepository.createBook(initialBook)
+                    if (response.success()) {
+                        initialBook.syncStatus = STATUS.SYNCED
+                        bookDao.upsert(initialBook)
+                    }
+                }
             }
+            Config.setBook(initialBook)
+            Config.save(newUser, initialBook, offLine = false)
+            send(LoginUiState.LoginSuccess(resp.data))
+
         }, {
             send(LoginUiState.LoginError(it))
         })

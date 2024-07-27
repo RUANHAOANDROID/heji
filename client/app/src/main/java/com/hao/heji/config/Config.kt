@@ -29,7 +29,7 @@ object Config {
 
     val serverUrl: String get() = _serverUrl
     val book: Book get() = _book
-    val user = _user
+    val user get() = _user
     val enableOfflineMode: Boolean get() = _enableOfflineMode
 
     fun isInitUser() = (user == LocalUser)

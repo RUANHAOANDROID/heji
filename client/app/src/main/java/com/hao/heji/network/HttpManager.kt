@@ -1,8 +1,6 @@
 package com.hao.heji.network
 
-import com.hao.heji.BuildConfig
 import com.hao.heji.config.Config
-import com.hao.heji.config.store.DataStoreManager
 import com.hao.heji.data.db.Bill
 import com.hao.heji.data.db.Book
 import com.hao.heji.network.request.CategoryEntity
@@ -12,48 +10,65 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.await
 import retrofit2.http.Part
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class HttpManager {
-    private var apiServer = HttpRetrofit.create(BuildConfig.HTTP_URL, ApiServer::class.java)
+    private var apiServer: ApiServer? = null
 
     fun server(): ApiServer {
-        return apiServer
+        if (apiServer != null) {
+            return apiServer as ApiServer
+        }
+        return HttpRetrofit.create(Config.serverUrl, ApiServer::class.java)
     }
 
+    suspend fun register(registerUser: RegisterUser) =
+        server().register(registerUser).await()
+
+    suspend fun login(username: String, password: String) =
+        server().login(mapOf("tel" to username, "password" to password))
+            .await()
+
+    suspend fun findBook(bid: String) = server().findBook(bid).await()
+    suspend fun createBook(book: Book) = server().createBook(book).await()
+    suspend fun bookList() = server().bookList().await()
+    suspend fun sharedBook(bid: String) = server().sharedBook(bid).await()
+    suspend fun deleteBook(bid: String) = server().deleteBook(bid).await()
+    suspend fun updateBook(bid: String, bookName: String, bookType: String) =
+        server().updateBook(bid, bookName, bookType).await()
+
+    suspend fun joinBook(code: String) = server().joinBook(code).await()
 
     suspend fun pushBill(bill: Bill) =
-        apiServer.saveBill(bill.apply { images = mutableListOf() }).await()
+        server().saveBill(bill.apply { images = mutableListOf() }).await()
 
-    suspend fun deleteBill(_id: String) = apiServer.deleteBill(_id).await()
-    suspend fun updateBill(bill: Bill) = apiServer.updateBill(bill).await()
-    suspend fun pullBill(startTime: String, endTime: String, book_id: String = Config.book.id) =
-        apiServer.getBills(book_id, startTime, endTime).await()
-
+    suspend fun deleteBill(_id: String) = server().deleteBill(_id).await()
+    suspend fun updateBill(bill: Bill) = server().updateBill(bill).await()
     suspend fun imageUpload(
         @Part part: MultipartBody.Part,
         _id: String,
         _bid: String,
         time: Long,
-    ) = apiServer.uploadImg(part, _id, _bid, time).await()
+    ) = server().uploadImg(part, _id, _bid, time).await()
 
-    suspend fun imageDownload(_id: String) = apiServer.getBillImages(_id).await()
+    suspend fun imageDownload(_id: String) = server().getBillImages(_id).await()
     suspend fun imageDelete(billId: String, imageId: String) =
-        apiServer.imageDelete(billId, imageId).await()
+        server().imageDelete(billId, imageId).await()
 
     suspend fun billExport(year: String = "0", month: String = "0"): Response<ResponseBody> =
-        apiServer.exportBills(year, month).execute()
+        server().exportBills(year, month).execute()
 
-    suspend fun categoryPush(category: CategoryEntity) = apiServer.addCategory(category).await()
-    suspend fun categoryDelete(_id: String) = apiServer.deleteCategoryById(_id).await()
-    suspend fun categoryPull(_id: String = "0") = apiServer.getCategories(_id).await()
-    suspend fun categoryUpdate(_id: String = "0") = apiServer.getCategories(_id).await()
+    suspend fun categoryPush(category: CategoryEntity) = server().addCategory(category).await()
+    suspend fun categoryDelete(_id: String) = server().deleteCategoryById(_id).await()
+    suspend fun categoryPull(_id: String = "0") = server().getCategories(_id).await()
+    suspend fun categoryUpdate(_id: String = "0") = server().getCategories(_id).await()
 
 
-    private suspend fun <T> Call<T>.await(): T {
+    suspend fun <T> Call<T>.await(): T {
         //调用suspendCoroutine 挂起
         return suspendCoroutine { continuation ->
             enqueue(object : Callback<T> {
@@ -82,11 +97,8 @@ class HttpManager {
         }
     }
 
-    suspend fun redirectServer() {
-        DataStoreManager.getServerUrl().collect {
-            apiServer =
-                HttpRetrofit.create(it, ApiServer::class.java)
-        }
+    fun redirectServer() {
+        apiServer = HttpRetrofit.create(Config.serverUrl, ApiServer::class.java)
     }
 
     companion object {

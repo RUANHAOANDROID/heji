@@ -1,25 +1,25 @@
 package com.hao.heji.data.repository
 
 import com.hao.heji.App
+import com.hao.heji.config.Config
 import com.hao.heji.data.db.Book
 import com.hao.heji.network.HttpManager
-import retrofit2.await
 
 class BookRepository {
     private val bookDao = App.dataBase.bookDao()
-    private val server = HttpManager.getInstance().server()
-
-    suspend fun findBook(book_id: String) = server.findBook(book_id).await()
-    suspend fun createBook(book: Book) = server.createBook(book).await()
-    suspend fun bookList() = server.bookList().await()
-    suspend fun sharedBook(book_id: String) = server.sharedBook(book_id).await()
-    suspend fun deleteBook(book_id: String) = server.deleteBook(book_id).await()
-    suspend fun updateBook(book_id: String, bookName: String, bookType: String) =
-        server.updateBook(book_id, bookName, bookType).await()
-
-    suspend fun joinBook(sharedCode: String) = server.joinBook(sharedCode).await()
-
-    suspend fun addBook(book: Book) {
+    suspend fun findBook(bid: String) = HttpManager.getInstance().findBook(bid)
+    suspend fun createBook(book: Book) {
         bookDao.insert(book)
+        if (!Config.enableOfflineMode) {
+            HttpManager.getInstance().createBook(book)
+        }
     }
+
+    suspend fun bookList() = HttpManager.getInstance().bookList()
+    suspend fun sharedBook(bid: String) = HttpManager.getInstance().sharedBook(bid)
+    suspend fun deleteBook(bid: String) = HttpManager.getInstance().deleteBook(bid)
+    suspend fun updateBook(bid: String, bookName: String, bookType: String) =
+        HttpManager.getInstance().updateBook(bid, bookName, bookType)
+
+    suspend fun joinBook(sharedCode: String) = HttpManager.getInstance().joinBook(sharedCode)
 }

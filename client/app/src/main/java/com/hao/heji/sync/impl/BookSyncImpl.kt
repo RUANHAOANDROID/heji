@@ -21,20 +21,20 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
 
     }
 
-    override fun getInfo(bookID: String) {
+    override fun getInfo(bid: String) {
         TODO("Not yet implemented")
     }
 
-    override fun delete(bookID: String) {
+    override fun delete(bid: String) {
         scope.launchIO({
-            val response = bookRepository.deleteBook(bookID)
+            val response = bookRepository.deleteBook(bid)
             if (response.success()) {
                 App.dataBase.bookDao().deleteById(response.data)
             }
         })
     }
 
-    override fun clearBill(bookID: String) {
+    override fun clearBill(bid: String) {
         scope.launchIO({
             //TODO 服务端清除账单
             //val response =HejiNetwork.getInstance().bookClear()
@@ -43,23 +43,12 @@ class BookSyncImpl(private val scope: CoroutineScope) : IBookSync {
 
     override fun add(book: Book) {
         if (Config.enableOfflineMode) return
-        scope.launchIO({
-            val response = bookRepository.createBook(book)
-            if (response.success()) {
-                val newBook = Book(name = book.name).apply {
-                    id = book.id
-                    syncStatus = STATUS.SYNCED
-                    crtUserId = book.crtUserId
-                }
-                App.dataBase.bookDao().upsert(book = newBook)
-            }
-        })
     }
 
     override fun update(book: Book) {
         scope.launchIO({
             val response = bookRepository.updateBook(
-                book_id = book.id,
+                bid = book.id,
                 bookName = book.name,
                 bookType = book.type.toString()
             )

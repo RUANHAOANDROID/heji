@@ -15,7 +15,6 @@ class AuthorizedInterceptor : Interceptor {
         val path = chain.request().url
         if (!path.pathSegments.contains("Login") && !path.pathSegments.contains("Register")) {
             newBuilder.header("Authorization", "Bearer ${Config.user.token}")
-            Log.d("okhttp", "AuthorizedInterceptor:${Config.user.name},${Config.user.id}")
         }
         val request: Request = newBuilder
             .build()

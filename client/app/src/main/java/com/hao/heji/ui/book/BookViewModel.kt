@@ -46,7 +46,7 @@ class BookViewModel : ViewModel() {
             if (count > 0) {
                 ToastUtils.showLong("账本名已经存在")
             } else {
-                bookRepository.addBook(Book(name = name, type = type))
+                bookRepository.createBook(Book(name = name, type = type))
                 val book = Book(
                     id = ObjectId().toHexString(),
                     name = name,
@@ -117,7 +117,7 @@ class BookViewModel : ViewModel() {
 
     fun sharedBook(bookId: String, @MainThread call: (Result<String>) -> Unit) {
         launchIO({
-            val response = bookRepository.sharedBook(book_id = bookId)
+            val response = bookRepository.sharedBook(bid = bookId)
             if (response.data.isNotEmpty()) {
                 val shareCode = response.data as String
                 runMainThread {

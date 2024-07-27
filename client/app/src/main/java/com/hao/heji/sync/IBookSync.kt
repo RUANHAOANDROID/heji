@@ -18,20 +18,20 @@ interface IBookSync {
     /**
      * 获取账本信息
      */
-    fun getInfo(bookID:String)
+    fun getInfo(bid:String)
 
     /**
      * 删除账本
      *
      */
-    fun delete(bookID: String)
+    fun delete(bid: String)
 
     /**
      * 清除账本下账单
      *
      * @param bookID
      */
-    fun clearBill(bookID: String)
+    fun clearBill(bid: String)
 
     /**
      * 新增账本

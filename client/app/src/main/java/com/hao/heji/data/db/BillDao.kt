@@ -1,5 +1,6 @@
 package com.hao.heji.data.db
 
+import android.provider.CalendarContract.SyncState
 import androidx.room.*
 import com.hao.heji.config.Config
 import com.hao.heji.data.converters.MoneyConverters
@@ -56,6 +57,8 @@ interface BillDao {
     @Query("select count(*)  from bill where book_id =:bookId")
     fun countByBookId(bookId: String): Int
 
+    @Query("SELECT * FROM bill WHERE book_id=:bookId AND sync_status != ${STATUS.SYNCED} LIMIT 50")
+    fun flowNotSynced(bookId: String):Flow<MutableList<Bill>>
     /**
      * @param syncStatus 同步状态
      * @return

@@ -12,7 +12,6 @@ import com.hao.heji.launchIO
 import com.hao.heji.network.BaseResponse
 import com.hao.heji.network.HttpManager
 import com.hao.heji.network.response.ImageEntity
-import com.hao.heji.sync.IBillSync
 import kotlinx.coroutines.CoroutineScope
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -26,16 +25,16 @@ import java.io.File
  * @author 锅得铁
  * @since v1.0
  */
-class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
-    override fun compare() {
+class BillSyncImpl(private val scope: CoroutineScope)  {
+    fun compare() {
 
     }
 
-    override fun getBills(year: String) {
-        TODO("Not yet implemented")
+     fun getBills(year: String) {
+
     }
 
-    override fun delete(billID: String) {
+     fun delete(billID: String) {
         LogUtils.d("sync bill delete", billID)
         scope.launchIO({
             val response = HttpManager.getInstance().deleteBill(billID)
@@ -45,7 +44,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
         })
     }
 
-    override fun add(bill: Bill) {
+     fun add(bill: Bill) {
         if (Config.enableOfflineMode) return
         scope.launchIO({
             val response = HttpManager.getInstance().pushBill(bill)
@@ -58,7 +57,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
         })
     }
 
-    override fun update(bill: Bill) {
+    fun update(bill: Bill) {
         scope.launchIO({
             val response = HttpManager.getInstance()
                 .updateBill(bill)
@@ -71,7 +70,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
         })
     }
 
-    override fun deleteImage(image: Image) {
+    fun deleteImage(image: Image) {
         scope.launchIO({
             val response = HttpManager.getInstance().imageDelete(image.billID, image.id)
             if (response.success()) {
@@ -83,7 +82,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
 
     }
 
-    override fun addImage(image: Image) {
+    fun addImage(image: Image) {
 
     }
 
@@ -91,7 +90,7 @@ class BillSyncImpl(private val scope: CoroutineScope) : IBillSync {
      * 上传账单图片
      */
     private suspend fun uploadImage(bid: String) {
-        val images = App.dataBase.imageDao().findByBillID(bid, STATUS.NOT_SYNCED)
+        val images = App.dataBase.imageDao().findByBillID(bid, STATUS.NEW)
         if (images.isNotEmpty()) {
             images.forEach { image ->
                 var imgFile = File(image.localPath)

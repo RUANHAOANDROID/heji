@@ -175,7 +175,7 @@ class CreateBillFragment : BaseFragment() {
                     popupSelectImage.setImages(mSelected.map { selectPath ->
                         Image(billID = mBill.id).apply {
                             localPath = selectPath
-                            syncStatus = STATUS.NOT_SYNCED
+                            syncStatus = STATUS.NEW
                         }
                     }.toMutableList())
                 }

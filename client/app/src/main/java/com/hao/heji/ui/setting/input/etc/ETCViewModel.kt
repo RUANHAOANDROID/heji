@@ -12,7 +12,6 @@ import com.hao.heji.data.db.Category
 import com.hao.heji.data.db.STATUS
 import com.hao.heji.data.db.mongo.ObjectId
 import com.hao.heji.moshi
-import com.hao.heji.sync.IBillSync
 import com.hao.heji.ui.base.BaseViewModel
 import com.hao.heji.ui.setting.input.etc.dto.ETCListInfoEntity
 import com.hao.heji.ui.setting.input.etc.dto.HBETCEntity
@@ -39,7 +38,7 @@ import java.util.function.Consumer
  * @author: 锅得铁
  * #
  */
-internal class ETCViewModel(private val mBillSync: IBillSync) :
+internal class ETCViewModel :
     BaseViewModel<ETCAction, ETCUiState>() {
 
 
@@ -61,7 +60,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) :
                     level = 0
                     type = BillType.EXPENDITURE.valueInt
                 }
-                category.syncStatus = STATUS.NOT_SYNCED
+                category.syncStatus = STATUS.NEW
                 App.dataBase.categoryDao().insert(category)
             } else {
                 category = categories[0]
@@ -113,9 +112,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) :
                 val exist = App.dataBase.billDao().exist(bill.hashCode()) > 0
                 if (!exist) {
                     val count = App.dataBase.billDao().install(bill)
-                    LogUtils.d("导入ETC账单：", bill)
-                    if (count > 0)
-                        mBillSync.add(bill)
+                    LogUtils.d("成功导入${count}条 ", bill)
                 } else {
                     LogUtils.d("ETC账单已存在", bill)
                 }
@@ -264,9 +261,7 @@ internal class ETCViewModel(private val mBillSync: IBillSync) :
         val exist = App.dataBase.billDao().exist(bill.hashCode()) > 0
         if (!exist) {
             val count = App.dataBase.billDao().install(bill)
-            LogUtils.d("导入ETC账单：", bill)
-            if (count > 0)
-                mBillSync.add(bill)
+            LogUtils.d("成功导入${count} ", bill)
         } else {
             LogUtils.d("ETC账单已存在", bill)
         }

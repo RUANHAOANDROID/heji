@@ -27,10 +27,7 @@ import java.util.*
 class ETCFragment : BaseFragment() {
     private val binding: FragmentEtcBinding by lazy { FragmentEtcBinding.inflate(layoutInflater) }
     private val etcViewModel: ETCViewModel by lazy {
-        ViewModelProvider(
-            this,
-            ETCViewModelFactory(mainActivity.mService.getBillSyncManager())
-        )[ETCViewModel::class.java]
+        ViewModelProvider(this)[ETCViewModel::class.java]
     }
     private val inputLoading by lazy {XPopup.Builder(requireContext()).asLoading().setTitle("正在导入") }
 

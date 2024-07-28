@@ -22,4 +22,7 @@ interface BookUSerDao {
     @Query("select count(0) from book_user")
     fun count(): Int
 
+    @Query("select user_name from book_user where book_id=:bid")
+    fun findUsersId(bid: String): MutableList<String>
+
 }

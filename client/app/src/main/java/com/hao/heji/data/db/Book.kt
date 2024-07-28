@@ -56,7 +56,7 @@ data class Book(
 ) : Parcelable {
 
     @ColumnInfo(name = COLUMN_SYNC_STATUS)
-    var syncStatus: Int = STATUS.NOT_SYNCED
+    var syncStatus: Int = STATUS.NEW
 
     companion object {
         const val TAB_NAME = "book"

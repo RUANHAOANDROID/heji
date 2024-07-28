@@ -38,7 +38,7 @@ interface CategoryDao {
     fun findIncomeOrExpenditure(bookID: String, type: Int): MutableList<Category>
 
 
-    @Query("select * from  category where sync_status == ${STATUS.DELETED} or sync_status == ${STATUS.NOT_SYNCED}")
+    @Query("select * from  category where sync_status == ${STATUS.DELETED} or sync_status == ${STATUS.NEW}")
     fun observeNotUploadOrDelete(): Flow<MutableList<Category>>
 
     @Query("select * from category where name =:name")

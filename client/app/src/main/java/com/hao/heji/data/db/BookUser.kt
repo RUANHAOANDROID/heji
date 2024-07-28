@@ -13,6 +13,7 @@ class BookUser(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id") val id: Long = 0,
     @ColumnInfo(name = "book_id") val bookId: String,
+    @ColumnInfo(name = "user_id") val userId: String,
     @ColumnInfo(name = "user_name") val name: String,
     @ColumnInfo(name = "authority") val authority: Int = 0
 ) : Parcelable {

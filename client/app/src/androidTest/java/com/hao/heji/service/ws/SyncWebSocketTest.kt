@@ -3,10 +3,9 @@ package com.hao.heji.service.ws
 import androidx.lifecycle.viewModelScope
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.hao.heji.App
-import com.hao.heji.data.db.Bill
+import com.hao.heji.sync.SyncWebSocket
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.math.BigDecimal
 
 @RunWith(AndroidJUnit4::class)
 class SyncWebSocketTest {

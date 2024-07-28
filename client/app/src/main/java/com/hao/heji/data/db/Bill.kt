@@ -97,7 +97,7 @@ data class Bill(
     var images: List<String> = mutableListOf(),
 
     @ColumnInfo(name = "sync_status")
-    var syncStatus: Int = STATUS.NOT_SYNCED,
+    var syncStatus: Int = STATUS.NEW,
 
     @ColumnInfo(name = "anchor")
     var anchor: Long = 0L,//锚点用作记录服务最后修改时间

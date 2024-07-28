@@ -74,12 +74,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
             } else {
                 val books = bookDao.findBookIdsByUser(newUser.id)//查询本地是否存在账本
                 if (books.size <= 0) {
-                    bookDao.insert(initialBook)
-                    val response = bookRepository.createBook(initialBook)
-                    if (response.success()) {
-                        initialBook.syncStatus = STATUS.SYNCED
-                        bookDao.upsert(initialBook)
-                    }
+                    bookRepository.createBook(initialBook)
                 }
             }
             Config.setBook(initialBook)

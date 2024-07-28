@@ -102,7 +102,6 @@ class PopupBillInfo(
      * 删除该条账单
      */
     private fun deleteTip() {
-        val mBillSync = activity.mService.getBillSyncManager()
         XPopup.Builder(context).asConfirm(
             "删除提示", "确认删除该条账单吗？"
         ) {
@@ -111,8 +110,6 @@ class PopupBillInfo(
                 if (it.crtUser == Config.user.name) {
                     //状态删除
                     App.dataBase.billDao().preDelete(it.id)
-                    //异步删除->删除成功->本地删除
-                    mBillSync.delete(it.id)
                     delete(it)
                     dismiss()
                     LogUtils.d("删除账单")

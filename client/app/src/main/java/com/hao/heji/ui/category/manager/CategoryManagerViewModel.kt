@@ -48,7 +48,7 @@ internal class CategoryManagerViewModel :
                 this.type = type
                 level = 0
             }
-            category.syncStatus = STATUS.NOT_SYNCED
+            category.syncStatus = STATUS.NEW
             val exist = categoryDao.exist(category.hashCode())
             if (exist > 0) {
                 ToastUtils.showShort("标签已经存在")

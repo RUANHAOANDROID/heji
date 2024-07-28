@@ -8,8 +8,6 @@ import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.config.Config
 import com.hao.heji.sync.impl.BillSyncImpl
 import com.hao.heji.sync.impl.BookSyncImpl
-import com.hao.heji.service.ws.SyncPusher
-import com.hao.heji.service.ws.SyncWebSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -22,25 +20,23 @@ import kotlinx.coroutines.cancel
  * @since v1.0
  */
 class SyncService : Service() {
-    private lateinit var mBookSync: IBookSync
-    private lateinit var mBillSync: IBillSync
     private val binder = SyncBinder()
-
     //后台具体操作任务使用server scope
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
-    private var syncPusher: SyncPusher? = null
+    private val syncWebSocket = SyncWebSocket.getInstance()
+    private val syncTrigger = SyncTrigger(syncWebSocket, scope)
     override fun onCreate() {
         super.onCreate()
         LogUtils.d("onCreate")
-        mBookSync = BookSyncImpl(scope)
-        mBillSync = BillSyncImpl(scope)
+        connectSyncWebSocket()
+    }
+
+    private fun connectSyncWebSocket() {
         val address = Config.serverUrl.split("://")[1]
         val token = Config.user.token
-        val instance = SyncWebSocket.getInstance()
-        instance
-            .connect(wsUrl = "ws://${address}/api/v1/ws", token, scope)
-        syncPusher= SyncPusher(instance)
+        syncWebSocket.connect(wsUrl = "ws://${address}/api/v1/ws", token, scope)
+        syncTrigger.register()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -63,9 +59,4 @@ class SyncService : Service() {
     inner class SyncBinder : Binder() {
         fun getService(): SyncService = this@SyncService
     }
-
-    fun getBookSyncManager(): IBookSync = mBookSync
-
-    fun getBillSyncManager(): IBillSync = mBillSync
-    fun getSyncPusher(): SyncPusher? = syncPusher
 }

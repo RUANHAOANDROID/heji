@@ -73,19 +73,21 @@ class BookViewModel : ViewModel() {
     fun getBookList() {
         launch({
             val response =bookRepository.bookList()
-            val netBooks = response.data
-            if (netBooks.isNotEmpty()) {
-                for (book in netBooks) {
-                    book.syncStatus = STATUS.SYNCED
-                    if (bookDao.exist(book.id) > 0) {
-                        bookDao.update(book)
-                    } else {
-                        bookDao.insert(book)
+            response.data?.let {
+                if (it.isNotEmpty()) {
+                    for (book in it) {
+                        book.syncStatus = STATUS.SYNCED
+                        if (bookDao.exist(book.id) > 0) {
+                            bookDao.update(book)
+                        } else {
+                            bookDao.insert(book)
+                        }
                     }
+                } else {
+                    ToastUtils.showLong("没有更多账本")
                 }
-            } else {
-                ToastUtils.showLong("没有更多账本")
             }
+
         })
     }
 
@@ -118,7 +120,7 @@ class BookViewModel : ViewModel() {
     fun sharedBook(bookId: String, @MainThread call: (Result<String>) -> Unit) {
         launchIO({
             val response = bookRepository.sharedBook(bid = bookId)
-            if (response.data.isNotEmpty()) {
+            response.data?.let {
                 val shareCode = response.data as String
                 runMainThread {
                     call(Result.Success(shareCode))
@@ -133,7 +135,10 @@ class BookViewModel : ViewModel() {
         launch({
             call(Result.Loading)
             val response = bookRepository.joinBook(code)
-            call(Result.Success(response.data))
+            response.data?.let {
+                call(Result.Success(it))
+            }
+
         }, { call(Result.Error(it)) })
 
     }

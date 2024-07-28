@@ -39,7 +39,9 @@ class BillSyncImpl(private val scope: CoroutineScope)  {
         scope.launchIO({
             val response = HttpManager.getInstance().deleteBill(billID)
             if (response.success()) {
-                App.dataBase.billDao().deleteById(response.data)
+                response.data?.let {
+                    App.dataBase.billDao().deleteById(it)
+                }
             }
         })
     }
@@ -112,10 +114,10 @@ class BillSyncImpl(private val scope: CoroutineScope)  {
                     part,
                     objectId, bid, time
                 )
-                response.data.let {
-                    image.onlinePath = response.data._id
-                    image.md5 = response.data.md5
-                    image.id = response.data._id
+                response.data?.let {
+                    image.onlinePath = it._id
+                    image.md5 =it.md5
+                    image.id = it._id
                     image.syncStatus = STATUS.SYNCED
                     LogUtils.d("账单图片上传成功：$image")
                     image.onlinePath?.let {

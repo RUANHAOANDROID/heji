@@ -27,7 +27,9 @@ class BookSyncImpl(private val scope: CoroutineScope)  {
         scope.launchIO({
             val response = bookRepository.deleteBook(bid)
             if (response.success()) {
-                App.dataBase.bookDao().deleteById(response.data)
+                response.data?.let {
+                    App.dataBase.bookDao().deleteById(it)
+                }
             }
         })
     }

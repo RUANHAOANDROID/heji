@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun doBindService() {
-        if (Config.user!= LocalUser){
+        if (Config.user != LocalUser) {
             Intent(this, SyncService::class.java).also {
                 startService(it)
                 mIsBound = bindService(it, connection, BIND_AUTO_CREATE)
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun doUnbindService() {
-        if (Config.user!= LocalUser){
+        if (Config.user != LocalUser) {
             if (mIsBound) {
                 Intent(this, SyncService::class.java).also {
                     unbindService(connection)
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         }
         lifecycleScope.launch {
             //观察拦截器发出的登录消息
-            App.viewModel.loginEvent.filterNotNull().collect{
+            App.viewModel.loginEvent.filterNotNull().collect {
                 navController.currentBackStackEntry?.let {
                     if (it.destination.label != resources.getString(R.string.login)) {
                         if (!Config.isInitUser())
@@ -139,6 +139,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        viewModel.switchBook()
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             @SuppressLint("WrongConstant")
             override fun handleOnBackPressed() {

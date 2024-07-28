@@ -33,17 +33,16 @@ class CategoryRepository () {
 
     suspend fun getCategory() {
         val response: BaseResponse<List<CategoryEntity>> = network.categoryPull()
-        val categories = response.data
-        if (categories.isNotEmpty()) {
-            categories.forEach { entity: CategoryEntity ->
-                val _id = App.dataBase.categoryDao().findByID(entity.id)
-                if (TextUtils.isEmpty(_id)) {
-                    val dbCategory = entity.toDbCategory()
-                    dbCategory.syncStatus = STATUS.SYNCED
-                    App.dataBase.categoryDao().insert(dbCategory)
-                }
-            }
-        }
+       response.data?.let {
+           it.forEach { entity: CategoryEntity ->
+               val _id = App.dataBase.categoryDao().findByID(entity.id)
+               if (TextUtils.isEmpty(_id)) {
+                   val dbCategory = entity.toDbCategory()
+                   dbCategory.syncStatus = STATUS.SYNCED
+                   App.dataBase.categoryDao().insert(dbCategory)
+               }
+           }
+       }
     }
 
     suspend fun updateCategory(category: Category) {

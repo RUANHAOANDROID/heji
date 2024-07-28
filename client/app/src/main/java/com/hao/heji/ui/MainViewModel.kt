@@ -66,24 +66,24 @@ class MainViewModel : ViewModel() {
     }
 
     private suspend fun createBook(newUser: JWTParse.User) {
-        val remoteBooks = bookRepository.bookList().data
         val bookDao = App.dataBase.bookDao()
-        var initialBook = Book(name = "个人账本", crtUserId = newUser.id, isInitial = true)
-        if (remoteBooks.isNotEmpty()) {
-            remoteBooks.forEach {
-                bookDao.upsert(it)
-                if (it.isInitial) {
-                    initialBook = it//当服务器存在初始账本
+        val onlineBook = Config.book
+        bookRepository.bookList().data?.let {
+            it.forEach { book ->
+                bookDao.upsert(book)
+                if (book.isInitial) {
+                    Config.setBook(onlineBook)
                 }
             }
-        } else {
-            val books = bookDao.findBookIdsByUser(newUser.id)//查询本地是否存在账本
-            if (books.size <= 0) {
-                bookRepository.createBook(initialBook)
-            }
         }
-        Config.setBook(initialBook)
-        Config.save(newUser, initialBook, offLine = false)
+        val books = bookDao.findBookIdsByUser(newUser.id)//查询本地是否存在账本
+        if (books.size <= 0) {
+            onlineBook.crtUserId = newUser.id
+            onlineBook.type = "在线账本"
+            bookRepository.createBook(onlineBook)
+        }
+        Config.setBook(onlineBook)
+        Config.save(newUser, onlineBook, offLine = false)
     }
 
 

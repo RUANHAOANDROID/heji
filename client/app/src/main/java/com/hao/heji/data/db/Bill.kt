@@ -94,7 +94,7 @@ data class Bill(
 
     @Ignore
     @ColumnInfo(name = "images")
-    var images: List<String> = mutableListOf(),
+    var images: MutableList<String> = mutableListOf(),
 
     @ColumnInfo(name = "sync_status")
     var syncStatus: Int = STATUS.NEW,

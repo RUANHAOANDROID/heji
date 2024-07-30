@@ -1,6 +1,7 @@
 package com.hao.heji.config
 
 import android.content.Context
+import com.hao.heji.App
 import com.hao.heji.BuildConfig
 import com.hao.heji.config.store.DataStoreManager
 import com.hao.heji.data.db.Book
@@ -37,11 +38,13 @@ object Config {
     suspend fun setBook(book: Book) {
         this._book = book
         DataStoreManager.saveBook(book)
+        App.viewModel.notifyConfigChanged(this)
     }
 
     suspend fun setUser(user: JWTParse.User) {
         this._user = user
         DataStoreManager.saveToken(user.token)
+        App.viewModel.notifyConfigChanged(this)
     }
 
     suspend fun setServerUrl(url: String) {
@@ -52,6 +55,7 @@ object Config {
     suspend fun enableOfflineMode(enable: Boolean) {
         _enableOfflineMode = enable
         DataStoreManager.saveUseMode(enableOfflineMode)
+        App.viewModel.notifyConfigChanged(this)
     }
 
     suspend fun load(context: Context) {
@@ -67,6 +71,7 @@ object Config {
         setUser(user)
         setBook(book)
         enableOfflineMode(offLine)
+        App.viewModel.notifyConfigChanged(this)
     }
 
     suspend fun remove() {
@@ -78,5 +83,6 @@ object Config {
         _enableOfflineMode = false
         _user = LocalUser
         _book = InitBook
+        App.viewModel.notifyConfigChanged(this)
     }
 }

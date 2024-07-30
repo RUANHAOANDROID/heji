@@ -53,7 +53,7 @@ class RegisterFragment : Fragment() {
                     username.requireNonEmpty("UserName is null!")
                     tel.requireNonEmpty("TEL is null!")
                     password1.requireNonEmpty("password is null!")
-                    viewModel.doAction(RegisterAction.Register(username, tel, code, password1))
+                    viewModel.register(username, tel, code, password1)
                 } catch (e: Exception) {
                     ToastUtils.showLong(e.message)
                 }

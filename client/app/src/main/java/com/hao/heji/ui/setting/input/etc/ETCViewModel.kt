@@ -39,7 +39,7 @@ import java.util.function.Consumer
  * #
  */
 internal class ETCViewModel :
-    BaseViewModel<ETCAction, ETCUiState>() {
+    BaseViewModel<ETCUiState>() {
 
 
     var etcID = ETC.ID
@@ -67,13 +67,6 @@ internal class ETCViewModel :
             }
             return category.name
         }
-
-    override fun doAction(action: ETCAction) {
-
-        if (action is ETCAction.RequestETCBill) {
-            requestHBGSETCList(action.etcID, action.month, action.carID)
-        }
-    }
 
     /**
      * 保存到数据库
@@ -131,7 +124,7 @@ internal class ETCViewModel :
      * @param month 月份
      * @param carID 车牌号
      */
-    private fun requestHBGSETCList(etcID: String, month: String, carID: String) {
+    fun requestHBGSETCList(etcID: String, month: String, carID: String) {
         val requestURL = "http://www.hbgsetc.com/index.php?/newhome/getMonthBillData"
         //www - url 解码方式
         val requestBody =

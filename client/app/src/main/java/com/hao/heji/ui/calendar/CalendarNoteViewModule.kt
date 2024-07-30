@@ -16,20 +16,11 @@ import com.hao.heji.ui.base.BaseViewModel
 import com.hao.heji.utils.launchIO
 
 
-internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUiState>() {
+internal class CalendarNoteViewModule : BaseViewModel< CalenderUiState>() {
     private val billDao: BillDao = App.dataBase.billDao()
     var selectYearMonth = currentYearMonth
 
-    override fun doAction(action: CalenderAction) {
-
-        when (action) {
-            is CalenderAction.GetDayBills -> getDayBills(action.calendar)
-            is CalenderAction.Update -> updateYearMonth(action.year, action.month)
-            is CalenderAction.GetImages -> getImages(action.bid)
-        }
-    }
-
-    private fun getImages(bid: String) {
+    fun getImages(bid: String) {
         launchIO({
             val images = App.dataBase.imageDao().findByBillId(billId = bid)
             send(CalenderUiState.Images(images))
@@ -41,7 +32,7 @@ internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUi
      * @param year 年
      * @param month 月
      */
-    private fun updateYearMonth(year: Int, month: Int) {
+    fun updateYearMonth(year: Int, month: Int) {
         launchIO({
             var map = mutableMapOf<String, Calendar>()
             billDao.findEveryDayIncomeByMonth(Config.book.id, selectYearMonth.yearMonthString())
@@ -68,7 +59,7 @@ internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUi
      * 日账单
      * @param calendar 日历对象
      */
-    private fun getDayBills(calendar: Calendar) {
+    fun getDayBills(calendar: Calendar) {
         LogUtils.d(calendar.toString())
         launchIO({
             val dateTime = TimeUtils.millis2String(calendar.timeInMillis, "yyyy-MM-dd")
@@ -112,7 +103,7 @@ internal class CalendarNoteViewModule : BaseViewModel<CalenderAction, CalenderUi
      * @param expenditure 支出
      * @param income 收入
      */
-    private fun getSchemeCalendar(
+    fun getSchemeCalendar(
         year: Int,
         month: Int,
         day: Int,

@@ -43,7 +43,7 @@ internal class CategoryFragment : BaseFragment() {
             arguments?.let {
                 type = CategoryFragmentArgs.fromBundle(it).type
                 if (type == BillType.INCOME)//预加载一次
-                    createBillFragment.viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
+                    createBillFragment.viewModel.getCategories(type.valueInt)
             }
         }
     }
@@ -53,7 +53,7 @@ internal class CategoryFragment : BaseFragment() {
         layout().post {
             with(createBillFragment) {
                 categoryFragment = this@CategoryFragment
-                viewModel.doAction(CreateBillAction.GetCategories(type.valueInt))
+                viewModel.getCategories(type.valueInt)
             }
             createBillFragment.selectedCategory(type.valueInt, selectCategory)
             LogUtils.d(selectCategory)

@@ -15,7 +15,7 @@ import com.hao.heji.utils.YearMonth
 import com.hao.heji.utils.launchIO
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState>() {
+internal class BillListViewModel : BaseViewModel<BillListUiState>() {
 //    init {
 //        launchIO({
 //            val dir =
@@ -38,27 +38,13 @@ internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState
 
     private val billDao: BillDao by lazy { App.dataBase.billDao() }
 
-    override fun doAction(action: BillListAction) {
-        when (action) {
-            is BillListAction.Refresh -> {
-                val yearMonth = yearMonth().yearMonthString()
-                getMonthBills(yearMonth)
-                getSummary(yearMonth)
-            }
-            is BillListAction.MonthBill -> {
-                selectYearMonth = action.yearMonth
-                getMonthBills(selectYearMonth.yearMonthString())
-            }
-            is BillListAction.Summary -> {
-                getSummary(yearMonth = action.yearMonth.yearMonthString())
-            }
-            is BillListAction.GetImages -> {
-                getImages(action.bid)
-            }
-        }
+    private fun refresh() {
+        val yearMonth = yearMonth().yearMonthString()
+        getMonthBills(yearMonth)
+        getSummary(yearMonth)
     }
 
-    private fun getImages(billId: String) {
+    fun getImages(billId: String) {
         launchIO({
             val data = App.dataBase.imageDao().findByBillId(billId = billId)
             send(BillListUiState.Images(data))
@@ -68,7 +54,7 @@ internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState
     /**
      * yyyy-mm
      */
-    private fun getMonthBills(yearMonth: String) {
+    fun getMonthBills(yearMonth: String) {
         launchIO({
             //根据月份查询收支的日子
             var monthEveryDayIncome =
@@ -108,7 +94,7 @@ internal class BillListViewModel : BaseViewModel<BillListAction, BillListUiState
      * 获取收入支出 总览
      * @param yearMonth yyyy:mm
      */
-    private fun getSummary(yearMonth: String) {
+    fun getSummary(yearMonth: String) {
         launchIO({
             LogUtils.d("Between by time:$yearMonth")
             billDao.sumIncome(yearMonth).distinctUntilChanged().collect {

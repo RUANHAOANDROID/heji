@@ -31,7 +31,7 @@ class ExportFragment : BaseFragment() {
                 popup.show()
                 var path =
                     mainActivity.filesDir.absolutePath + "/" + TimeUtils.getNowString() + ".xlsx"
-                viewModel.doAction(ExportAction.ExportExcel(path))
+                viewModel.exportExcel(path)
             }
             var bottomListPopup = XPopup.Builder(requireContext())
                 .asBottomList("选择导出格式", list.toTypedArray(), onSelectListener)

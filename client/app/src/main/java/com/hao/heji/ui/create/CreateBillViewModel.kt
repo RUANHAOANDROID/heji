@@ -8,6 +8,7 @@ import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.data.db.*
 import com.hao.heji.data.db.mongo.ObjectId
+import com.hao.heji.proto.Message.Type
 import com.hao.heji.ui.base.BaseViewModel
 import com.hao.heji.utils.launchIO
 import java.util.*
@@ -17,61 +18,54 @@ import java.util.*
  */
 @PublishedApi
 internal class CreateBillViewModel :
-    BaseViewModel<CreateBillAction, CreateBillUIState>() {
+    BaseViewModel<CreateBillUIState>() {
 
     var keyBoardStack: Stack<String>? = null//用于保存栈
+    private fun error(it: Throwable) {
+        send(CreateBillUIState.Error(it))
+        ToastUtils.showLong(it.message)
+    }
 
-    override fun doAction(action: CreateBillAction) {
+    fun getCategories(type: Int) {
+        LogUtils.d(
+            "TimeTest",
+            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
+        )
+        val categories = App.dataBase.categoryDao()
+            .findIncomeOrExpenditure(Config.book.id, type)
+        send(CreateBillUIState.Categories(type, categories))
+        LogUtils.d(
+            "TimeTest",
+            categories,
+            TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
+        )
+    }
 
-        launchIO({
-            LogUtils.d(TimeUtils.millis2String(System.currentTimeMillis(),"yyyy/MM/dd HH:mm:ss"))
-            when (action) {
-                is CreateBillAction.Save -> {
-                    LogUtils.d(action.bill)
-                    save(action.bill)
-                    send(CreateBillUIState.Save(action.again))
-                }
-                is CreateBillAction.GetBill -> {
-                    action.bill_id?.let {
-                        val bill = App.dataBase.billImageDao().findBillAndImage(it)
-                        send(CreateBillUIState.BillChange(bill = bill))
-                    }
+    fun deleteImage(id:String) {
+        App.dataBase.imageDao().preDelete(id)
+    }
 
-                }
-                is CreateBillAction.GetDealers -> {
-                    val users = App.dataBase.dealerDao().findAll().map {
-                        it.userName
-                    }.toMutableList()
-                    send(CreateBillUIState.Dealers(users))
-                }
-                is CreateBillAction.GetImages -> {
-                    val images = App.dataBase.imageDao().findImage(action.img_ids)
-                    send(CreateBillUIState.Images(images))
-                }
-                is CreateBillAction.DeleteImage -> {
-                    val image = action.image
-                    App.dataBase.imageDao().preDelete(image.id)
-//                    mBillSync.deleteImage(image)
-                }
-                is CreateBillAction.GetCategories -> {
-                    LogUtils.d(
-                        "TimeTest",
-                        TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
-                    )
-                    val categories = App.dataBase.categoryDao()
-                        .findIncomeOrExpenditure(Config.book.id, action.type)
-                    send(CreateBillUIState.Categories(action.type, categories))
-                    LogUtils.d(
-                        "TimeTest",
-                        categories,
-                        TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
-                    )
-                }
-            }
-        }, {
-            send(CreateBillUIState.Error(it))
-            ToastUtils.showLong(it.message)
-        })
+    fun getImages(ids:MutableList<String>) {
+        val images = App.dataBase.imageDao().findImage(ids)
+        send(CreateBillUIState.Images(images))
+    }
+
+    fun getDealers() {
+        val users = App.dataBase.dealerDao().findAll().map {
+            it.userName
+        }.toMutableList()
+        send(CreateBillUIState.Dealers(users))
+    }
+
+    suspend fun getBill(it: String) {
+        val bill = App.dataBase.billImageDao().findBillAndImage(it)
+        send(CreateBillUIState.BillChange(bill = bill))
+    }
+
+    suspend fun save(b: Bill,again: Boolean =false) {
+        LogUtils.d(b)
+        save(b)
+        send(CreateBillUIState.Save(again))
     }
 
     /**
@@ -81,7 +75,7 @@ internal class CreateBillViewModel :
      * @param billType
      * @return
      */
-    private suspend fun save(bill: Bill) {
+   private suspend fun save(bill: Bill) {
         val images = mutableListOf<Image>()
         if (bill.images.isNotEmpty()) {
             val selectImages = bill.images.map { s: String? ->

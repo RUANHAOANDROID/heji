@@ -43,7 +43,7 @@ class ReportFragment : BaseFragment() {
     private val billListPopup by lazy {
         val maxHeight = ScreenUtils.getScreenHeight() - toolBar.height
         BillListPopup.create(mainActivity, maxHeight) {
-            viewModel.doAction(ReportAction.GetImages(it.images as MutableList<String>))
+            viewModel.getImages(it.images)
         }
     }
 
@@ -51,9 +51,7 @@ class ReportFragment : BaseFragment() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.doAction(
-            ReportAction.SelectTime(yearMonth = mainActivity.viewModel.globalYearMonth)
-        )
+        viewModel.selectTime(mainActivity.viewModel.globalYearMonth)
     }
 
     override fun layout() = binding.root
@@ -66,9 +64,7 @@ class ReportFragment : BaseFragment() {
             month = viewModel.yearMonth.month,
             showAllYear = true,
             onTabSelected = { year, month ->
-                viewModel.doAction(
-                    ReportAction.SelectTime(yearMonth = YearMonth(year, month))
-                )
+                viewModel.selectTime(YearMonth(year, month))
             })
     }
 
@@ -129,40 +125,26 @@ class ReportFragment : BaseFragment() {
         lineChartStyle(binding.lineChart)
         val yearMonth = viewModel.yearMonth
         binding.tvTypeExpenditure.setOnClickListener {
-            viewModel.doAction(
-                ReportAction.GetLinChartData(BillType.EXPENDITURE.valueInt)
-            )
+            viewModel.getLinChartData(BillType.EXPENDITURE.valueInt)
             lineChartSelectType(BillType.EXPENDITURE)
         }
         binding.tvTypeIncome.setOnClickListener {
-            viewModel.doAction(
-                ReportAction.GetLinChartData(BillType.INCOME.valueInt)
-            )
+            viewModel.getLinChartData(BillType.INCOME.valueInt)
             lineChartSelectType(BillType.INCOME)
         }
         binding.tvTypeAll.setOnClickListener {
-            viewModel.doAction(
-                ReportAction.GetLinChartData(BillType.ALL.valueInt)
-            )
+            viewModel.getLinChartData(BillType.ALL.valueInt)
             lineChartSelectType(BillType.ALL)
         }
 
         pieChartStyle(binding.pieChartCategory)
 
         binding.tvTypeExpenditurePie.setOnClickListener {
-            viewModel.doAction(
-                ReportAction.GetProportionChart(
-                    BillType.EXPENDITURE.valueInt
-                )
-            )
+            viewModel.getProportionChart(BillType.EXPENDITURE.valueInt)
             pieChartSelectType(BillType.EXPENDITURE)
         }
         binding.tvTypeIncomePie.setOnClickListener {
-            viewModel.doAction(
-                ReportAction.GetProportionChart(
-                    BillType.INCOME.valueInt
-                )
-            )
+            viewModel.getProportionChart(BillType.INCOME.valueInt)
             pieChartSelectType(BillType.INCOME)
         }
 
@@ -238,7 +220,7 @@ class ReportFragment : BaseFragment() {
                 val money = data as BigDecimal
                 money.signum()//返回 -1 | 0 | 1  与BillType一致
             }
-            viewModel.doAction(ReportAction.GetCategoryBillList(billType, categoryItem.label))
+            viewModel.getCategoryBills(categoryItem.label, billType)
         }
     }
 
@@ -277,7 +259,7 @@ class ReportFragment : BaseFragment() {
                     ymd.day = arrays[1].toInt()
                 }
             }
-            viewModel.doAction(ReportAction.GetReportBillInfoList(ymd))
+            viewModel.getReportBillInfoList(ymd.yearMonthString())
         }
 
     }

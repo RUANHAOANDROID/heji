@@ -10,6 +10,7 @@ import com.hao.heji.moshi
 import com.hao.heji.proto.Message
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -24,6 +25,17 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
     private val bookUserDao = App.dataBase.bookUserDao()
     private val config = com.hao.heji.config.Config
     private var isProcessing = false
+
+    init {
+        scope.launch {
+            App.viewModel.configChange.collectLatest {
+                unregister()
+                register()
+            }
+        }
+
+    }
+
     private val billJob = scope.launch {
         billDao.flowNotSynced(config.book.id).collect {
             if (isProcessing) {

@@ -5,19 +5,23 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.view.View
-import android.webkit.*
+import android.webkit.ValueCallback
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.lxj.xpopup.XPopup
-import com.hao.heji.config.Config
 import com.hao.heji.R
+import com.hao.heji.config.Config
 import com.hao.heji.databinding.FragmentEtcBinding
-import com.hao.heji.ui.base.render
 import com.hao.heji.ui.base.BaseFragment
-
-import java.util.*
+import com.hao.heji.ui.base.render
+import com.lxj.xpopup.XPopup
+import java.util.Calendar
 
 /**
  * @date: 2020/10/27
@@ -29,7 +33,9 @@ class ETCFragment : BaseFragment() {
     private val etcViewModel: ETCViewModel by lazy {
         ViewModelProvider(this)[ETCViewModel::class.java]
     }
-    private val inputLoading by lazy {XPopup.Builder(requireContext()).asLoading().setTitle("正在导入") }
+    private val inputLoading by lazy {
+        XPopup.Builder(requireContext()).asLoading().setTitle("正在导入")
+    }
 
     override fun onResume() {
         super.onResume()
@@ -121,6 +127,7 @@ class ETCFragment : BaseFragment() {
                         1000
                     )
                 }
+
                 is ETCUiState.InputError -> {
                     ToastUtils.showShort("导入失败")
                 }
@@ -128,7 +135,7 @@ class ETCFragment : BaseFragment() {
         }
     }
 
-    override fun layout()=binding.root
+    override fun layout() = binding.root
 
     override fun setUpToolBar() {
         super.setUpToolBar()
@@ -178,12 +185,10 @@ class ETCFragment : BaseFragment() {
                 ) {
 
                     inputLoading.show()
-                    etcViewModel.doAction(
-                        ETCAction.RequestETCBill(
-                            etcViewModel.etcID,
-                            etcViewModel.yearMonth!!,
-                            etcViewModel.carID
-                        )
+                    etcViewModel.requestHBGSETCList(
+                        etcViewModel.etcID,
+                        etcViewModel.yearMonth!!,
+                        etcViewModel.carID
                     )
                 }
                 .show()
@@ -208,6 +213,7 @@ class ETCFragment : BaseFragment() {
             "$year-12"
         )
         XPopup.Builder(requireContext())
-            .asBottomList("选择月份", months) { position, text -> etcViewModel.yearMonth = text }.show()
+            .asBottomList("选择月份", months) { position, text -> etcViewModel.yearMonth = text }
+            .show()
     }
 }

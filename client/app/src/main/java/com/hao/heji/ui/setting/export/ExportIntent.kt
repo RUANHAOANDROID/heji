@@ -1,6 +1,5 @@
 package com.hao.heji.ui.setting.export
 
-import com.hao.heji.ui.base.IAction
 import com.hao.heji.ui.base.IUiState
 
 /**
@@ -12,8 +11,4 @@ import com.hao.heji.ui.base.IUiState
 internal sealed interface ExportUiState : IUiState {
     class Success(val path: String) : ExportUiState
     class Error(val t: Throwable) : ExportUiState
-}
-
-internal sealed interface ExportAction : IAction {
-    class ExportExcel(val fileName: String) : ExportAction
 }

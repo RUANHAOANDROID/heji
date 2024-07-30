@@ -85,7 +85,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        doBindService()
+        if (Config.enableOfflineMode) {
+            doBindService()
+        }
     }
 
     private fun doBindService() {
@@ -99,11 +101,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun doUnbindService() {
-        if (Config.user != LocalUser) {
-            if (mIsBound) {
-                Intent(this, SyncService::class.java).also {
-                    unbindService(connection)
-                }
+        if (mIsBound) {
+            Intent(this, SyncService::class.java).also {
+                unbindService(connection)
             }
         }
     }
@@ -358,6 +358,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        doUnbindService()
+        if (Config.enableOfflineMode) {
+            doUnbindService()
+        }
     }
 }

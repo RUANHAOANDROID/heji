@@ -16,7 +16,7 @@ import java.math.BigDecimal
  * 统计ViewModel
  *
  */
-class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
+class ReportViewModel : BaseViewModel<ReportUiState>() {
     /**
      * 日期
      */
@@ -36,46 +36,15 @@ class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
 
     private var pieDataType: Int = BillType.EXPENDITURE.valueInt
 
-    override fun doAction(action: ReportAction) {
-
-        when (action) {
-            is ReportAction.SelectTime -> {
-                yearMonth = action.yearMonth
-                total()
-                getLinChartData()
-                getProportionChart()
-                getReportList()
-            }
-            is ReportAction.Total -> {
-                total()
-            }
-            is ReportAction.GetLinChartData -> {
-                val type = action.type
-                getLinChartData(type)
-            }
-            is ReportAction.GetProportionChart -> {
-                val type = action.type
-                getProportionChart(type)
-            }
-            is ReportAction.GetCategoryBillList -> {
-                val type = action.type
-                val category = action.category
-                getCategoryBills(category, type)
-            }
-            is ReportAction.GetReportList -> {
-                getReportList()
-            }
-            is ReportAction.GetReportBillInfoList -> {
-                val ymd = action.yearMonth.yearMonthDayString()
-                getReportBillInfoList(ymd)
-            }
-            is ReportAction.GetImages -> {
-                getImages(action.img_ids)
-            }
-        }
+    fun selectTime(ym: YearMonth) {
+        yearMonth = ym
+        total()
+        getLinChartData()
+        getProportionChart()
+        getReportList()
     }
 
-    private fun getReportBillInfoList(ymd: String) {
+     fun getReportBillInfoList(ymd: String) {
         launchIO({
             var data: MutableList<Bill>
             if (yearMonth.day == 0) {//按月查
@@ -96,7 +65,7 @@ class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
         })
     }
 
-    private fun getCategoryBills(category: String, type: Int) {
+    fun getCategoryBills(category: String, type: Int) {
         launchIO({
             val bills = App.dataBase.billDao().findByCategoryAndMonth(
                 category, yearMonth.yearMonthString(), type
@@ -108,14 +77,14 @@ class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
         })
     }
 
-    private fun getImages(imagesIDs: MutableList<String>) {
+    fun getImages(imagesIDs: MutableList<String>) {
         launchIO({
             val data = App.dataBase.imageDao().findImage(imagesIDs)
             send(ReportUiState.Images(data))
         })
     }
 
-    private fun getReportList() {
+    fun getReportList() {
         launchIO({
             var data =
                 App.dataBase.billDao().listIncomeExpSurplusByMonth(yearMonth.yearMonthString())
@@ -123,7 +92,7 @@ class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
         })
     }
 
-    private fun getProportionChart(type: Int = pieDataType) {
+    fun getProportionChart(type: Int = pieDataType) {
         launchIO({
             val list =
                 App.dataBase.billDao().reportCategory(type, yearMonth.yearMonthString()).map {
@@ -137,7 +106,7 @@ class ReportViewModel : BaseViewModel<ReportAction, ReportUiState>() {
         })
     }
 
-    private fun getLinChartData(type: Int = lineDataType) {
+    fun getLinChartData(type: Int = lineDataType) {
         launchIO({
             if (type == BillType.ALL.valueInt) {
                 val uiStateData = with(ReportUiState.LinChart(type)) {

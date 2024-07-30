@@ -3,11 +3,9 @@ package com.hao.heji
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.config.Config
 import com.hao.heji.data.AppDatabase
-import com.hao.heji.sync.SyncService
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -28,9 +26,6 @@ class App : Application() {
         }
         switchDataBase(Config.user.id)
         viewModel = AppViewModel(this)
-        Intent(this, SyncService::class.java).also {
-            startService(it)
-        }
     }
 
     companion object {

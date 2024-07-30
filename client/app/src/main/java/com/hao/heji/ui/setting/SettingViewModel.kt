@@ -11,23 +11,34 @@ import com.hao.heji.utils.launchIO
  * @author 锅得铁
  * @since v1.0
  */
-class SettingViewModel : BaseViewModel<SettingAction, SettingUiState>() {
-    override fun doAction(action: SettingAction) {
+class SettingViewModel : BaseViewModel<SettingUiState>() {
+    fun inputAlipayData(fileName: String) {
+        reading()
+        launchIO({
+            ReaderFactory.getReader(SUFFIX.CSV)?.readAliPay(fileName, result = { success, msg ->
+                if (success) {
+                    readEnd()
+                } else {
+                    readError(msg)
+                }
+            })
+        }, {
+            readError(it.message.toString())
+        })
+    }
 
-        when (action) {
-            is SettingAction.InputWeiXInData -> {
-                reading()
-                launchIO({
-                    inputWeiXinData(action.fileName)
-                }, { readError(it.message.toString()) })
-            }
-            is SettingAction.InputAliPayData -> {
-                reading()
-                launchIO({ inputAliPayData(action.fileName) }, {
-                    readError(it.message.toString())
-                })
-            }
-        }
+    fun inputWeixinData(fileName: String) {
+        reading()
+        launchIO({
+
+            ReaderFactory.getReader(SUFFIX.CSV)?.readWeiXinPay(fileName, result = { success, msg ->
+                if (success) {
+                    readEnd()
+                } else {
+                    readError(msg)
+                }
+            })
+        }, { readError(it.message.toString()) })
     }
 
     private fun reading() {
@@ -42,23 +53,4 @@ class SettingViewModel : BaseViewModel<SettingAction, SettingUiState>() {
         send(SettingUiState.InputEnd("导入完成"))
     }
 
-    private suspend fun inputAliPayData(fileName: String) {
-        ReaderFactory.getReader(SUFFIX.CSV)?.readAliPay(fileName, result = { success, msg ->
-            if (success) {
-                readEnd()
-            } else {
-                readError(msg)
-            }
-        })
-    }
-
-    private suspend fun inputWeiXinData(fileName: String) {
-        ReaderFactory.getReader(SUFFIX.CSV)?.readWeiXinPay(fileName, result = { success, msg ->
-            if (success) {
-                readEnd()
-            } else {
-                readError(msg)
-            }
-        })
-    }
 }

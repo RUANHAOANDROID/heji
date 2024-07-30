@@ -1,6 +1,5 @@
 package com.hao.heji.ui.setting.input.etc
 
-import com.hao.heji.ui.base.IAction
 import com.hao.heji.ui.base.IUiState
 
 /**
@@ -13,8 +12,4 @@ import com.hao.heji.ui.base.IUiState
 internal sealed interface ETCUiState : IUiState {
     object InputSuccess : ETCUiState
     class InputError(val t: Throwable) : ETCUiState
-}
-
-internal sealed interface ETCAction : IAction {
-    class RequestETCBill(val etcID: String, var month: String, val carID: String) : ETCAction
 }

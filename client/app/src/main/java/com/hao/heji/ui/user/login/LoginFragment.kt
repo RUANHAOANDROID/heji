@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
@@ -17,6 +18,7 @@ import com.hao.heji.ui.MainActivity
 import com.hao.heji.ui.base.render
 import com.hao.heji.ui.user.register.RegisterUser
 import com.lxj.xpopup.impl.InputConfirmPopupView
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
     private val binding: FragmentLoginBinding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
@@ -26,7 +28,9 @@ class LoginFragment : Fragment() {
             "服务", "请输入服务地址", "http://192.168.8.68:8080"
         ) {
             LogUtils.d(it)
-            viewModel.doAction(LoginAction.SaveServerUrl(it))
+            lifecycleScope.launch {
+                viewModel.saveServerUrl(it)
+            }
             serverUrlInputConfirm.dismiss()
         }
     }
@@ -36,7 +40,7 @@ class LoginFragment : Fragment() {
             "1.不支持合伙记账   \n" +
                     "2.数据仅存储在本地"
         ) {
-            viewModel.doAction(LoginAction.EnableOfflineMode)
+            viewModel.enableOfflineMode()
         }
     }
 
@@ -88,10 +92,12 @@ class LoginFragment : Fragment() {
             btnLogin.setOnClickListener {
                 val username = binding.editUser.text.toString()
                 val password = binding.editPassword.text.toString()
-                viewModel.doAction(LoginAction.Login(username, password))
+                viewModel.login(username, password)
             }
             tvNetSetting.setOnClickListener {
-                viewModel.doAction(LoginAction.GetServerUrl)
+                lifecycleScope.launch {
+                    viewModel.getServerUrl()
+                }
             }
             tvOnlyLocalUse.setOnClickListener {
                 asConfirm.show()

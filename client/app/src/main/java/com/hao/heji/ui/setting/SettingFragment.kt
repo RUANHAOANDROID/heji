@@ -77,11 +77,11 @@ class SettingFragment : BaseFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQ_CODE_ALIPAY && resultCode == Activity.RESULT_OK) {
             val fileName = getInputFile(data)
-            viewModel.doAction(SettingAction.InputAliPayData(fileName))
+            viewModel.inputAlipayData(fileName)
         }
         if (requestCode == REQ_CODE_WEIXINPAY && resultCode == Activity.RESULT_OK) {
             val fileName = getInputFile(data)
-            viewModel.doAction(SettingAction.InputWeiXInData(fileName))
+            viewModel.inputWeixinData(fileName)
         }
     }
 

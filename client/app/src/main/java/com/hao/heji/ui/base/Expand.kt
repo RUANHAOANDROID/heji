@@ -6,8 +6,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 
-internal fun <I : IAction, O : IUiState> Fragment.render(
-    vm: BaseViewModel<I, O>,
+internal fun <O : IUiState> Fragment.render(
+    vm: BaseViewModel<O>,
     fn: (o: O) -> Unit
 ) {
     // Start a coroutine in the lifecycle scope
@@ -20,11 +20,4 @@ internal fun <I : IAction, O : IUiState> Fragment.render(
             }
         }
     }
-}
-
-fun <I : IAction, O : IUiState> doAction(
-    vm: BaseViewModel<I, O>,
-    action: I
-) {
-    vm.doAction(action)
 }

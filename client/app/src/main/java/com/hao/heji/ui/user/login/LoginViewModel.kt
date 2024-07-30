@@ -1,6 +1,5 @@
 package com.hao.heji.ui.user.login
 
-import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.EncryptUtils
 import com.hao.heji.App
 import com.hao.heji.config.Config
@@ -12,40 +11,15 @@ import com.hao.heji.ui.base.BaseViewModel
 import com.hao.heji.ui.user.JWTParse
 import com.hao.heji.utils.launch
 import com.hao.heji.utils.launchIO
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
-internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
+internal class LoginViewModel : BaseViewModel<LoginUiState>() {
     private val userRepository = UserRepository()
-    override fun doAction(action: LoginAction) {
-        when (action) {
-            is LoginAction.Login -> {
-                login(action.tel, action.password)
-            }
 
-            is LoginAction.EnableOfflineMode -> {
-                enableOfflineMode()
-            }
 
-            is LoginAction.SaveServerUrl -> {
-                viewModelScope.launch {
-                    Config.setServerUrl(action.address)
-                    HttpManager.getInstance().redirectServer()
-                }
-
-            }
-
-            LoginAction.GetServerUrl -> {
-                launchIO({
-                    DataStoreManager.getServerUrl().collect {
-                        send(LoginUiState.ShowServerSetting(it))
-                    }
-                })
-            }
-        }
-    }
-
-    private fun login(tel: String, password: String) {
+    fun login(tel: String, password: String) {
         launch({
             var resp = userRepository.login(
                 tel,
@@ -64,7 +38,13 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
 
     }
 
-
+   suspend fun getServerUrl()=DataStoreManager.getServerUrl().collect{
+       send(LoginUiState.ShowServerSetting(it))
+    }
+    suspend fun saveServerUrl(address:String)= withContext(Dispatchers.IO){
+        Config.setServerUrl(address)
+        HttpManager.getInstance().redirectServer()
+    }
     private fun encodePassword(password: String): String {
         return EncryptUtils.encryptSHA512ToString(String(EncryptUtils.encryptSHA512(password.toByteArray())))
     }
@@ -72,7 +52,7 @@ internal class LoginViewModel : BaseViewModel<LoginAction, LoginUiState>() {
     /**
      * 开启离线使用模式
      */
-    private fun enableOfflineMode() {
+    fun enableOfflineMode() {
         launchIO({
             Config.enableOfflineMode(true)
             Config.setUser(LocalUser)

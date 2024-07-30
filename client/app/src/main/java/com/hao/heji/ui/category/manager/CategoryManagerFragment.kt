@@ -7,14 +7,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.KeyboardUtils
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
-import com.lxj.xpopup.XPopup
 import com.hao.heji.data.BillType
 import com.hao.heji.data.db.Category
 import com.hao.heji.databinding.FragmentCategoryManagerBinding
-import com.hao.heji.ui.base.doAction
-import com.hao.heji.ui.base.render
 import com.hao.heji.ui.base.BaseFragment
+import com.hao.heji.ui.base.render
 import com.hao.heji.ui.category.adapter.CategoryManagerAdapter
+import com.lxj.xpopup.XPopup
 
 /**
  * 类别标签管理
@@ -27,7 +26,7 @@ class CategoryManagerFragment : BaseFragment() {
         FragmentCategoryManagerBinding.inflate(layoutInflater).apply {
             btnAdd.setOnClickListener { v: View ->
                 val name = binding.editCategoryValue.text.toString().trim { it <= ' ' }
-                viewModel.doAction(CategoryManagerAction.SaveCategory(name, args.ieType))
+                viewModel.saveCategory(name, args.ieType)
                 KeyboardUtils.hideSoftInput(v) //隐藏键盘
                 binding.editCategoryValue.setText("")
                 binding.editCategoryValue.clearFocus() //清除聚焦
@@ -44,7 +43,7 @@ class CategoryManagerFragment : BaseFragment() {
 
     override fun initView(view: View) {
         args = CategoryManagerFragmentArgs.fromBundle(requireArguments())
-        viewModel.doAction(CategoryManagerAction.GetCategories(args.ieType))
+        viewModel.getCategories(args.ieType)
 
         binding.categoryRecycler.layoutManager = LinearLayoutManager(context)
         adapter = object : CategoryManagerAdapter() {
@@ -80,7 +79,7 @@ class CategoryManagerFragment : BaseFragment() {
 
     private fun alertDeleteTip(label: Category) {
         XPopup.Builder(requireContext()).asConfirm("提示", "确认删除该标签？") {
-            doAction(viewModel, CategoryManagerAction.DeleteCategory(label))
+            viewModel.deleteCategory(label)
         }.show()
     }
 

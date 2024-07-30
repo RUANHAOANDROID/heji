@@ -18,6 +18,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.*
 import com.google.android.material.tabs.TabLayout
@@ -40,6 +41,7 @@ import com.hao.heji.utils.YearMonth
 import com.hao.heji.utils.matisse.MatisseUtils
 import com.hao.heji.widget.KeyBoardView.OnKeyboardListener
 import com.zhihu.matisse.Matisse
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.util.*
 import java.util.function.Consumer
@@ -210,7 +212,7 @@ class CreateBillFragment : BaseFragment() {
                     LogUtils.d("onTabSelected", tab.position)
                     val type =
                         if (tab.position == 0) BillType.EXPENDITURE.valueInt else BillType.INCOME.valueInt
-                    viewModel.doAction(CreateBillAction.GetCategories(type))
+                    viewModel.getCategories(type)
                     mBill.type = type
                 }
 
@@ -239,7 +241,7 @@ class CreateBillFragment : BaseFragment() {
         popupSelectImage = SelectImagePopup(requireActivity()).apply {
             deleteListener = {
                 ToastUtils.showLong(it.toString())
-                viewModel.doAction(CreateBillAction.DeleteImage(it))
+                viewModel.deleteImage(it.id)
             }
             selectedImagesCall = {
                 getImagesPath()
@@ -269,14 +271,14 @@ class CreateBillFragment : BaseFragment() {
         })
 
         keyboardListener()
-        viewModel.doAction(CreateBillAction.GetDealers(mBill.id))
+        viewModel.getDealers()
         with(mBill) {
             setTime(time)
             setDealer(dealer)
             category?.let { setSelectCategory(it, type) }
             setMoney(money)
-            if (images.isNotEmpty()) {
-                viewModel.doAction(CreateBillAction.GetImages(images))
+            images?.let {
+                viewModel.getImages(it)
             }
         }
     }
@@ -484,7 +486,9 @@ class CreateBillFragment : BaseFragment() {
             check(mBill.money != ZERO_00()) { "金额不能为 ${ZERO_00().toPlainString()}" }
             check(mBill.money != BigDecimal.ZERO) { "金额不能为 ${BigDecimal.ZERO.toPlainString()}" }
             check(mBill.category != null) { "未选类别" }
-            viewModel.doAction(CreateBillAction.Save(mBill, again))
+            lifecycleScope.launch {
+                viewModel.save(mBill, again)
+            }
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)
         }

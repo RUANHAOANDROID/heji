@@ -6,18 +6,9 @@ import com.hao.heji.ui.base.BaseViewModel
 import com.hao.heji.data.repository.UserRepository
 import com.hao.heji.utils.launch
 
-internal class RegisterViewModel : BaseViewModel<RegisterAction, RegisterUiState>() {
-    val userRepository = UserRepository()
-    override fun doAction(action: RegisterAction) {
-
-        when (action) {
-            is RegisterAction.Register -> {
-                register(action.username, action.tel, action.code, action.password)
-            }
-        }
-    }
-
-    private fun register(
+internal class RegisterViewModel : BaseViewModel<RegisterUiState>() {
+    private val userRepository = UserRepository()
+    fun register(
         username: String,
         tel: String,
         code: String,

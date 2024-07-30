@@ -6,7 +6,6 @@ import android.view.ViewStub
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil.ItemCallback
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +17,6 @@ import com.hao.heji.data.db.Bill
 import com.hao.heji.data.db.dto.Income
 import com.hao.heji.databinding.FragmentBillsHomeBinding
 import com.hao.heji.databinding.LayoutBillsTopBinding
-import com.hao.heji.ui.base.doAction
 import com.hao.heji.ui.base.render
 import com.hao.heji.ui.base.BaseFragment
 import com.hao.heji.ui.base.hideRefreshing
@@ -81,7 +79,7 @@ class BillListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        doAction(homeViewModel, BillListAction.Summary(homeViewModel.yearMonth()))
+        homeViewModel.getSummary(homeViewModel.yearMonth().yearMonthString())
         render(homeViewModel) {
             when (it) {
                 is BillListUiState.Bills -> {
@@ -100,7 +98,7 @@ class BillListFragment : BaseFragment() {
 
                 is BillListUiState.Summary -> {//tip: 当统计数额发生变更刷新列表
                     totalIncomeExpense(it.income)
-                    homeViewModel.doAction(BillListAction.MonthBill(homeViewModel.yearMonth()))
+                    homeViewModel.getMonthBills(homeViewModel.yearMonth().yearMonthString())
                 }
 
                 is BillListUiState.Error -> {
@@ -226,7 +224,7 @@ class BillListFragment : BaseFragment() {
                     val bill = dayBills.bill
                     popupView.show(bill)
                     if (bill.images.isNotEmpty()) {
-                        doAction(homeViewModel, BillListAction.GetImages(bill.id))
+                        homeViewModel.getImages(bill.id)
                     }
                 }
 
@@ -252,8 +250,9 @@ class BillListFragment : BaseFragment() {
         month: Int = homeViewModel.yearMonth().month
     ) {
         val yearMonth = YearMonth(year, month)
-        homeViewModel.doAction(BillListAction.MonthBill(yearMonth))
-        homeViewModel.doAction(BillListAction.Summary(yearMonth))
+        val ymStr = yearMonth.yearMonthString()
+        homeViewModel.getMonthBills(ymStr)
+        homeViewModel.getSummary(ymStr)
     }
 }
 

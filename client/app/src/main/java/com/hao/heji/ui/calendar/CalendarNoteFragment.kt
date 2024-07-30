@@ -33,7 +33,7 @@ class CalendarNoteFragment : BaseFragment() {
             delete = { notifyCalendar() },
             update = {})
     }
-    private val viewModel by lazy { ViewModelProvider(this)[CalendarNoteViewModule::class.java] }
+    private val vm by lazy { ViewModelProvider(this)[CalendarNoteViewModule::class.java] }
     lateinit var adapter: NodeBillsAdapter
 
     override fun layout(): View {
@@ -42,7 +42,7 @@ class CalendarNoteFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        viewModel.selectYearMonth = mainActivity.viewModel.globalYearMonth
+        vm.selectYearMonth = mainActivity.viewModel.globalYearMonth
     }
 
     override fun setUpToolBar() {
@@ -51,7 +51,7 @@ class CalendarNoteFragment : BaseFragment() {
         showBlack()
 
         val today = today()
-        val selectYearMonth = viewModel.selectYearMonth
+        val selectYearMonth = vm.selectYearMonth
 
         with(selectYearMonth) {
             showYearMonthTitle(
@@ -75,7 +75,7 @@ class CalendarNoteFragment : BaseFragment() {
         initFab(rootView)
         initCalendarView()
         initAdapter()
-        render(viewModel) {
+        render(vm) {
             when (it) {
                 is CalenderUiState.DayBills -> {
                     adapter.setNewInstance(it.data as MutableList<BaseNode>)
@@ -96,7 +96,7 @@ class CalendarNoteFragment : BaseFragment() {
         }
     }
 
-    private fun initFab(view: View) {   
+    private fun initFab(view: View) {
         binding.addFab.setOnClickListener {
             val year = binding.calendarView.selectedCalendar.year
             val month = binding.calendarView.selectedCalendar.month
@@ -129,19 +129,19 @@ class CalendarNoteFragment : BaseFragment() {
                 var billNode = adapter.getItem(position) as DayBillsNode
                 popupView.show(billNode.bill)
                 if (billNode.bill.images.isNotEmpty()) {
-                    viewModel.doAction(CalenderAction.GetImages(billNode.bill.id))
+                    vm.getImages(billNode.bill.id)
                 }
             }
         }
     }
 
     private fun initCalendarView() {
-        viewModel.selectYearMonth.apply {
+        vm.selectYearMonth.apply {
             binding.calendarView.scrollToCalendar(year, month, day)
         }
         binding.calendarView.apply {
             setOnMonthChangeListener { year, month -> //月份更改侦听
-                viewModel.selectYearMonth = YearMonth(year, month)
+                vm.selectYearMonth = YearMonth(year, month)
                 centerTitle.text = "$year.$month"
                 notifyCalendar()
                 fabShow()
@@ -161,8 +161,11 @@ class CalendarNoteFragment : BaseFragment() {
     }
 
     private fun fabShow() {
-        val currentYearMonth = mainActivity.viewModel.currentYearMonth
-        if (viewModel.selectYearMonth == currentYearMonth)
+        val currentYearMonth = YearMonth(
+            java.util.Calendar.getInstance()[java.util.Calendar.YEAR],
+            java.util.Calendar.getInstance()[java.util.Calendar.MONTH] + 1
+        )
+        if (vm.selectYearMonth == currentYearMonth)
             binding.todayFab.hide()
         else
             binding.todayFab.show()
@@ -171,17 +174,15 @@ class CalendarNoteFragment : BaseFragment() {
     //更新日历天账单列表
     private fun notifyBillsList() {
         binding.calendarView.post {
-            viewModel.doAction(CalenderAction.GetDayBills((binding.calendarView.selectedCalendar)))
+            vm.getDayBills(binding.calendarView.selectedCalendar)
         }
     }
 
     //更新日历
     private fun notifyCalendar() {
-        viewModel.doAction(
-            CalenderAction.Update(
-                viewModel.selectYearMonth.year,
-                viewModel.selectYearMonth.month
-            )
+        vm.updateYearMonth(
+            vm.selectYearMonth.year,
+            vm.selectYearMonth.month
         )
     }
 }

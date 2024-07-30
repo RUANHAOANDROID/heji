@@ -43,11 +43,6 @@ class HttpManager {
 
     suspend fun joinBook(code: String) = server().joinBook(code).await()
 
-    suspend fun pushBill(bill: Bill) =
-        server().saveBill(bill.apply { images = mutableListOf() }).await()
-
-    suspend fun deleteBill(_id: String) = server().deleteBill(_id).await()
-    suspend fun updateBill(bill: Bill) = server().updateBill(bill).await()
     suspend fun imageUpload(
         @Part part: MultipartBody.Part,
         _id: String,

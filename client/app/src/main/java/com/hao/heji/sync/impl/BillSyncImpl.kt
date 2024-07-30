@@ -26,68 +26,6 @@ import java.io.File
  * @since v1.0
  */
 class BillSyncImpl(private val scope: CoroutineScope)  {
-    fun compare() {
-
-    }
-
-     fun getBills(year: String) {
-
-    }
-
-     fun delete(billID: String) {
-        LogUtils.d("sync bill delete", billID)
-        scope.launchIO({
-            val response = HttpManager.getInstance().deleteBill(billID)
-            if (response.success()) {
-                response.data?.let {
-                    App.dataBase.billDao().deleteById(it)
-                }
-            }
-        })
-    }
-
-     fun add(bill: Bill) {
-        if (Config.enableOfflineMode) return
-        scope.launchIO({
-            val response = HttpManager.getInstance().pushBill(bill)
-            if (response.success()) {
-                App.dataBase.billDao().update(bill.apply {
-                    syncStatus = STATUS.SYNCED
-                })
-                uploadImage(bill.id)
-            }
-        })
-    }
-
-    fun update(bill: Bill) {
-        scope.launchIO({
-            val response = HttpManager.getInstance()
-                .updateBill(bill)
-            if (response.success()) {
-                App.dataBase.billDao().update(bill.apply {
-                    syncStatus = STATUS.SYNCED
-                })
-                uploadImage(bill.id)
-            }
-        })
-    }
-
-    fun deleteImage(image: Image) {
-        scope.launchIO({
-            val response = HttpManager.getInstance().imageDelete(image.billID, image.id)
-            if (response.success()) {
-                App.dataBase.imageDao().deleteById(image.id)
-            }
-        }, {
-            ToastUtils.showLong("delete image error " + it.message)
-        })
-
-    }
-
-    fun addImage(image: Image) {
-
-    }
-
     /**
      * 上传账单图片
      */

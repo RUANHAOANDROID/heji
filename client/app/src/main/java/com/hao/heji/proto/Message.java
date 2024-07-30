@@ -196,41 +196,41 @@ public final class Message {
     long getTimestamp();
 
     /**
-     * <code>string fromId = 4;</code>
-     * @return The fromId.
+     * <code>string sender_id = 4;</code>
+     * @return The senderId.
      */
-    String getFromId();
+    String getSenderId();
     /**
-     * <code>string fromId = 4;</code>
-     * @return The bytes for fromId.
+     * <code>string sender_id = 4;</code>
+     * @return The bytes for senderId.
      */
     com.google.protobuf.ByteString
-        getFromIdBytes();
+        getSenderIdBytes();
 
     /**
-     * <code>repeated string toId = 5;</code>
-     * @return A list containing the toId.
+     * <code>repeated string receiver_ids = 5;</code>
+     * @return A list containing the receiverIds.
      */
     java.util.List<String>
-        getToIdList();
+        getReceiverIdsList();
     /**
-     * <code>repeated string toId = 5;</code>
-     * @return The count of toId.
+     * <code>repeated string receiver_ids = 5;</code>
+     * @return The count of receiverIds.
      */
-    int getToIdCount();
+    int getReceiverIdsCount();
     /**
-     * <code>repeated string toId = 5;</code>
+     * <code>repeated string receiver_ids = 5;</code>
      * @param index The index of the element to return.
-     * @return The toId at the given index.
+     * @return The receiverIds at the given index.
      */
-    String getToId(int index);
+    String getReceiverIds(int index);
     /**
-     * <code>repeated string toId = 5;</code>
+     * <code>repeated string receiver_ids = 5;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the toId at the given index.
+     * @return The bytes of the receiverIds at the given index.
      */
     com.google.protobuf.ByteString
-        getToIdBytes(int index);
+        getReceiverIdsBytes(int index);
 
     /**
      * <code>string content = 6;</code>
@@ -263,8 +263,8 @@ public final class Message {
     private Packet() {
       id_ = "";
       type_ = 0;
-      fromId_ = "";
-      toId_ =
+      senderId_ = "";
+      receiverIds_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
       content_ = "";
     }
@@ -357,80 +357,80 @@ public final class Message {
       return timestamp_;
     }
 
-    public static final int FROMID_FIELD_NUMBER = 4;
+    public static final int SENDER_ID_FIELD_NUMBER = 4;
     @SuppressWarnings("serial")
-    private volatile Object fromId_ = "";
+    private volatile Object senderId_ = "";
     /**
-     * <code>string fromId = 4;</code>
-     * @return The fromId.
+     * <code>string sender_id = 4;</code>
+     * @return The senderId.
      */
     @Override
-    public String getFromId() {
-      Object ref = fromId_;
+    public String getSenderId() {
+      Object ref = senderId_;
       if (ref instanceof String) {
         return (String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         String s = bs.toStringUtf8();
-        fromId_ = s;
+        senderId_ = s;
         return s;
       }
     }
     /**
-     * <code>string fromId = 4;</code>
-     * @return The bytes for fromId.
+     * <code>string sender_id = 4;</code>
+     * @return The bytes for senderId.
      */
     @Override
     public com.google.protobuf.ByteString
-        getFromIdBytes() {
-      Object ref = fromId_;
+        getSenderIdBytes() {
+      Object ref = senderId_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (String) ref);
-        fromId_ = b;
+        senderId_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
 
-    public static final int TOID_FIELD_NUMBER = 5;
+    public static final int RECEIVER_IDS_FIELD_NUMBER = 5;
     @SuppressWarnings("serial")
-    private com.google.protobuf.LazyStringArrayList toId_ =
+    private com.google.protobuf.LazyStringArrayList receiverIds_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
     /**
-     * <code>repeated string toId = 5;</code>
-     * @return A list containing the toId.
+     * <code>repeated string receiver_ids = 5;</code>
+     * @return A list containing the receiverIds.
      */
     public com.google.protobuf.ProtocolStringList
-        getToIdList() {
-      return toId_;
+        getReceiverIdsList() {
+      return receiverIds_;
     }
     /**
-     * <code>repeated string toId = 5;</code>
-     * @return The count of toId.
+     * <code>repeated string receiver_ids = 5;</code>
+     * @return The count of receiverIds.
      */
-    public int getToIdCount() {
-      return toId_.size();
+    public int getReceiverIdsCount() {
+      return receiverIds_.size();
     }
     /**
-     * <code>repeated string toId = 5;</code>
+     * <code>repeated string receiver_ids = 5;</code>
      * @param index The index of the element to return.
-     * @return The toId at the given index.
+     * @return The receiverIds at the given index.
      */
-    public String getToId(int index) {
-      return toId_.get(index);
+    public String getReceiverIds(int index) {
+      return receiverIds_.get(index);
     }
     /**
-     * <code>repeated string toId = 5;</code>
+     * <code>repeated string receiver_ids = 5;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the toId at the given index.
+     * @return The bytes of the receiverIds at the given index.
      */
     public com.google.protobuf.ByteString
-        getToIdBytes(int index) {
-      return toId_.getByteString(index);
+        getReceiverIdsBytes(int index) {
+      return receiverIds_.getByteString(index);
     }
 
     public static final int CONTENT_FIELD_NUMBER = 6;
@@ -495,11 +495,11 @@ public final class Message {
       if (timestamp_ != 0L) {
         output.writeInt64(3, timestamp_);
       }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fromId_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, fromId_);
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(senderId_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, senderId_);
       }
-      for (int i = 0; i < toId_.size(); i++) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, toId_.getRaw(i));
+      for (int i = 0; i < receiverIds_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, receiverIds_.getRaw(i));
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 6, content_);
@@ -524,16 +524,16 @@ public final class Message {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(3, timestamp_);
       }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fromId_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, fromId_);
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(senderId_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, senderId_);
       }
       {
         int dataSize = 0;
-        for (int i = 0; i < toId_.size(); i++) {
-          dataSize += computeStringSizeNoTag(toId_.getRaw(i));
+        for (int i = 0; i < receiverIds_.size(); i++) {
+          dataSize += computeStringSizeNoTag(receiverIds_.getRaw(i));
         }
         size += dataSize;
-        size += 1 * getToIdList().size();
+        size += 1 * getReceiverIdsList().size();
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(content_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, content_);
@@ -558,10 +558,10 @@ public final class Message {
       if (type_ != other.type_) return false;
       if (getTimestamp()
           != other.getTimestamp()) return false;
-      if (!getFromId()
-          .equals(other.getFromId())) return false;
-      if (!getToIdList()
-          .equals(other.getToIdList())) return false;
+      if (!getSenderId()
+          .equals(other.getSenderId())) return false;
+      if (!getReceiverIdsList()
+          .equals(other.getReceiverIdsList())) return false;
       if (!getContent()
           .equals(other.getContent())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -582,11 +582,11 @@ public final class Message {
       hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTimestamp());
-      hash = (37 * hash) + FROMID_FIELD_NUMBER;
-      hash = (53 * hash) + getFromId().hashCode();
-      if (getToIdCount() > 0) {
-        hash = (37 * hash) + TOID_FIELD_NUMBER;
-        hash = (53 * hash) + getToIdList().hashCode();
+      hash = (37 * hash) + SENDER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getSenderId().hashCode();
+      if (getReceiverIdsCount() > 0) {
+        hash = (37 * hash) + RECEIVER_IDS_FIELD_NUMBER;
+        hash = (53 * hash) + getReceiverIdsList().hashCode();
       }
       hash = (37 * hash) + CONTENT_FIELD_NUMBER;
       hash = (53 * hash) + getContent().hashCode();
@@ -726,8 +726,8 @@ public final class Message {
         id_ = "";
         type_ = 0;
         timestamp_ = 0L;
-        fromId_ = "";
-        toId_ =
+        senderId_ = "";
+        receiverIds_ =
             com.google.protobuf.LazyStringArrayList.emptyList();
         content_ = "";
         return this;
@@ -773,11 +773,11 @@ public final class Message {
           result.timestamp_ = timestamp_;
         }
         if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.fromId_ = fromId_;
+          result.senderId_ = senderId_;
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
-          toId_.makeImmutable();
-          result.toId_ = toId_;
+          receiverIds_.makeImmutable();
+          result.receiverIds_ = receiverIds_;
         }
         if (((from_bitField0_ & 0x00000020) != 0)) {
           result.content_ = content_;
@@ -807,18 +807,18 @@ public final class Message {
         if (other.getTimestamp() != 0L) {
           setTimestamp(other.getTimestamp());
         }
-        if (!other.getFromId().isEmpty()) {
-          fromId_ = other.fromId_;
+        if (!other.getSenderId().isEmpty()) {
+          senderId_ = other.senderId_;
           bitField0_ |= 0x00000008;
           onChanged();
         }
-        if (!other.toId_.isEmpty()) {
-          if (toId_.isEmpty()) {
-            toId_ = other.toId_;
+        if (!other.receiverIds_.isEmpty()) {
+          if (receiverIds_.isEmpty()) {
+            receiverIds_ = other.receiverIds_;
             bitField0_ |= 0x00000010;
           } else {
-            ensureToIdIsMutable();
-            toId_.addAll(other.toId_);
+            ensureReceiverIdsIsMutable();
+            receiverIds_.addAll(other.receiverIds_);
           }
           onChanged();
         }
@@ -869,14 +869,14 @@ public final class Message {
                 break;
               } // case 24
               case 34: {
-                fromId_ = input.readStringRequireUtf8();
+                senderId_ = input.readStringRequireUtf8();
                 bitField0_ |= 0x00000008;
                 break;
               } // case 34
               case 42: {
                 String s = input.readStringRequireUtf8();
-                ensureToIdIsMutable();
-                toId_.add(s);
+                ensureReceiverIdsIsMutable();
+                receiverIds_.add(s);
                 break;
               } // case 42
               case 50: {
@@ -1058,184 +1058,184 @@ public final class Message {
         return this;
       }
 
-      private Object fromId_ = "";
+      private Object senderId_ = "";
       /**
-       * <code>string fromId = 4;</code>
-       * @return The fromId.
+       * <code>string sender_id = 4;</code>
+       * @return The senderId.
        */
-      public String getFromId() {
-        Object ref = fromId_;
+      public String getSenderId() {
+        Object ref = senderId_;
         if (!(ref instanceof String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           String s = bs.toStringUtf8();
-          fromId_ = s;
+          senderId_ = s;
           return s;
         } else {
           return (String) ref;
         }
       }
       /**
-       * <code>string fromId = 4;</code>
-       * @return The bytes for fromId.
+       * <code>string sender_id = 4;</code>
+       * @return The bytes for senderId.
        */
       public com.google.protobuf.ByteString
-          getFromIdBytes() {
-        Object ref = fromId_;
+          getSenderIdBytes() {
+        Object ref = senderId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (String) ref);
-          fromId_ = b;
+          senderId_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>string fromId = 4;</code>
-       * @param value The fromId to set.
+       * <code>string sender_id = 4;</code>
+       * @param value The senderId to set.
        * @return This builder for chaining.
        */
-      public Builder setFromId(
+      public Builder setSenderId(
           String value) {
         if (value == null) { throw new NullPointerException(); }
-        fromId_ = value;
+        senderId_ = value;
         bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
       /**
-       * <code>string fromId = 4;</code>
+       * <code>string sender_id = 4;</code>
        * @return This builder for chaining.
        */
-      public Builder clearFromId() {
-        fromId_ = getDefaultInstance().getFromId();
+      public Builder clearSenderId() {
+        senderId_ = getDefaultInstance().getSenderId();
         bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
         return this;
       }
       /**
-       * <code>string fromId = 4;</code>
-       * @param value The bytes for fromId to set.
+       * <code>string sender_id = 4;</code>
+       * @param value The bytes for senderId to set.
        * @return This builder for chaining.
        */
-      public Builder setFromIdBytes(
+      public Builder setSenderIdBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
-        fromId_ = value;
+        senderId_ = value;
         bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
 
-      private com.google.protobuf.LazyStringArrayList toId_ =
+      private com.google.protobuf.LazyStringArrayList receiverIds_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
-      private void ensureToIdIsMutable() {
-        if (!toId_.isModifiable()) {
-          toId_ = new com.google.protobuf.LazyStringArrayList(toId_);
+      private void ensureReceiverIdsIsMutable() {
+        if (!receiverIds_.isModifiable()) {
+          receiverIds_ = new com.google.protobuf.LazyStringArrayList(receiverIds_);
         }
         bitField0_ |= 0x00000010;
       }
       /**
-       * <code>repeated string toId = 5;</code>
-       * @return A list containing the toId.
+       * <code>repeated string receiver_ids = 5;</code>
+       * @return A list containing the receiverIds.
        */
       public com.google.protobuf.ProtocolStringList
-          getToIdList() {
-        toId_.makeImmutable();
-        return toId_;
+          getReceiverIdsList() {
+        receiverIds_.makeImmutable();
+        return receiverIds_;
       }
       /**
-       * <code>repeated string toId = 5;</code>
-       * @return The count of toId.
+       * <code>repeated string receiver_ids = 5;</code>
+       * @return The count of receiverIds.
        */
-      public int getToIdCount() {
-        return toId_.size();
+      public int getReceiverIdsCount() {
+        return receiverIds_.size();
       }
       /**
-       * <code>repeated string toId = 5;</code>
+       * <code>repeated string receiver_ids = 5;</code>
        * @param index The index of the element to return.
-       * @return The toId at the given index.
+       * @return The receiverIds at the given index.
        */
-      public String getToId(int index) {
-        return toId_.get(index);
+      public String getReceiverIds(int index) {
+        return receiverIds_.get(index);
       }
       /**
-       * <code>repeated string toId = 5;</code>
+       * <code>repeated string receiver_ids = 5;</code>
        * @param index The index of the value to return.
-       * @return The bytes of the toId at the given index.
+       * @return The bytes of the receiverIds at the given index.
        */
       public com.google.protobuf.ByteString
-          getToIdBytes(int index) {
-        return toId_.getByteString(index);
+          getReceiverIdsBytes(int index) {
+        return receiverIds_.getByteString(index);
       }
       /**
-       * <code>repeated string toId = 5;</code>
+       * <code>repeated string receiver_ids = 5;</code>
        * @param index The index to set the value at.
-       * @param value The toId to set.
+       * @param value The receiverIds to set.
        * @return This builder for chaining.
        */
-      public Builder setToId(
+      public Builder setReceiverIds(
           int index, String value) {
         if (value == null) { throw new NullPointerException(); }
-        ensureToIdIsMutable();
-        toId_.set(index, value);
+        ensureReceiverIdsIsMutable();
+        receiverIds_.set(index, value);
         bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string toId = 5;</code>
-       * @param value The toId to add.
+       * <code>repeated string receiver_ids = 5;</code>
+       * @param value The receiverIds to add.
        * @return This builder for chaining.
        */
-      public Builder addToId(
+      public Builder addReceiverIds(
           String value) {
         if (value == null) { throw new NullPointerException(); }
-        ensureToIdIsMutable();
-        toId_.add(value);
+        ensureReceiverIdsIsMutable();
+        receiverIds_.add(value);
         bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string toId = 5;</code>
-       * @param values The toId to add.
+       * <code>repeated string receiver_ids = 5;</code>
+       * @param values The receiverIds to add.
        * @return This builder for chaining.
        */
-      public Builder addAllToId(
+      public Builder addAllReceiverIds(
           Iterable<String> values) {
-        ensureToIdIsMutable();
+        ensureReceiverIdsIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, toId_);
+            values, receiverIds_);
         bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string toId = 5;</code>
+       * <code>repeated string receiver_ids = 5;</code>
        * @return This builder for chaining.
        */
-      public Builder clearToId() {
-        toId_ =
+      public Builder clearReceiverIds() {
+        receiverIds_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000010);;
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string toId = 5;</code>
-       * @param value The bytes of the toId to add.
+       * <code>repeated string receiver_ids = 5;</code>
+       * @param value The bytes of the receiverIds to add.
        * @return This builder for chaining.
        */
-      public Builder addToIdBytes(
+      public Builder addReceiverIdsBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
-        ensureToIdIsMutable();
-        toId_.add(value);
+        ensureReceiverIdsIsMutable();
+        receiverIds_.add(value);
         bitField0_ |= 0x00000010;
         onChanged();
         return this;
@@ -1390,14 +1390,15 @@ public final class Message {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\rmessage.proto\022\016com.heji.proto\"z\n\006Packe" +
-      "t\022\n\n\002id\030\001 \001(\t\022\"\n\004type\030\002 \001(\0162\024.com.heji.p" +
-      "roto.Type\022\021\n\ttimestamp\030\003 \001(\003\022\016\n\006fromId\030\004" +
-      " \001(\t\022\014\n\004toId\030\005 \003(\t\022\017\n\007content\030\006 \001(\t*r\n\004T" +
-      "ype\022\014\n\010ADD_BILL\020\000\022\020\n\014ADD_BILL_ACK\020\001\022\017\n\013D" +
-      "ELETE_BILL\020\002\022\023\n\017DELETE_BILL_ACK\020\003\022\017\n\013UPD" +
-      "ATE_BILL\020\004\022\023\n\017UPDATE_BILL_ACK\020\005B\036\n\022com.h" +
-      "ao.heji.protoZ\010../wsmsgb\006proto3"
+      "\n\rmessage.proto\022\016com.heji.proto\"\205\001\n\006Pack" +
+      "et\022\n\n\002id\030\001 \001(\t\022\"\n\004type\030\002 \001(\0162\024.com.heji." +
+      "proto.Type\022\021\n\ttimestamp\030\003 \001(\003\022\021\n\tsender_" +
+      "id\030\004 \001(\t\022\024\n\014receiver_ids\030\005 \003(\t\022\017\n\007conten" +
+      "t\030\006 \001(\t*r\n\004Type\022\014\n\010ADD_BILL\020\000\022\020\n\014ADD_BIL" +
+      "L_ACK\020\001\022\017\n\013DELETE_BILL\020\002\022\023\n\017DELETE_BILL_" +
+      "ACK\020\003\022\017\n\013UPDATE_BILL\020\004\022\023\n\017UPDATE_BILL_AC" +
+      "K\020\005B\036\n\022com.hao.heji.protoZ\010../wsmsgb\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1408,7 +1409,7 @@ public final class Message {
     internal_static_com_heji_proto_Packet_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_heji_proto_Packet_descriptor,
-        new String[] { "Id", "Type", "Timestamp", "FromId", "ToId", "Content", });
+        new String[] { "Id", "Type", "Timestamp", "SenderId", "ReceiverIds", "Content", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

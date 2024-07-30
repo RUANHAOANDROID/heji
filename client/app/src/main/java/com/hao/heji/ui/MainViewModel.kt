@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.data.repository.BookRepository
+import com.hao.heji.launchIO
 import com.hao.heji.utils.YearMonth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ class MainViewModel : ViewModel() {
         YearMonth(Calendar.getInstance()[Calendar.YEAR], Calendar.getInstance()[Calendar.MONTH] + 1)
 
     fun switchBook() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launchIO({
             val bookDao = App.dataBase.bookDao()
             if (Config.enableOfflineMode) {
                 if (bookDao.count() == 0) {
@@ -37,7 +38,7 @@ class MainViewModel : ViewModel() {
                         Config.setBook(it)
                     }
                 }
-                return@launch
+                return@launchIO
             }
             val onlineBook = Config.book
             bookRepository.bookList().data?.let {
@@ -56,8 +57,8 @@ class MainViewModel : ViewModel() {
             }
             Config.setBook(onlineBook)
             Config.save(Config.user, onlineBook, offLine = false)
-            LogUtils.d(Config.user,Config.book)
-        }
+            LogUtils.d(Config.user, Config.book)
+        }, { })
     }
 
 

@@ -46,26 +46,6 @@ interface ApiServer {
     @POST("/api/v1/BookList")
     fun bookList(): Call<BaseResponse<MutableList<Book>>>
 
-    //----------------------BILL---------------------------//
-    @POST("bill/add")
-    fun saveBill(@Body entity: Bill): Call<BaseResponse<String>>
-
-    @POST("bill/addBills")
-    fun saveBill(@Header("book_id") book_id:String, @Body entity: List<Bill>): Call<BaseResponse<String>>
-
-    @POST("bill/update")
-    fun updateBill(@Body entity: Bill): Call<BaseResponse<String>>
-
-    @POST("bill/addBills")
-    fun saveBills(@Body entity: List<Bill>): Call<BaseResponse<String>>
-
-    @DELETE("bill/delete")
-    fun deleteBill(@Query("_id") uid: String): Call<BaseResponse<String>>
-
-    @POST("bill/getBills")
-    fun getBills(@Query("book_id")book_id: String,@Query("startTime") startTime: String?,
-                 @Query("endTime") endTime: String?): Call<BaseResponse<List<Bill>>>
-
     @POST("bill/export")
     fun exportBills(@Query("year") year: String?, @Query("month") month: String?): Call<ResponseBody>
     //----------------------CATEGORY---------------------------//

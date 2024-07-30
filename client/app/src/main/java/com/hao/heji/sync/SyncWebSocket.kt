@@ -56,6 +56,7 @@ class SyncWebSocket {
     private lateinit var scope: CoroutineScope
 
     fun send(bytes: ByteString): Boolean {
+        LogUtils.d(bytes)
         if (!this::scope.isInitialized) {
             return false
         }
@@ -64,6 +65,7 @@ class SyncWebSocket {
         return true
     }
     fun send(packet: Message.Packet): Boolean {
+        LogUtils.d(packet)
         if (!this::scope.isInitialized) {
             return false
         }
@@ -73,6 +75,7 @@ class SyncWebSocket {
     }
 
     fun close() {
+        LogUtils.d("close websocket")
         webSocket?.close(1000, "主动关闭")
         client.dispatcher.cancelAll()
         status = Status.CLOSE
@@ -92,6 +95,7 @@ class SyncWebSocket {
         wsUrl: String,
         token: String, scope: CoroutineScope
     ) {
+        LogUtils.d(wsUrl,token)
         if (status == Status.OPEN) {
             webSocket?.close(1000, "关闭旧的连接")
         }

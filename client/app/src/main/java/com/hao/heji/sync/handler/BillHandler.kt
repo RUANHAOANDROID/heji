@@ -32,7 +32,7 @@ class AddBillHandler : IMessageHandler {
             val packet = createPacket(
                 Message.Type.ADD_BILL_ACK,
                 bill.id,
-                mutableListOf(packet.fromId)
+                mutableListOf(packet.senderId)
             )
             webSocket.send(packet.toBytes())
         }
@@ -80,7 +80,7 @@ class UpdateBillHandler : IMessageHandler {
             val packet = createPacket(
                 Message.Type.UPDATE_BILL_ACK,
                 bill.id,
-                mutableListOf(packet.fromId)
+                mutableListOf(packet.senderId)
             )
             webSocket.send(packet.toBytes())
 

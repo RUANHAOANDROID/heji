@@ -12,12 +12,12 @@ inline fun createPacket(
 ): Message.Packet {
     val newBuilder = Message.Packet.newBuilder()
         .setId(ObjectId.get().toHexString())
-        .setFromId(com.hao.heji.config.Config.user.id)
+        .setSenderId(com.hao.heji.config.Config.user.id)
         .setType(type)
         .setContent(content)
     toUsers?.let {
         if (it.isNotEmpty()) {
-            newBuilder.addAllToId(it)
+            newBuilder.addAllReceiverIds(it)
         }
     }
     return newBuilder.build()

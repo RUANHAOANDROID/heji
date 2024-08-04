@@ -37,7 +37,7 @@ data class Bill(
 
     @Json(name = "book_id")
     @ColumnInfo(name = COLUMN_BOOK_ID, index = true)
-    var bookId: String = Config.book.id,
+    var bookId: String = "",
     /**
      * 钱
      */
@@ -71,14 +71,9 @@ data class Bill(
     @ColumnInfo(name = "upd_time")
     var updTime: Long? = 0,
 
-    /**
-     * 用户标签，费用产生人
-     */
-    var dealer: String? = null,
-
     @Json(name = "crt_user")
     @ColumnInfo(name = "crt_user")
-    var crtUser: String = Config.user.name,
+    var crtUser: String = "",
 
     @Json(name = "crt_time")
     @ColumnInfo(name = "crt_time")

@@ -102,6 +102,7 @@
 
         <TextView
             android:id="@+id/tvUserLabel"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/shap_tag_background"
@@ -116,7 +117,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:background="@drawable/shap_tag_background"
-            android:padding="6dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:text="图片"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvUserLabel"

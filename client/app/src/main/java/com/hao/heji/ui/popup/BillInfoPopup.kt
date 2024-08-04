@@ -56,7 +56,6 @@ class PopupBillInfo(
                 tvType.text = mBill.category
                 tvRecordTime.text = mBill.id.getObjectTime().string()
                 tvTicketTime.text = mBill.time.string()
-                rePeople.text = mBill.dealer
             }
         }
     }
@@ -106,17 +105,13 @@ class PopupBillInfo(
             "删除提示", "确认删除该条账单吗？"
         ) {
             context as MainActivity
-            mBill.also {
-                if (it.crtUser == Config.user.name) {
-                    //状态删除
-                    App.dataBase.billDao().preDelete(it.id)
-                    delete(it)
-                    dismiss()
-                    LogUtils.d("删除账单")
-                } else {
-                    ToastUtils.showLong("只有账单创建人有权删除该账单")
-                }
+            if (mBill.crtUser != Config.user.id) {
+                ToastUtils.showLong("只有账单创建人有权删除该账单")
             }
+            //状态删除
+            App.dataBase.billDao().preDelete(mBill.id,Config.user.id)
+            delete(mBill)
+            dismiss()
         }.show()
     }
 

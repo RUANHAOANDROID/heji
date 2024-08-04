@@ -2,15 +2,18 @@ package com.hao.heji.sync
 
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.App
+import com.hao.heji.config.Config
 import com.hao.heji.data.db.Bill
+import com.hao.heji.data.db.Book
+import com.hao.heji.data.db.STATUS
 import com.hao.heji.data.db.STATUS.DELETED
 import com.hao.heji.data.db.STATUS.NEW
 import com.hao.heji.data.db.STATUS.UPDATED
 import com.hao.heji.moshi
+import com.hao.heji.network.HttpManager
 import com.hao.heji.proto.Message
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -23,21 +26,60 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
     private val billDao = App.dataBase.billDao()
     private val bookDao = App.dataBase.bookDao()
     private val bookUserDao = App.dataBase.bookUserDao()
-    private val config = com.hao.heji.config.Config
-    private var isProcessing = false
 
-    init {
-        scope.launch {
-            App.viewModel.configChange.collectLatest {
-                unregister()
-                register()
+    private val bookJob = scope.launch {
+        var isProcessing = false
+        bookDao.flowNotSynced().collect {
+            if (isProcessing) {
+                return@collect
+            }
+            if (it.size <= 0) {
+                return@collect
+            }
+            withContext(Dispatchers.IO) {
+                for (b in it) {
+                    val bookUsers = bookUserDao.findUsersId(b.id)
+                    when (b.syncStatus) {
+                        NEW -> {
+                            if (!Config.enableOfflineMode) {
+                                val resp = HttpManager.getInstance().createBook(b)
+                                if (resp.success()) {
+                                    b.syncStatus = STATUS.SYNCED
+                                    App.dataBase.bookDao().upsert(b)
+                                }
+                            }
+                            val bookJson = moshi.adapter(Book::class.java).toJson(b)
+                            syncWebSocket.send(
+                                createPacket(
+                                    Message.Type.ADD_BOOK, bookJson, toUsers = bookUsers
+                                )
+                            )
+                        }
+
+                        DELETED -> {
+                            syncWebSocket.send(
+                                createPacket(
+                                    Message.Type.DELETE_BOOK, b.id, bookUsers
+                                )
+                            )
+                        }
+
+                        UPDATED -> {
+                            val bookJson = moshi.adapter(Book::class.java).toJson(b)
+                            syncWebSocket.send(
+                                createPacket(
+                                    Message.Type.ADD_BOOK, bookJson, toUsers = bookUsers
+                                )
+                            )
+                        }
+                    }
+                }
             }
         }
-
     }
-
     private val billJob = scope.launch {
-        billDao.flowNotSynced(config.book.id).collect {
+        var isProcessing = false
+        billDao.flowNotSynced(Config.book.id).collect {
             if (isProcessing) {
                 LogUtils.d("正在处理中...")
                 LogUtils.d("本次触发不生效...")
@@ -59,9 +101,7 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
                             val users = bookUserDao.findUsersId(bill.bookId)
                             syncWebSocket.send(
                                 createPacket(
-                                    Message.Type.ADD_BILL,
-                                    content = json,
-                                    toUsers = users
+                                    Message.Type.ADD_BILL, content = json, toUsers = users
                                 ).toBytes()
                             )
                         }
@@ -71,9 +111,7 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
                             val users = bookUserDao.findUsersId(bill.bookId)
                             syncWebSocket.send(
                                 createPacket(
-                                    Message.Type.DELETE_BILL,
-                                    content = bill.id,
-                                    toUsers = users
+                                    Message.Type.DELETE_BILL, content = bill.id, toUsers = users
                                 ).toBytes()
                             )
                         }
@@ -84,23 +122,24 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
                             val users = bookUserDao.findUsersId(bill.bookId)
                             syncWebSocket.send(
                                 createPacket(
-                                    Message.Type.UPDATE_BILL,
-                                    content = json,
-                                    toUsers = users
+                                    Message.Type.UPDATE_BILL, content = json, toUsers = users
                                 ).toBytes()
                             )
                         }
                     }
                 }
-                LogUtils.d("本次变更账单处理完成...")
-                isProcessing = false
             }
+            LogUtils.d("本次变更账单处理完成...")
+            isProcessing = false
         }
     }
 
     fun register() {
         if (!billJob.isActive) {
             billJob.start()
+        }
+        if (!bookJob.isActive){
+            bookJob.start()
         }
     }
 

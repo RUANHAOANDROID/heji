@@ -21,7 +21,6 @@ import com.hao.heji.data.db.*
         BookUser::class,
         Category::class,
         Bill::class,
-        Dealer::class,
         Image::class,
     ],
     version = 1
@@ -33,7 +32,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun billDao(): BillDao
     abstract fun imageDao(): ImageDao
     abstract fun categoryDao(): CategoryDao
-    abstract fun dealerDao(): DealerDao
     abstract fun billImageDao(): BillWithImageDao
 
     override fun clearAllTables() {}

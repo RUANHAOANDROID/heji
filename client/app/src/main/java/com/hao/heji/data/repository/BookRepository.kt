@@ -10,13 +10,6 @@ class BookRepository {
     suspend fun findBook(bid: String) = HttpManager.getInstance().findBook(bid)
     suspend fun createBook(book: Book) {
         App.dataBase.bookDao().insert(book)
-        if (!Config.enableOfflineMode) {
-            val resp = HttpManager.getInstance().createBook(book)
-            if (resp.success()) {
-                book.syncStatus = STATUS.SYNCED
-                App.dataBase.bookDao().upsert(book)
-            }
-        }
     }
     suspend fun bookList() = HttpManager.getInstance().bookList()
     suspend fun sharedBook(bid: String) = HttpManager.getInstance().sharedBook(bid)

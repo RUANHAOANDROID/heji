@@ -6,19 +6,14 @@ import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.blankj.utilcode.util.*
 import com.google.android.material.tabs.TabLayout
@@ -29,7 +24,6 @@ import com.hao.heji.data.BillType
 import com.hao.heji.data.converters.DateConverters
 import com.hao.heji.data.converters.MoneyConverters.ZERO_00
 import com.hao.heji.data.db.*
-import com.hao.heji.data.db.mongo.ObjectId
 import com.hao.heji.databinding.FragmentCreatebillBinding
 import com.hao.heji.ui.base.BaseFragment
 import com.hao.heji.ui.base.FragmentViewPagerAdapter
@@ -41,7 +35,6 @@ import com.hao.heji.utils.YearMonth
 import com.hao.heji.utils.matisse.MatisseUtils
 import com.hao.heji.widget.KeyBoardView.OnKeyboardListener
 import com.zhihu.matisse.Matisse
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.util.*
 import java.util.function.Consumer
@@ -60,30 +53,78 @@ class CreateBillFragment : BaseFragment() {
         ViewModelProvider(this)[CreateBillViewModel::class.java]
     }
 
-    private lateinit var pagerAdapter: FragmentViewPagerAdapter
-
-    //支出|收入
-    private val tabTitles = listOf(
-        BillType.EXPENDITURE.valueString, BillType.INCOME.valueString
-    )
-
-    //SelectCategoryFragment
-    internal lateinit var categoryFragment: CategoryFragment
-
-    private val categoryFragments = listOf(
-        CategoryFragment.newInstance(BillType.EXPENDITURE),
-        CategoryFragment.newInstance(BillType.INCOME)
-    )
-
     val binding: FragmentCreatebillBinding by lazy {
         FragmentCreatebillBinding.inflate(layoutInflater)
     }
+    private val pagerAdapter: FragmentViewPagerAdapter by lazy {
+        FragmentViewPagerAdapter(
+            childFragmentManager,
+            listOf(
+                CategoryFragment.newInstance(BillType.EXPENDITURE),
+                CategoryFragment.newInstance(BillType.INCOME)
+            ),
+            listOf(
+                BillType.EXPENDITURE.valueString, BillType.INCOME.valueString
+            )
+        )
+    }
 
     //图片弹窗
-    lateinit var popupSelectImage: SelectImagePopup
+    val popupSelectImage by lazy {
+        SelectImagePopup(requireActivity()).apply {
+            deleteListener = {
+                ToastUtils.showLong(it.toString())
+                viewModel.deleteImage(it.id)
+            }
+            selectedImagesCall = {
+                getImagesPath()
+            }
+            selectListener = { maxCount ->
+                MatisseUtils.selectMultipleImage(
+                    requireActivity(),
+                    maxCount,
+                    launcher = registerForActivityResult(
+                        ActivityResultContracts.StartActivityForResult(),
+                        ActivityResultCallback { result ->
+                            if (result.resultCode != Activity.RESULT_OK) {
+                                return@ActivityResultCallback
+                            }
+                            val obtainResult = Matisse.obtainResult(result.data)
+                            val obtainPathResult = Matisse.obtainPathResult(result.data)
+                            LogUtils.d("OnActivityResult ${Matisse.obtainOriginalState(result.data)}")
 
-    //照片选择
-    lateinit var imageSelectLauncher: ActivityResultLauncher<Intent>
+                            val mSelected: MutableList<String> = ArrayList()
+                            obtainResult.forEach(Consumer { uri: Uri ->
+                                val imgUrl = UriUtils.uri2File(uri).absolutePath
+                                mSelected.add(imgUrl)
+                            })
+
+                            if (getImages().size > 0) {
+                                mSelected.forEach { localPath: String ->
+                                    getImages().forEach { image ->
+                                        /**
+                                         * 包含的话就删除重新加
+                                         */
+                                        /**
+                                         * 包含的话就删除重新加
+                                         */
+                                        if (image.localPath == localPath) {
+                                        }
+                                    }
+                                }
+                            } else {
+                                setImages(mSelected.map { selectPath ->
+                                    Image(billID = mBill.id).apply {
+                                        localPath = selectPath
+                                        syncStatus = STATUS.NEW
+                                    }
+                                }.toMutableList())
+                            }
+                        })
+                )
+            }
+        }
+    }
 
     /**
      * 是否是修改账单
@@ -108,13 +149,10 @@ class CreateBillFragment : BaseFragment() {
     private fun setSelectCategory(category: String, type: Int) {
         //内容页绘制完成后选中类别
         binding.vpContent.post {
-            if (type == BillType.EXPENDITURE.valueInt) {
-                binding.tab.getTabAt(0)?.select()
-                categoryFragments[0].setSelectCategory(category)
-            } else if (type == BillType.INCOME.valueInt) {
-                binding.tab.getTabAt(1)?.select()
-                categoryFragments[1].setSelectCategory(category)
-            }
+            val index = if (type == BillType.EXPENDITURE.valueInt) 0 else 1
+            val categoryFragment = pagerAdapter.getItem(index) as CategoryFragment
+            binding.tab.getTabAt(index)
+            categoryFragment.setSelectCategory(category)
         }
     }
 
@@ -129,11 +167,10 @@ class CreateBillFragment : BaseFragment() {
             "TimeTest",
             TimeUtils.millis2String(System.currentTimeMillis(), "yyyy/MM/dd HH:mm:ss")
         )
-        if (type == BillType.EXPENDITURE.valueInt) {
-            categoryFragments[0].setCategories(categories)
-        } else if (type == BillType.INCOME.valueInt) {
-            categoryFragments[1].setCategories(categories)
-        }
+        val index = if (type == BillType.EXPENDITURE.valueInt) 0 else 1
+        val categoryFragment = pagerAdapter.getItem(index) as CategoryFragment
+        binding.tab.getTabAt(index)
+        categoryFragment.setCategories(categories)
         val billType = BillType.transform(type)
         binding.keyboard.setType(billType)
         val color = if (billType == BillType.EXPENDITURE) R.color.expenditure else R.color.income
@@ -142,47 +179,9 @@ class CreateBillFragment : BaseFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        pagerAdapter = FragmentViewPagerAdapter(
-            childFragmentManager, categoryFragments, tabTitles
-        )
         /**
          * 选择照片
          */
-        imageSelectLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult(), ActivityResultCallback { result ->
-                if (result.resultCode != Activity.RESULT_OK) {
-                    return@ActivityResultCallback
-                }
-                val obtainResult = Matisse.obtainResult(result.data)
-                val obtainPathResult = Matisse.obtainPathResult(result.data)
-                LogUtils.d("OnActivityResult ${Matisse.obtainOriginalState(result.data)}")
-
-                val mSelected: MutableList<String> = ArrayList()
-                obtainResult.forEach(Consumer { uri: Uri ->
-                    val imgUrl = UriUtils.uri2File(uri).absolutePath
-                    mSelected.add(imgUrl)
-                })
-
-                if (popupSelectImage.getImages().size > 0) {
-                    mSelected.forEach { localPath: String ->
-                        popupSelectImage.getImages().forEach { image ->
-                            /**
-                             * 包含的话就删除重新加
-                             */
-                            if (image.localPath == localPath) {
-                            }
-                        }
-                    }
-                } else {
-                    popupSelectImage.setImages(mSelected.map { selectPath ->
-                        Image(billID = mBill.id).apply {
-                            localPath = selectPath
-                            syncStatus = STATUS.NEW
-                        }
-                    }.toMutableList())
-                }
-            })
-
         val mArgs = CreateBillFragmentArgs.fromBundle(requireArguments()).argAddBill
         isModify = mArgs.isModify
         mBill = mArgs.bill ?: Bill(time = Date(), bookId = Config.book.id)
@@ -190,30 +189,23 @@ class CreateBillFragment : BaseFragment() {
     }
 
     private fun showPager() {
-        val pagerAdapter = FragmentViewPagerAdapter(
-            childFragmentManager,
-            categoryFragments,
-            tabTitles
-        )
-
         binding.vpContent.apply {
             adapter = pagerAdapter
             //TabLayout+ViewPager联动 1
             addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.tab))
         }
-        binding.tab.apply {
+        with(binding.tab) {
             setupWithViewPager(binding.vpContent)
             //TabLayout+ViewPager联动 2
             addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.vpContent))
             getTabAt(0)!!.select()
-            //mSelectedCategoryListener.selected(categoryFragments[0].getSelectedCategory()!!)//默认支出
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     LogUtils.d("onTabSelected", tab.position)
                     val type =
                         if (tab.position == 0) BillType.EXPENDITURE.valueInt else BillType.INCOME.valueInt
                     viewModel.getCategories(type)
-                    mBill.type = type
+
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -236,45 +228,15 @@ class CreateBillFragment : BaseFragment() {
                 CategoryManagerFragmentArgs(mBill.type).toBundle()
             )
         }
-
         showPager()
-        popupSelectImage = SelectImagePopup(requireActivity()).apply {
-            deleteListener = {
-                ToastUtils.showLong(it.toString())
-                viewModel.deleteImage(it.id)
-            }
-            selectedImagesCall = {
-                getImagesPath()
-            }
-            selectListener = { maxCount ->
-                MatisseUtils.selectMultipleImage(
-                    requireActivity(),
-                    maxCount,
-                    launcher = imageSelectLauncher
-                )
-            }
-        }
-
         binding.imgTicket.setOnClickListener {
             XPopup.Builder(requireContext())
                 .asCustom(popupSelectImage)
                 .show()
         }
-
-
-        binding.eidtRemark.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable) {
-                mBill.remark = s.toString().trim { it <= ' ' }
-            }
-        })
-
         keyboardListener()
-        viewModel.getDealers()
         with(mBill) {
             setTime(time)
-            setDealer(dealer)
             category?.let { setSelectCategory(it, type) }
             setMoney(money)
             images?.let {
@@ -302,27 +264,14 @@ class CreateBillFragment : BaseFragment() {
                     ToastUtils.showLong(uiState.throws.message)
                 }
 
-                is CreateBillUIState.Dealers -> {
-                    //经手人名单
-                    if (uiState.dealers.size > 0) {
-                        setDealer(uiState.dealers[0])//设置默经手人
-                    } else {
-                        setDealer(Config.user.name) //设置默经手人当前用户
-                    }
-                    binding.tvUserLabel.setOnClickListener {
-                        XPopup.Builder(requireContext())
-                            .maxHeight(binding.keyboard.height)
-                            .asBottomList(
-                                "请选择经手人", uiState.dealers.toTypedArray()
-                            ) { _: Int, text: String ->
-                                setDealer(text)
-                            }
-                            .show()
-                    }
-                }
-
                 is CreateBillUIState.Save -> {
-                    if (uiState.again) reset() else findNavController().popBackStack()
+                    if (uiState.again) {
+                        mBill = Bill()
+                        binding.keyboard.clear()
+                        binding.eidtRemark.setText("")
+                        binding.tvMoney.text = "0"
+                        popupSelectImage.clear()
+                    } else findNavController().popBackStack()
                 }
 
                 is CreateBillUIState.Categories -> {
@@ -426,7 +375,6 @@ class CreateBillFragment : BaseFragment() {
         //填充输入信息
         binding.apply {
             tvMoney.text = mBill.money.toString()
-            mBill.dealer?.let { setDealer(it) }
             tvBillTime.text = mBill.time.string()
             mBill.remark?.let { remark ->
                 eidtRemark.setText(remark)
@@ -438,12 +386,6 @@ class CreateBillFragment : BaseFragment() {
         }
     }
 
-    private fun setDealer(dealer: String?) {
-        dealer?.let {
-            binding.tvUserLabel.text = "经手人: $dealer"
-            mBill.dealer = dealer
-        }
-    }
 
     private fun setTime(selectTime: Date) {
         binding.tvBillTime.text = DateConverters.date2Str(selectTime)
@@ -481,24 +423,21 @@ class CreateBillFragment : BaseFragment() {
 
     private fun save(again: Boolean) {
         try {
+            mBill.bookId = Config.book.id
+            mBill.remark = binding.eidtRemark.text.toString()
+            mBill.crtUser =Config.user.id
+//            mBill.type = pagerAdapter.getItem()
             mBill.money = BigDecimal(binding.tvMoney.text.toString())
             //check value is false throw error
+            check(mBill.bookId != "") { "账本ID异常" }
+            check(mBill.time != null) { "时间异常" }
             check(mBill.money != ZERO_00()) { "金额不能为 ${ZERO_00().toPlainString()}" }
             check(mBill.money != BigDecimal.ZERO) { "金额不能为 ${BigDecimal.ZERO.toPlainString()}" }
             check(mBill.category != null) { "未选类别" }
-            lifecycleScope.launch {
-                viewModel.save(mBill, again)
-            }
+            viewModel.save(mBill, again)
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)
         }
     }
 
-    private fun reset() {
-        mBill = Bill()
-        binding.keyboard.clear()
-        binding.eidtRemark.setText("")
-        binding.tvMoney.text = "0"
-        popupSelectImage.clear()
-    }
 }

@@ -38,8 +38,7 @@ import java.util.function.Consumer
  * @author: 锅得铁
  * #
  */
-internal class ETCViewModel :
-    BaseViewModel<ETCUiState>() {
+internal class ETCViewModel : BaseViewModel<ETCUiState>() {
 
 
     var etcID = ETC.ID
@@ -80,10 +79,9 @@ internal class ETCViewModel :
             .add(DateConverters)
             .add(MoneyConverters)
             .build()
-        val jsonAdapter: JsonAdapter<ETCListInfoEntity> = moshi.adapter(
+        val etcListInfo = moshi.adapter(
             ETCListInfoEntity::class.java
-        )
-        val etcListInfo = jsonAdapter.fromJson(strBody)
+        ).fromJson(strBody)
         if (etcListInfo?.data != null && etcListInfo.data.size > 0) {
             val data = etcListInfo.data
             data.forEach(Consumer { info: ETCListInfoEntity.Info ->
@@ -93,10 +91,9 @@ internal class ETCViewModel :
                     remark = info.exEnStationName
                     time = DateConverters.str2Date(info.exchargetime)
                     category = categoryName
-                    dealer = "ETC"
                     type = BillType.EXPENDITURE.valueInt
                 }.also {
-                    it.hashValue =it.hashCode()
+                    it.hashValue = it.hashCode()
                 }
 
                 /**
@@ -245,7 +242,6 @@ internal class ETCViewModel :
             remark = info.enStationName + "|" + info.exStationName
             time = DateConverters.str2Date(info.exTime)
             category = categoryName
-            dealer = "ETC"
             type = BillType.EXPENDITURE.valueInt
         }.also {
             it.hashValue=it.hashCode()

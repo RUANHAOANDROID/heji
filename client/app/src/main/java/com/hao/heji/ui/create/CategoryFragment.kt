@@ -23,46 +23,8 @@ internal class CategoryFragment : BaseFragment() {
     val binding: FragmentCategoryContentBinding by lazy {
         FragmentCategoryContentBinding.inflate(layoutInflater)
     }
-    private lateinit var labelAdapter: SelectCategoryAdapter
-
-    private val createBillFragment by lazy {
-        (parentFragment) as CreateBillFragment
-    }
-    //选中的标签、默认选择第一个、没有时为空
-    private var selectCategory: Category? = null
-
-    //类型 支出 或 收入
-    lateinit var type: BillType
-
-    override fun layout() = binding.root
-
-    @SuppressLint("UseRequireInsteadOfGet")
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        layout().post {
-            arguments?.let {
-                type = CategoryFragmentArgs.fromBundle(it).type
-                if (type == BillType.INCOME)//预加载一次
-                    createBillFragment.viewModel.getCategories(type.valueInt)
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        layout().post {
-            with(createBillFragment) {
-                categoryFragment = this@CategoryFragment
-                viewModel.getCategories(type.valueInt)
-            }
-            createBillFragment.selectedCategory(type.valueInt, selectCategory)
-            LogUtils.d(selectCategory)
-            LogUtils.d(type)
-        }
-    }
-
-    override fun initView(view: View) {
-        labelAdapter = SelectCategoryAdapter(ArrayList()).apply {
+    private val labelAdapter by lazy {
+        SelectCategoryAdapter(ArrayList()).apply {
             setDiffCallback(object : DiffUtil.ItemCallback<Category>() {
                 override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
                     return oldItem.id == newItem.id
@@ -74,15 +36,54 @@ internal class CategoryFragment : BaseFragment() {
 
             })
             setOnItemClickListener { adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int ->
-                selectCategory = labelAdapter.getItem(position) //当前点击的
+                selectCategory = getItem(position) //当前点击的
                 //使其他置为为选中状态
-                labelAdapter.data.forEach {
+                data.forEach {
                     it.isSelected = it.name == selectCategory!!.name
                 }
-                labelAdapter.notifyDataSetChanged()
+                notifyDataSetChanged()
                 createBillFragment.selectedCategory(type.valueInt, selectCategory!!)
             }
         }
+    }
+
+    private val createBillFragment by lazy {
+        (parentFragment) as CreateBillFragment
+    }
+
+    //选中的标签、默认选择第一个、没有时为空
+    private var selectCategory: Category? = null
+
+    //类型 支出 或 收入
+    lateinit var type: BillType
+
+    override fun layout() = binding.root
+
+    @SuppressLint("UseRequireInsteadOfGet")
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+       binding.root.post {
+            arguments?.let {
+                type = CategoryFragmentArgs.fromBundle(it).type
+                if (type == BillType.INCOME)//预加载一次
+                    createBillFragment.viewModel.getCategories(type.valueInt)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.root.post {
+            with(createBillFragment) {
+                viewModel.getCategories(type.valueInt)
+            }
+            createBillFragment.selectedCategory(type.valueInt, selectCategory)
+            LogUtils.d(selectCategory)
+            LogUtils.d(type)
+        }
+    }
+
+    override fun initView(view: View) {
         binding.categoryRecycler.apply {
             layoutManager = GridLayoutManager(mainActivity, 6)
             adapter = labelAdapter
@@ -124,7 +125,7 @@ internal class CategoryFragment : BaseFragment() {
 
     fun setSelectCategory(category: String? = null) {
         if (!category.isNullOrEmpty()) {
-            binding.categoryRecycler.post {
+            binding.root.post {
                 labelAdapter.setSelectCategory(category)
             }
         }

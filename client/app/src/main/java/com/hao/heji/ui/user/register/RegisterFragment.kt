@@ -4,17 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.blankj.utilcode.util.ToastUtils
-import com.hao.heji.ui.user.login.LoginActivity
 import com.hao.heji.R
 import com.hao.heji.databinding.FragmentRegisterBinding
 import com.hao.heji.requireNonEmpty
 import com.hao.heji.ui.base.render
+import com.hao.heji.ui.user.login.LoginActivity
 
 
 class RegisterFragment : Fragment() {
@@ -89,10 +88,9 @@ class RegisterFragment : Fragment() {
         setTitle()
     }
 
-    private fun setTitle() {
+    private fun setTitle() =
         with(activity as LoginActivity) {
             findViewById<Toolbar>(R.id.toolbar).title = getString(R.string.register)
             this
         }
-    }
 }

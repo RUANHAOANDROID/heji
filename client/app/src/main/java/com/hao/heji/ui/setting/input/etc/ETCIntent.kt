@@ -10,6 +10,6 @@ import com.hao.heji.ui.base.IUiState
  */
 
 internal sealed interface ETCUiState : IUiState {
-    object InputSuccess : ETCUiState
+    data object InputSuccess : ETCUiState
     class InputError(val t: Throwable) : ETCUiState
 }

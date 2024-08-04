@@ -36,8 +36,8 @@ interface BillDao {
     @Query("select sync_status from bill where bill_id=:billId")
     fun status(billId: String): Int
 
-    @Query("update bill set sync_status = ${STATUS.DELETED} where bill_id=:billId")
-    fun preDelete(billId: String): Int
+    @Query("update bill set sync_status = ${STATUS.DELETED} where bill_id=:billId and crt_user=:uid")
+    fun preDelete(billId: String,uid:String): Int
 
     @Query("update bill set sync_status = :status where bill_id=:billId")
     fun updateSyncStatus(billId: String, status: Int): Int

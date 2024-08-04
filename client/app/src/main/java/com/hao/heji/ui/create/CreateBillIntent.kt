@@ -21,7 +21,6 @@ internal sealed class CreateBillUIState : IUiState {
     class Save(val again: Boolean) : CreateBillUIState()
     class BillChange(val bill: Bill) : CreateBillUIState()
     class Error(val throws: Throwable) : CreateBillUIState()
-    class Dealers(val dealers: MutableList<String>) : CreateBillUIState()
     class Images(val images: MutableList<Image>) : CreateBillUIState()
     class Categories(val type: Int, val categories: MutableList<Category>) : CreateBillUIState()
 }

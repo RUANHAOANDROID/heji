@@ -5,13 +5,14 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import com.blankj.utilcode.util.LogUtils
+import com.hao.heji.App
 import com.hao.heji.config.Config
-import com.hao.heji.sync.impl.BillSyncImpl
-import com.hao.heji.sync.impl.BookSyncImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 /**
  * 同步服务
@@ -30,6 +31,11 @@ class SyncService : Service() {
         super.onCreate()
         LogUtils.d("onCreate")
         connectSyncWebSocket()
+        scope.launch {
+            App.viewModel.configChange.collectLatest {
+                connectSyncWebSocket()
+            }
+        }
     }
 
     private fun connectSyncWebSocket() {

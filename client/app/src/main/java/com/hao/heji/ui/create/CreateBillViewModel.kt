@@ -11,6 +11,7 @@ import com.hao.heji.data.db.mongo.ObjectId
 import com.hao.heji.proto.Message.Type
 import com.hao.heji.ui.base.BaseViewModel
 import com.hao.heji.utils.launchIO
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -41,31 +42,17 @@ internal class CreateBillViewModel :
         )
     }
 
-    fun deleteImage(id:String) {
+    fun deleteImage(id: String) {
         App.dataBase.imageDao().preDelete(id)
     }
 
-    fun getImages(ids:MutableList<String>) {
+    fun getImages(ids: MutableList<String>) {
         val images = App.dataBase.imageDao().findImage(ids)
         send(CreateBillUIState.Images(images))
     }
-
-    fun getDealers() {
-        val users = App.dataBase.dealerDao().findAll().map {
-            it.userName
-        }.toMutableList()
-        send(CreateBillUIState.Dealers(users))
-    }
-
     suspend fun getBill(it: String) {
         val bill = App.dataBase.billImageDao().findBillAndImage(it)
         send(CreateBillUIState.BillChange(bill = bill))
-    }
-
-    suspend fun save(b: Bill,again: Boolean =false) {
-        LogUtils.d(b)
-        save(b)
-        send(CreateBillUIState.Save(again))
     }
 
     /**
@@ -75,20 +62,23 @@ internal class CreateBillViewModel :
      * @param billType
      * @return
      */
-   private suspend fun save(bill: Bill) {
-        val images = mutableListOf<Image>()
-        if (bill.images.isNotEmpty()) {
-            val selectImages = bill.images.map { s: String? ->
-                val image = Image(ObjectId().toString(), bill.id)
-                image.localPath = s
-                image.syncStatus = STATUS.NEW
-                image
-            }.toMutableList()
-            images.addAll(selectImages)
-            var count: Long =
-                App.dataBase.billImageDao().installBillAndImage(bill, images)
-        }else{
-            App.dataBase.billDao().install(bill)
+    fun save(bill: Bill,again :Boolean) {
+        viewModelScope.launch {
+            val images = mutableListOf<Image>()
+            if (bill.images.isNotEmpty()) {
+                val selectImages = bill.images.map { s: String? ->
+                    val image = Image(ObjectId().toString(), bill.id)
+                    image.localPath = s
+                    image.syncStatus = STATUS.NEW
+                    image
+                }.toMutableList()
+                images.addAll(selectImages)
+                var count: Long =
+                    App.dataBase.billImageDao().installBillAndImage(bill, images)
+            } else {
+                App.dataBase.billDao().install(bill)
+            }
         }
+        send(CreateBillUIState.Save(again))
     }
 }

@@ -47,6 +47,54 @@ public final class Message {
      * <code>UPDATE_BILL_ACK = 5;</code>
      */
     UPDATE_BILL_ACK(5),
+    /**
+     * <code>ADD_BOOK = 6;</code>
+     */
+    ADD_BOOK(6),
+    /**
+     * <code>ADD_BOOK_ACK = 7;</code>
+     */
+    ADD_BOOK_ACK(7),
+    /**
+     * <code>DELETE_BOOK = 8;</code>
+     */
+    DELETE_BOOK(8),
+    /**
+     * <code>DELETE_BOOK_ACK = 9;</code>
+     */
+    DELETE_BOOK_ACK(9),
+    /**
+     * <code>UPDATE_BOOK = 10;</code>
+     */
+    UPDATE_BOOK(10),
+    /**
+     * <code>UPDATE_BOOK_ACK = 11;</code>
+     */
+    UPDATE_BOOK_ACK(11),
+    /**
+     * <code>ADD_CATEGORY = 12;</code>
+     */
+    ADD_CATEGORY(12),
+    /**
+     * <code>ADD_CATEGORY_ACK = 13;</code>
+     */
+    ADD_CATEGORY_ACK(13),
+    /**
+     * <code>DELETE_GATEGORY = 14;</code>
+     */
+    DELETE_GATEGORY(14),
+    /**
+     * <code>DELETE_GATEGORY_ACK = 15;</code>
+     */
+    DELETE_GATEGORY_ACK(15),
+    /**
+     * <code>UPDATE_GATEGORY = 16;</code>
+     */
+    UPDATE_GATEGORY(16),
+    /**
+     * <code>UPDATE_GATEGORY_ACK = 17;</code>
+     */
+    UPDATE_GATEGORY_ACK(17),
     UNRECOGNIZED(-1),
     ;
 
@@ -74,6 +122,54 @@ public final class Message {
      * <code>UPDATE_BILL_ACK = 5;</code>
      */
     public static final int UPDATE_BILL_ACK_VALUE = 5;
+    /**
+     * <code>ADD_BOOK = 6;</code>
+     */
+    public static final int ADD_BOOK_VALUE = 6;
+    /**
+     * <code>ADD_BOOK_ACK = 7;</code>
+     */
+    public static final int ADD_BOOK_ACK_VALUE = 7;
+    /**
+     * <code>DELETE_BOOK = 8;</code>
+     */
+    public static final int DELETE_BOOK_VALUE = 8;
+    /**
+     * <code>DELETE_BOOK_ACK = 9;</code>
+     */
+    public static final int DELETE_BOOK_ACK_VALUE = 9;
+    /**
+     * <code>UPDATE_BOOK = 10;</code>
+     */
+    public static final int UPDATE_BOOK_VALUE = 10;
+    /**
+     * <code>UPDATE_BOOK_ACK = 11;</code>
+     */
+    public static final int UPDATE_BOOK_ACK_VALUE = 11;
+    /**
+     * <code>ADD_CATEGORY = 12;</code>
+     */
+    public static final int ADD_CATEGORY_VALUE = 12;
+    /**
+     * <code>ADD_CATEGORY_ACK = 13;</code>
+     */
+    public static final int ADD_CATEGORY_ACK_VALUE = 13;
+    /**
+     * <code>DELETE_GATEGORY = 14;</code>
+     */
+    public static final int DELETE_GATEGORY_VALUE = 14;
+    /**
+     * <code>DELETE_GATEGORY_ACK = 15;</code>
+     */
+    public static final int DELETE_GATEGORY_ACK_VALUE = 15;
+    /**
+     * <code>UPDATE_GATEGORY = 16;</code>
+     */
+    public static final int UPDATE_GATEGORY_VALUE = 16;
+    /**
+     * <code>UPDATE_GATEGORY_ACK = 17;</code>
+     */
+    public static final int UPDATE_GATEGORY_ACK_VALUE = 17;
 
 
     public final int getNumber() {
@@ -106,6 +202,18 @@ public final class Message {
         case 3: return DELETE_BILL_ACK;
         case 4: return UPDATE_BILL;
         case 5: return UPDATE_BILL_ACK;
+        case 6: return ADD_BOOK;
+        case 7: return ADD_BOOK_ACK;
+        case 8: return DELETE_BOOK;
+        case 9: return DELETE_BOOK_ACK;
+        case 10: return UPDATE_BOOK;
+        case 11: return UPDATE_BOOK_ACK;
+        case 12: return ADD_CATEGORY;
+        case 13: return ADD_CATEGORY_ACK;
+        case 14: return DELETE_GATEGORY;
+        case 15: return DELETE_GATEGORY_ACK;
+        case 16: return UPDATE_GATEGORY;
+        case 17: return UPDATE_GATEGORY_ACK;
         default: return null;
       }
     }
@@ -1394,11 +1502,17 @@ public final class Message {
       "et\022\n\n\002id\030\001 \001(\t\022\"\n\004type\030\002 \001(\0162\024.com.heji." +
       "proto.Type\022\021\n\ttimestamp\030\003 \001(\003\022\021\n\tsender_" +
       "id\030\004 \001(\t\022\024\n\014receiver_ids\030\005 \003(\t\022\017\n\007conten" +
-      "t\030\006 \001(\t*r\n\004Type\022\014\n\010ADD_BILL\020\000\022\020\n\014ADD_BIL" +
-      "L_ACK\020\001\022\017\n\013DELETE_BILL\020\002\022\023\n\017DELETE_BILL_" +
-      "ACK\020\003\022\017\n\013UPDATE_BILL\020\004\022\023\n\017UPDATE_BILL_AC" +
-      "K\020\005B\036\n\022com.hao.heji.protoZ\010../wsmsgb\006pro" +
-      "to3"
+      "t\030\006 \001(\t*\342\002\n\004Type\022\014\n\010ADD_BILL\020\000\022\020\n\014ADD_BI" +
+      "LL_ACK\020\001\022\017\n\013DELETE_BILL\020\002\022\023\n\017DELETE_BILL" +
+      "_ACK\020\003\022\017\n\013UPDATE_BILL\020\004\022\023\n\017UPDATE_BILL_A" +
+      "CK\020\005\022\014\n\010ADD_BOOK\020\006\022\020\n\014ADD_BOOK_ACK\020\007\022\017\n\013" +
+      "DELETE_BOOK\020\010\022\023\n\017DELETE_BOOK_ACK\020\t\022\017\n\013UP" +
+      "DATE_BOOK\020\n\022\023\n\017UPDATE_BOOK_ACK\020\013\022\020\n\014ADD_" +
+      "CATEGORY\020\014\022\024\n\020ADD_CATEGORY_ACK\020\r\022\023\n\017DELE" +
+      "TE_GATEGORY\020\016\022\027\n\023DELETE_GATEGORY_ACK\020\017\022\023" +
+      "\n\017UPDATE_GATEGORY\020\020\022\027\n\023UPDATE_GATEGORY_A" +
+      "CK\020\021B\036\n\022com.hao.heji.protoZ\010../wsmsgb\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

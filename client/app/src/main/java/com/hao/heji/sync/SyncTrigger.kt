@@ -45,7 +45,7 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
                                 val resp = HttpManager.getInstance().createBook(b)
                                 if (resp.success()) {
                                     b.syncStatus = STATUS.SYNCED
-                                    App.dataBase.bookDao().upsert(b)
+                                    App.dataBase.bookDao().update(b)
                                 }
                             }
                             val bookJson = moshi.adapter(Book::class.java).toJson(b)
@@ -138,7 +138,7 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
         if (!billJob.isActive) {
             billJob.start()
         }
-        if (!bookJob.isActive){
+        if (!bookJob.isActive) {
             bookJob.start()
         }
     }

@@ -42,9 +42,6 @@ interface BillDao {
     @Query("update bill set sync_status = :status where bill_id=:billId")
     fun updateSyncStatus(billId: String, status: Int): Int
 
-    @Query("select bill_id from bill where book_id=:bookId")
-    fun idsDeleted(bookId: String): Flow<List<String>>
-
     @Query("delete from bill where bill_id=:billId")
     fun deleteById(billId: String): Int
 
@@ -57,15 +54,8 @@ interface BillDao {
     @Query("select count(*)  from bill where book_id =:bookId")
     fun countByBookId(bookId: String): Int
 
-    @Query("SELECT * FROM bill WHERE book_id=:bookId AND sync_status != ${STATUS.SYNCED} LIMIT 50")
-    fun flowNotSynced(bookId: String):Flow<MutableList<Bill>>
-    /**
-     * @param syncStatus 同步状态
-     * @return
-     */
-    @Query("SELECT bill_id FROM bill WHERE sync_status =:syncStatus")
-    fun observeSyncStatus(syncStatus: Int): Flow<MutableList<String>>
-
+    @Query("SELECT * FROM bill WHERE book_id=:bookId AND sync_status !=:status LIMIT 100")
+    fun flowNotSynced(bookId: String,status: Int=STATUS.SYNCED):Flow<MutableList<Bill>>
     /**
      * 根据时间区间查
      *

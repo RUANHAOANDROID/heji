@@ -9,9 +9,6 @@ interface BookDao {
     @Insert
     fun insert(book: Book): Long
 
-    @Insert(entity = Book::class, onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(book: Book): Long
-
     @Update(entity = Book::class, onConflict = OnConflictStrategy.REPLACE)
     fun update(book: Book): Int
 

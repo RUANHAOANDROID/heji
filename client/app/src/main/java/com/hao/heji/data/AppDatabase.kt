@@ -4,11 +4,14 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.App
+import com.hao.heji.BuildConfig
 import com.hao.heji.data.converters.BookUsersConverters
 import com.hao.heji.data.converters.DateConverters
 import com.hao.heji.data.converters.MoneyConverters
 import com.hao.heji.data.db.*
+import java.util.concurrent.Executors
 
 /**
  * @date: 2020/8/28
@@ -62,6 +65,11 @@ abstract class AppDatabase : RoomDatabase() {
             AppDatabase::class.java, dbName
         )
             .fallbackToDestructiveMigration() //暴力丢弃强插升级
+            .setQueryCallback(QueryCallback { sqlQuery, bindArgs ->
+                if (BuildConfig.DEBUG) {
+                    LogUtils.d("RoomQuery", sqlQuery, bindArgs)
+                }
+            }, Executors.newSingleThreadExecutor())
             .allowMainThreadQueries() //.addMigrations(MIGRATION_1_2)
             .build()
 

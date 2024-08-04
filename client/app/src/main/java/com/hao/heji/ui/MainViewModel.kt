@@ -47,7 +47,7 @@ class MainViewModel : ViewModel() {
                 //协同账本在线模式
                 bookRepository.bookList().data?.let {
                     it.forEach { book ->
-                        bookDao.upsert(book)
+                        bookDao.update(book)
                         if (book.isInitial){
                             Config.setBook(book)
                         }

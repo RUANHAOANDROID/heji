@@ -19,10 +19,10 @@ interface BookUSerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(category: Category)
 
-    @Query("select count(0) from book_user")
+    @Query("SELECT count(0) FROM book_user")
     fun count(): Int
 
-    @Query("select user_name from book_user where book_id=:bid")
+    @Query("SELECT user_name FROM book_user WHERE book_id=:bid")
     fun findUsersId(bid: String): MutableList<String>
 
 }

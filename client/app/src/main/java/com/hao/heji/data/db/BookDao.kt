@@ -27,9 +27,6 @@ interface BookDao {
     @Query("SELECT * FROM book WHERE sync_status!=${STATUS.DELETED} ORDER BY book_id")
     fun allBooks(): Flow<MutableList<Book>>
 
-    @Query("select * from book where sync_status=:status")
-    fun books(status: Int): MutableList<Book>
-
     @Query("select * from book where crt_user_id=:userID and is_initial == 1")
     fun findInitBook(userID: String): MutableList<Book>
 

@@ -423,6 +423,9 @@ class CreateBillFragment : BaseFragment() {
 
     private fun save(again: Boolean) {
         try {
+            App.dataBase.bookDao().findBookIdsByUser(Config.user.id).forEach {
+                LogUtils.d(it)
+            }
             mBill.bookId = Config.book.id
             mBill.remark = binding.eidtRemark.text.toString()
             mBill.crtUser =Config.user.id
@@ -434,6 +437,7 @@ class CreateBillFragment : BaseFragment() {
             check(mBill.money != ZERO_00()) { "金额不能为 ${ZERO_00().toPlainString()}" }
             check(mBill.money != BigDecimal.ZERO) { "金额不能为 ${BigDecimal.ZERO.toPlainString()}" }
             check(mBill.category != null) { "未选类别" }
+            LogUtils.d(mBill)
             viewModel.save(mBill, again)
         } catch (e: Exception) {
             ToastUtils.showLong(e.message)

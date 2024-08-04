@@ -72,19 +72,19 @@ class BookViewModel : ViewModel() {
 
     fun getBookList() {
         launch({
-            val response =bookRepository.bookList()
+            val response = bookRepository.bookList()
             response.data?.let {
-                if (it.isNotEmpty()) {
-                    for (book in it) {
-                        book.syncStatus = STATUS.SYNCED
-                        if (bookDao.exist(book.id) > 0) {
-                            bookDao.update(book)
-                        } else {
-                            bookDao.insert(book)
-                        }
-                    }
-                } else {
+                if (it.isNullOrEmpty()) {
                     ToastUtils.showLong("没有更多账本")
+                    return@launch
+                }
+                for (book in it) {
+                    book.syncStatus = STATUS.SYNCED
+                    if (bookDao.exist(book.id) > 0) {
+                        bookDao.update(book)
+                    } else {
+                        bookDao.insert(book)
+                    }
                 }
             }
 
@@ -94,7 +94,7 @@ class BookViewModel : ViewModel() {
     fun clearBook(id: String, call: (Result<String>) -> Unit) {
         launchIO({
             App.dataBase.billDao().deleteByBookId(id)
-            call(Result.Success("清楚账单成功"))
+            call(Result.Success("清除账单成功"))
         }, { call(Result.Error(it)) })
     }
 

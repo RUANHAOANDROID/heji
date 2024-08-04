@@ -8,9 +8,8 @@ import com.hao.heji.network.HttpManager
 
 class BookRepository {
     suspend fun findBook(bid: String) = HttpManager.getInstance().findBook(bid)
-    suspend fun createBook(book: Book) {
-        App.dataBase.bookDao().insert(book)
-    }
+    suspend fun createBook(book: Book) = App.dataBase.bookDao().insert(book)
+
     suspend fun bookList() = HttpManager.getInstance().bookList()
     suspend fun sharedBook(bid: String) = HttpManager.getInstance().sharedBook(bid)
     suspend fun deleteBook(bid: String) = HttpManager.getInstance().deleteBook(bid)

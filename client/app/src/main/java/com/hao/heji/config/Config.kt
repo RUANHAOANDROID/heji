@@ -66,14 +66,6 @@ object Config {
             getServerUrl().firstOrNull()?.let { _serverUrl = it }
         }
     }
-
-    suspend fun save(user: JWTParse.User, book: Book, offLine: Boolean) {
-        setUser(user)
-        setBook(book)
-        enableOfflineMode(offLine)
-        App.viewModel.notifyConfigChanged(this)
-    }
-
     suspend fun remove() {
         with(DataStoreManager) {
             removeUseMode()

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.App
 import com.hao.heji.config.Config
+import com.hao.heji.data.db.Book
 import com.hao.heji.data.repository.BookRepository
 import com.hao.heji.launchIO
 import com.hao.heji.utils.YearMonth
@@ -26,9 +27,13 @@ class MainViewModel : ViewModel() {
     var globalYearMonth: YearMonth =
         YearMonth(Calendar.getInstance()[Calendar.YEAR], Calendar.getInstance()[Calendar.MONTH] + 1)
 
-    fun switchBook() {
+    /**
+     * 选择账本
+     */
+    fun switchModelAndBook() {
         viewModelScope.launchIO({
             val bookDao = App.dataBase.bookDao()
+            //本地账本 离线模式
             if (Config.enableOfflineMode) {
                 if (bookDao.count() == 0) {
                     bookDao.insert(Config.book)
@@ -38,27 +43,22 @@ class MainViewModel : ViewModel() {
                         Config.setBook(it)
                     }
                 }
-                return@launchIO
-            }
-            val onlineBook = Config.book
-            bookRepository.bookList().data?.let {
-                it.forEach { book ->
-                    bookDao.upsert(book)
-                    if (book.isInitial) {
-                        Config.setBook(onlineBook)
+            } else {
+                //协同账本在线模式
+                bookRepository.bookList().data?.let {
+                    it.forEach { book ->
+                        bookDao.upsert(book)
+                        if (book.isInitial){
+                            Config.setBook(book)
+                        }
                     }
                 }
+                val books = bookDao.findBookIdsByUser(Config.user.id)//查询本地是否存在账本
+                if (books.size <= 0) {
+                    bookRepository.createBook(Config.book)
+                }
             }
-            val books = bookDao.findBookIdsByUser(Config.user.id)//查询本地是否存在账本
-            if (books.size <= 0) {
-                onlineBook.crtUserId = Config.user.id
-                onlineBook.type = "在线账本"
-                bookRepository.createBook(onlineBook)
-            }
-            Config.setBook(onlineBook)
-            Config.save(Config.user, onlineBook, offLine = false)
-            LogUtils.d(Config.user, Config.book)
-        }, { })
+        })
     }
 
 

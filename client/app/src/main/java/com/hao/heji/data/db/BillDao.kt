@@ -1,6 +1,5 @@
 package com.hao.heji.data.db
 
-import android.provider.CalendarContract.SyncState
 import androidx.room.*
 import com.hao.heji.config.Config
 import com.hao.heji.data.converters.MoneyConverters
@@ -30,28 +29,28 @@ interface BillDao {
     @Update(entity = Bill::class, onConflict = OnConflictStrategy.REPLACE)
     fun update(bill: Bill): Int
 
-    @Query("select * from bill where bill_id=:billId")
+    @Query("SELECT * FROM bill WHERE bill_id=:billId")
     fun findById(billId: String): Bill
 
-    @Query("select sync_status from bill where bill_id=:billId")
+    @Query("SELECT sync_status FROM bill WHERE bill_id=:billId")
     fun status(billId: String): Int
 
-    @Query("update bill set sync_status = ${STATUS.DELETED} where bill_id=:billId and crt_user=:uid")
-    fun preDelete(billId: String,uid:String): Int
+    @Query("UPDATE bill SET sync_status =:status WHERE bill_id=:billId AND crt_user=:uid")
+    fun preDelete(billId: String,uid:String,status:Int=STATUS.DELETED): Int
 
-    @Query("update bill set sync_status = :status where bill_id=:billId")
+    @Query("UPDATE bill SET sync_status = :status WHERE bill_id=:billId")
     fun updateSyncStatus(billId: String, status: Int): Int
 
-    @Query("delete from bill where bill_id=:billId")
+    @Query("DELETE FROM bill WHERE bill_id=:billId")
     fun deleteById(billId: String): Int
 
-    @Query("delete from bill where book_id=:id")
+    @Query("DELETE FROM bill WHERE book_id=:id")
     fun deleteByBookId(id: String): Int
 
-    @Query("select count(*)  from bill where bill_id =:id")
+    @Query("SELECT count(*)  FROM bill WHERE bill_id =:id")
     fun countById(id: String): Int
 
-    @Query("select count(*)  from bill where book_id =:bookId")
+    @Query("SELECT count(*)  FROM bill WHERE book_id =:bookId")
     fun countByBookId(bookId: String): Int
 
     @Query("SELECT * FROM bill WHERE book_id=:bookId AND sync_status !=:status LIMIT 100")
@@ -104,22 +103,22 @@ interface BillDao {
     ): Flow<Double>
 
     @TypeConverters(MoneyConverters::class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND date(time)=:time")
+    @Query("SELECT sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)AS income FROM bill  WHERE sync_status!=-1 AND book_id=:bookId AND date(time)=:time")
     fun sumDayIncome(time: String, bookId: String? = Config.book.id): Income
 
     @TypeConverters(MoneyConverters::class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income ,date(time) as time from bill  where sync_status!=-1 AND book_id=:bookId AND strftime('%Y-%m',time)=:yearMonth group by date(time) ORDER BY time DESC ,bill_id DESC")
+    @Query("SELECT sum(case when type=-1 then money else 0 end)AS expenditure ,sum(case  when  type=1 then money else 0 end)AS income ,date(time) AS time FROM bill  WHERE sync_status!=-1 AND book_id=:bookId AND strftime('%Y-%m',time)=:yearMonth GROUP BY date(time) ORDER BY time DESC ,bill_id DESC")
     fun findEveryDayIncomeByMonth(
         bookId: String? = Config.book.id,
         yearMonth: String
     ): MutableList<IncomeTime>
 
     @TypeConverters(MoneyConverters::class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',time)=:yearMonth)")
+    @Query("SELECT sum(case when type=-1 then money else 0 end)AS expenditure ,sum(case  when  type=1 then money else 0 end)AS income FROM bill  WHERE sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',time)=:yearMonth)")
     fun sumIncome(yearMonth: String, bookId: String? = Config.book.id): Flow<Income>
 
     @TypeConverters(MoneyConverters::class)
-    @Query("select sum(case when type=-1 then money else 0 end)as expenditure ,sum(case  when  type=1 then money else 0 end)as income from bill  where sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',time)=:yearMonth)")
+    @Query("SELECT sum(case when type=-1 then money else 0 end)AS expenditure ,sum(case  when  type=1 then money else 0 end)AS income FROM bill  WHERE sync_status!=-1 AND book_id=:bookId AND ( strftime('%Y-%m',time)=:yearMonth)")
     fun sumMonthIncomeExpenditure(yearMonth: String, bookId: String? = Config.book.id): Income
 
 
@@ -134,7 +133,7 @@ interface BillDao {
      */
     @TypeConverters(MoneyConverters::class)
     @Transaction
-    @Query("SELECT sum(money) AS money,type,date(time) AS time FROM bill WHERE strftime('%Y-%m',time) ==:date AND book_id=:bookId AND type=:type AND sync_status!= ${STATUS.DELETED} group by date(time)")
+    @Query("SELECT sum(money) AS money,type,date(time) AS time FROM bill WHERE strftime('%Y-%m',time) ==:date AND book_id=:bookId AND type=:type AND sync_status!= ${STATUS.DELETED} GROUP by date(time)")
     fun sumByMonth(date: String, type: Int, bookId: String = Config.book.id): MutableList<BillTotal>
 
     /**
@@ -198,11 +197,11 @@ interface BillDao {
     //---------------统计----------------//
     @TypeConverters(MoneyConverters::class)
     @Query(
-        "select strftime('%m-%d',time) as time ," +
-                "sum(case when type =-1 then money else 0 end) as expenditure ," +
-                " sum(case when type =1 then money else 0 end) as income ," +
-                " sum(case when type =1 then money else 0 end) - sum(case when type =-1 then money else 0 end) as surplus" +
-                " from bill where strftime('%Y-%m',time) =:yearMonth AND book_id=:bookId AND sync_status!=-1 group by strftime('%Y-%m-%d',time)"
+        "SELECT strftime('%m-%d',time) AS time ," +
+                "sum(case when type =-1 then money else 0 end) AS expenditure ," +
+                " sum(case when type =1 then money else 0 end) AS income ," +
+                " sum(case when type =1 then money else 0 end) - sum(case when type =-1 then money else 0 end) AS surplus" +
+                " FROM bill WHERE strftime('%Y-%m',time) =:yearMonth AND book_id=:bookId AND sync_status!=-1 GROUP BY strftime('%Y-%m-%d',time)"
     )
     fun listIncomeExpSurplusByMonth(
         yearMonth: String,
@@ -211,11 +210,11 @@ interface BillDao {
 
     @TypeConverters(MoneyConverters::class)
     @Query(
-        "select strftime('%Y-%m',time) as time ," +
-                " sum(case when type =-1 then money else 0 end) as expenditure ," +
-                " sum(case when type =1 then money else 0 end) as income ," +
-                " sum(case when type =1 then money else 0 end) - sum(case when type =-1 then money else 0 end) as surplus" +
-                " from bill where strftime('%Y',time) =:year AND book_id=:bookId AND sync_status!=-1 group by strftime('%Y-%m',time)"
+        "SELECT strftime('%Y-%m',time) AS time ," +
+                " sum(case when type =-1 then money else 0 end) AS expenditure ," +
+                " sum(case when type =1 then money else 0 end) AS income ," +
+                " sum(case when type =1 then money else 0 end) - sum(case when type =-1 then money else 0 end) AS surplus" +
+                " FROM bill WHERE strftime('%Y',time) =:year AND book_id=:bookId AND sync_status!=-1 GROUP BY strftime('%Y-%m',time)"
     )
     fun listIncomeExpSurplusByYear(
         year: String,
@@ -245,9 +244,9 @@ interface BillDao {
     //    List<IncomeTimeSurplus> reportYearList(String date);
     @TypeConverters(MoneyConverters::class)
     @Query(
-        "select category as category,sum(money)as money," +
-                "round(sum(money)*100.0 / (select sum(money)  from bill where book_id=:bookId and type =:type and sync_status!=-1 and strftime('%Y-%m',time) ==:date),2)as percentage " +
-                "from bill where type =:type and sync_status!=-1 AND book_id=:bookId AND strftime('%Y-%m',time) ==:date group by category order by money desc"
+        "SELECT category AS category,sum(money)AS money," +
+                "round(sum(money)*100.0 / (select sum(money)  from bill where book_id=:bookId and type =:type and sync_status!=-1 and strftime('%Y-%m',time) ==:date),2)AS percentage " +
+                "FROM bill WHERE type =:type AND sync_status!=-1 AND book_id=:bookId AND strftime('%Y-%m',time) ==:date GROUP BY category ORDER BY money DESC"
     )
     fun reportCategory(
         type: Int,

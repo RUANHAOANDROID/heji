@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit
 class SyncWebSocket {
     private var wsUrl = ""
     private val client: OkHttpClient = OkHttpClient.Builder()
-        .readTimeout(10, TimeUnit.SECONDS)
-        .writeTimeout(10, TimeUnit.SECONDS)
-        .pingInterval(58, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .pingInterval(30, TimeUnit.SECONDS)
         .addInterceptor(HttpLoggingInterceptor())
         .build()
 
@@ -100,6 +100,40 @@ class SyncWebSocket {
         connect(wsUrl, token, scope)
     }
 
+    private val webSocketListener = object : WebSocketListener() {
+        override fun onOpen(webSocket: WebSocket, response: Response) {
+            super.onOpen(webSocket, response)
+            LogUtils.d("WebSocket onOpen:${response}")
+            status = Status.OPEN
+            handlers.register(AddBillHandler())
+            handlers.register(DeleteBillHandler())
+            handlers.register(UpdateBillHandler())
+        }
+
+        override fun onMessage(webSocket: WebSocket, text: String) {
+            super.onMessage(webSocket, text)
+            LogUtils.d("onMessage",webSocket,text)
+        }
+        override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
+            super.onMessage(webSocket, bytes)
+            scope.launch(Dispatchers.IO) {
+                handlers.handler(webSocket, bytes)
+            }
+        }
+
+        override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+            status = Status.CLOSE
+            super.onClosed(webSocket, code, reason)
+            LogUtils.d("WebSocket onClosed: $code $reason")
+        }
+
+        override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+            status = Status.ERROR
+            super.onFailure(webSocket, t, response)
+            LogUtils.e(webSocket,t,response)
+        }
+    }
+
     fun connect(
         wsUrl: String,
         token: String, scope: CoroutineScope
@@ -115,37 +149,6 @@ class SyncWebSocket {
             .url(wsUrl)
             .build()
         LogUtils.d("run: connect url=${wsUrl}")
-        val webSocketListener = object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                super.onOpen(webSocket, response)
-                LogUtils.d("onOpen:${response}")
-                status = Status.OPEN
-                handlers.register(AddBillHandler())
-                handlers.register(DeleteBillHandler())
-                handlers.register(UpdateBillHandler())
-            }
-
-            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                super.onMessage(webSocket, bytes)
-                scope.launch(Dispatchers.Default) {
-                    handlers.handler(webSocket, bytes)
-                }
-            }
-
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                LogUtils.d("WebSocket onClosed: $code $reason")
-                super.onClosed(webSocket, code, reason)
-                status = Status.CLOSE
-                LogUtils.d("WebSocket Status =$status")
-            }
-
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                super.onFailure(webSocket, t, response)
-                t.printStackTrace()
-                LogUtils.file(t)
-                status = Status.ERROR
-            }
-        }
         request?.let {
             webSocket = client.newWebSocket(it, webSocketListener)
         }

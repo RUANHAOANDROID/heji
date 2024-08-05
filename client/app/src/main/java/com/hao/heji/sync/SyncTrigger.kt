@@ -5,15 +5,14 @@ import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.data.db.Bill
 import com.hao.heji.data.db.Book
-import com.hao.heji.data.db.STATUS
 import com.hao.heji.data.db.STATUS.DELETED
 import com.hao.heji.data.db.STATUS.NEW
 import com.hao.heji.data.db.STATUS.UPDATED
 import com.hao.heji.moshi
-import com.hao.heji.network.HttpManager
 import com.hao.heji.proto.Message
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -25,7 +24,9 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
     private val billDao = App.dataBase.billDao()
     private val bookDao = App.dataBase.bookDao()
     private val bookUserDao = App.dataBase.bookUserDao()
-    private suspend fun observeBookChanges() {
+
+    private val bookJob = scope.launch(Dispatchers.IO) {
+        delay(1000)
         LogUtils.d("观察账本")
         var isProcessing = false
         bookDao.flowNotSynced(Config.user.id).collect {
@@ -69,8 +70,8 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
             }
         }
     }
-
-    private suspend fun observeBillChanges() {
+    private val billJob = scope.launch(Dispatchers.IO) {
+        delay(1000)
         LogUtils.d("观察账单")
         var isProcessing = false
         billDao.flowNotSynced(Config.book.id).collect {
@@ -125,20 +126,15 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
             LogUtils.d("本次变更账单处理完成...")
             isProcessing = false
         }
-
     }
 
-
     fun register() {
-        scope.launch(Dispatchers.IO) {
-            observeBookChanges()
-        }
-        scope.launch(Dispatchers.IO) {
-            observeBillChanges()
-        }
+        bookJob.start()
+        billJob.start()
     }
 
     fun unregister() {
-
+        bookJob.cancel()
+        billJob.cancel()
     }
 }

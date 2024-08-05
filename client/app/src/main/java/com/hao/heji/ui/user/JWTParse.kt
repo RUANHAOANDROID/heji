@@ -1,10 +1,10 @@
 package com.hao.heji.ui.user
 
-import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hao.heji.config.LocalUser
+import com.hao.heji.moshi
 import org.json.JSONObject
-
+import java.util.Base64
 
 object JWTParse {
     //JWT User
@@ -17,8 +17,9 @@ object JWTParse {
         val splits = token.split(".")
 //        val header = splits[0]
         val payload = splits[1]
-        var untrusted = String(EncodeUtils.base64Decode(payload))
-        var jsonObject = JSONObject(untrusted)
+        var userJsonInfo =payload.replace('_', '/').replace('-', '+');
+        userJsonInfo = String(Base64.getDecoder().decode(userJsonInfo))
+        val jsonObject = JSONObject(userJsonInfo)
         val name = jsonObject.opt("name") as String
         val id: String = jsonObject.opt("id") as String
 //        val exp: String = jsonObject.opt("exp") as String

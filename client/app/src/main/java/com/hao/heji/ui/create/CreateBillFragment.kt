@@ -264,14 +264,16 @@ class CreateBillFragment : BaseFragment() {
                     ToastUtils.showLong(uiState.throws.message)
                 }
 
-                is CreateBillUIState.Save -> {
-                    if (uiState.again) {
-                        mBill = Bill()
-                        binding.keyboard.clear()
-                        binding.eidtRemark.setText("")
-                        binding.tvMoney.text = "0"
-                        popupSelectImage.clear()
-                    } else findNavController().popBackStack()
+                is CreateBillUIState.Finish -> {
+                    findNavController().popBackStack()
+                }
+
+                is CreateBillUIState.SaveAgain -> {
+                    mBill = Bill()
+                    binding.keyboard.clear()
+                    binding.eidtRemark.setText("")
+                    binding.tvMoney.text = "0"
+                    popupSelectImage.clear()
                 }
 
                 is CreateBillUIState.Categories -> {
@@ -423,12 +425,12 @@ class CreateBillFragment : BaseFragment() {
 
     private fun save(again: Boolean) {
         try {
-            App.dataBase.bookDao().findBookIdsByUser(Config.user.id).forEach {
-                LogUtils.d(it)
+            if (isModify){
+                mBill.syncStatus=STATUS.UPDATED
             }
             mBill.bookId = Config.book.id
             mBill.remark = binding.eidtRemark.text.toString()
-            mBill.crtUser =Config.user.id
+            mBill.crtUser = Config.user.id
 //            mBill.type = pagerAdapter.getItem()
             mBill.money = BigDecimal(binding.tvMoney.text.toString())
             //check value is false throw error

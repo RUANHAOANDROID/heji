@@ -62,3 +62,16 @@ fun CoroutineScope.launchIO(
         }
     }
 }
+fun CoroutineScope.launch(
+    block: suspend () -> Unit,
+    error: suspend (Throwable) -> Unit = { it.printStackTrace() }
+): Job {
+    return launch() {
+        try {
+            block()
+        } catch (e: Throwable) {
+            error(e)
+            e.printStackTrace()
+        }
+    }
+}

@@ -65,9 +65,9 @@ abstract class AppDatabase : RoomDatabase() {
             AppDatabase::class.java, dbName
         )
             .fallbackToDestructiveMigration() //暴力丢弃强插升级
-            .setQueryCallback(QueryCallback { sqlQuery, bindArgs ->
+            .setQueryCallback({ sqlQuery, bindArgs ->
                 if (BuildConfig.DEBUG) {
-                    LogUtils.d("RoomQuery", sqlQuery, bindArgs)
+                    LogUtils.d(sqlQuery, bindArgs)
                 }
             }, Executors.newSingleThreadExecutor())
             .allowMainThreadQueries() //.addMigrations(MIGRATION_1_2)

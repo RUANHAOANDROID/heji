@@ -1,5 +1,6 @@
 package com.hao.heji.sync
 
+import NetworkMonitor
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
@@ -11,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -22,27 +24,50 @@ import kotlinx.coroutines.launch
  */
 class SyncService : Service() {
     private val binder = SyncBinder()
+
     //后台具体操作任务使用server scope
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
     private val syncWebSocket = SyncWebSocket.getInstance()
     private val syncTrigger = SyncTrigger(syncWebSocket, scope)
+    private var networkMonitor: NetworkMonitor? = null
+
     override fun onCreate() {
         super.onCreate()
         LogUtils.d("onCreate")
-        connectSyncWebSocket()
+        // 监听网络变化
+        networkMonitor = NetworkMonitor(this) {
+            if (it) {
+                if (syncWebSocket.isClose()) {
+                    connectSync()
+                }
+            }
+        }
+        networkMonitor?.startNetworkCallback()
+
         scope.launch {
             App.viewModel.configChange.collectLatest {
-                connectSyncWebSocket()
+                LogUtils.d("config change")
+                if (syncWebSocket.isClose()) {
+                    connectSync()
+                }
             }
         }
     }
 
-    private fun connectSyncWebSocket() {
+    private fun connectSync() {
         val address = Config.serverUrl.split("://")[1]
         val token = Config.user.token
         syncWebSocket.connect(wsUrl = "ws://${address}/api/v1/ws", token, scope)
         syncTrigger.register()
+
+    }
+
+    private fun closeSync() {
+        scope.launch {
+            syncTrigger.unregister()
+            syncWebSocket.close()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -57,9 +82,10 @@ class SyncService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         LogUtils.d("onDestroy")
+        closeSync()
         job.cancel()
         scope.cancel()
-        SyncWebSocket.getInstance().close()
+        networkMonitor?.stopNetworkCallback()
     }
 
     inner class SyncBinder : Binder() {

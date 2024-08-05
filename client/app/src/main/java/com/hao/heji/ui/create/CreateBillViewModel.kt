@@ -8,9 +8,7 @@ import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.data.db.*
 import com.hao.heji.data.db.mongo.ObjectId
-import com.hao.heji.proto.Message.Type
 import com.hao.heji.ui.base.BaseViewModel
-import com.hao.heji.utils.launchIO
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -50,6 +48,7 @@ internal class CreateBillViewModel :
         val images = App.dataBase.imageDao().findImage(ids)
         send(CreateBillUIState.Images(images))
     }
+
     suspend fun getBill(it: String) {
         val bill = App.dataBase.billImageDao().findBillAndImage(it)
         send(CreateBillUIState.BillChange(bill = bill))
@@ -62,7 +61,7 @@ internal class CreateBillViewModel :
      * @param billType
      * @return
      */
-    fun save(bill: Bill,again :Boolean) {
+    fun save(bill: Bill, again: Boolean) {
         viewModelScope.launch {
             val images = mutableListOf<Image>()
             if (bill.images.isNotEmpty()) {
@@ -79,6 +78,10 @@ internal class CreateBillViewModel :
                 App.dataBase.billDao().install(bill)
             }
         }
-        send(CreateBillUIState.Save(again))
+        if (again) {
+            send(CreateBillUIState.SaveAgain)
+        } else {
+            send(CreateBillUIState.Finish)
+        }
     }
 }

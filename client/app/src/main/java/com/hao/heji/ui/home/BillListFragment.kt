@@ -79,7 +79,8 @@ class BillListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeViewModel.getSummary(homeViewModel.yearMonth().yearMonthString())
+        val yearMonthString = mainActivity.viewModel.globalYearMonth.yearMonthString()
+        homeViewModel.getSummary(yearMonthString)
         render(homeViewModel) {
             when (it) {
                 is BillListUiState.Bills -> {
@@ -98,7 +99,7 @@ class BillListFragment : BaseFragment() {
 
                 is BillListUiState.Summary -> {//tip: 当统计数额发生变更刷新列表
                     totalIncomeExpense(it.income)
-                    homeViewModel.getMonthBills(homeViewModel.yearMonth().yearMonthString())
+                    homeViewModel.getMonthBills(yearMonthString)
                 }
 
                 is BillListUiState.Error -> {
@@ -116,8 +117,8 @@ class BillListFragment : BaseFragment() {
         super.setUpToolBar()
         toolBar.title = ""
         showYearMonthTitle(
-            year = homeViewModel.yearMonth().year, //默认为当前时间,
-            month = homeViewModel.yearMonth().month,//默认为当前月份
+            year = mainActivity.viewModel.globalYearMonth.year, //默认为当前时间,
+            month = mainActivity.viewModel.globalYearMonth.month,//默认为当前月份
             onTabSelected = { year, month ->
                 notifyData(year, month)
                 mainActivity.viewModel.globalYearMonth = YearMonth(year, month)
@@ -246,8 +247,8 @@ class BillListFragment : BaseFragment() {
      * @param month 月
      */
     private fun notifyData(
-        year: Int = homeViewModel.yearMonth().year,
-        month: Int = homeViewModel.yearMonth().month
+        year: Int = mainActivity.viewModel.globalYearMonth.year,
+        month: Int = mainActivity.viewModel.globalYearMonth.month
     ) {
         val yearMonth = YearMonth(year, month)
         val ymStr = yearMonth.yearMonthString()

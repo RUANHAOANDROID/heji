@@ -5,10 +5,10 @@ package com.hao.heji.data.db
  * 狀態
  */
 object STATUS {
-    const val NEW = 0 //新创建未同步的
-    const val SYNCED = 1 //已同步的
-    const val DELETED = -1 //本地删除的
-    const val UPDATED = 2 //已更改的(本地更改后需要再次同步到服务器)
+    const val SYNCED = 0 //已同步的
+    const val NEW = 1 //新创建未同步的
+    const val DELETED = 2 //本地删除的
+    const val UPDATED = 3 //已更改的(本地更改后需要再次同步到服务器)
 }
 
 //----條件

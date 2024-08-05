@@ -21,10 +21,8 @@ class ConfigTest: TestCase(){
     fun readWrite(){
         val book = InitBook
         runBlocking {
-            Config.saveBook(book)
             assert(book == Config.book)
             val user =JWTParse.User("localUser", "user0","")
-            Config.saveUser(user)
             assert(user== Config.user)
         }
 

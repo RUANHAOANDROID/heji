@@ -18,7 +18,8 @@ internal sealed class CreateBillUIState : IUiState {
 
 //    class Time(time: Date) : AddBillUIState()
 
-    class Save(val again: Boolean) : CreateBillUIState()
+    data object Finish : CreateBillUIState()
+    data object SaveAgain : CreateBillUIState()
     class BillChange(val bill: Bill) : CreateBillUIState()
     class Error(val throws: Throwable) : CreateBillUIState()
     class Images(val images: MutableList<Image>) : CreateBillUIState()

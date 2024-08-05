@@ -6,9 +6,11 @@ import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.data.db.Book
+import com.hao.heji.data.db.STATUS
 import com.hao.heji.data.repository.BookRepository
 import com.hao.heji.launchIO
 import com.hao.heji.utils.YearMonth
+import com.hao.heji.utils.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -31,7 +33,7 @@ class MainViewModel : ViewModel() {
      * 选择账本
      */
     fun switchModelAndBook() {
-        viewModelScope.launchIO({
+        launch({
             val bookDao = App.dataBase.bookDao()
             //本地账本 离线模式
             if (Config.enableOfflineMode) {
@@ -47,15 +49,22 @@ class MainViewModel : ViewModel() {
                 //协同账本在线模式
                 bookRepository.bookList().data?.let {
                     it.forEach { book ->
+                        book.syncStatus = STATUS.SYNCED
                         bookDao.update(book)
-                        if (book.isInitial){
+                        if (book.isInitial) {
                             Config.setBook(book)
                         }
                     }
                 }
                 val books = bookDao.findBookIdsByUser(Config.user.id)//查询本地是否存在账本
                 if (books.size <= 0) {
-                    bookRepository.createBook(Config.book)
+                    //本地新建账本
+                    val book = Config.book
+                    book.crtUserId = Config.user.id
+                    book.type = "生活账本"
+                    book.syncStatus = STATUS.NEW
+                    bookRepository.createBook(book)
+                    Config.setBook(book)
                 }
             }
         })

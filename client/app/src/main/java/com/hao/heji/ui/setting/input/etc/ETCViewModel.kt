@@ -74,11 +74,6 @@ internal class ETCViewModel : BaseViewModel<ETCUiState>() {
      * @return
      */
     private fun saveToDB(strBody: String) {
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .add(DateConverters)
-            .add(MoneyConverters)
-            .build()
         val etcListInfo = moshi.adapter(
             ETCListInfoEntity::class.java
         ).fromJson(strBody)
@@ -87,6 +82,7 @@ internal class ETCViewModel : BaseViewModel<ETCUiState>() {
             data.forEach(Consumer { info: ETCListInfoEntity.Info ->
                 val bill = Bill().apply {
                     id = ObjectId(DateConverters.str2Date(info.exchargetime)).toHexString()
+                    bookId = Config.book.id
                     money = BigDecimal(info.etcPrice).divide(BigDecimal(100))
                     remark = info.exEnStationName
                     time = DateConverters.str2Date(info.exchargetime)
@@ -238,13 +234,14 @@ internal class ETCViewModel : BaseViewModel<ETCUiState>() {
     private fun saveToBillDB(info: OrderArrBean) {
         val bill = Bill().apply {
             id = ObjectId(DateConverters.str2Date(info.exTime)).toHexString()
+            bookId=Config.book.id
             money = BigDecimal(info.totalFee).divide(BigDecimal(100))
             remark = info.enStationName + "|" + info.exStationName
             time = DateConverters.str2Date(info.exTime)
             category = categoryName
             type = BillType.EXPENDITURE.valueInt
         }.also {
-            it.hashValue=it.hashCode()
+            it.hashValue = it.hashCode()
         }
 
         val exist = App.dataBase.billDao().exist(bill.hashCode()) > 0

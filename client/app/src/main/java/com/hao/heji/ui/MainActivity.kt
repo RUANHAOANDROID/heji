@@ -84,8 +84,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
+        viewModel.switchModelAndBook()
         super.onStart()
-        if (Config.enableOfflineMode) {
+        if (!Config.enableOfflineMode) {
             doBindService()
         }
     }
@@ -139,7 +140,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.switchModelAndBook()
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             @SuppressLint("WrongConstant")
             override fun handleOnBackPressed() {

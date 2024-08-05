@@ -30,20 +30,6 @@ internal class BillListViewModel : BaseViewModel<BillListUiState>() {
 //        })
 //    }
 
-    private var selectYearMonth = currentYearMonth
-
-    fun yearMonth(): YearMonth {
-        return selectYearMonth
-    }
-
-    private val billDao: BillDao by lazy { App.dataBase.billDao() }
-
-    private fun refresh() {
-        val yearMonth = yearMonth().yearMonthString()
-        getMonthBills(yearMonth)
-        getSummary(yearMonth)
-    }
-
     fun getImages(billId: String) {
         launchIO({
             val data = App.dataBase.imageDao().findByBillId(billId = billId)
@@ -58,7 +44,7 @@ internal class BillListViewModel : BaseViewModel<BillListUiState>() {
         launchIO({
             //根据月份查询收支的日子
             var monthEveryDayIncome =
-                billDao.findEveryDayIncomeByMonth(yearMonth = yearMonth)
+                App.dataBase.billDao().findEveryDayIncomeByMonth(yearMonth = yearMonth)
             //日节点
             var listDayNodes = mutableListOf<BaseNode>()
             monthEveryDayIncome.forEach { dayIncome ->
@@ -76,7 +62,7 @@ internal class BillListViewModel : BaseViewModel<BillListUiState>() {
                 )
                 //日节点下子账单
                 val dayListNodes = mutableListOf<BaseNode>()
-                billDao.findByDay(dayIncome.time!!).forEach {
+                App.dataBase.billDao().findByDay(dayIncome.time!!).forEach {
                     it.images = App.dataBase.imageDao().findImagesId(it.id)
                     dayListNodes.add(DayBillsNode(it))
                 }
@@ -97,7 +83,7 @@ internal class BillListViewModel : BaseViewModel<BillListUiState>() {
     fun getSummary(yearMonth: String) {
         launchIO({
             LogUtils.d("Between by time:$yearMonth")
-            billDao.sumIncome(yearMonth).distinctUntilChanged().collect {
+            App.dataBase.billDao().sumIncome(yearMonth).distinctUntilChanged().collect {
                 LogUtils.d(it)
                 send(BillListUiState.Summary(it))
             }

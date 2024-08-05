@@ -55,21 +55,17 @@ class SyncWebSocket {
 
     private lateinit var scope: CoroutineScope
 
-    fun send(bytes: ByteString): Boolean {
-        LogUtils.d(bytes)
-        if (!this::scope.isInitialized) {
-            return false
-        }
-        if (webSocket == null) return false
-        webSocket?.send(bytes = bytes)
-        return true
-    }
     fun send(packet: Message.Packet): Boolean {
-        LogUtils.d(packet)
+        LogUtils.d(packet.toString())
         if (!this::scope.isInitialized) {
             return false
         }
-        if (webSocket == null) return false
+        if (status != Status.OPEN) {
+            LogUtils.d("webSocket 未链接")
+            return false
+        }
+        if (webSocket == null)
+            return false
         webSocket?.send(bytes = packet.toBytes())
         return true
     }
@@ -79,6 +75,23 @@ class SyncWebSocket {
         webSocket?.close(1000, "主动关闭")
         client.dispatcher.cancelAll()
         status = Status.CLOSE
+        client.dispatcher.executorService.shutdown()
+    }
+
+    fun isOpen(): Boolean {
+        return status == Status.OPEN
+    }
+
+    fun isReconnect(): Boolean {
+        return status == Status.CONNECTING
+    }
+
+    fun isClose(): Boolean {
+        return status == Status.CLOSE
+    }
+
+    fun isError(): Boolean {
+        return status == Status.ERROR
     }
 
     private fun reconnect(token: String) {
@@ -87,15 +100,11 @@ class SyncWebSocket {
         connect(wsUrl, token, scope)
     }
 
-    fun isOpen(): Boolean {
-        return status == Status.OPEN
-    }
-
     fun connect(
         wsUrl: String,
         token: String, scope: CoroutineScope
     ) {
-        LogUtils.d(wsUrl,token)
+        LogUtils.d(wsUrl, token)
         if (status == Status.OPEN) {
             webSocket?.close(1000, "关闭旧的连接")
         }
@@ -140,7 +149,5 @@ class SyncWebSocket {
         request?.let {
             webSocket = client.newWebSocket(it, webSocketListener)
         }
-//            client.dispatcher.executorService.shutdown()
     }
-
 }

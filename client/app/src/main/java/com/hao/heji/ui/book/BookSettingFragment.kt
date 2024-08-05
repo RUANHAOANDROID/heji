@@ -80,7 +80,7 @@ class BookSettingFragment : BaseFragment() {
 
     private fun deleteBook() {
         binding.tvDeleteBook.setOnClickListener {
-            if (viewModel.isFirstBook(book.id) == 0) {
+            if (book.isInitial) {
                 ToastUtils.showLong("无法删除初始账本")
                 return@setOnClickListener
             }

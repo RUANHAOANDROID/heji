@@ -104,12 +104,9 @@ class BookViewModel : ViewModel() {
             if (billsCount > 0) {
                 ToastUtils.showLong("该账本下存在账单，无法直接删除")
             } else {
-                val response = bookRepository.deleteBook(id)
-                if (response.code == 0) {
-                    App.dataBase.bookDao().deleteById(id)
-                    runMainThread {
-                        call(Result.Success("删除成功"))
-                    }
+                App.dataBase.bookDao().preDelete(id)
+                runMainThread {
+                    call(Result.Success("删除成功"))
                 }
             }
         }, {

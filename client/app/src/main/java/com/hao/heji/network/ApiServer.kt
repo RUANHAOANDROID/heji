@@ -40,7 +40,7 @@ interface ApiServer {
                    @Query("bookName") bookName:String,
                    @Query("bookType")  bookType:String):Call<BaseResponse<String>>
 
-    @POST("/api/v1/DeleteBook/{book_id}}")
+    @POST("/api/v1/DeleteBook/{book_id}")
     fun deleteBook(@Path("book_id") book: String): Call<BaseResponse<String>>
 
     @POST("/api/v1/BookList")

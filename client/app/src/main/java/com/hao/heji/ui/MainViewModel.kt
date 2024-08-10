@@ -50,7 +50,11 @@ class MainViewModel : ViewModel() {
                 bookRepository.bookList().data?.let {
                     it.forEach { book ->
                         book.syncStatus = STATUS.SYNCED
-                        bookDao.update(book)
+                        val exist = bookDao.exist(book.id) > 0
+                        if (exist)
+                            bookDao.update(book)
+                        else
+                            bookDao.insert(book)
                         if (book.isInitial) {
                             Config.setBook(book)
                         }

@@ -30,8 +30,8 @@ interface BookDao {
     @Query("SELECT is_initial FROM book WHERE book_id=:bookId")
     fun isInitialBook(bookId: String): Int
 
-    @Query("SELECT * FROM book WHERE crt_user_id=:uid AND sync_status!=:status")
-    fun flowNotSynced(uid:String,status: Int=STATUS.SYNCED):Flow<MutableList<Book>>
+    @Query("SELECT * FROM book WHERE (crt_user_id=:uid or book_id=:bid)  AND sync_status!=:status")
+    fun flowNotSynced(uid:String,bid:String,status: Int=STATUS.SYNCED):Flow<MutableList<Book>>
 
     @Query("SELECT count(0) FROM book")
     fun count(): Int

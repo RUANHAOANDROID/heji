@@ -29,7 +29,7 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
         delay(1000)
         LogUtils.d("观察账本")
         var isProcessing = false
-        bookDao.flowNotSynced(Config.user.id).collect {
+        bookDao.flowNotSynced(Config.user.id,Config.book.id).collect {
             if (isProcessing) {
                 LogUtils.d("Books 正在处理中...")
                 return@collect

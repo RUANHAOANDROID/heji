@@ -77,11 +77,12 @@ internal class CreateBillViewModel :
             } else {
                 App.dataBase.billDao().install(bill)
             }
+            if (again) {
+                send(CreateBillUIState.SaveAgain)
+            } else {
+                send(CreateBillUIState.Finish)
+            }
         }
-        if (again) {
-            send(CreateBillUIState.SaveAgain)
-        } else {
-            send(CreateBillUIState.Finish)
-        }
+
     }
 }

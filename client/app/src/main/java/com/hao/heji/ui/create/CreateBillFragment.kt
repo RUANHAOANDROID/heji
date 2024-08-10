@@ -442,6 +442,7 @@ class CreateBillFragment : BaseFragment() {
             LogUtils.d(mBill)
             viewModel.save(mBill, again)
         } catch (e: Exception) {
+            e.printStackTrace()
             ToastUtils.showLong(e.message)
         }
     }

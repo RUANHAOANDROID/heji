@@ -7,6 +7,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.blankj.utilcode.util.LogUtils
 
+/**
+ * NetworkMonitor
+ * 网络变化监听
+ */
 class NetworkMonitor(private val context: Context, private val listener: (Boolean) -> Unit) {
 
     private val connectivityManager =

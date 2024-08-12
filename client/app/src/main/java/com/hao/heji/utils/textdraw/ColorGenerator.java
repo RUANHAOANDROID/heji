@@ -1,17 +1,12 @@
 package com.hao.heji.utils.textdraw;
 
-/**
- * @date: 2020/9/16
- * @author: 锅得铁
- * #
- */
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 /**
- * @author amulyaf
- * @datetime 14 Oct 2014, 5:20 PM
+ * @author hao88
+ * 颜色生成
  */
 public class ColorGenerator {
 

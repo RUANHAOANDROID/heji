@@ -7,8 +7,8 @@ import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.RoundRectShape;
 
 /**
- * @author amulya
- * @datetime 14 Oct 2014, 3:53 PM
+ * @author hao88
+ * 文字转图
  */
 public class TextDrawable extends ShapeDrawable {
 

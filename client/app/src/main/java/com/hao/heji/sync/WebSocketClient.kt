@@ -2,12 +2,9 @@ package com.hao.heji.sync
 
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.proto.Message
-import com.hao.heji.sync.handler.AddBillHandler
-import com.hao.heji.sync.handler.DeleteBillHandler
-import com.hao.heji.sync.handler.MessageHandler
-import com.hao.heji.sync.handler.UpdateBillHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -18,9 +15,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okio.ByteString
 import java.util.concurrent.TimeUnit
 
-class SyncWebSocket {
+class WebSocketClient {
     private var wsUrl = ""
-    private val client: OkHttpClient = OkHttpClient.Builder()
+    private val okhttpClient: OkHttpClient = OkHttpClient.Builder()
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .pingInterval(30, TimeUnit.SECONDS)
@@ -35,17 +32,20 @@ class SyncWebSocket {
     private var webSocket: WebSocket? = null
     private var request: Request? = null
 
+    private val syncJob = Job()
+    private val syncScope = CoroutineScope(Dispatchers.Main + syncJob)
 
-    private var handlers: MessageHandler = MessageHandler()
+    private val syncReceiver by lazy { SyncReceiver() }
+    private val syncTrigger by lazy { SyncTrigger(syncScope) }
 
     companion object {
         @Volatile
-        private var instance: SyncWebSocket? = null
-        fun getInstance(): SyncWebSocket {
+        private var instance: WebSocketClient? = null
+        fun getInstance(): WebSocketClient {
             if (instance == null) {
                 synchronized(this) {
                     if (instance == null) {
-                        instance = SyncWebSocket()
+                        instance = WebSocketClient()
                     }
                 }
             }
@@ -53,13 +53,8 @@ class SyncWebSocket {
         }
     }
 
-    private lateinit var scope: CoroutineScope
-
     fun send(packet: Message.Packet): Boolean {
         LogUtils.d(packet.toString())
-        if (!this::scope.isInitialized) {
-            return false
-        }
         if (status != Status.OPEN) {
             LogUtils.d("webSocket 未链接")
             return false
@@ -73,9 +68,10 @@ class SyncWebSocket {
     fun close() {
         LogUtils.d("close websocket")
         webSocket?.close(1000, "主动关闭")
-        client.dispatcher.cancelAll()
+        okhttpClient.dispatcher.cancelAll()
         status = Status.CLOSE
-        client.dispatcher.executorService.shutdown()
+        okhttpClient.dispatcher.executorService.shutdown()
+        syncJob.cancel()
     }
 
     fun isOpen(): Boolean {
@@ -97,7 +93,7 @@ class SyncWebSocket {
     private fun reconnect(token: String) {
         status = Status.CONNECTING
         close()
-        connect(wsUrl, token, scope)
+        connect(wsUrl, token)
     }
 
     private val webSocketListener = object : WebSocketListener() {
@@ -105,19 +101,19 @@ class SyncWebSocket {
             super.onOpen(webSocket, response)
             LogUtils.d("WebSocket onOpen:${response}")
             status = Status.OPEN
-            handlers.register(AddBillHandler())
-            handlers.register(DeleteBillHandler())
-            handlers.register(UpdateBillHandler())
+            syncReceiver.register()
+            syncTrigger.register()
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             super.onMessage(webSocket, text)
-            LogUtils.d("onMessage",webSocket,text)
+            LogUtils.d("onMessage", webSocket, text)
         }
+
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
             super.onMessage(webSocket, bytes)
-            scope.launch(Dispatchers.IO) {
-                handlers.handler(webSocket, bytes)
+            syncScope.launch(Dispatchers.IO) {
+                syncReceiver.onReceiver(webSocket, bytes)
             }
         }
 
@@ -125,32 +121,37 @@ class SyncWebSocket {
             status = Status.CLOSE
             super.onClosed(webSocket, code, reason)
             LogUtils.d("WebSocket onClosed: $code $reason")
+            syncReceiver.unregister()
+            syncTrigger.unregister()
+            syncJob.cancel()
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             status = Status.ERROR
             super.onFailure(webSocket, t, response)
-            LogUtils.e(webSocket,t,response)
+            LogUtils.e(webSocket, t, response)
+            syncJob.cancel()
         }
     }
 
     fun connect(
         wsUrl: String,
-        token: String, scope: CoroutineScope
+        token: String
     ) {
         LogUtils.d(wsUrl, token)
         if (status == Status.OPEN) {
             webSocket?.close(1000, "关闭旧的连接")
         }
         this.wsUrl = wsUrl
-        this.scope = scope
         request = Request.Builder()
             .addHeader("Authorization", " Bearer $token")
             .url(wsUrl)
             .build()
         LogUtils.d("run: connect url=${wsUrl}")
-        request?.let {
-            webSocket = client.newWebSocket(it, webSocketListener)
+        if (webSocket == null) {
+            request?.let {
+                webSocket = okhttpClient.newWebSocket(it, webSocketListener)
+            }
         }
     }
 }

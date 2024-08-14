@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
  * 1. 观察本地数据库数据（根据同步状态）
  * 2. 通过节点服务同步
  */
-class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: CoroutineScope) {
+class SyncTrigger(private val scope: CoroutineScope) {
     private val billDao = App.dataBase.billDao()
     private val bookDao = App.dataBase.bookDao()
     private val bookUserDao = App.dataBase.bookUserDao()
@@ -43,7 +43,7 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
                 when (b.syncStatus) {
                     NEW -> {
                         val bookJson = moshi.adapter(Book::class.java).toJson(b)
-                        syncWebSocket.send(
+                        WebSocketClient.getInstance().send(
                             createPacket(
                                 Message.Type.ADD_BOOK, bookJson, toUsers = bookUsers
                             )
@@ -51,16 +51,16 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
                     }
 
                     DELETED -> {
-                        syncWebSocket.send(
+                        WebSocketClient.getInstance().send(
                             createPacket(
-                                Message.Type.DELETE_BOOK, b.id, bookUsers
+                                Message.Type.DELETE_BOOK, b.id, toUsers = bookUsers
                             )
                         )
                     }
 
                     UPDATED -> {
                         val bookJson = moshi.adapter(Book::class.java).toJson(b)
-                        syncWebSocket.send(
+                        WebSocketClient.getInstance().send(
                             createPacket(
                                 Message.Type.UPDATE_BOOK, bookJson, toUsers = bookUsers
                             )
@@ -94,7 +94,7 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
                         LogUtils.d("同步...")
                         val json = moshi.adapter(Bill::class.java).toJson(bill)
                         val users = bookUserDao.findUsersId(bill.bookId)
-                        syncWebSocket.send(
+                        WebSocketClient.getInstance().send(
                             createPacket(
                                 Message.Type.ADD_BILL, content = json, toUsers = users
                             )
@@ -104,7 +104,7 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
                     DELETED -> {
                         LogUtils.d("删除...")
                         val users = bookUserDao.findUsersId(bill.id)
-                        syncWebSocket.send(
+                        WebSocketClient.getInstance().send(
                             createPacket(
                                 Message.Type.DELETE_BILL, content = bill.id, toUsers = users
                             )
@@ -115,7 +115,7 @@ class SyncTrigger(private val syncWebSocket: SyncWebSocket, private val scope: C
                         LogUtils.d("更新...")
                         val json = moshi.adapter(Bill::class.java).toJson(bill)
                         val users = bookUserDao.findUsersId(bill.bookId)
-                        syncWebSocket.send(
+                        WebSocketClient.getInstance().send(
                             createPacket(
                                 Message.Type.UPDATE_BILL, content = json, toUsers = users
                             )

@@ -18,6 +18,9 @@ interface BookDao {
     @Query("UPDATE book SET sync_status =:status WHERE book_id=:bookId")
     fun preDelete(bookId: String,status:Int=STATUS.DELETED): Int
 
+    @Query("UPDATE book SET sync_status =:status WHERE book_id=:bookId")
+    fun updateSyncStatus(bookId: String,status:Int=STATUS.UPDATED): Int
+
     @Query("select count() from book  where name=:name")
     fun countByName(name: String): Int
 

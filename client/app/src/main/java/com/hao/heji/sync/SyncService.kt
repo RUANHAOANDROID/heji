@@ -25,10 +25,10 @@ class SyncService : Service(), Observer<Config> {
     private val binder = SyncBinder()
 
     //后台具体操作任务使用server scope
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(Dispatchers.IO + job)
-    private val syncWebSocket = SyncWebSocket.getInstance()
-    private val syncTrigger = SyncTrigger(syncWebSocket, scope)
+//    private val job = SupervisorJob()
+//    private val scope = CoroutineScope(Dispatchers.IO + job)
+    private val syncWebSocket = WebSocketClient.getInstance()
+
     private var networkMonitor: NetworkMonitor? = null
     private val configLiveData = App.viewModel.configChange.asLiveData()
     override fun onCreate() {
@@ -49,12 +49,10 @@ class SyncService : Service(), Observer<Config> {
     private fun connectSync() {
         val address = Config.serverUrl.split("://")[1]
         val token = Config.user.token
-        syncWebSocket.connect(wsUrl = "ws://${address}/api/v1/ws", token, scope)
-        syncTrigger.register()
+        syncWebSocket.connect(wsUrl = "ws://${address}/api/v1/ws", token)
     }
 
     private fun closeSync() {
-        syncTrigger.unregister()
         syncWebSocket.close()
     }
 
@@ -71,8 +69,8 @@ class SyncService : Service(), Observer<Config> {
         super.onDestroy()
         LogUtils.d("onDestroy")
         closeSync()
-        job.cancel()
-        scope.cancel()
+//        job.cancel()
+//        scope.cancel()
         networkMonitor?.stopNetworkCallback()
         configLiveData.removeObserver(this)
     }

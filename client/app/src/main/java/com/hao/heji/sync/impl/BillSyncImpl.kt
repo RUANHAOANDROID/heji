@@ -1,14 +1,9 @@
 package com.hao.heji.sync.impl
 
 import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.ToastUtils
 import com.hao.heji.App
-import com.hao.heji.config.Config
 import com.hao.heji.FILE_LENGTH_1M
-import com.hao.heji.data.db.Bill
-import com.hao.heji.data.db.Image
 import com.hao.heji.data.db.STATUS
-import com.hao.heji.launchIO
 import com.hao.heji.network.BaseResponse
 import com.hao.heji.network.HttpManager
 import com.hao.heji.network.response.ImageEntity

@@ -1,13 +1,12 @@
 package com.hao.heji.sync.handler
 
-import android.util.Log
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.App
 import com.hao.heji.data.db.Bill
 import com.hao.heji.data.db.STATUS
 import com.hao.heji.moshi
 import com.hao.heji.proto.Message
-import com.hao.heji.sync.createPacket
+import com.hao.heji.sync.convertToAck
 import com.hao.heji.sync.toBytes
 import okhttp3.WebSocket
 
@@ -29,12 +28,8 @@ class AddBillHandler : IMessageHandler {
         val bill = moshi.adapter(Bill::class.java).fromJson(packet.content)
         bill?.let {
             billDao.install(bill)
-            val packet = createPacket(
-                Message.Type.ADD_BILL_ACK,
-                bill.id,
-                mutableListOf(packet.senderId)
-            )
-            webSocket.send(packet.toBytes())
+            val ack =packet.convertToAck(Message.Type.ADD_BILL_ACK,bill.id)
+            webSocket.send(ack.toBytes())
         }
     }
 }
@@ -53,7 +48,7 @@ class DeleteBillHandler : IMessageHandler {
             return
         }
         billDao.deleteById(packet.content)
-        val ackPacket = createPacket(Message.Type.DELETE_BILL_ACK, packet.content)
+        val ackPacket = packet.convertToAck(Message.Type.DELETE_BILL_ACK, packet.content)
         webSocket.send(ackPacket.toBytes())
     }
 
@@ -77,12 +72,11 @@ class UpdateBillHandler : IMessageHandler {
         val bill = moshi.adapter(Bill::class.java).fromJson(packet.content)
         bill?.let {
             billDao.update(bill)
-            val packet = createPacket(
+            val ack = packet.convertToAck(
                 Message.Type.UPDATE_BILL_ACK,
                 bill.id,
-                mutableListOf(packet.senderId)
             )
-            webSocket.send(packet.toBytes())
+            webSocket.send(ack.toBytes())
 
         }
     }

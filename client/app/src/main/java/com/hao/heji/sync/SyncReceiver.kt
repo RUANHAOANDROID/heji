@@ -1,13 +1,31 @@
-package com.hao.heji.sync.handler
+package com.hao.heji.sync
 
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.proto.Message
+import com.hao.heji.sync.handler.AddBillHandler
+import com.hao.heji.sync.handler.AddBookHandler
+import com.hao.heji.sync.handler.DeleteBillHandler
+import com.hao.heji.sync.handler.DeleteBookHandler
+import com.hao.heji.sync.handler.IMessageHandler
+import com.hao.heji.sync.handler.UpdateBillHandler
+import com.hao.heji.sync.handler.UpdateBookHandler
 import okhttp3.WebSocket
 import okio.ByteString
 
-class MessageHandler {
-
+class SyncReceiver {
     private val handlers = mutableListOf<IMessageHandler>()
+
+    fun register() {
+
+        register(AddBookHandler())
+        register(DeleteBookHandler())
+        register(UpdateBookHandler())
+
+        register(AddBillHandler())
+        register(DeleteBillHandler())
+        register(UpdateBillHandler())
+        
+    }
 
     fun register(handler: IMessageHandler) {
         if (!handlers.contains(handler))
@@ -19,11 +37,11 @@ class MessageHandler {
             handlers.remove(handler)
     }
 
-    fun clear() {
+    fun unregister() {
         handlers.clear()
     }
 
-    fun handler(webSocket: WebSocket, bytes: ByteString) {
+    fun onReceiver(webSocket: WebSocket, bytes: ByteString) {
         val packet = Message.Packet.parseFrom(bytes.toByteArray())
         for (i in handlers) {
             if (i.canHandle(packet)) {
@@ -32,4 +50,5 @@ class MessageHandler {
             }
         }
     }
+
 }

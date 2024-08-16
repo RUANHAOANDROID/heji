@@ -10,7 +10,7 @@ import com.lxj.xpopup.util.XPopupUtils
 import com.hao.heji.R
 
 /**
- * 邀请码POP
+ * 邀请码 Popup
  */
 class BookSharePopup(context: Context, val code: String) : BottomPopupView(context) {
 

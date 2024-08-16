@@ -1,8 +1,6 @@
 package com.hao.heji.service.ws
 
-import androidx.lifecycle.viewModelScope
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.hao.heji.App
 import com.hao.heji.sync.WebSocketClient
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,7 +13,7 @@ class SyncWebSocketTest {
     @Test
     fun testWebSocket() {
         val instance = WebSocketClient.getInstance()
-        instance.connect(wsUrl = "ws://192.168.8.68:8888/api/v1/ws", token, App.viewModel.viewModelScope)
+        instance.connect(wsUrl = "ws://192.168.8.68:8888/api/v1/ws", token)
         Thread.sleep(3000)
     }
 }

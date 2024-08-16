@@ -40,9 +40,11 @@ class SyncTrigger(private val scope: CoroutineScope) {
             }
             for (b in it) {
                 val bookUsers = bookUserDao.findUsersId(b.id)
+                LogUtils.d(b,bookUsers)
                 when (b.syncStatus) {
                     NEW -> {
                         val bookJson = moshi.adapter(Book::class.java).toJson(b)
+                        LogUtils.d()
                         WebSocketClient.getInstance().send(
                             createPacket(
                                 Message.Type.ADD_BOOK, bookJson, toUsers = bookUsers

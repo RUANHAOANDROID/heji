@@ -24,7 +24,7 @@ class SyncReceiver {
         register(AddBillHandler())
         register(DeleteBillHandler())
         register(UpdateBillHandler())
-        
+
     }
 
     fun register(handler: IMessageHandler) {
@@ -45,7 +45,7 @@ class SyncReceiver {
         val packet = Message.Packet.parseFrom(bytes.toByteArray())
         for (i in handlers) {
             if (i.canHandle(packet)) {
-                LogUtils.d("Type=${packet.type}", "handle by ${i.javaClass.simpleName}")
+                LogUtils.d("handle by ${i.javaClass.simpleName}",packet)
                 i.handleMessage(webSocket, packet)
             }
         }

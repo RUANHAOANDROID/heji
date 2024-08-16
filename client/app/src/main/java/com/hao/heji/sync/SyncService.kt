@@ -10,10 +10,6 @@ import androidx.lifecycle.asLiveData
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.App
 import com.hao.heji.config.Config
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 
 /**
  * 同步服务
@@ -24,7 +20,6 @@ import kotlinx.coroutines.cancel
 class SyncService : Service(), Observer<Config> {
     private val binder = SyncBinder()
 
-    //后台具体操作任务使用server scope
 //    private val job = SupervisorJob()
 //    private val scope = CoroutineScope(Dispatchers.IO + job)
     private val syncWebSocket = WebSocketClient.getInstance()

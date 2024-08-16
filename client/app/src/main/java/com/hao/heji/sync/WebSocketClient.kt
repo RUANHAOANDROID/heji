@@ -1,5 +1,6 @@
 package com.hao.heji.sync
 
+import android.util.Log
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.proto.Message
 import kotlinx.coroutines.CoroutineScope
@@ -54,13 +55,7 @@ class WebSocketClient {
     }
 
     fun send(packet: Message.Packet): Boolean {
-        LogUtils.d(packet.toString())
-        if (status != Status.OPEN) {
-            LogUtils.d("webSocket 未链接")
-            return false
-        }
-        if (webSocket == null)
-            return false
+        LogUtils.d(packet)
         webSocket?.send(bytes = packet.toBytes())
         return true
     }

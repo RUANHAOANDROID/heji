@@ -24,7 +24,11 @@ class BookSettingFragment : BaseFragment() {
     private val viewModel: BookViewModel by lazy {
         ViewModelProvider(this)[BookViewModel::class.java]
     }
-    private val  binding: FragmentBookSettingBinding by lazy {  FragmentBookSettingBinding.inflate(layoutInflater) }
+    private val binding: FragmentBookSettingBinding by lazy {
+        FragmentBookSettingBinding.inflate(
+            layoutInflater
+        )
+    }
     private lateinit var book: Book
 
     override fun layout(): View {
@@ -64,16 +68,17 @@ class BookSettingFragment : BaseFragment() {
                 ToastUtils.showLong("非自建账本，无权该操作")
                 return@setOnClickListener
             }
-            XPopup.Builder(requireContext()).asConfirm("清除提示", "该账本下有${count}条账单确认删除？") {
-                viewModel.clearBook(book.id) {
-                    if (it is Result.Success) {
-                        ToastUtils.showLong("成功清除账本下账单")
-                    } else {
-                        ToastUtils.showLong("删除失败${(it as Result.Error).exception.message}")
+            XPopup.Builder(requireContext())
+                .asConfirm("清除提示", "该账本下有${count}条账单确认删除？") {
+                    viewModel.clearBook(book.id) {
+                        if (it is Result.Success) {
+                            ToastUtils.showLong("成功清除账本下账单")
+                        } else {
+                            ToastUtils.showLong("删除失败${(it as Result.Error).exception.message}")
+                        }
                     }
-                }
 
-            }.show()
+                }.show()
 
         }
     }
@@ -85,15 +90,16 @@ class BookSettingFragment : BaseFragment() {
                 return@setOnClickListener
             }
             val count = viewModel.countBook(book.id)
-            XPopup.Builder(requireContext()).asConfirm("删除提示", "该账本下有${count}条账单确认删除？") {
-                viewModel.deleteBook(book.id) {
-                    if (it is Result.Success) {
-                        findNavController().popBackStack()
+            XPopup.Builder(requireContext())
+                .asConfirm("删除提示", "该账本下有${count}条账单确认删除？") {
+                    viewModel.deleteBook(book.id) {
+                        if (it is Result.Success) {
+                            findNavController().popBackStack()
+                        }
+                        val tip = if (it is Result.Error) it.exception.message else "删除成功"
+                        ToastUtils.showLong(tip)
                     }
-                    val tip = if (it is Result.Error) it.exception.message else "删除成功"
-                    ToastUtils.showLong(tip)
-                }
-            }.show()
+                }.show()
 
         }
     }
@@ -108,11 +114,16 @@ class BookSettingFragment : BaseFragment() {
         //防止多次点击
         val clickListener = object : ClickUtils.OnDebouncingClickListener() {
             override fun onDebouncingClick(v: View?) {
+                if (book.isInitial) {
+                    ToastUtils.showLong("初始账本无法分享！")
+                    return
+                }
                 viewModel.sharedBook(bookId = book.id) {
                     when (it) {
                         is Result.Success -> XPopup.Builder(requireContext())
                             .asCustom(BookSharePopup(requireContext(), it.data))
                             .show()
+
                         is Result.Error -> ToastUtils.showLong(it.exception.message)
                         is Result.Loading -> null
                     }

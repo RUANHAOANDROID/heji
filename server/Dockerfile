@@ -1,22 +1,38 @@
-FROM java:8
-#定义编译环境路径（该变量适用于idea编译环境,如果在有docker环境os下编译请注意路径）
-LABEL version="1.0.1"
-LABEL description="This is hejiserver"
-LABEL org.opencontainers.image.authors="https://github.com/RUANHAOANDROID/heji"
-#定义容器工作环境目录
-ENV WOKR_PATH /data/
-WORKDIR ${WOKR_PATH}
-ADD /target/server-0.0.1-SNAPSHOT.jar hejiserver.jar
-EXPOSE 8181/tcp
-#EXPOSE 8181/udp
-# 挂载点
-VOLUME /data
-#RUN touch /heji
-ENTRYPOINT ["java","-jar","hejiserver.jar"]
-#CMD ["java","-jar","hejiserver.jar"]
+# 第一阶段：使用 golang 镜像作为基础镜像进行编译
+FROM golang:1.20-alpine AS builder
 
-##### 1 edit this dockerfile #####
-##### 2 run options --net host #####
-#--network bridge
-#-v /mnt/disk1/appdata/heji/logs:/data/logs
-#-v /mnt/disk1/appdata/heji/storage:/data/storage
+# 设置工作目录
+WORKDIR /app
+
+# 将当前目录的 go.mod 和 go.sum 复制到工作目录
+COPY go.mod .
+COPY go.sum .
+
+# 下载依赖
+RUN go mod download
+
+# 将其他源代码文件复制到工作目录
+COPY . .
+
+# 编译 Go 应用，使用静态链接
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o runner
+
+# 第二阶段：使用轻量级的 alpine 镜像作为基础镜像
+FROM alpine:3.19.0 as runner
+
+LABEL org.opencontainers.image.source=https://github.com/RUANHAOANDROID/heji
+LABEL org.opencontainers.image.authors="hao88.cloud"
+LABEL version="1.0"
+LABEL description="heji server"
+# 设置工作目录
+WORKDIR /app
+
+# 从第一阶段复制编译好的二进制文件到当前阶段
+COPY --from=builder /app/runner .
+COPY --from=builder /app/config.yml .
+
+# 运行应用
+CMD ["./runner"]
+
+# 暴露应用运行时需要的端口
+EXPOSE 8080

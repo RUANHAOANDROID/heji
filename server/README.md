@@ -1,7 +1,9 @@
-# 服务端
+# heji-server
+合記服务端
 
-## 导入导出格式
-时间	            分类	类型	金额	    账户1	账户2	备注	                                    账单图片
-2020/7/12 21:20	三餐	支出	28.58	微信		        去肯德基吃汉堡（此模板前两行是示例，可以删除）	http://billimg.qianjiapp.com/202006300908267611e24759b6c1c8781361af861!webporigin,http://billimg.qianjiapp.com/202006300908267611e24759b6c1c8781361af862!webporigin
-2020/7/8 22:15	工资	收入	1000			        7月份工资（此模板前两行是示例，可以删除）
-2020/7/8 10:10		转账	200	    支付宝	银行卡	支付宝提现1000元到银行卡
+GO clean-architecture
+- GIN 基础API
+- JWT鉴权
+- WebSocket 同步
+- protobuf3 数据协议
+- mongodb 数据存储

@@ -1,5 +1,6 @@
 # 合記
 > 注：该项目为练手项目仅仅用做学习和非商业化目的，包含了前后端，UI方面参考了钱迹（无广告且记账速度非常快的一款记账软件），我本身也是钱迹的超级终身VIP，非常感谢钱迹的优秀开发者。
+
 [<img src="https://api.gitsponsors.com/api/badge/img?id=324589079" height="20">](https://api.gitsponsors.com/api/badge/link?p=A7GmZyQ1G+uwuxhJkkOxAbxtLFPqk+QbjGm4pv852WFCTRvfLYwv2GHnRl/BERHpqEP2wRKqJo9sc99VNs0Eug==)
 ## 功能介绍
 

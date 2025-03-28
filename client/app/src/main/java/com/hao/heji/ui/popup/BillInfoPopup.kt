@@ -6,24 +6,29 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.hao.heji.App
+import com.hao.heji.BuildConfig
+import com.hao.heji.R
+import com.hao.heji.config.Config
+import com.hao.heji.data.db.Bill
+import com.hao.heji.data.db.Image
+import com.hao.heji.databinding.ItemImgBinding
+import com.hao.heji.databinding.PopLayoutBilliInfoBinding
+import com.hao.heji.getObjectTime
+import com.hao.heji.string
+import com.hao.heji.ui.MainActivity
+import com.hao.heji.ui.create.ArgAddBill
+import com.hao.heji.ui.create.CreateBillFragmentArgs
+import com.hao.heji.utils.ImageUtils
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BottomPopupView
 import com.lxj.xpopup.core.ImageViewerPopupView
 import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener
 import com.lxj.xpopup.util.SmartGlideImageLoader
 import com.lxj.xpopup.util.XPopupUtils
-import com.hao.heji.*
-import com.hao.heji.config.Config
-import com.hao.heji.data.db.Bill
-import com.hao.heji.data.db.Image
-import com.hao.heji.databinding.ItemImgBinding
-import com.hao.heji.databinding.PopLayoutBilliInfoBinding
-import com.hao.heji.ui.MainActivity
-import com.hao.heji.ui.create.ArgAddBill
-import com.hao.heji.ui.create.CreateBillFragmentArgs
-import com.hao.heji.utils.ImageUtils
 
 /**
  * @date: 2020/9/20
@@ -137,7 +142,7 @@ class PopupBillInfo(
         override fun convert(holder: BaseViewHolder, item: Image) {
             binding = ItemImgBinding.bind(holder.itemView)
             val path = ImageUtils.getImagePath(item)
-            GlideApp.with(binding.itemImage)
+            Glide.with(binding.itemImage)
                 .asBitmap()
                 .load(path)
                 .error(R.drawable.ic_baseline_image_load_error_24)

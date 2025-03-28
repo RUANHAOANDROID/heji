@@ -3,10 +3,14 @@ package com.hao.heji.ui.user.login
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.lifecycleScope
+import com.gyf.immersionbar.BarHide
+import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ktx.immersionBar
 import com.hao.heji.App
 import com.hao.heji.config.Config
@@ -52,13 +56,13 @@ class LoginActivity : AppCompatActivity() {
             }
         })
     }
-
     override fun onResume() {
         super.onResume()
         immersionBar {
             statusBarColor(R.color.colorPrimary)
             navigationBarColor(R.color.white)
             titleBar(findViewById(R.id.toolbar))
+            hideBar(BarHide.FLAG_HIDE_NAVIGATION_BAR)
         }
     }
 

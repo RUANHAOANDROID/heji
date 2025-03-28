@@ -63,7 +63,7 @@ abstract class BaseFragment : Fragment() {
                 .titleBar(toolBar)
                 .autoDarkModeEnable(true)
                 .transparentStatusBar()
-                .hideBar(BarHide.FLAG_SHOW_BAR)
+                .hideBar(BarHide.FLAG_HIDE_STATUS_BAR)
                 .navigationBarColor(R.color.white)
                 .fullScreen(false)
                 .init()

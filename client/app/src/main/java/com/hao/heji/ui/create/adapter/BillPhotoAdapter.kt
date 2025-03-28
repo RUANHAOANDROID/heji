@@ -3,13 +3,13 @@ package com.hao.heji.ui.create.adapter
 import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.ImageViewerPopupView
 import com.lxj.xpopup.interfaces.OnSrcViewUpdateListener
 import com.lxj.xpopup.util.SmartGlideImageLoader
-import com.hao.heji.GlideApp
 import com.hao.heji.R
 import com.hao.heji.data.db.Image
 import com.hao.heji.databinding.ItemPopSelectTicketImageBinding
@@ -30,7 +30,7 @@ class BillPhotoAdapter :
     override fun convert(holder: BaseViewHolder, image: Image) {
         binding = ItemPopSelectTicketImageBinding.bind(holder.itemView)
         val path = ImageUtils.getImagePath(image)
-        GlideApp.with(binding.imgTicket)
+        Glide.with(binding.imgTicket)
             .asBitmap()
             .load(path)
             .error(R.drawable.ic_baseline_image_load_error_24)

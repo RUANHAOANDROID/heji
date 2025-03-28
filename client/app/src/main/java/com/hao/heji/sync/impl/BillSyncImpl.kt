@@ -11,7 +11,6 @@ import kotlinx.coroutines.CoroutineScope
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import top.zibin.luban.Luban
 import java.io.File
 
 /**
@@ -31,13 +30,6 @@ class BillSyncImpl(private val scope: CoroutineScope)  {
                 var imgFile = File(image.localPath)
                 val length = imgFile.length()
                 LogUtils.d("图片大小", length)
-                if (length > FILE_LENGTH_1M * 3) { //图片超过设定值则压缩
-                    LogUtils.d("图片大小超过3M,压缩图片", FILE_LENGTH_1M * 3)
-                    val fileList = Luban.with(App.context).load(imgFile).get()
-                    if (fileList.isNotEmpty() && fileList.size > 0) {
-                        imgFile = fileList[0]
-                    }
-                }
                 val requestBody = imgFile.asRequestBody("image/png".toMediaTypeOrNull())
                 val part: MultipartBody.Part =
                     MultipartBody.Part.createFormData("file", imgFile.name, requestBody)

@@ -63,13 +63,13 @@ android {
     productFlavors {
         local {
             dimension "network"
-            applicationId "com.ruanhao.heji_test"
+            applicationId "com.hao.heji_test"
             buildConfigField 'String', 'HTTP_URL', LOCALHOST
             resValue "string", "app_name", "合記开发版"
         }
         cloud {
             dimension "network"
-            applicationId "com.ruanhao.heji"
+            applicationId "com.hao.heji"
             buildConfigField 'String', 'HTTP_URL', HJSERVER
             resValue "string", "app_name", "合記"
         }

@@ -3,3 +3,4 @@
 /cmd/logs/
 /cmd/cmd.exe
 /logs/*.log_symlink
+./idea/

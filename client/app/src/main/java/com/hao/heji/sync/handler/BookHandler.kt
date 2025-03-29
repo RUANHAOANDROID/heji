@@ -2,7 +2,6 @@ package com.hao.heji.sync.handler
 
 import com.hao.heji.App
 import com.hao.heji.data.db.Book
-import com.hao.heji.data.db.STATUS
 import com.hao.heji.moshi
 import com.hao.heji.proto.Message
 import com.hao.heji.sync.convertToAck
@@ -20,7 +19,7 @@ class AddBookHandler : IMessageHandler {
         if (packet.type == Message.Type.ADD_BOOK) {
             val book = moshi.adapter(Book::class.java).fromJson(packet.content)
             book?.let {
-                book.syncStatus = STATUS.SYNCED
+                book.synced=1
                 App.dataBase.bookDao().insert(book)
                 //ACK
                 val ack = packet.convertToAck(Message.Type.ADD_BOOK_ACK, book.id)
@@ -68,7 +67,6 @@ class UpdateBookHandler : IMessageHandler {
         if (packet.type == Message.Type.UPDATE_BOOK) {
             val book = moshi.adapter(Book::class.java).fromJson(packet.content)
             book?.let {
-                book.syncStatus = STATUS.SYNCED
                 App.dataBase.bookDao().insert(book)
                 val ack = packet.convertToAck(
                     Message.Type.UPDATE_BOOK_ACK,

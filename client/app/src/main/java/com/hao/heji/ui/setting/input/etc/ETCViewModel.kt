@@ -9,7 +9,6 @@ import com.hao.heji.data.converters.DateConverters
 import com.hao.heji.data.converters.MoneyConverters
 import com.hao.heji.data.db.Bill
 import com.hao.heji.data.db.Category
-import com.hao.heji.data.db.STATUS
 import com.hao.heji.data.db.mongo.ObjectId
 import com.hao.heji.moshi
 import com.hao.heji.ui.base.BaseViewModel
@@ -59,7 +58,6 @@ internal class ETCViewModel : BaseViewModel<ETCUiState>() {
                     level = 0
                     type = BillType.EXPENDITURE.valueInt
                 }
-                category.syncStatus = STATUS.NEW
                 App.dataBase.categoryDao().insert(category)
             } else {
                 category = categories[0]

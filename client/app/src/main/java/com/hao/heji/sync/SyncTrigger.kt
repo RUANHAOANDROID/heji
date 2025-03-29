@@ -5,9 +5,6 @@ import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.data.db.Bill
 import com.hao.heji.data.db.Book
-import com.hao.heji.data.db.STATUS.DELETED
-import com.hao.heji.data.db.STATUS.NEW
-import com.hao.heji.data.db.STATUS.UPDATED
 import com.hao.heji.moshi
 import com.hao.heji.proto.Message
 import kotlinx.coroutines.CoroutineScope
@@ -41,34 +38,34 @@ class SyncTrigger(private val scope: CoroutineScope) {
             for (b in it) {
                 val bookUsers = bookUserDao.findUsersId(b.id)
                 LogUtils.d(b,bookUsers)
-                when (b.syncStatus) {
-                    NEW -> {
-                        val bookJson = moshi.adapter(Book::class.java).toJson(b)
-                        LogUtils.d()
-                        WebSocketClient.getInstance().send(
-                            createPacket(
-                                Message.Type.ADD_BOOK, bookJson, toUsers = bookUsers
-                            )
-                        )
-                    }
-
-                    DELETED -> {
-                        WebSocketClient.getInstance().send(
-                            createPacket(
-                                Message.Type.DELETE_BOOK, b.id, toUsers = bookUsers
-                            )
-                        )
-                    }
-
-                    UPDATED -> {
-                        val bookJson = moshi.adapter(Book::class.java).toJson(b)
-                        WebSocketClient.getInstance().send(
-                            createPacket(
-                                Message.Type.UPDATE_BOOK, bookJson, toUsers = bookUsers
-                            )
-                        )
-                    }
-                }
+//                when (b.syncStatus) {
+//                    NEW -> {
+//                        val bookJson = moshi.adapter(Book::class.java).toJson(b)
+//                        LogUtils.d()
+//                        WebSocketClient.getInstance().send(
+//                            createPacket(
+//                                Message.Type.ADD_BOOK, bookJson, toUsers = bookUsers
+//                            )
+//                        )
+//                    }
+//
+//                    DELETED -> {
+//                        WebSocketClient.getInstance().send(
+//                            createPacket(
+//                                Message.Type.DELETE_BOOK, b.id, toUsers = bookUsers
+//                            )
+//                        )
+//                    }
+//
+//                    UPDATED -> {
+//                        val bookJson = moshi.adapter(Book::class.java).toJson(b)
+//                        WebSocketClient.getInstance().send(
+//                            createPacket(
+//                                Message.Type.UPDATE_BOOK, bookJson, toUsers = bookUsers
+//                            )
+//                        )
+//                    }
+//                }
             }
         }
     }
@@ -91,39 +88,39 @@ class SyncTrigger(private val scope: CoroutineScope) {
             LogUtils.d("开始处理账单 count=${it.size}...")
             for (bill in it) {
                 LogUtils.d(it)
-                when (bill.syncStatus) {
-                    NEW -> {
-                        LogUtils.d("同步...")
-                        val json = moshi.adapter(Bill::class.java).toJson(bill)
-                        val users = bookUserDao.findUsersId(bill.bookId)
-                        WebSocketClient.getInstance().send(
-                            createPacket(
-                                Message.Type.ADD_BILL, content = json, toUsers = users
-                            )
-                        )
-                    }
-
-                    DELETED -> {
-                        LogUtils.d("删除...")
-                        val users = bookUserDao.findUsersId(bill.id)
-                        WebSocketClient.getInstance().send(
-                            createPacket(
-                                Message.Type.DELETE_BILL, content = bill.id, toUsers = users
-                            )
-                        )
-                    }
-
-                    UPDATED -> {
-                        LogUtils.d("更新...")
-                        val json = moshi.adapter(Bill::class.java).toJson(bill)
-                        val users = bookUserDao.findUsersId(bill.bookId)
-                        WebSocketClient.getInstance().send(
-                            createPacket(
-                                Message.Type.UPDATE_BILL, content = json, toUsers = users
-                            )
-                        )
-                    }
-                }
+//                when (bill.syncStatus) {
+//                    NEW -> {
+//                        LogUtils.d("同步...")
+//                        val json = moshi.adapter(Bill::class.java).toJson(bill)
+//                        val users = bookUserDao.findUsersId(bill.bookId)
+//                        WebSocketClient.getInstance().send(
+//                            createPacket(
+//                                Message.Type.ADD_BILL, content = json, toUsers = users
+//                            )
+//                        )
+//                    }
+//
+//                    DELETED -> {
+//                        LogUtils.d("删除...")
+//                        val users = bookUserDao.findUsersId(bill.id)
+//                        WebSocketClient.getInstance().send(
+//                            createPacket(
+//                                Message.Type.DELETE_BILL, content = bill.id, toUsers = users
+//                            )
+//                        )
+//                    }
+//
+//                    UPDATED -> {
+//                        LogUtils.d("更新...")
+//                        val json = moshi.adapter(Bill::class.java).toJson(bill)
+//                        val users = bookUserDao.findUsersId(bill.bookId)
+//                        WebSocketClient.getInstance().send(
+//                            createPacket(
+//                                Message.Type.UPDATE_BILL, content = json, toUsers = users
+//                            )
+//                        )
+//                    }
+//                }
             }
             LogUtils.d("本次变更账单处理完成...")
             isProcessing = false

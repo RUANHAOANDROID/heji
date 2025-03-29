@@ -25,20 +25,17 @@ interface CategoryDao {
     @Query("SELECT _id FROM category WHERE _id=:id")
     fun findByID(id: String): String
 
-    @Query("SELECT * FROM category WHERE sync_status=:syncStatus")
-    fun findCategoryByStatic(syncStatus: Int): List<Category>
-
     @Query("SELECT * FROM category WHERE name=:name and type=:type")
     fun findByNameAndType(name: String, type: Int): MutableList<Category>
 
-    @Query("SELECT * FROM  category WHERE book_id=:bookID AND type =:type AND sync_status != ${STATUS.DELETED} ORDER BY `index` DESC,_id DESC ")
+    @Query("SELECT * FROM  category WHERE book_id=:bookID AND type =:type AND deleted != 1 ORDER BY `index` DESC,_id DESC ")
     fun observeIncomeOrExpenditure(bookID: String, type: Int): Flow<MutableList<Category>>
 
-    @Query("SELECT * FROM  category WHERE book_id=:bookID AND type =:type AND sync_status != ${STATUS.DELETED} ORDER BY `index` DESC,_id DESC ")
+    @Query("SELECT * FROM  category WHERE book_id=:bookID AND type =:type AND deleted != 1 ORDER BY `index` DESC,_id DESC ")
     fun findIncomeOrExpenditure(bookID: String, type: Int): MutableList<Category>
 
 
-    @Query("SELECT * FROM  category WHERE sync_status == ${STATUS.DELETED} or sync_status == ${STATUS.NEW}")
+    @Query("SELECT * FROM  category WHERE deleted == 0 or synced == 0")
     fun observeNotUploadOrDelete(): Flow<MutableList<Category>>
 
     @Query("SELECT * FROM category WHERE name =:name")

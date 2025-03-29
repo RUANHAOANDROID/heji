@@ -9,7 +9,6 @@ import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.data.Result
 import com.hao.heji.data.db.Book
-import com.hao.heji.data.db.STATUS
 import com.hao.heji.data.db.mongo.ObjectId
 import com.hao.heji.data.repository.BookRepository
 import com.hao.heji.utils.launch
@@ -79,7 +78,7 @@ class BookViewModel : ViewModel() {
                     return@launch
                 }
                 for (book in it) {
-                    book.syncStatus = STATUS.SYNCED
+                    book.synced=1
                     if (bookDao.exist(book.id) > 0) {
                         bookDao.update(book)
                     } else {

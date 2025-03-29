@@ -68,7 +68,6 @@ internal class CreateBillViewModel :
                 val selectImages = bill.images.map { s: String? ->
                     val image = Image(ObjectId().toString(), bill.id)
                     image.localPath = s
-                    image.syncStatus = STATUS.NEW
                     image
                 }.toMutableList()
                 images.addAll(selectImages)

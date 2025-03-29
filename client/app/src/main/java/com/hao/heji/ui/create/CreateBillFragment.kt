@@ -116,7 +116,6 @@ class CreateBillFragment : BaseFragment() {
                                 setImages(mSelected.map { selectPath ->
                                     Image(billID = mBill.id).apply {
                                         localPath = selectPath
-                                        syncStatus = STATUS.NEW
                                     }
                                 }.toMutableList())
                             }
@@ -426,7 +425,7 @@ class CreateBillFragment : BaseFragment() {
     private fun save(again: Boolean) {
         try {
             if (isModify){
-                mBill.syncStatus=STATUS.UPDATED
+                mBill.synced=1
             }
             mBill.bookId = Config.book.id
             mBill.remark = binding.eidtRemark.text.toString()

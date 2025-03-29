@@ -5,7 +5,6 @@ import com.blankj.utilcode.util.ToastUtils
 import com.hao.heji.App
 import com.hao.heji.config.Config
 import com.hao.heji.data.db.Category
-import com.hao.heji.data.db.STATUS
 import com.hao.heji.ui.base.BaseViewModel
 import com.hao.heji.utils.launchIO
 
@@ -41,7 +40,6 @@ internal class CategoryManagerViewModel :
                 this.type = type
                 level = 0
             }
-            category.syncStatus = STATUS.NEW
             val exist = categoryDao.exist(category.hashCode())
             if (exist > 0) {
                 ToastUtils.showShort("标签已经存在")
@@ -61,7 +59,7 @@ internal class CategoryManagerViewModel :
      */
     fun deleteCategory(category: Category) {
         launchIO({
-            category.syncStatus = STATUS.DELETED
+            category.deleted=1
             categoryDao.update(category)
             //deleteLiveData.postValue(true)
         }, {

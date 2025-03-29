@@ -61,8 +61,11 @@ data class Category(
     /**
      * 同步状态
      */
-    @ColumnInfo(name = "sync_status", defaultValue = "0")
-    var syncStatus: Int = STATUS.NEW
+    @ColumnInfo(name = "synced", defaultValue = "0")
+    var synced: Int =0
+
+    @ColumnInfo(name = "deleted", defaultValue = "0")
+    var deleted: Int =0
 
     /**
      * 是否在记账页面显示

@@ -4,17 +4,20 @@
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <solid android:color="@color/keyboard.key_pressed_bg" />
+            <corners android:radius="8dp" />
         </shape>
     </item>
 
     <item android:state_focused="true">
         <shape android:shape="rectangle">
             <solid android:color="@color/keyboard.key_pressed_bg" />
+            <corners android:radius="8dp" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
             <solid android:color="@color/expenditure_bf" />
+            <corners android:radius="8dp" />
         </shape>
     </item>
 </selector>

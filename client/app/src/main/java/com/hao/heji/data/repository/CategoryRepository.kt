@@ -4,7 +4,6 @@ import android.text.TextUtils
 import com.hao.heji.App
 import com.hao.heji.data.Result
 import com.hao.heji.data.db.Category
-import com.hao.heji.data.db.STATUS
 import com.hao.heji.network.BaseResponse
 import com.hao.heji.network.HttpManager
 import com.hao.heji.network.request.CategoryEntity
@@ -18,7 +17,6 @@ class CategoryRepository () {
         val response = network.categoryPush(category)
         response.let {
             val dbCategory = category.toDbCategory()
-            dbCategory.syncStatus = STATUS.SYNCED
             categoryDao.update(dbCategory)
         }
     }
@@ -38,7 +36,7 @@ class CategoryRepository () {
                val _id = App.dataBase.categoryDao().findByID(entity.id)
                if (TextUtils.isEmpty(_id)) {
                    val dbCategory = entity.toDbCategory()
-                   dbCategory.syncStatus = STATUS.SYNCED
+                   dbCategory.synced = 1
                    App.dataBase.categoryDao().insert(dbCategory)
                }
            }
@@ -46,11 +44,10 @@ class CategoryRepository () {
     }
 
     suspend fun updateCategory(category: Category) {
-        category.syncStatus = STATUS.UPDATED
         categoryDao.update(category)
         val response = network.categoryUpdate()
         if (response.code == 0) {
-            category.syncStatus = STATUS.SYNCED
+            category.synced=1
             categoryDao.update(category)
         }
     }

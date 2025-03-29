@@ -45,8 +45,11 @@ data class Book(
     @ColumnInfo(name = COLUMN_BANNER_URL)
     var bannerUrl: String? = null,//封面图片
 
-    @ColumnInfo(name = COLUMN_ANCHOR)
-    var anchor: Long = 0L,//锚点用作记录服务最后修改时间
+    @ColumnInfo(name = "synced")
+    var synced: Int = 0,
+
+    @ColumnInfo(name = "deleted")
+    var deleted: Int = 0,
 
     @Json(name = "is_initial")
     @ColumnInfo(name = COLUMN_FIRST)
@@ -54,9 +57,6 @@ data class Book(
     var isInitial: Boolean = false//初始账本
 
 ) : Parcelable {
-
-    @ColumnInfo(name = COLUMN_SYNC_STATUS)
-    var syncStatus: Int = STATUS.NEW
 
     companion object {
         const val TAB_NAME = "book"

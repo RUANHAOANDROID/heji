@@ -1,9 +1,13 @@
 package com.hao.heji.data.db
 
 import android.os.Parcelable
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Ignore
+import androidx.room.Index
+import androidx.room.TypeConverters
 import com.blankj.utilcode.util.GsonUtils
-import com.hao.heji.config.Config
 import com.hao.heji.data.BillType
 import com.hao.heji.data.converters.DateConverters
 import com.hao.heji.data.converters.MoneyConverters
@@ -11,7 +15,7 @@ import com.hao.heji.data.db.mongo.ObjectId
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
-import java.util.*
+import java.util.Date
 
 /**
  * @date: 2020/8/28
@@ -84,19 +88,16 @@ data class Bill(
      */
     @Json(name = "remark")
     var remark: String? = null,
-    //是否已经删除 1 yes 0 no
-    var deleted: Int = 0,
 
     @Ignore
     @ColumnInfo(name = "images")
     var images: MutableList<String> = mutableListOf(),
 
-    @ColumnInfo(name = "sync_status")
-    var syncStatus: Int = STATUS.NEW,
+    @ColumnInfo(name = "synced")
+    var synced: Int = 0,
 
-    @ColumnInfo(name = "anchor")
-    var anchor: Long = 0L,//锚点用作记录服务最后修改时间
-
+    @ColumnInfo(name = "deleted")
+    var deleted: Int = 0,
 ) : Parcelable {
 
     @ColumnInfo(name = "hash")

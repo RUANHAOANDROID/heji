@@ -39,8 +39,11 @@ data class Image(
     @ColumnInfo(name = COLUMN_ONLINE_PATH)
     var onlinePath: String? = null
 
-    @ColumnInfo(name = COLUMN_STATUS, defaultValue = "0")
-    var syncStatus = 0
+    @ColumnInfo(name = "synced")
+    var synced = 0
+
+    @ColumnInfo(name = "deleted")
+    var deleted = 0
 
     override fun hashCode(): Int {
         return Objects.hash(id, billID, localPath, onlinePath)
@@ -61,7 +64,6 @@ data class Image(
         const val TAB_NAME = "image"
         const val COLUMN_PATH = "local_path"
         const val COLUMN_ONLINE_PATH = "online_path"
-        const val COLUMN_STATUS = "sync_status"
     }
 
     override fun toString(): String {

@@ -3,7 +3,6 @@ package com.hao.heji.sync.handler
 import com.blankj.utilcode.util.LogUtils
 import com.hao.heji.App
 import com.hao.heji.data.db.Bill
-import com.hao.heji.data.db.STATUS
 import com.hao.heji.moshi
 import com.hao.heji.proto.Message
 import com.hao.heji.sync.convertToAck
@@ -22,7 +21,7 @@ class AddBillHandler : IMessageHandler {
         LogUtils.d("开始处理消息 type=${packet.type}")
         val billDao = App.dataBase.billDao()
         if (packet.type == Message.Type.ADD_BILL_ACK) {
-            billDao.updateSyncStatus(billId = packet.content, STATUS.SYNCED)
+            billDao.updateSyncStatus(billId = packet.content, 1)
             return
         }
         val bill = moshi.adapter(Bill::class.java).fromJson(packet.content)
@@ -66,7 +65,7 @@ class UpdateBillHandler : IMessageHandler {
         val billDao = App.dataBase.billDao()
 
         if (isAck(packet)) {
-            billDao.updateSyncStatus(billId = packet.content, STATUS.SYNCED)
+            billDao.updateSyncStatus(billId = packet.content,1)
             return
         }
         val bill = moshi.adapter(Bill::class.java).fromJson(packet.content)

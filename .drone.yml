@@ -19,6 +19,7 @@ steps:
       - cd ./client
       - chmod +x gradlew
       - chmod +x updav
+      - sleep 1000
       - ./gradlew assembleRelease --stacktrace
       - APK_CLOUD=$(find "app/build/outputs/apk/cloud/release" -type f -name "*.apk")
       - APK_LOCAL=$(find "app/build/outputs/apk/local/release" -type f -name "*.apk")

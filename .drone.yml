@@ -24,7 +24,6 @@ steps:
     commands:
       - cd client
       - ls -l
-      - sleep 1000
       - chmod +x gradlew
       - chmod +x updav
       - ./gradlew assembleRelease --stacktrace

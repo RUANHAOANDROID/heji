@@ -3,23 +3,16 @@ package com.hao.heji.ui.user.login
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
-import androidx.lifecycle.lifecycleScope
 import com.gyf.immersionbar.BarHide
-import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ktx.immersionBar
 import com.hao.heji.App
+import com.hao.heji.R
 import com.hao.heji.config.Config
 import com.hao.heji.ui.MainActivity
-import com.hao.heji.R
 import com.hao.heji.utils.checkPermissions
-import com.tencent.bugly.crashreport.CrashReport
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * 用户登录注册
@@ -40,10 +33,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkPermissions(this) { _: Boolean, _: List<String?>?, _: List<String?>? ->
-            //初始化一些需要权限的功能
-            lifecycleScope.launch(Dispatchers.Default) {
-                CrashReport.initCrashReport(applicationContext, "532951ea78", false)
-            }
             //Toast.makeText(this, "已同意权限", Toast.LENGTH_SHORT).show()
         }
         setContentView(R.layout.activity_login)

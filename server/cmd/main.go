@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/getsentry/sentry-go"
 	"heji-server/api"
 	"heji-server/config"
 	"heji-server/internal/get"
@@ -23,6 +24,7 @@ var version = "development"
 func Main(args []string, conf *config.Config) {
 	defer func() {
 		if r := recover(); r != nil {
+			sentry.CaptureException(r.(error))
 			log.Error(r)
 			os.Exit(1)
 		}

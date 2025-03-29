@@ -17,9 +17,6 @@ steps:
       ANDROID_HOME: /drone/src/sdk
     commands:
       - cd ./client
-      - VERSION_NAME=$(cut -d'=' -f2 version.properties)
-      - echo "$VERSION_NAME"
-      - echo ${DRONE_SOURCE_BRANCH}
       - chmod +x gradlew
       - chmod +x updav
       - ./gradlew assembleRelease --stacktrace

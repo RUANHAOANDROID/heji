@@ -16,6 +16,7 @@ steps:
     environment:
       ANDROID_HOME: /drone/src/sdk
     commands:
+      - sleep 1000
       - cd ./client
       - chmod +x gradlew
       - chmod +x updav

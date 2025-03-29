@@ -21,6 +21,7 @@ steps:
     environment:
       ANDROID_HOME: /drone/src/client/sdk
     commands:
+      - sleep 100
       - cd ./client
       - ls -l
       - chmod +x gradlew
@@ -63,6 +64,7 @@ steps:
         from_secret: DOCKER_PWD
     commands:
       - docker --version
+      - sleep 100
       - cd ./server
       - ls -l
       - docker login -u "$DOCKER_USER" -p "$DOCKER_PWD".    # login to docker hub

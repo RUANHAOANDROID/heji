@@ -1,5 +1,4 @@
-# build go server and push to docker hub
-kind: pipeline
+kind: pipeline # build go server and push to docker hub
 type: docker
 name: server-build-push
 

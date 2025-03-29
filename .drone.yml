@@ -6,7 +6,28 @@ trigger:
     #- dev
     - main
 steps:
-  - name: build_push
+  - name: build-client
+    image: gradle:8.9
+    volumes:
+      - name: sdk
+        path: /drone/src/sdk
+      - name: gradle-cache
+        path: /home/gradle/.gradle
+    environment:
+      ANDROID_HOME: /drone/src/sdk
+    commands:
+      - cd ./client
+      - VERSION_NAME=$(cut -d'=' -f2 version.properties)
+      - echo "$VERSION_NAME"
+      - echo ${DRONE_SOURCE_BRANCH}
+      - chmod +x gradlew
+      - chmod +x updav
+      - ./gradlew assembleRelease --stacktrace
+      - APK_CLOUD=$(find "app/build/outputs/apk/cloud/release" -type f -name "*.apk")
+      - APK_LOCAL=$(find "app/build/outputs/apk/local/release" -type f -name "*.apk")
+      - ./updav -u http://192.168.8.6:8081 -a dev -p Az*29!#^1Nan -f "APK_CLOUD","APK_LOCAL" -r /ahao/heji/apk
+
+  - name: build_server_push
     image: docker:dind
     volumes:
       - name: docker
@@ -24,7 +45,14 @@ steps:
       - docker buildx create --name aBuildX --use      # Create and use a Buildx builder
       - docker buildx build --platform linux/amd64 -f Dockerfile -t hao88/heji-server:amd64 --push . # Build and push amd64 image
       - docker buildx rm aBuildX  # Remove the Buildx builder
+
 volumes:
   - name: docker
     host:
       path: /var/run/docker.sock
+  - name: sdk
+    host:
+      path: /mnt/user/appdata/drone/tools/android/sdk
+  - name: gradle-cache
+    host:
+      path: /mnt/user/appdata/drone/tools/gradle/cache-heji

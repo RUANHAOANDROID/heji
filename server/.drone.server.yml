@@ -1,0 +1,37 @@
+kind: pipeline
+type: docker
+name: server-build-push
+
+# 仅当 server/ 目录或分支有变更时触发
+trigger:
+  branch:
+    - main
+  paths:
+    include:
+      - server/**
+      - .drone.server.yml  # 自身配置变更也触发
+
+steps:
+  - name: build_server_push
+    image: docker:dind
+    volumes:
+      - name: docker
+        path: /var/run/docker.sock
+    environment:
+      DOCKER_BUILDKIT: 1
+      DOCKER_USER:
+        from_secret: DOCKER_USER
+      DOCKER_PWD:
+        from_secret: DOCKER_PWD
+    commands:
+      - docker --version
+      - cd ./server
+      - docker login -u "$DOCKER_USER" -p "$DOCKER_PWD".    # login to docker hub
+      - docker buildx create --name aBuildX --use      # Create and use a Buildx builder
+      - docker buildx build --platform linux/amd64 -f Dockerfile -t hao88/heji-server:amd64 --push . # Build and push amd64 image
+      - docker buildx rm aBuildX  # Remove the Buildx builder
+
+volumes:
+  - name: docker
+    host:
+      path: /var/run/docker.sock

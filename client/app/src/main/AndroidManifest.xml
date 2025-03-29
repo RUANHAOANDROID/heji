@@ -8,7 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" /> <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
@@ -49,7 +50,7 @@
             android:name=".ui.user.login.LoginActivity"
             android:label="@string/login"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <!--  功能页 -->
         <activity
             android:name=".ui.MainActivity"
@@ -58,8 +59,8 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppStartup"
-            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
-        <service android:name=".sync.SyncService"></service>
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <service android:name=".sync.SyncService" />
         <!-- 适配华为（huawei）刘海屏 -->
         <meta-data
             android:name="android.notch_support"
@@ -68,6 +69,47 @@
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />
-    </application>
+
+        <!-- Required: set your sentry.io project identifier (DSN) -->
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="https://77565e76a3ff93fa653f67e77a9bc41d@o4508631282155520.ingest.us.sentry.io/4508922877771776" />
+            <!-- Add data like request headers, user ip address and device name, see https://docs.sentry.io/platforms/android/data-management/data-collected/ for more info -->
+            <meta-data
+                android:name="io.sentry.send-default-pii"
+                android:value="true" />
+
+            <!-- enable automatic breadcrumbs for user interactions (clicks, swipes, scrolls) -->
+            <meta-data
+                android:name="io.sentry.traces.user-interaction.enable"
+                android:value="true" />
+            <!-- enable screenshot for crashes -->
+            <meta-data
+                android:name="io.sentry.attach-screenshot"
+                android:value="true" />
+            <!-- enable view hierarchy for crashes -->
+            <meta-data
+                android:name="io.sentry.attach-view-hierarchy"
+                android:value="true" />
+
+            <!-- enable the performance API by setting a sample-rate, adjust in production env -->
+            <meta-data
+                android:name="io.sentry.traces.sample-rate"
+                android:value="0.5" />
+
+            <!-- enable profiling when starting transactions, adjust in production env -->
+            <meta-data
+                android:name="io.sentry.traces.profiling.sample-rate"
+                android:value="0.5" />
+            <!-- enable app start profiling -->
+            <meta-data
+                android:name="io.sentry.traces.profiling.enable-app-start"
+                android:value="true" />
+
+            <!-- record session replays for 100% of errors and 10% of sessions -->
+            <meta-data
+                android:name="io.sentry.session-replay.on-error-sample-rate"
+                android:value="0.5" />
+        </application>
 
 </manifest>

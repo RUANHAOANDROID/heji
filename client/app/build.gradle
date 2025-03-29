@@ -1,8 +1,13 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: "androidx.navigation.safeargs.kotlin"
-apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.google.devtools.ksp'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp'
+    id "io.sentry.android.gradle" version "5.3.0"
+}
 android {
     namespace 'com.hao.heji'
     compileSdk 35
@@ -172,5 +177,4 @@ dependencies {
     implementation 'com.opencsv:opencsv:5.7.1'
     implementation 'com.google.protobuf:protobuf-java:3.24.4'
     implementation 'com.google.protobuf:protoc:3.24.4'
-    implementation 'com.tencent.bugly:crashreport:4.1.9.3'
 }

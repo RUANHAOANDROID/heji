@@ -19,7 +19,7 @@ steps:
       - name: gradle-cache
         path: /home/gradle/.gradle
     environment:
-      ANDROID_HOME: /drone/src/sdk
+      ANDROID_HOME: /drone/src/client/sdk
     commands:
       - cd ./client
       - chmod +x gradlew

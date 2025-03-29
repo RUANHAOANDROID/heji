@@ -24,7 +24,7 @@ steps:
     commands:
       - cd client
       - ls -l
-      - sleep 100
+      - sleep 1000
       - gradle wrapper
       - chmod +x gradlew
       - chmod +x updav
@@ -69,7 +69,7 @@ steps:
       - cd server
       - docker --version
       - ls -l
-      - sleep 100
+      - sleep 30
       - docker login -u "$DOCKER_USER" -p "$DOCKER_PWD".    # login to docker hub
       - docker buildx create --name aBuildX --use      # Create and use a Buildx builder
       - docker buildx build --platform linux/amd64 -f server/Dockerfile -t hao88/heji-server:amd64 --push . # Build and push amd64 image

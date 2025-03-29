@@ -75,4 +75,3 @@ volumes:
   - name: gradle-cache
     host:
       path: /mnt/user/appdata/drone/tools/gradle/cache-heji
----

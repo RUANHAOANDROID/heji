@@ -9,9 +9,7 @@ COPY go.mod .
 COPY go.sum .
 
 # 下载依赖
-RUN go mod tidy
-# 下载依赖
-#RUN go mod download
+RUN go mod download
 
 # 将其他源代码文件复制到工作目录
 COPY . .

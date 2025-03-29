@@ -9,7 +9,9 @@ COPY go.mod .
 COPY go.sum .
 
 # 下载依赖
-RUN go mod download
+RUN go mod tidy
+# 下载依赖
+#RUN go mod download
 
 # 将其他源代码文件复制到工作目录
 COPY . .
@@ -22,7 +24,7 @@ RUN apk add --no-cache upx
 RUN upx --best --lzma runner
 
 # 第二阶段：使用轻量级的 alpine 镜像作为基础镜像
-FROM alpine:3.19.0 as runner
+FROM alpine:3.19.0 AS runner
 
 LABEL name="heji-server"
 LABEL org.opencontainers.image.source=https://github.com/RUANHAOANDROID/heji

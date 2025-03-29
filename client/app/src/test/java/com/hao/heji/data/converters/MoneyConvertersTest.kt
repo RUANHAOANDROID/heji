@@ -1,33 +1,33 @@
-package com.hao.heji.data.converters;
+package com.hao.heji.data.converters
 
-import junit.framework.TestCase;
-
-import java.math.BigDecimal;
+import com.hao.heji.data.converters.MoneyConverters.ZERO_00
+import com.hao.heji.data.converters.MoneyConverters.fromLong
+import com.hao.heji.data.converters.MoneyConverters.toLong
+import junit.framework.TestCase
+import java.math.BigDecimal
 
 /**
  * @date: 2021/6/17
  * @author: 锅得铁
  * #
  */
-public class MoneyConvertersTest extends TestCase {
+class MoneyConvertersTest : TestCase() {
+    fun testFromLong() {
+        val value = fromLong(1000L)
+        TestCase.assertEquals(value.toString(), "10.00")
 
-    public void testFromLong() {
-        BigDecimal value = MoneyConverters.fromLong(1000L);
-        assertEquals(value.toString(), "10.00");
-
-        BigDecimal value2 = MoneyConverters.fromLong(1234L);
-        assertEquals(value2.toString(), "12.34");
-
+        val value2 = fromLong(1234L)
+        TestCase.assertEquals(value2.toString(), "12.34")
     }
 
-    public void testToLong() {
-        Long value = MoneyConverters.toLong(new BigDecimal("10.00"));
-        assertEquals(value.longValue(), 1000L);
-        Long value2 = MoneyConverters.toLong(new BigDecimal("12.34"));
-        assertEquals(value2.longValue(), 1234L);
+    fun testToLong() {
+        val value = toLong(BigDecimal("10.00"))
+        TestCase.assertEquals(value, 1000L)
+        val value2 = toLong(BigDecimal("12.34"))
+        TestCase.assertEquals(value2, 1234L)
     }
 
-    public void testZERO_00() {
-        assertEquals("0.00",MoneyConverters.ZERO_00().toPlainString());
+    fun testZERO_00() {
+        TestCase.assertEquals("0.00", ZERO_00().toPlainString())
     }
 }

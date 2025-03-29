@@ -10,17 +10,18 @@ steps:
     image: gradle:8.9
     volumes:
       - name: sdk
-        path: /drone/src/sdk
+        path: /drone/src/client/sdk
       - name: gradle-cache
         path: /home/gradle/.gradle
     environment:
       ANDROID_HOME: /drone/src/sdk
     commands:
       - sleep 1000
-      - cd ./client
+      - cd client
       - chmod +x gradlew
       - chmod +x updav
       - sleep 1000
+      - gradle --version
       - ./gradlew assembleRelease --stacktrace
       - APK_CLOUD=$(find "app/build/outputs/apk/cloud/release" -type f -name "*.apk")
       - APK_LOCAL=$(find "app/build/outputs/apk/local/release" -type f -name "*.apk")

@@ -18,18 +18,18 @@ open class CategoryManagerAdapter :
 
     protected lateinit var itemBinding: ItemCategoryManagerBinding
     override fun convert(holder: BaseViewHolder, category: Category) {
-        itemBinding = ItemCategoryManagerBinding.bind(holder.itemView)
-        val bgColor = context.getColor(if (category.isSelected) R.color.category_ico_selected else R.color.category_ico)
+        if (category.name.isEmpty()) return
 
-        if (category.name.isEmpty()) {
-            return
-        }
+        val itemBinding = ItemCategoryManagerBinding.bind(holder.itemView)
+        val bgColor = context.getColor(
+            if (category.isSelected) R.color.category_ico_selected else R.color.category_ico
+        )
         val drawable = TextDrawable.builder().buildRound(category.name[0].toString(), bgColor)
         itemBinding.roundImageView.setImageDrawable(drawable)
         itemBinding.tvName.text = category.name
         addChildClickViewIds(itemBinding.btnDelete.id)
-        itemBinding.btnEdit.visibility = if (category.name == "其他") View.INVISIBLE else View.VISIBLE
-        itemBinding.btnDelete.visibility = if (category.name == "其他") View.INVISIBLE else View.VISIBLE
-
+        val isOther = category.name == "其他"
+        itemBinding.btnEdit.visibility = if (isOther) View.INVISIBLE else View.VISIBLE
+        itemBinding.btnDelete.visibility = if (isOther) View.INVISIBLE else View.VISIBLE
     }
 }

@@ -7,18 +7,6 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.util.*
 
-
-/**
- * 压缩阀值大小 Luban 单位为K
- */
-const val COMPRESSION_SIZE = 1204 * 2
-
-/**
- * 1M 文件大小以Bytes为单位
- */
-const val FILE_LENGTH_1M = 1204 * 1024 * 1
-
-
 val currentYearMonth: YearMonth = today()
 
 fun today(): YearMonth = YearMonth(
